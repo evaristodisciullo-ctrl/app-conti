@@ -164,15 +164,17 @@ function categoryGlyph(x){
 function toneFor(x){
   let str=(displayName(x)+x.category),n=0;for(let i=0;i<str.length;i++)n=(n+str.charCodeAt(i))%5;return "tone"+n;
 }
-function projectedBalanceThroughDate(targetDate){
+function projectedBalanceThroughDate(targetDate,flowType){
   if(!targetDate||targetDate<today())return null;
   let running=Number(state.balance)||0,targetYm=targetDate.slice(0,7);
   for(const t of state.templates){
-    if(!t.nextDate)continue;
+    if(!t.nextDate||t.type!==flowType)continue;
     let startYm=t.nextDate.slice(0,7),ym=startYm,guard=0;
     while(ym<=targetYm&&guard<72){
       let occ=occurrenceForMonth(t,ym);
-      if(occ&&occ.nextDate<=targetDate)running+=occ.type==="income"?(Number(occ.amount)||0):-(Number(occ.amount)||0);
+      if(occ&&occ.nextDate<=targetDate){
+        running+=flowType==="income"?(Number(occ.amount)||0):-(Number(occ.amount)||0);
+      }
       ym=addMonthsYm(ym,1);guard++;
       if(t.kind!=="recurring")break;
     }
@@ -208,10 +210,10 @@ function renderScheduledGrouped(el,arr){
     let count=document.createElement("div");count.className="dayGroupCount";count.textContent=items.length+" "+(items.length===1?(categoryType==="income"?"entrata":"uscita"):(categoryType==="income"?"entrate":"uscite"));
     head.append(d,count);box.append(head);
     items.forEach(x=>box.appendChild(groupedTemplateRow(x)));
-    let rem=projectedBalanceThroughDate(date);
+    let rem=projectedBalanceThroughDate(date,categoryType);
     if(rem!==null){
       let rr=document.createElement("div");rr.className="dayRemainder";
-      let label=document.createElement("span");label.textContent="Rimanenza prevista dopo il "+new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long"}).format(parseDate(date));
+      let label=document.createElement("span");label.textContent="Rimanenza prevista dopo "+(categoryType==="income"?"le entrate":"le uscite")+" del "+new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"long"}).format(parseDate(date));
       let val=document.createElement("strong");val.textContent=money(rem);
       rr.append(label,val);box.append(rr);
     }
