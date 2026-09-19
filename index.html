@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f7fb">
+<title>App Conti</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#12213a;--muted:#718096;--line:#e5eaf2;--blue:#1479ff;--green:#159b62;--yellow:#d59a00;--red:#d93636}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 14px 92px}.hidden{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.brand{font-size:28px;font-weight:800}.sub{font-size:13px;color:var(--muted)}
+.card,.tile,.list{background:var(--card);border:1px solid var(--line);border-radius:18px}.card{padding:18px}
+.balance{font-size:36px;font-weight:850;margin-top:5px}.pos{color:var(--green)}.neg{color:var(--red)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.tile{padding:15px;text-align:left;min-height:105px}
+.tile h3{margin:0 0 8px}.tile .amt{font-size:21px;font-weight:800}.small{font-size:12px;color:var(--muted)}
+.section{margin-top:18px}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.head h2{font-size:18px;margin:0}
+.link{border:0;background:none;color:var(--blue);font-weight:700;padding:8px}
+.row{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}.green{background:var(--green)}.yellow{background:var(--yellow)}.red{background:var(--red)}
+.main{flex:1;min-width:0}.name{font-weight:700}.meta{font-size:12px;color:var(--muted);margin-top:3px}.money{font-weight:800;white-space:nowrap}
+.money.pending{color:var(--yellow)}.money.overdue{color:var(--red)}
+.empty{padding:18px;text-align:center;color:var(--muted);font-size:14px}
+.fab{position:fixed;right:max(18px,calc((100vw - 520px)/2 + 18px));bottom:20px;width:58px;height:58px;border:0;border-radius:50%;background:var(--blue);color:#fff;font-size:30px}
+.title{display:flex;align-items:center;gap:6px;margin-bottom:14px}.title h1{font-size:22px}.back{border:0;background:none;font-size:30px}
+.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+input,select{width:100%;min-height:50px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--text);font-size:16px;padding:0 13px}
+.btn{width:100%;min-height:50px;border:0;border-radius:15px;background:var(--blue);color:#fff;font-size:16px;font-weight:800}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:#eaf0f7;border-radius:14px;padding:4px;margin-bottom:14px}.seg button{min-height:42px;border:0;border-radius:11px;background:transparent;font-weight:800;color:var(--muted)}.seg button.on{background:#fff;color:var(--text)}
+.chips{display:flex;gap:8px;overflow:auto}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:700;color:var(--muted)}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.setup{padding-top:60px}.setup h1{font-size:31px;margin:0 0 8px}.setup p{color:var(--muted);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="setup" class="setup hidden">
+  <div class="top"><div><div class="brand">App Conti</div><div class="sub">I tuoi conti, sempre con te</div></div></div>
+  <div class="card">
+    <h1>Quanto hai oggi?</h1>
+    <p>Inserisci il denaro che possiedi realmente in questo momento. Non inserire entrate future.</p>
+    <div class="field"><label>Credito attuale</label><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div>
+    <button id="startBtn" class="btn">Continua</button>
+  </div>
+</section>
+
+<section id="home" class="hidden">
+  <div class="top"><div><div class="brand">App Conti</div><div class="sub">I tuoi conti, sempre con te</div></div><button id="resetBtn" class="link">Reset</button></div>
+  <div class="card">
+    <div class="small">Saldo attuale</div><div id="balanceValue" class="balance">€ 0,00</div><div id="afterDue" class="small"></div>
+  </div>
+  <div class="grid">
+    <button id="openIncome" class="tile"><h3>Entrate</h3><div id="incomeTotal" class="amt">€ 0,00</div><div id="incomeCount" class="small">0 movimenti</div></button>
+    <button id="openExpense" class="tile"><h3>Uscite</h3><div id="expenseTotal" class="amt">€ 0,00</div><div id="expenseCount" class="small">0 movimenti</div></button>
+  </div>
+  <div class="section"><div class="head"><h2>Movimenti</h2><button id="viewAll" class="link">Vedi tutto</button></div><div id="recentList" class="list"></div></div>
+  <div class="section"><div class="head"><h2>Prossimi pagamenti</h2><button id="viewUpcoming" class="link">Vedi tutto</button></div><div id="upcomingList" class="list"></div></div>
+  <button id="fab" class="fab" aria-label="Aggiungi">+</button>
+</section>
+
+<section id="add" class="hidden">
+  <div class="title"><button id="addBack" class="back">‹</button><h1>Nuovo movimento</h1></div>
+  <div class="seg"><button id="segIncome" class="on">Entrata</button><button id="segExpense">Uscita</button></div>
+  <div class="card">
+    <div class="field"><label>Nome</label><input id="txName" placeholder="Es. Stipendio, Sky, Benzina"></div>
+    <div class="field"><label>Importo</label><input id="txAmount" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div>
+    <div class="field"><label>Data</label><input id="txDate" type="date"></div>
+    <div id="statusWrap" class="field hidden"><label>Stato</label><select id="txStatus"><option value="paid">Pagato</option><option value="pending">Da pagare</option></select></div>
+    <button id="saveTx" class="btn">Salva</button>
+  </div>
+</section>
+
+<section id="all" class="hidden">
+  <div class="title"><button id="allBack" class="back">‹</button><h1>Movimenti</h1></div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-filter="all">Tutti</button><button class="chip" data-filter="income">Entrate</button><button class="chip" data-filter="expense">Uscite</button><button class="chip" data-filter="pending">Da pagare</button><button class="chip" data-filter="paid">Pagati</button><button class="chip" data-filter="overdue">Scaduti</button>
+  </div>
+  <div id="allList" class="list" style="margin-top:12px"></div>
+</section>
+
+<section id="category" class="hidden">
+  <div class="title" style="justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:6px"><button id="catBack" class="back">‹</button><h1 id="catTitle">Entrate</h1></div>
+    <button id="catAdd" class="link" style="font-size:16px">+ AGGIUNGI</button>
+  </div>
+  <div class="card" style="margin-bottom:12px"><div class="small" id="catTotalLabel">Totale entrate</div><div id="catTotal" style="font-size:28px;font-weight:850;margin-top:4px">€ 0,00</div></div>
+  <div id="catList" class="list"></div>
+</section>
+</div>
+
+<script>
+(()=>{
+const KEY="appContiOnlineV01";
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"}).format(Number(n)||0);
+const today=()=>{let d=new Date(),m=String(d.getMonth()+1).padStart(2,"0"),g=String(d.getDate()).padStart(2,"0");return d.getFullYear()+"-"+m+"-"+g};
+const pretty=s=>{if(!s)return"";let p=s.split("-").map(Number);return new Intl.DateTimeFormat("it-IT",{day:"numeric",month:"short",year:"numeric"}).format(new Date(p[0],p[1]-1,p[2]))};
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){};if(!state||!Array.isArray(state.items))state={balance:null,items:[]};
+let addType="income",filter="all",categoryType="income";
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function show(id){["setup","home","add","all","category"].forEach(x=>$(x).classList.toggle("hidden",x!==id));if(id==="home")renderHome();if(id==="all")renderAll()}
+function status(x){if(x.type==="income"||x.status==="paid")return"done";return x.date<today()?"overdue":"pending"}
+function row(x){let s=status(x),r=document.createElement("div");r.className="row";
+let dot=document.createElement("span");dot.className="dot "+(s==="done"?"green":s==="pending"?"yellow":"red");
+let main=document.createElement("div");main.className="main";let n=document.createElement("div");n.className="name";n.textContent=x.name;
+let meta=document.createElement("div");meta.className="meta";meta.textContent=(x.type==="income"?"Ricevuto":s==="done"?"Pagato":s==="pending"?"Da pagare":"Scaduto")+" · "+pretty(x.date);main.append(n,meta);
+let a=document.createElement("div");a.className="money";a.textContent=(x.type==="income"?"+ ":"- ")+money(x.amount);if(s==="pending")a.classList.add("pending");if(s==="overdue")a.classList.add("overdue");r.append(dot,main,a);return r}
+function fill(el,arr){el.innerHTML="";if(!arr.length){el.innerHTML='<div class="empty">Nessun elemento.</div>';return}arr.forEach(x=>el.appendChild(row(x)))}
+function renderHome(){if(state.balance===null){show("setup");return}let b=$("balanceValue");b.textContent=money(state.balance);b.className="balance "+(state.balance<0?"neg":"pos");
+let month=today().slice(0,7),done=state.items.filter(x=>x.date.startsWith(month)&&status(x)==="done"),inc=done.filter(x=>x.type==="income"),exp=done.filter(x=>x.type==="expense");
+$("incomeTotal").textContent=money(inc.reduce((s,x)=>s+x.amount,0));$("expenseTotal").textContent=money(exp.reduce((s,x)=>s+x.amount,0));$("incomeCount").textContent=inc.length+" movimenti";$("expenseCount").textContent=exp.length+" movimenti";
+let up=state.items.filter(x=>x.type==="expense"&&status(x)!=="done").sort((a,b)=>a.date.localeCompare(b.date));$("afterDue").textContent=up.length?"Dopo i prossimi pagamenti: "+money(state.balance-up.reduce((s,x)=>s+x.amount,0)):"Nessun pagamento da effettuare";
+fill($("recentList"),state.items.filter(x=>status(x)==="done").sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5));fill($("upcomingList"),up.slice(0,5))}
+function renderAll(){let a=[...state.items].sort((x,y)=>y.date.localeCompare(x.date));if(filter==="income")a=a.filter(x=>x.type==="income");if(filter==="expense")a=a.filter(x=>x.type==="expense");if(filter==="pending")a=a.filter(x=>x.type==="expense"&&status(x)==="pending");if(filter==="paid")a=a.filter(x=>x.type==="expense"&&status(x)==="done");if(filter==="overdue")a=a.filter(x=>x.type==="expense"&&status(x)==="overdue");fill($("allList"),a)}
+function openCat(t){categoryType=t;$("catTitle").textContent=t==="income"?"Entrate":"Uscite";$("catTotalLabel").textContent=t==="income"?"Totale entrate registrate":"Totale uscite registrate";let a=state.items.filter(x=>x.type===t).sort((x,y)=>y.date.localeCompare(x.date));$("catTotal").textContent=money(a.reduce((s,x)=>s+x.amount,0));fill($("catList"),a);show("category")}
+function openAdd(t){addType=t;$("segIncome").classList.toggle("on",t==="income");$("segExpense").classList.toggle("on",t==="expense");$("statusWrap").classList.toggle("hidden",t!=="expense");$("txName").value="";$("txAmount").value="";$("txDate").value=today();show("add")}
+$("startBtn").onclick=()=>{let v=Number($("startBalance").value);if(!Number.isFinite(v))return alert("Inserisci un importo valido.");state.balance=v;save();show("home")};
+$("fab").onclick=()=>openAdd("income");$("segIncome").onclick=()=>openAdd("income");$("segExpense").onclick=()=>openAdd("expense");$("addBack").onclick=()=>show("home");$("allBack").onclick=()=>show("home");$("catBack").onclick=()=>show("home");
+$("openIncome").onclick=()=>openCat("income");$("openExpense").onclick=()=>openCat("expense");$("catAdd").onclick=()=>openAdd(categoryType);
+$("viewAll").onclick=()=>{filter="all";document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.dataset.filter==="all"));show("all")};
+$("viewUpcoming").onclick=()=>{filter="pending";document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.dataset.filter==="pending"));show("all")};
+$("saveTx").onclick=()=>{let name=$("txName").value.trim(),amount=Number($("txAmount").value),date=$("txDate").value;if(!name||!Number.isFinite(amount)||amount<=0||!date)return alert("Compila nome, importo e data.");let x={id:Date.now(),type:addType,name,amount,date,status:addType==="income"?"received":$("txStatus").value};state.items.push(x);if(addType==="income")state.balance+=amount;else if(x.status==="paid")state.balance-=amount;save();openCat(addType)};
+$("chips").onclick=e=>{let b=e.target.closest(".chip");if(!b)return;filter=b.dataset.filter;document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c===b));renderAll()};
+$("resetBtn").onclick=()=>{if(confirm("Cancellare tutti i dati di questa prova?")){localStorage.removeItem(KEY);state={balance:null,items:[]};show("setup")}};
+show(state.balance===null?"setup":"home");
+})();
+</script>
+</body>
+</html>
