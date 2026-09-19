@@ -50,54 +50,110 @@ const MONTHS_IT={gennaio:0,febbraio:1,marzo:2,aprile:3,maggio:4,giugno:5,luglio:
 function cleanAmount(v){let x=String(v).replace(/€/g,"").trim();if(x.includes(",")&&x.includes(".")){if(x.lastIndexOf(",")>x.lastIndexOf("."))x=x.replace(/\./g,"").replace(",",".");else x=x.replace(/,/g,"")}else if(x.includes(","))x=x.replace(",",".");return Number(x)}
 function nextMonthlyDateFrom(day,startMonth){let now=new Date(),y=now.getFullYear(),m=startMonth==null?now.getMonth():startMonth,d=Math.max(1,Math.min(31,day));if(startMonth!=null&&m<now.getMonth())y++;let last=new Date(y,m+1,0).getDate();d=Math.min(d,last);let cand=new Date(y,m,d);if(startMonth==null&&cand<new Date(now.getFullYear(),now.getMonth(),now.getDate())){m++;if(m>11){m=0;y++}last=new Date(y,m+1,0).getDate();d=Math.min(d,last);cand=new Date(y,m,d)}return iso(cand)}
 function occasionalDate(day,monthIndex,year){let now=new Date(),y=year||now.getFullYear(),d=Math.max(1,Math.min(31,day)),last=new Date(y,monthIndex+1,0).getDate();d=Math.min(d,last);let cand=new Date(y,monthIndex,d);if(!year&&cand<new Date(now.getFullYear(),now.getMonth(),now.getDate()))cand=new Date(y+1,monthIndex,d);return iso(cand)}
-function parseBulk(text,type){
-  let good=[],bad=[],lines=text.split(/\n|;/).map(x=>x.trim()).filter(Boolean);
-  for(let line of lines){
-    let raw=line.replace(/[–—]/g,"-").replace(/\s+/g," ").trim();
-    let amountMatch=raw.match(/(?:^|\s)(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*€?/);
-    if(!amountMatch){bad.push(line);continue}
-    let amount=cleanAmount(amountMatch[1]);
-    if(!Number.isFinite(amount)||amount<=0){bad.push(line);continue}
-    let amountPos=amountMatch.index+(amountMatch[0].length-amountMatch[0].trimStart().length);
-    let name=raw.slice(0,amountPos).replace(/[\s,;:-]+$/,"").trim();
-    let when=raw.slice(amountPos+amountMatch[0].trimStart().length).replace(/^\s*€?\s*[-,:]?\s*/,"").trim();
-    if(!name||!when){bad.push(line);continue}
-    let low=when.toLocaleLowerCase("it");
-    let kind="occasional",frequency=null,date=null,remainingOccurrences=null;
-    let duration=low.match(/\bper\s+(\d+)\s+mes[ei]\b/);
-    if(duration)remainingOccurrences=Math.max(1,Number(duration[1]));
-    let monthly=/\bdel\s+mese\b|\bogni\s+mese\b|\bmensile\b/.test(low)||!!duration;
-    let dayMatch=low.match(/\b([0-3]?\d)\b/);
-    let day=dayMatch?Number(dayMatch[1]):null;
-    let monthName=Object.keys(MONTHS_IT).find(m=>low.includes(m));
-    let yearMatch=low.match(/\b(20\d{2})\b/);
-    if(monthly){
-      if(!day||day<1||day>31){bad.push(line);continue}
-      let startMonth=null;
-      let fromMonth=Object.keys(MONTHS_IT).find(m=>new RegExp("\\bda\\s+"+m+"\\b").test(low));
-      if(fromMonth)startMonth=MONTHS_IT[fromMonth];
-      date=nextMonthlyDateFrom(day,startMonth);
-      kind="recurring";frequency="monthly";
-    }else if(monthName){
-      if(!day||day<1||day>31){bad.push(line);continue}
-      date=occasionalDate(day,MONTHS_IT[monthName],yearMatch?Number(yearMatch[1]):null);
-      kind="occasional";frequency=null;remainingOccurrences=null;
-    }else{
-      let full=low.match(/\b([0-3]?\d)[\/.-]([01]?\d)(?:[\/.-](20\d{2}|\d{2}))?\b/);
-      if(full){
-        let y=full[3]?Number(full[3]):new Date().getFullYear();if(y<100)y+=2000;
-        date=String(y)+"-"+String(Number(full[2])).padStart(2,"0")+"-"+String(Number(full[1])).padStart(2,"0");
-        kind="occasional";frequency=null;remainingOccurrences=null;
-      }else{
-        bad.push(line);continue
-      }
-    }
-    let c=classifyBulk(name,type);
-    good.push({id:"t"+Date.now()+Math.random(),type,category:c.category,specific:c.specific,kind,frequency,amount,nextDate:date,remainingOccurrences,notify:!!state.settings.notify,notifyWhen:"same",notifyTime:state.settings.time||"09:00"});
+
+function parseBulkRecord(record,type){
+  let raw=record.replace(/[–—→]/g," ").replace(/\s+/g," ").trim();
+  if(!raw)return null;
+  let low=raw.toLocaleLowerCase("it");
+  const months=Object.keys(MONTHS_IT).join("|");
+  const monthRe=new RegExp("([0-3]?\\d)\\s*("+months+")(?:\\s+(20\\d{2}|\\d{2}))?","i");
+  const monthMatch=low.match(monthRe);
+  const numericRe=/\b([0-3]?\d)[\/.-]([01]?\d)(?:[\/.-](20\d{2}|\d{2}))?\b/g;
+  const numericMatches=[...low.matchAll(numericRe)];
+  const monthlyRe=/\b([0-3]?\d)\s*(?:del\s+mese|di\s+ogni\s+mese|ogni\s+mese)\b/i;
+  const monthlyMatch=low.match(monthlyRe);
+  const duration=low.match(/\bper\s+(\d+)\s+mes[ei]\b/i);
+  const forever=/\bper\s+sempre\b|\bmensile\b|\bricorrente\b|\bda\s+(?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+in\s+poi\b/i.test(low);
+  const explicitOccasional=/\bsolo\b|\buna\s+volta\b|\boccasionale\b/i.test(low);
+  let recurring=!!monthlyMatch||!!duration||forever;
+  if(explicitOccasional&&!duration&&!monthlyMatch)recurring=false;
+
+  let dates=[],day=null,startMonth=null,year=null;
+  if(monthlyMatch){
+    day=Number(monthlyMatch[1]);
+    let from=low.match(/\bda\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+in\s+poi\b/i);
+    if(from)startMonth=MONTHS_IT[from[1].toLocaleLowerCase("it")];
+    dates=[nextMonthlyDateFrom(day,startMonth)];
+  }else if(monthMatch){
+    day=Number(monthMatch[1]);
+    startMonth=MONTHS_IT[monthMatch[2].toLocaleLowerCase("it")];
+    year=monthMatch[3]?Number(monthMatch[3]):null;if(year&&year<100)year+=2000;
+    dates=[occasionalDate(day,startMonth,year)];
+  }else if(numericMatches.length){
+    dates=numericMatches.map(m=>{
+      let y=m[3]?Number(m[3]):new Date().getFullYear();if(y<100)y+=2000;
+      let d=Number(m[1]),mo=Number(m[2])-1;
+      if(!m[3]&&new Date(y,mo,d)<parseDate(today()))y++;
+      return iso(new Date(y,mo,d));
+    });
+  }else return null;
+
+  if((day!=null&&(day<1||day>31))||!dates.length)return null;
+
+  let withoutSchedule=raw
+    .replace(new RegExp("\\b[0-3]?\\d\\s*(?:del\\s+mese|di\\s+ogni\\s+mese|ogni\\s+mese)\\b","ig")," ")
+    .replace(new RegExp("\\b[0-3]?\\d\\s*(?:"+months+")(?:\\s+(?:20\\d{2}|\\d{2}))?\\b","ig")," ")
+    .replace(/\b[0-3]?\d[\/.-][01]?\d(?:[\/.-](?:20\d{2}|\d{2}))?\b/ig," ")
+    .replace(/\bda\s+(?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+in\s+poi\b/ig," ")
+    .replace(/\bper\s+\d+\s+mes[ei]\b/ig," ")
+    .replace(/\bper\s+sempre\b|\bmensile\b|\bricorrente\b|\boccasionale\b|\buna\s+volta\b|\bsolo\b/ig," ")
+    .replace(/\s+/g," ").trim();
+
+  let amountMatch=null;
+  const euro=[...withoutSchedule.matchAll(/(\d[\d.,]*)\s*€/g)];
+  if(euro.length)amountMatch=euro[euro.length-1];
+  if(!amountMatch){
+    const decimals=[...withoutSchedule.matchAll(/(\d{1,3}(?:\.\d{3})+,\d{1,2}|\d+,\d{1,2}|\d+\.\d{2})/g)];
+    if(decimals.length)amountMatch=decimals[decimals.length-1];
   }
+  if(!amountMatch){
+    const ints=[...withoutSchedule.matchAll(/\b\d+\b/g)].filter(m=>Number(m[0])>0);
+    if(ints.length)amountMatch=ints.reduce((best,m)=>Number(m[0])>Number(best[0])?m:best,ints[0]);
+  }
+  if(!amountMatch)return null;
+  let amount=cleanAmount(amountMatch[1]||amountMatch[0]);
+  if(!Number.isFinite(amount)||amount<=0)return null;
+
+  let a0=amountMatch.index,a1=a0+amountMatch[0].length;
+  let name=(withoutSchedule.slice(0,a0)+" "+withoutSchedule.slice(a1))
+    .replace(/€/g," ")
+    .replace(/^[\s,;:.-]+|[\s,;:.-]+$/g,"")
+    .replace(/^(?:e|ed)\s+/i,"")
+    .replace(/\s+(?:e|ed)$/i,"")
+    .replace(/\s+/g," ").trim();
+  if(!name)return null;
+
+  let c=classifyBulk(name,type);
+  let remainingOccurrences=duration?Math.max(1,Number(duration[1])):null;
+  let kind=recurring?"recurring":"occasional",frequency=recurring?"monthly":null;
+
+  if(recurring&&monthMatch&&!monthlyMatch){
+    dates=[occasionalDate(Number(monthMatch[1]),MONTHS_IT[monthMatch[2].toLocaleLowerCase("it")],year)];
+  }
+  if(recurring&&dates.length>1)dates=[dates[0]];
+
+  return dates.map(date=>({id:"t"+Date.now()+Math.random(),type,category:c.category,specific:c.specific,kind,frequency,amount,nextDate:date,remainingOccurrences,notify:!!state.settings.notify,notifyWhen:"same",notifyTime:state.settings.time||"09:00"}));
+}
+function parseBulk(text,type){
+  let good=[],bad=[],tokens=text.split(/\n|;/).map(x=>x.trim()).filter(Boolean),buffer=[];
+  const junk=/^(?:data|nome|importo|entrata|entrate|uscita|uscite)$/i;
+  for(let token of tokens){
+    if(junk.test(token))continue;
+    buffer.push(token);
+    let parsed=parseBulkRecord(buffer.join(" "),type);
+    if(parsed){
+      good.push(...parsed);
+      buffer=[];
+    }else if(buffer.length>=4){
+      bad.push(buffer.shift());
+      let retry=parseBulkRecord(buffer.join(" "),type);
+      if(retry){good.push(...retry);buffer=[]}
+    }
+  }
+  if(buffer.length)bad.push(buffer.join("; "));
   return{good,bad}
 }
-function doBulkImport(){let a=parseBulk($("bulkIncome").value,"income"),b=parseBulk($("bulkExpense").value,"expense"),all=a.good.concat(b.good);state.templates.push(...all);state.quickDone=true;save();let bad=a.bad.concat(b.bad);$("parseResult").classList.remove("hidden");$("parseResult").innerHTML="Aggiunte <b>"+all.length+"</b> voci."+(bad.length?"<br>Non ho capito: "+bad.map(x=>"<i>"+x+"</i>").join("; "):"");if(!bad.length)setTimeout(()=>show("home"),700)}
+function doBulkImport(){let a=parseBulk($("bulkIncome").value,"income"),b=parseBulk($("bulkExpense").value,"expense"),all=a.good.concat(b.good);state.templates.push(...all);state.quickDone=true;save();let bad=a.bad.concat(b.bad);$("parseResult").classList.remove("hidden");$("parseResult").innerHTML="Aggiunte <b>"+all.length+"</b> voci."+(bad.length?"<br><b>Da controllare:</b> "+bad.map(x=>"<i>"+x+"</i>").join("; "):"");if(!bad.length)setTimeout(()=>show("home"),700)}
 $("startBtn").onclick=()=>{let v=Number($("startBalance").value);if(!Number.isFinite(v))return alert("Inserisci un importo valido.");state.balance=v;state.quickDone=false;save();show("quickSetup")};$("quickBack").onclick=()=>show("setup");$("quickSkip").onclick=()=>{state.quickDone=true;save();show("home")};$("quickImport").onclick=doBulkImport;$("openQuick").onclick=()=>show("quickSetup");$("fab").onclick=()=>openAdd("income");$("segIncome").onclick=()=>{addType="income";$("segIncome").classList.add("on");$("segExpense").classList.remove("on");setSuggestions()};$("segExpense").onclick=()=>{addType="expense";$("segExpense").classList.add("on");$("segIncome").classList.remove("on");setSuggestions()};$("addBack").onclick=()=>show("home");$("allBack").onclick=()=>show("home");$("catBack").onclick=()=>show("home");$("settingsBack").onclick=()=>{saveSettings();show("home")};$("settingsBtn").onclick=()=>show("settings");$("openIncome").onclick=()=>openCat("income");$("openExpense").onclick=()=>openCat("expense");$("openUpcomingIncome").onclick=()=>openCat("income");$("openUpcomingExpense").onclick=()=>openCat("expense");$("catAdd").onclick=()=>openAdd(categoryType);$("txKind").onchange=()=>$("frequencyWrap").classList.toggle("hidden",$("txKind").value!=="recurring");$("txNotify").onchange=()=>$("notifyOptions").classList.toggle("hidden",!$("txNotify").checked);$("viewAll").onclick=()=>{filter="all";document.querySelectorAll(".chip").forEach(c=>c.classList.toggle("on",c.dataset.filter==="all"));show("all")};
 $("editBalanceBtn").onclick=()=>openModal("Modifica saldo attuale",'<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="hint">Aggiorna solo il saldo. Non crea un movimento.</div><div class="modalBtns"><button class="btn secondary" id="modalCancel">Annulla</button><button class="btn" id="modalConfirm">Salva saldo</button></div>',()=>{let v=Number(String($("newBalance").value).replace(",","."));if(!Number.isFinite(v))return alert("Inserisci un importo valido.");state.balance=v;save();closeModal();renderHome()});
 $("txCategory").onfocus=renderDropdown;$("txCategory").oninput=renderDropdown;$("categoryDropdown").onclick=e=>{let b=e.target.closest(".dropItem");if(!b)return;$("txCategory").value=b.dataset.val;$("categoryDropdown").classList.add("hidden")};document.addEventListener("click",e=>{if(!$("txCategory").contains(e.target)&&!$("categoryDropdown").contains(e.target))$("categoryDropdown").classList.add("hidden")});
