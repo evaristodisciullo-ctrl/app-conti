@@ -16,6 +16,82 @@
 .settingsPage .card,.summaryPage .card{padding:18px;margin-bottom:13px}.notificationsPage{padding-bottom:12px}.notifyHero{text-align:center;padding:6px 8px 14px}.notifyBell{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;margin:0 auto 12px;background:#fff7cf;font-size:38px}.notifyHero h1{margin:0;font-size:31px}.notifyHero p{margin:8px auto 0;color:var(--muted);max-width:390px;line-height:1.4}.notifyCard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}.notifyChoice{width:100%;border:1px solid #b9dfc9;background:#f6fff9;border-radius:16px;padding:15px 14px;display:flex;align-items:center;gap:12px;text-align:left;color:var(--text);margin-bottom:11px}.notifyChoice .bell{font-size:25px}.notifyChoice strong{font-size:15px}.notifyChoice span.copy{display:block;font-size:11px;color:var(--muted);margin-top:3px}.notifyChoice.active{border-color:var(--green);box-shadow:0 0 0 3px rgba(21,155,98,.08)}.notifySkip{width:100%;border:0;background:transparent;color:var(--green);font-weight:900;padding:13px 6px 7px;text-decoration:underline}.notifyHelp{text-align:center;color:var(--muted);font-size:12px;line-height:1.45;padding:4px 14px 0}.notifyHelp .inlineBell{color:#f2b900;font-size:17px}.notifyList{display:flex;flex-direction:column;gap:8px;max-height:48vh;overflow:auto;margin-top:12px}.notifyToggle{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:13px;padding:11px 12px}.notifyToggle b{font-size:13px}.notifyToggle small{display:block;color:var(--muted);margin-top:2px}.notifyToggle input{width:20px;height:20px;accent-color:var(--green)}.settingsTitle{font-size:18px;font-weight:950;margin-bottom:8px}.hint{font-size:12px;color:var(--muted);line-height:1.45}.danger{background:#fff5f5!important;border-color:#f2d7d9!important}.danger .btn{background:var(--red);margin-top:14px}.deleteBtn{background:var(--red)!important;color:#fff!important}.summaryRows{display:flex;flex-direction:column}.sumRow{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.sumRow:last-child{border-bottom:0}.sumRow strong{font-weight:950}.fabAdd{position:fixed;right:max(18px,calc((100vw - 560px)/2 + 18px));bottom:84px;width:54px;height:54px;border-radius:50%;border:0;background:var(--green);color:#fff;font-size:29px;box-shadow:0 8px 24px rgba(21,155,98,.25)}
 .modal{position:fixed;inset:0;background:rgba(12,34,26,.48);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:16px}.modalCard{width:min(540px,100%);background:#fff;border-radius:24px;padding:19px;box-shadow:0 20px 60px rgba(0,0,0,.22);max-height:88vh;overflow:auto}.modalHead{display:flex;justify-content:space-between;align-items:center;gap:12px}.modalTitle{font-size:21px;font-weight:950}.close{border:0;background:transparent;font-size:28px}.modalBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.modal input,.modal select{width:100%;min-height:50px;border:1px solid var(--line);border-radius:13px;padding:0 12px;background:#fff}.monthChecks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.monthCheck{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px}.monthCheck input{width:auto;min-height:auto}.note{background:#f3f7f5;border:1px solid var(--line);border-radius:13px;padding:11px;font-size:12px;color:var(--muted);margin-top:10px}.undoSnack{position:fixed;left:50%;transform:translateX(-50%);bottom:82px;width:min(520px,calc(100% - 28px));background:#17324a;color:#fff;border-radius:14px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:120;box-shadow:0 10px 28px rgba(0,0,0,.22);font-size:13px;font-weight:750}.undoSnack button{border:0;background:transparent;color:#ffd24a;font-weight:950;padding:4px 0;white-space:nowrap}
 @media(max-width:410px){.movementRow{grid-template-columns:66px 34px minmax(0,1fr) auto 10px;gap:7px;padding:12px 10px}.mIcon{width:34px;height:34px}.mAmount{font-size:12px}.mDate{font-size:10px}.entryGridHead,.entryRow{grid-template-columns:1.25fr .85fr .55fr 1.15fr;gap:5px}.entryRow input,.entryRow select{padding:0 6px;font-size:11px}.onboardCard{padding:15px}.homeBrand{font-size:33px}.balanceValue{font-size:34px}.navTile{grid-template-columns:38px 1fr 12px;padding:12px}.roundIcon{width:38px;height:38px}.navText strong{font-size:16px}.twoCols{gap:8px}.flowCard{padding:9px}.flowCardAmount{font-size:14px}}
+
+/* HOME APPROVATA */
+#home .homeHero{
+  margin:-18px -14px 0;
+  padding:24px 22px 56px;
+  min-height:178px;
+  background:linear-gradient(135deg,#139963 0%,#39bd80 100%);
+  border-radius:0 0 28px 28px;
+  color:#fff;
+}
+#home .homeBrand{color:#fff;font-size:36px}
+#home .homeSub{color:rgba(255,255,255,.9);font-size:15px}
+#home .settingsTop{color:#fff}
+#home .settingsIcon{background:rgba(0,100,69,.30);color:#fff}
+#home .settingsLabel{color:#fff;font-size:11px}
+#home .balanceCard{margin-top:-34px;position:relative;z-index:2;padding:18px 20px;border-radius:19px}
+#home .balanceRow{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px}
+#home .balanceLeft{min-width:0}
+#home .balanceLabel{font-size:17px;line-height:1.1;font-weight:800;text-transform:none;margin-bottom:6px}
+#home .balanceValue{font-size:38px;line-height:1;font-weight:950;white-space:nowrap}
+#home .editBalance{margin:0;background:#e4f8ed;border-radius:12px;padding:11px 13px;font-size:13px;white-space:nowrap}
+#home .mainTiles{gap:12px;margin-top:14px}
+#home .navTile{width:100%;min-width:0;min-height:96px;border-radius:18px;padding:13px;grid-template-columns:44px minmax(0,1fr) 12px}
+#home .navText{min-width:0}
+#home .navText strong{font-size:16px;text-transform:none}
+#home .navTileTotal{font-size:19px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .income .navTileTotal{color:var(--green)!important}
+#home .expense .navTileTotal{color:var(--text)!important}
+#home .roundIcon{width:44px;height:44px}
+#home .projection{
+  margin-top:14px;
+  min-height:112px;
+  background:#fff;
+  border-color:var(--line);
+  border-radius:18px;
+  padding:17px 18px;
+  display:grid;
+  grid-template-columns:52px minmax(0,1fr) 14px;
+  gap:14px;
+  align-items:center;
+}
+#home .projectionIcon{width:52px;height:52px;border-radius:50%;background:#daf5e6;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding:12px}
+#home .projectionIcon i{display:block;width:7px;background:var(--green);border-radius:4px 4px 2px 2px}
+#home .projectionIcon i:nth-child(1){height:15px}
+#home .projectionIcon i:nth-child(2){height:24px}
+#home .projectionIcon i:nth-child(3){height:32px}
+#home .projectionMain{min-width:0;display:block;text-align:left}
+#home .projectionLabel{display:block;font-size:15px;font-weight:650;line-height:1.2;text-transform:none}
+#home .infoBubble{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#7f91ad;color:#fff;font-size:12px;font-weight:900;margin-left:5px;vertical-align:2px}
+#home .projectionValue{display:block;font-size:31px;margin-top:6px}
+#home .homeMovementsCard{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px 14px 2px;margin-top:16px}
+#home .sectionHead{margin-bottom:5px}
+#home .sectionHead h2{font-size:25px;text-transform:none}
+#home .filterBtn{background:#fff;border-color:#d5dde5;color:var(--text);padding:8px 11px}
+#home .linkBtn{border:1px solid #d5dde5;border-radius:11px;padding:8px 10px}
+#home .list{border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;margin:0}
+#home .movementRow{padding-left:0;padding-right:0}
+.filteredTotal{background:#f5fbf7;border:1px solid #d8eee2;border-radius:14px;padding:12px 14px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.filteredTotal .ftLabel{font-size:12px;color:var(--muted);font-weight:800}
+.filteredTotal .ftValues{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;font-size:14px;font-weight:950}
+.filteredTotal .ftIncome{color:var(--green)}
+.filteredTotal .ftExpense{color:var(--text)}
+@media(max-width:410px){
+  #home .balanceCard{padding:16px}
+  #home .balanceValue{font-size:34px}
+  #home .editBalance{font-size:11px;padding:10px}
+  #home .navTile{grid-template-columns:40px minmax(0,1fr) 10px;padding:11px;gap:8px}
+  #home .roundIcon{width:40px;height:40px;font-size:25px}
+  #home .navTileTotal{font-size:16px!important}
+  #home .projection{grid-template-columns:46px minmax(0,1fr) 12px;padding:15px;gap:10px}
+  #home .projectionIcon{width:46px;height:46px;padding:10px}
+  #home .projectionValue{font-size:27px}
+  #home .homeMovementsCard{padding:12px 10px 2px}
+  #home .sectionHead h2{font-size:22px}
+}
+
 </style>
 </head>
 <body>
@@ -49,10 +125,10 @@
 
 <section id="home" class="screen hidden">
   <div class="homeHero"><div><div class="homeBrand">QUANTO</div><div class="homeSub">I tuoi conti, sempre con te</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
-  <div class="card balanceCard"><div class="balanceRow"><div class="balanceLabel">SALDO<br>ATTUALE</div><div class="balanceRight"><div id="homeBalance" class="balanceValue">€ 0,00</div><button id="editBalance" class="editBalance">✎ Modifica saldo</button></div></div></div>
-  <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>ENTRATE</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↑</span><span class="navText"><strong>USCITE</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
-  <button class="projection" id="homeProjection"><div><div class="projectionLabel">RIMANENZA PREVISTA<br>FINE MESE</div><div id="homeProjectionValue" class="projectionValue">€ 0,00</div></div><span class="chev">›</span></button>
-  <div class="section"><div class="sectionHead"><h2>MOVIMENTI</h2><div class="headActions"><button id="homeFilters" class="filterBtn">Filtri</button><button id="homeAllMovements" class="linkBtn">Vedi tutti ›</button></div></div><div id="homeMovements" class="list"></div></div>
+  <div class="card balanceCard"><div class="balanceRow"><div class="balanceLeft"><div class="balanceLabel">Saldo attuale</div><div id="homeBalance" class="balanceValue">€ 0,00</div></div><button id="editBalance" class="editBalance">✎ Modifica saldo</button></div></div>
+  <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Uscite</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
+  <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Rimanenza prevista fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
+  <div class="section homeMovementsCard"><div class="sectionHead"><h2>Movimenti</h2><div class="headActions"><button id="homeFilters" class="filterBtn">Filtri</button><button id="homeAllMovements" class="linkBtn">Vedi tutti ›</button></div></div><div id="homeMovements" class="list"></div></div>
 </section>
 
 <section id="flow" class="screen hidden">
@@ -62,7 +138,7 @@
   <div class="twoCols"><div><div id="doneColTitle" class="colTitle">ENTRATE RICEVUTE</div><div id="doneFlowList" class="flowList"></div><div class="colTotal"><span>Totale</span><span id="doneColTotal" class="v incomeColor">€ 0,00</span></div></div><div><div id="pendingColTitle" class="colTitle">ENTRATE DA RICEVERE</div><div id="pendingFlowList" class="flowList"></div><div class="colTotal"><span>Totale</span><span id="pendingColTotal" class="v">€ 0,00</span></div></div></div>
 </section>
 
-<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="allMovements" class="list"></div></section>
+<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
 
 <section id="summary" class="screen summaryPage hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="summaryBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Riepilogo</h1></div></div><div class="monthBar"><button id="sumPrev">‹</button><div id="sumMonth" class="monthCurrent"></div><button id="sumNext">›</button></div><div class="card"><div class="settingsTitle">Riepilogo del mese</div><div id="summaryRows" class="summaryRows"></div></div></section>
 
@@ -275,6 +351,22 @@ function movementFilterText(){
 function renderMovements(){
   const arr=filteredMovements();
   $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
+  const totalBox=$('movementFilteredTotal');
+  const filtersActive=movementFilters.type!=='all'||movementFilters.name!=='all'||movementFilters.period!=='all';
+  if(filtersActive){
+    const inc=arr.filter(x=>x.type==='income').reduce((sum,x)=>sum+Number(x.amount||0),0);
+    const exp=arr.filter(x=>x.type==='expense').reduce((sum,x)=>sum+Number(x.amount||0),0);
+    let label=movementFilters.name!=='all'?'Totale '+esc(movementFilters.name):'Totale del filtro';
+    let values='';
+    if(inc>0)values+='<span class="ftIncome">Entrate '+money(inc)+'</span>';
+    if(exp>0)values+='<span class="ftExpense">Uscite '+money(exp)+'</span>';
+    if(!values)values='<span>'+money(0)+'</span>';
+    totalBox.innerHTML='<span class="ftLabel">'+label+'</span><span class="ftValues">'+values+'</span>';
+    totalBox.classList.remove('hidden');
+  }else{
+    totalBox.classList.add('hidden');
+    totalBox.innerHTML='';
+  }
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
