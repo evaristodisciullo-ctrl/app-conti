@@ -37,7 +37,7 @@
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
   <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e uscite.</p></div>
   <div class="notifyCard">
     <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e uscita.</span></span></button>
@@ -84,7 +84,7 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,entries:[],history:[],adjustments:[],setupDone:false,notifications:{mode:'off',selected:[],sent:{}},version:1});
+const blank=()=>({balance:null,entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},version:1});
 let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};
 let currentFlow='income',flowMonth=ymNow(),summaryMonth=ymNow(),recurrenceTarget=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
@@ -213,7 +213,7 @@ async function finishNotificationChoice(mode,selected){
   state.notifications.selected=selected||[];
   save();
   await requestNotificationPermission();
-  if(notificationsOnboarding){state.setupDone=true;notificationsOnboarding=false;save();show('home')}
+  if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}
   else renderNotifications();
 }
 function openCustomNotifications(){
@@ -300,15 +300,15 @@ function flashModal(msg){let n=document.createElement('div');n.className='note';
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
-$('startBtn').onclick=()=>{const v=Number($('startBalance').value);if(!Number.isFinite(v))return;state.balance=v;save();createRows('incomeRows','income');show('setupIncome')};
+$('startBtn').onclick=()=>{const v=Number($('startBalance').value);if(!Number.isFinite(v))return;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
 $('incomeSetupBack').onclick=()=>show('setup');
 $('expenseSetupBack').onclick=()=>show('setupIncome');
-$('saveIncomeSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='income').concat(setupRowsToEntries('incomeRows','income'));save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
-$('saveExpenseSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='expense').concat(setupRowsToEntries('expenseRows','expense'));state.setupDone=false;notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
-$('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding)show('setupExpense');else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];save();if(notificationsOnboarding){state.setupDone=true;notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
+$('saveIncomeSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='income').concat(setupRowsToEntries('incomeRows','income'));state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='expense').concat(setupRowsToEntries('expenseRows','expense'));state.setupDone=false;state.setupStage='notifications';notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
+$('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding)show('setupExpense');else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, uscite e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('startBalance').value='';show('setup')}};
-if(state.balance===null||!state.setupDone){show('setup')}else show('home');
+if(state.balance===null){show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){notificationsOnboarding=true;show('notifications')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
 })();
 </script>
 </body>
