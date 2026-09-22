@@ -158,12 +158,12 @@
 
 <section id="setupIncome" class="screen hidden">
   <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Entrate <span>€</span></div></div>
-  <div class="onboardCard"><h2>Inserisci le tue entrate</h2><div class="onboardHint">Solo dopo aver inserito tutte le entrate, salva e passa alle uscite.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="incomeRows"></div><div class="onboardSpacer"></div><button id="saveIncomeSetup" class="btn onboardAction">SALVA ENTRATE E VAI ALLE USCITE →</button></div>
+  <div class="onboardCard"><h2>Inserisci le tue entrate</h2><div class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="incomeRows"></div><div class="onboardSpacer"></div><button id="saveIncomeSetup" class="btn onboardAction">SALVA ENTRATE E VAI ALLE USCITE →</button></div>
 </section>
 
 <section id="setupExpense" class="screen hidden">
   <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Uscite <span>€</span></div></div>
-  <div class="onboardCard"><h2>Inserisci le tue uscite</h2><div class="onboardHint">Solo dopo aver inserito tutte le uscite, salva e vai avanti.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">SALVA E VAI AVANTI →</button></div>
+  <div class="onboardCard"><h2>Inserisci le tue uscite</h2><div class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">SALVA E VAI AVANTI →</button></div>
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
@@ -230,19 +230,147 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},version:2});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:3});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const nav=!['setup','setupIncome','setupExpense'].includes(id);$('bottomNav').classList.toggle('hidden',!nav);document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='budget'&&b.dataset.nav==='summary')));if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
-function createRows(containerId,type){const c=$(containerId);c.innerHTML='';for(let i=0;i<5;i++)appendSetupRow(c,type,i===0)}
+function setupEntryToDraft(e){
+  return {
+    id:e.id||'',
+    name:e.name||'',
+    amount:String(e.amount==null?'':e.amount),
+    day:String(e.day==null?'':e.day),
+    recurrence:e.recurrence||null
+  };
+}
+function setupSource(type){
+  const draft=state.setupDrafts&&Array.isArray(state.setupDrafts[type])?state.setupDrafts[type]:[];
+  if(draft.length)return draft;
+  const existing=state.entries.filter(e=>e.type===type).map(setupEntryToDraft);
+  return existing;
+}
+function createRows(containerId,type){
+  const c=$(containerId);
+  c.innerHTML='';
+  const src=setupSource(type);
+  if(src.length){
+    src.forEach((d,i)=>appendSetupRow(c,type,i===0,d));
+    appendSetupRow(c,type,false,null);
+  }else{
+    for(let i=0;i<5;i++)appendSetupRow(c,type,i===0,null);
+  }
+}
 function recurrenceOptions(){return '<option value="">Ricorrenza</option><option value="monthly">Tutti i mesi</option><option value="single">Solo un mese</option><option value="count">Per X mesi</option><option value="until">Fino a una data</option><option value="selected">Mesi selezionati</option>'}
-function appendSetupRow(c,type,example){const r=document.createElement('div');r.className='entryRow';r.innerHTML='<input class="rName" placeholder="'+(example?(type==='income'?'Stipendio':'Mutuo'):'Nome')+'"><input class="rAmount" inputmode="decimal" placeholder="'+(example?(type==='income'?'1.500 €':'387,03 €'):'Importo')+'"><input class="rDay" inputmode="numeric" placeholder="'+(example?'10':'Giorno')+'"><select class="rRec">'+recurrenceOptions()+'</select><div class="rowMeta"></div>';c.appendChild(r);r.querySelector('.rRec').addEventListener('change',function(){if(!this.value){r.dataset.recurrence='';r.querySelector('.rowMeta').textContent='';return}openRecurrenceConfig(r,this.value)});Array.from(r.querySelectorAll('input')).forEach(inp=>inp.addEventListener('input',()=>ensureExtraRow(c,type)))}
-function ensureExtraRow(c,type){const rows=Array.from(c.querySelectorAll('.entryRow'));const last=rows[rows.length-1];if(rowHasData(last))appendSetupRow(c,type,false)}
-function rowHasData(r){return r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDay').value.trim()||r.querySelector('.rRec').value}
-function cleanAmount(v){let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');else if(s.includes(','))s=s.replace(',','.');return Number(s)}
-function setupRowsToEntries(containerId,type){const out=[];for(const r of Array.from($(containerId).querySelectorAll('.entryRow'))){if(!rowHasData(r))continue;const name=r.querySelector('.rName').value.trim(),amount=cleanAmount(r.querySelector('.rAmount').value),day=Number(r.querySelector('.rDay').value),kind=r.querySelector('.rRec').value;let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}if(!name||!Number.isFinite(amount)||amount<=0||!Number.isFinite(day)||day<1||day>31||!kind||!cfg){throw new Error('Completa tutte le caselle della riga: '+(name||'senza nome'))}out.push({id:'e'+Date.now()+Math.random(),type,name,amount,day,recurrence:cfg})}return out}
-function openRecurrenceConfig(row,kind){recurrenceTarget={row,kind};let body='';const now=ymNow();if(kind==='monthly'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="note">La voce comparirà ogni mese a partire dal mese scelto.</div>'}if(kind==='single'){body='<div class="field"><label>Mese</label><input id="recMonth" type="month" value="'+now+'"></div><div class="note">La voce verrà inserita solo nel mese selezionato.</div>'}if(kind==='count'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="field"><label>Numero di mesi</label><input id="recCount" type="number" min="1" max="60" value="2"></div>'}if(kind==='until'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="field"><label>Fino al mese</label><input id="recEnd" type="month" value="'+addMonths(now,2)+'"></div>'}if(kind==='selected'){let checks='';for(let i=0;i<12;i++){const ym=addMonths(now,i);checks+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"> '+monthName(ym)+'</label>'}body='<div class="field"><label>Seleziona i mesi</label><div id="selectedMonths" class="monthChecks">'+checks+'</div></div>'}body+='<div class="modalBtns"><button id="recCancel" class="btn secondary">Annulla</button><button id="recSave" class="btn">Salva</button></div>';openModal('Ricorrenza',body);$('recCancel').onclick=()=>{row.querySelector('.rRec').value='';closeModal()};$('recSave').onclick=()=>{let cfg;if(kind==='monthly')cfg={kind:'monthly',startMonth:$('recStart').value};if(kind==='single')cfg={kind:'single',month:$('recMonth').value};if(kind==='count')cfg={kind:'count',startMonth:$('recStart').value,count:Number($('recCount').value)};if(kind==='until')cfg={kind:'until',startMonth:$('recStart').value,endMonth:$('recEnd').value};if(kind==='selected')cfg={kind:'selected',months:Array.from(document.querySelectorAll('#selectedMonths input:checked')).map(x=>x.value)};if(!validRecurrence(cfg)){return flashModal('Completa la ricorrenza.')}row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);closeModal()}}
+function appendSetupRow(c,type,example,draft){
+  const r=document.createElement('div');
+  r.className='entryRow';
+  r.dataset.entryId=draft&&draft.id?draft.id:'';
+  r.dataset.recurrence=draft&&draft.recurrence?JSON.stringify(draft.recurrence):'';
+  const amountValue=draft&&draft.amount!==''?String(draft.amount):'';
+  const dayValue=draft&&draft.day!==''?String(draft.day):'';
+  r.innerHTML=
+    '<input class="rName" placeholder="'+(example?(type==='income'?'Stipendio':'Mutuo'):'Nome')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
+    '<input class="rAmount" inputmode="decimal" placeholder="'+(example?(type==='income'?'1.500 €':'387,03 €'):'Importo')+'" value="'+escAttr(amountValue)+'">'+
+    '<input class="rDay" inputmode="numeric" placeholder="'+(example?'10':'Giorno')+'" value="'+escAttr(dayValue)+'">'+
+    '<select class="rRec">'+recurrenceOptions()+'</select><div class="rowMeta"></div>';
+  c.appendChild(r);
+  if(draft&&draft.recurrence){
+    r.querySelector('.rRec').value=draft.recurrence.kind||'';
+    r.querySelector('.rowMeta').textContent=recurrenceSummary(draft.recurrence);
+  }
+  r.querySelector('.rRec').addEventListener('change',function(){
+    if(!this.value){
+      r.dataset.recurrence='';
+      r.querySelector('.rowMeta').textContent='';
+      persistSetupDraft(containerIdFor(type),type);
+      return;
+    }
+    persistSetupDraft(containerIdFor(type),type);openRecurrenceConfig(r,this.value,type);
+  });
+  Array.from(r.querySelectorAll('input')).forEach(inp=>inp.addEventListener('input',()=>{
+    persistSetupDraft(containerIdFor(type),type);
+    ensureExtraRow(c,type);
+  }));
+}
+function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
+function ensureExtraRow(c,type){
+  const rows=Array.from(c.querySelectorAll('.entryRow'));
+  const last=rows[rows.length-1];
+  if(rowHasData(last))appendSetupRow(c,type,false,null);
+}
+function rowHasData(r){
+  return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDay').value.trim()||r.querySelector('.rRec').value);
+}
+function cleanAmount(v){
+  let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');
+  if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');
+  else if(s.includes(','))s=s.replace(',','.');
+  return Number(s);
+}
+function collectSetupDraft(containerId,type){
+  const out=[];
+  for(const r of Array.from($(containerId).querySelectorAll('.entryRow'))){
+    if(!rowHasData(r))continue;
+    let cfg=null;
+    try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
+    out.push({
+      id:r.dataset.entryId||'',
+      name:r.querySelector('.rName').value.trim(),
+      amount:r.querySelector('.rAmount').value.trim(),
+      day:r.querySelector('.rDay').value.trim(),
+      recurrence:cfg
+    });
+  }
+  return out;
+}
+function persistSetupDraft(containerId,type){
+  if(!$(containerId))return;
+  state.setupDrafts[type]=collectSetupDraft(containerId,type);
+  save();
+}
+function setupRowsToEntries(containerId,type){
+  const rows=collectSetupDraft(containerId,type);
+  const out=[];
+  const errors=[];
+  rows.forEach((d,index)=>{
+    const amount=cleanAmount(d.amount),day=Number(d.day),cfg=d.recurrence;
+    if(!d.name)errors.push('riga '+(index+1)+': manca il nome');
+    if(!Number.isFinite(amount)||amount<=0)errors.push('riga '+(index+1)+': importo non valido');
+    if(!Number.isFinite(day)||day<1||day>31)errors.push('riga '+(index+1)+': giorno non valido');
+    if(!validRecurrence(cfg))errors.push('riga '+(index+1)+': ricorrenza non completata');
+    if(errors.length&&errors[errors.length-1].startsWith('riga '+(index+1)))return;
+    const old=d.id?state.entries.find(e=>e.id===d.id&&e.type===type):null;
+    out.push({
+      id:old?old.id:'e'+Date.now()+Math.random(),
+      type,
+      name:d.name,
+      amount,
+      day,
+      recurrence:cfg,
+      category:old&&old.category||'',
+      notify:old&&old.notify===true,
+      note:old&&old.note||''
+    });
+  });
+  if(errors.length)throw new Error(errors.slice(0,4).join(' · ')+(errors.length>4?' · …':''));
+  return out;
+}
+function commitSetupRows(containerId,type){
+  persistSetupDraft(containerId,type);
+  const parsed=setupRowsToEntries(containerId,type);
+  const current=state.entries.filter(e=>e.type===type);
+  const keepIds=new Set(parsed.map(e=>e.id));
+  const removedIds=current.filter(e=>!keepIds.has(e.id)).map(e=>e.id);
+  if(removedIds.some(id=>state.history.some(h=>h.entryId===id))){
+    throw new Error('Non posso rimuovere da questa schermata una voce che ha già movimenti confermati. Modificala dalla sezione Entrate/Uscite.');
+  }
+  state.entries=state.entries.filter(e=>e.type!==type).concat(parsed);
+  state.setupDrafts[type]=parsed.map(setupEntryToDraft);
+  save();
+  return parsed;
+}
+function openRecurrenceConfig(row,kind,type){recurrenceTarget={row,kind};let body='';const now=ymNow();if(kind==='monthly'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="note">La voce comparirà ogni mese a partire dal mese scelto.</div>'}if(kind==='single'){body='<div class="field"><label>Mese</label><input id="recMonth" type="month" value="'+now+'"></div><div class="note">La voce verrà inserita solo nel mese selezionato.</div>'}if(kind==='count'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="field"><label>Numero di mesi</label><input id="recCount" type="number" min="1" max="60" value="2"></div>'}if(kind==='until'){body='<div class="field"><label>A partire da</label><input id="recStart" type="month" value="'+now+'"></div><div class="field"><label>Fino al mese</label><input id="recEnd" type="month" value="'+addMonths(now,2)+'"></div>'}if(kind==='selected'){let checks='';for(let i=0;i<12;i++){const ym=addMonths(now,i);checks+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"> '+monthName(ym)+'</label>'}body='<div class="field"><label>Seleziona i mesi</label><div id="selectedMonths" class="monthChecks">'+checks+'</div></div>'}body+='<div class="modalBtns"><button id="recCancel" class="btn secondary">Annulla</button><button id="recSave" class="btn">Salva</button></div>';openModal('Ricorrenza',body);$('recCancel').onclick=()=>{row.querySelector('.rRec').value='';closeModal()};$('recSave').onclick=()=>{let cfg;if(kind==='monthly')cfg={kind:'monthly',startMonth:$('recStart').value};if(kind==='single')cfg={kind:'single',month:$('recMonth').value};if(kind==='count')cfg={kind:'count',startMonth:$('recStart').value,count:Number($('recCount').value)};if(kind==='until')cfg={kind:'until',startMonth:$('recStart').value,endMonth:$('recEnd').value};if(kind==='selected')cfg={kind:'selected',months:Array.from(document.querySelectorAll('#selectedMonths input:checked')).map(x=>x.value)};if(!validRecurrence(cfg)){return flashModal('Completa la ricorrenza.')}row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()}}
 function validRecurrence(c){if(!c)return false;if(c.kind==='monthly')return !!c.startMonth;if(c.kind==='single')return !!c.month;if(c.kind==='count')return !!c.startMonth&&c.count>0;if(c.kind==='until')return !!c.startMonth&&!!c.endMonth&&c.endMonth>=c.startMonth;if(c.kind==='selected')return Array.isArray(c.months)&&c.months.length>0;return false}
 function recurrenceSummary(c){if(c.kind==='monthly')return 'Da '+monthName(c.startMonth);if(c.kind==='single')return monthName(c.month);if(c.kind==='count')return c.count+' mesi da '+monthName(c.startMonth);if(c.kind==='until')return 'Da '+monthName(c.startMonth)+' a '+monthName(c.endMonth);if(c.kind==='selected')return c.months.length+' mesi selezionati';return ''}
 function occurs(entry,ym){const r=entry.recurrence;if(!r)return false;if(r.kind==='monthly')return ym>=r.startMonth;if(r.kind==='single')return ym===r.month;if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;if(r.kind==='selected')return r.months.includes(ym);return false}
@@ -562,11 +690,11 @@ function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
 $('startBtn').onclick=()=>{const v=Number($('startBalance').value);if(!Number.isFinite(v))return;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
-$('incomeSetupBack').onclick=()=>show('setup');
-$('expenseSetupBack').onclick=()=>show('setupIncome');
-$('saveIncomeSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='income').concat(setupRowsToEntries('incomeRows','income'));state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
-$('saveExpenseSetup').onclick=()=>{try{state.entries=state.entries.filter(e=>e.type!=='expense').concat(setupRowsToEntries('expenseRows','expense'));state.setupDone=false;state.setupStage='notifications';notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
-$('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding)show('setupExpense');else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
+$('incomeSetupBack').onclick=()=>{persistSetupDraft('incomeRows','income');show('setup')};
+$('expenseSetupBack').onclick=()=>{persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
+$('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(!saved.length)throw new Error('Inserisci almeno una entrata oppure torna indietro.');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');state.setupDone=false;state.setupStage='notifications';notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
+$('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, uscite e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('startBalance').value='';show('setup')}};
 if(state.balance===null){show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){notificationsOnboarding=true;show('notifications')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
