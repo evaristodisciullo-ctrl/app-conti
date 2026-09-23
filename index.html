@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f4f8f5">
-<title>QUANTO</title>
+<meta name="theme-color" content="#eaf6ff">
+<title>Conti in mano</title>
 <style>
 :root{--bg:#f4f8f5;--card:#fff;--text:#17324a;--muted:#718096;--line:#e1ebe5;--green:#159b62;--green2:#e9f8f0;--green3:#c9eedb;--red:#d83b45;--red2:#fff1f1;--blue:#2379d8;--yellow:#d49a00;--shadow:0 8px 24px rgba(17,55,40,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}.app{max-width:560px;margin:auto;min-height:100vh;padding:18px 14px 90px}.hidden{display:none!important}button,input,select{font:inherit}.screen{min-height:calc(100vh - 122px)}
@@ -148,14 +148,76 @@
 }
 .flowActions{display:flex;align-items:center;gap:7px}.quickEntryBtn{border:1px solid #b9dfc9;background:#f3fff8;color:#0b684c;border-radius:13px;padding:10px 11px;font-weight:900;font-size:12px;white-space:nowrap}
 @media(max-width:410px){.flowActions{gap:5px}.quickEntryBtn{padding:9px 8px;font-size:10px}.flowActions .addBtn{padding:9px 10px;font-size:11px}}
+
+
+/* CONTI IN MANO - PRIMO AVVIO BLU */
+#setup{min-height:100dvh;margin:-18px -14px -90px;padding:22px 20px calc(30px + env(safe-area-inset-bottom));background:radial-gradient(circle at 86% 7%,rgba(57,162,255,.18) 0 13%,transparent 36%),linear-gradient(180deg,#f5fbff 0%,#e8f6ff 58%,#dff2ff 100%);overflow:hidden;position:relative}
+#setup:after{content:"";position:absolute;left:-8%;right:-8%;bottom:-48px;height:105px;border-radius:50% 50% 0 0;background:rgba(102,190,255,.16);transform:rotate(-2deg);pointer-events:none}
+#setup .setupTop{min-height:245px;position:relative;display:flex;align-items:flex-start;z-index:1}
+#setup .setupBrand{padding:72px 0 0 10px;position:relative;z-index:3}
+#setup .brand{font-size:40px;line-height:.98;font-weight:950;letter-spacing:-1.7px;white-space:nowrap;color:#082e68}
+#setup .brand b{color:#1474e8;font-weight:950}
+#setup .sub{font-size:21px;line-height:1.2;color:#274b79;margin-top:14px;font-weight:500}
+#setup .setupPhoneArt{position:absolute;right:-15px;top:19px;width:178px;height:218px;z-index:2}
+#setup .phone{position:absolute;right:38px;top:22px;width:74px;height:132px;border:7px solid #153c76;border-radius:16px;background:#fff;transform:rotate(-6deg);box-shadow:0 8px 22px rgba(18,75,137,.18);z-index:4}
+#setup .phone:before{content:"";position:absolute;top:4px;left:25px;width:17px;height:3px;border-radius:4px;background:#9db6cf}
+#setup .phoneScreen{position:absolute;inset:17px 8px 10px;background:linear-gradient(180deg,#f8fcff,#eaf6ff);border-radius:7px;overflow:hidden}
+#setup .phoneScreen .bar{position:absolute;bottom:61px;width:9px;border-radius:3px 3px 0 0;background:#2986eb}
+#setup .phoneScreen .b1{left:8px;height:18px}.phoneScreen .b2{left:22px;height:32px}.phoneScreen .b3{left:36px;height:45px}
+#setup .chartLine{position:absolute;left:8px;right:8px;bottom:43px;height:3px;background:#9bc9ef;border-radius:3px;box-shadow:0 12px 0 #b9d9f1}
+#setup .chartDot{position:absolute;left:14px;bottom:7px;width:31px;height:31px;border-radius:50%;border:8px solid #4aa2ee;border-right-color:#c6e4f7}
+#setup .handPalm{position:absolute;right:0;top:80px;width:88px;height:93px;border-radius:48% 35% 42% 50%;background:linear-gradient(145deg,#ffc09c,#e9906e);transform:rotate(13deg);z-index:3;box-shadow:inset -8px -5px 14px rgba(150,70,45,.09)}
+#setup .handWrist{position:absolute;right:-13px;top:152px;width:82px;height:72px;border-radius:24px 0 0 18px;background:linear-gradient(145deg,#238df3,#1267d4);transform:rotate(14deg);z-index:2}
+#setup .ray{position:absolute;display:block;width:31px;height:6px;border-radius:9px;background:#2584e8;z-index:1}
+#setup .ray.r1{left:20px;top:34px;transform:rotate(21deg)}#setup .ray.r2{left:35px;top:11px;transform:rotate(60deg)}#setup .ray.r3{left:7px;top:59px;transform:rotate(8deg)}
+#setup .setupCard{position:relative;z-index:4;background:rgba(255,255,255,.96);border:1px solid rgba(182,216,242,.72);border-radius:30px;padding:25px 23px 23px;box-shadow:0 18px 42px rgba(30,112,180,.12);backdrop-filter:blur(4px)}
+#setup .field{margin:0 0 18px}
+#setup .field label{font-size:17px;color:#0b326b;font-weight:900;margin:0 0 9px 4px}
+#setup .textInput,#setup .moneyInput{display:flex;align-items:center;border:1px solid #b9d7ee;border-radius:17px;background:#edf7ff;overflow:hidden;min-height:61px;box-shadow:inset 0 1px 3px rgba(35,86,130,.04)}
+#setup .textInput:focus-within,#setup .moneyInput:focus-within{border-color:#338ce7;box-shadow:0 0 0 3px rgba(40,132,232,.12)}
+#setup .textInput input,#setup .moneyInput input{border:0;outline:0;width:100%;min-height:59px;background:transparent;color:#173d72;padding:0 16px;font-size:20px;font-weight:650}
+#setup .textInput input::placeholder,#setup .moneyInput input::placeholder{color:#738eaf;opacity:1;font-weight:500}
+#setup .personIcon{position:relative;width:48px;flex:0 0 48px;color:#5276a9;font-size:15px;text-align:center;line-height:1;transform:translateY(-5px)}
+#setup .personIcon:after{content:"";position:absolute;width:19px;height:12px;border-radius:10px 10px 3px 3px;background:#5276a9;left:15px;top:13px}
+#setup .moneyInput span{padding-left:17px;color:#082e68;font-size:32px;font-weight:950}
+#setup .setupCard h1{font-size:33px;line-height:1.07;color:#062d68;margin:29px 2px 20px;font-weight:950;letter-spacing:-.8px}
+#setup .btn{margin-top:6px;min-height:62px;border-radius:31px;background:linear-gradient(180deg,#2f91f6 0%,#1169dc 100%);font-size:21px;box-shadow:0 11px 24px rgba(28,117,218,.24)}
+#setup .safe{font-size:14px;color:#37587f;margin-top:16px}
+#setup .setupError{background:#fff0f1;border:1px solid #efb9bd;color:#b5222d;border-radius:12px;padding:9px 11px;margin:-7px 0 12px;font-size:12px;font-weight:800}
+#setup .benefits{position:relative;z-index:4;margin:28px 2px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;color:#0b3c7b}
+#setup .benefit{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;font-size:12px}
+#setup .benefit strong{font-weight:900;line-height:1.12}
+#setup .benefitIcon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:rgba(210,237,255,.92);color:#1478df;font-size:27px;box-shadow:inset 0 0 0 1px rgba(139,202,246,.23)}
+#setup .barsIcon{display:flex;align-items:flex-end;justify-content:center;gap:4px;padding:13px}
+#setup .barsIcon i{display:block;width:6px;border-radius:3px 3px 1px 1px;background:#1478df}.barsIcon i:nth-child(1){height:14px}.barsIcon i:nth-child(2){height:23px}.barsIcon i:nth-child(3){height:31px}
+@media(max-width:410px){#setup{padding-left:16px;padding-right:16px}#setup .setupTop{min-height:220px}#setup .setupBrand{padding-top:66px;padding-left:5px}#setup .brand{font-size:34px}#setup .sub{font-size:18px}#setup .setupPhoneArt{right:-32px;transform:scale(.88);transform-origin:top right}#setup .setupCard{padding:22px 18px}#setup .setupCard h1{font-size:29px}#setup .textInput input,#setup .moneyInput input{font-size:18px}#setup .benefit{font-size:10px}#setup .benefitIcon{width:49px;height:49px}}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section id="setup" class="screen setup hidden">
-  <div class="brandRow"><div><div class="brand">QUANTO</div><div class="sub">I tuoi conti, sempre con te</div></div><div class="heroIcon">€</div></div>
-  <div class="setupCard"><div class="eyebrow">CONFIGURA IL TUO SALDO</div><h1>Quanto hai <span>disponibile oggi?</span></h1><p>Inserisci solo il denaro che hai davvero adesso. Non aggiungere entrate future.</p><div class="field"><label>Saldo attuale</label><div class="moneyInput"><span>€</span><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div><button id="startBtn" class="btn">Continua →</button><div class="safe">Potrai modificare il saldo in qualsiasi momento.</div></div>
-  <div class="benefits"><span>Più controllo</span><span>Più consapevolezza</span><span>Meno stress</span></div>
+  <div class="setupTop">
+    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>in mano</b></div><div class="sub">Saldo, entrate, uscite.<br> Sempre con te!</div></div>
+    <div class="setupPhoneArt" aria-hidden="true">
+      <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
+      <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
+      <div class="handPalm"></div><div class="handWrist"></div>
+    </div>
+  </div>
+  <div class="setupCard">
+    <div class="field nameField"><label>Nome e cognome</label><div class="textInput"><span class="personIcon">●</span><input id="fullName" type="text" autocomplete="name" placeholder="Es. Marco Rossi"></div></div>
+    <h1>Inserisci il tuo saldo attuale</h1>
+    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
+    <div id="setupError" class="setupError hidden"></div>
+    <button id="startBtn" class="btn">Continua <span aria-hidden="true">→</span></button>
+    <div class="safe">Potrai modificare il saldo in qualsiasi momento</div>
+  </div>
+  <div class="benefits">
+    <div class="benefit"><span class="benefitIcon barsIcon"><i></i><i></i><i></i></span><strong>Più Controllo</strong></div>
+    <div class="benefit"><span class="benefitIcon bulbIcon">☀</span><strong>Più Consapevolezza</strong></div>
+    <div class="benefit"><span class="benefitIcon leafIcon">♢</span><strong>Meno Stress</strong></div>
+  </div>
 </section>
 
 <section id="setupIncome" class="screen hidden">
@@ -180,7 +242,7 @@
 </section>
 
 <section id="home" class="screen hidden">
-  <div class="homeHero"><div><div class="homeBrand">QUANTO</div><div class="homeSub">I tuoi conti, sempre con te</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
+  <div class="homeHero"><div><div class="homeBrand">Conti in mano</div><div class="homeSub">Saldo, entrate, uscite. Sempre con te!</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
   <div class="card balanceCard"><div class="balanceRow"><div class="balanceLeft"><div class="balanceLabel">Saldo attuale</div><div id="homeBalance" class="balanceValue">€ 0,00</div></div><button id="editBalance" class="editBalance">✎ Modifica saldo</button></div></div>
   <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Uscite</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
   <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Rimanenza prevista fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
@@ -232,8 +294,8 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:3});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:4});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const nav=!['setup','setupIncome','setupExpense'].includes(id);$('bottomNav').classList.toggle('hidden',!nav);document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='budget'&&b.dataset.nav==='summary')));if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
@@ -719,15 +781,16 @@ function flashModal(msg){let n=document.createElement('div');n.className='note';
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
-$('startBtn').onclick=()=>{const v=Number($('startBalance').value);if(!Number.isFinite(v))return;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
-$('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');show('setup')};
+function hydrateFirstSetup(){if($('fullName'))$('fullName').value=state.profile&&state.profile.fullName||'';if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
+$('startBtn').onclick=()=>{const name=$('fullName').value.trim(),raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(!name){err.textContent='Inserisci nome e cognome.';err.classList.remove('hidden');$('fullName').focus();return}if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.profile.fullName=name;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
 $('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
 $('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}if(!saved.length)throw new Error('Inserisci almeno una entrata oppure torna indietro.');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
 $('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=false;state.setupStage='notifications';notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
 $('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
-$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, uscite e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('startBalance').value='';show('setup')}};
-if(state.balance===null){show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){notificationsOnboarding=true;show('notifications')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, uscite e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('fullName').value='';$('startBalance').value='';show('setup')}};
+if(state.balance===null){hydrateFirstSetup();show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){notificationsOnboarding=true;show('notifications')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
 })();
 </script>
 </body>
