@@ -1,0 +1,13 @@
+{
+  "name": "In Ordine",
+  "short_name": "In Ordine",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8f5",
+  "theme_color": "#2479d8",
+  "description": "Conti economici semplici e immediati.",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
