@@ -638,16 +638,56 @@ function openGuide(){
   openModal('Come funziona l’app','<div class="hint">Scegli solo l’argomento che ti serve.</div><div id="guideTopics" class="guideTopics">'+topics+'</div>');
   $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
 }
-function downloadBackup(){
-  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,hiddenCategories:state.hiddenCategories,occurrenceOverrides:state.occurrenceOverrides,futureChanges:state.futureChanges,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage,security:state.security}};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
-  a.href=url;a.download='in-ordine-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+function backupPayload(){
+  return {format:'in-ordine-conti',version:2,createdAt:new Date().toISOString(),data:{
+    balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,
+    customCategories:state.customCategories,hiddenCategories:state.hiddenCategories,
+    occurrenceOverrides:state.occurrenceOverrides,futureChanges:state.futureChanges,
+    budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,
+    setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage,security:state.security
+  }};
+}
+async function downloadBackup(payload){
+  const data=payload||backupPayload(),text=JSON.stringify(data,null,2),filename='in-ordine-backup-'+todayISO()+'.json';
+  if(nativeBridge()&&nativeBridge().saveBackupFile){
+    const ok=await nativeBridge().saveBackupFile(text,filename);
+    if(ok)return true;
+  }
+  const blob=new Blob([text],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);return true;
+}
+function normalizeRestoredState(data){
+  const base=blank(),restored=Object.assign(base,data||{});
+  restored.profile=state.profile;
+  restored.appColor=state.appColor;
+  if(!restored.customCategories)restored.customCategories={income:[],expense:[]};
+  if(!restored.hiddenCategories)restored.hiddenCategories={income:[],expense:[]};
+  if(!restored.occurrenceOverrides)restored.occurrenceOverrides={};
+  if(!restored.futureChanges)restored.futureChanges={};
+  if(!restored.notifications)restored.notifications=base.notifications;
+  if(!restored.budgetPlans)restored.budgetPlans=[];
+  if(!restored.budgetNotifications)restored.budgetNotifications=base.budgetNotifications;
+  if(!restored.setupDrafts)restored.setupDrafts={income:[],expense:[]};
+  if(!restored.security)restored.security=state.security||base.security;
+  return restored;
 }
 function openBackupSettings(){
   openModal('Backup e ripristino','<div class="hint">Il backup contiene soltanto i dati di Conti economici.</div><div class="modalBtns" style="margin-top:16px"><button id="backupCreate" class="btn">Crea backup</button><button id="backupRestore" class="btn secondary">Ripristina backup</button></div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
-  $('backupCreate').onclick=downloadBackup;
+  $('backupCreate').onclick=async()=>{await downloadBackup()};
   $('backupRestore').onclick=()=>$('backupFile').click();
-  $('backupFile').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();const current={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));downloadBackup();Object.assign(state,obj.data);save();closeModal();show('landing')}catch(err){flashModal('Il file selezionato non è un backup valido.')}};
+  $('backupFile').onchange=async e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    try{
+      const obj=JSON.parse(await file.text());
+      if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();
+      const current=backupPayload();
+      localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));
+      await downloadBackup(current);
+      state=normalizeRestoredState(obj.data);
+      localStorage.setItem(KEY,JSON.stringify(state));
+      closeModal();location.reload();
+    }catch(err){flashModal('Il file selezionato non è un backup valido.')}
+  };
 }
 function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64urlToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
