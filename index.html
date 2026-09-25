@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eaf6ff">
+<meta name="theme-color" content="#2479d8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Conti economici</title>
 <style>
 :root{--bg:#f4f8f5;--card:#fff;--text:#17324a;--muted:#718096;--line:#e1ebe5;--green:#159b62;--green2:#e9f8f0;--green3:#c9eedb;--red:#d83b45;--red2:#fff1f1;--blue:#2379d8;--yellow:#d49a00;--shadow:0 8px 24px rgba(17,55,40,.06)}
@@ -1451,6 +1455,7 @@ $('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()
 $('budgetAdd').onclick=openBudgetChoice;
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 show('landing');
 })();
 </script>
