@@ -1009,7 +1009,7 @@ function openCategoryHub(){
 function openCategoryManagement(){
   const renderSection=type=>{
     const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
-    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+(DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata'+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
+    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+((DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata')+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
     return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
   };
   openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
