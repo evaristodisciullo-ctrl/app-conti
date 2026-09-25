@@ -6,9 +6,19 @@ async function requestNotifications(){
   if(!Capacitor.isNativePlatform()) return 'unsupported';
   try{
     const current=await LocalNotifications.checkPermissions();
-    if(current.display==='granted') return 'granted';
-    const result=await LocalNotifications.requestPermissions();
-    return result.display==='granted'?'granted':'denied';
+    let display=current.display;
+    if(display!=='granted'){
+      const result=await LocalNotifications.requestPermissions();
+      display=result.display;
+    }
+    if(display!=='granted') return 'denied';
+    if(Capacitor.getPlatform()==='android'){
+      try{
+        const exact=await LocalNotifications.checkExactNotificationSetting();
+        if(exact.exact_alarm!=='granted') await LocalNotifications.changeExactNotificationSetting();
+      }catch(e){}
+    }
+    return 'granted';
   }catch(e){ return 'unsupported'; }
 }
 
