@@ -466,8 +466,8 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
@@ -504,7 +504,7 @@ function openGuide(){
   $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
 }
 function downloadBackup(){
-  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,hiddenCategories:state.hiddenCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage,security:state.security}};
+  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,hiddenCategories:state.hiddenCategories,occurrenceOverrides:state.occurrenceOverrides,futureChanges:state.futureChanges,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage,security:state.security}};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
   a.href=url;a.download='in-ordine-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -675,16 +675,55 @@ function openSetupAdvanced(row,type,date){
 }
 function validRecurrence(c){if(!c)return false;if(c.kind==='monthly')return !!c.startMonth;if(c.kind==='single')return !!c.month;if(c.kind==='count')return !!c.startMonth&&c.count>0;if(c.kind==='until')return !!c.startMonth&&!!c.endMonth&&c.endMonth>=c.startMonth;if(c.kind==='selected')return Array.isArray(c.months)&&c.months.length>0;return false}
 function recurrenceSummary(c){if(c.kind==='monthly')return 'Da '+monthName(c.startMonth);if(c.kind==='single')return monthName(c.month);if(c.kind==='count')return c.count+' mesi da '+monthName(c.startMonth);if(c.kind==='until')return 'Da '+monthName(c.startMonth)+' a '+monthName(c.endMonth);if(c.kind==='selected')return c.months.length+' mesi selezionati';return ''}
-function occurs(entry,ym){const r=entry.recurrence;if(!r)return false;if(r.kind==='monthly')return ym>=r.startMonth;if(r.kind==='single')return ym===r.month;if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;if(r.kind==='selected')return r.months.includes(ym);return false}
+function recurrenceOccurs(r,ym){
+  if(!r)return false;
+  if(r.kind==='monthly')return ym>=r.startMonth;
+  if(r.kind==='single')return ym===r.month;
+  if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}
+  if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;
+  if(r.kind==='selected')return Array.isArray(r.months)&&r.months.includes(ym);
+  return false;
+}
+function futureChangeFor(entryId,ym){
+  const arr=Array.isArray(state.futureChanges[entryId])?state.futureChanges[entryId]:[];
+  return arr.filter(x=>x.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth)).slice(-1)[0]||null;
+}
+function effectiveEntryForMonth(entry,ym){
+  const ch=futureChangeFor(entry.id,ym);
+  if(ch&&ch.deleted)return null;
+  const out=Object.assign({},entry,ch&&ch.fields||{});
+  return out;
+}
+function occurrenceOverrideKey(entryId,ym){return entryId+'|'+ym}
+function effectiveOccurrence(entry,ym){
+  const eff=effectiveEntryForMonth(entry,ym);if(!eff||!recurrenceOccurs(eff.recurrence,ym))return null;
+  const ov=state.occurrenceOverrides[occurrenceOverrideKey(entry.id,ym)];
+  if(ov&&ov.deleted)return null;
+  const out=Object.assign({},eff,ov&&ov.fields||{});
+  out.entryId=entry.id;out.type=entry.type;out.month=ym;
+  out.date=ov&&ov.fields&&ov.fields.date?ov.fields.date:isoFor(ym,out.day);
+  return out;
+}
+function occurs(entry,ym){return !!effectiveOccurrence(entry,ym)}
 function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&h.month===ym)}
-function monthData(type,ym){const done=[],pending=[];state.entries.filter(e=>e.type===type&&occurs(e,ym)).forEach(e=>{const h=historyFor(e.id,ym);if(h)done.push(Object.assign({},h,{category:h.category!=null?h.category:(e.category||''),note:h.note!=null?h.note:(e.note||'')}));else pending.push({entryId:e.id,type:e.type,name:e.name,amount:e.amount,date:isoFor(ym,e.day),month:ym,category:e.category||'',note:e.note||''})});done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending}}
+function monthData(type,ym){
+  const done=[],pending=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    const occ=effectiveOccurrence(e,ym);if(!occ)return;
+    const h=historyFor(e.id,ym);
+    if(h)done.push(Object.assign({},h,{category:h.category!=null?h.category:(occ.category||''),note:h.note!=null?h.note:(occ.note||'')}));
+    else pending.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:ym,category:occ.category||'',note:occ.note||''});
+  });
+  done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending};
+}
 function monthTotals(ym){const i=monthData('income',ym),e=monthData('expense',ym);return{received:i.done.reduce((s,x)=>s+x.amount,0),toReceive:i.pending.reduce((s,x)=>s+x.amount,0),paid:e.done.reduce((s,x)=>s+x.amount,0),toPay:e.pending.reduce((s,x)=>s+x.amount,0)}}
 function pendingThrough(type,ym){
   const out=[];
   state.entries.filter(e=>e.type===type).forEach(e=>{
     let cur=entryStartMonth(e),guard=0;
     while(cur<=ym&&guard++<240){
-      if(occurs(e,cur)&&!historyFor(e.id,cur))out.push({entryId:e.id,type:e.type,name:e.name,amount:Number(e.amount||0),date:isoFor(cur,e.day),month:cur,category:e.category||'',note:e.note||''});
+      const occ=effectiveOccurrence(e,cur);
+      if(occ&&!historyFor(e.id,cur))out.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:cur,category:occ.category||'',note:occ.note||''});
       cur=addMonths(cur,1);
     }
   });
@@ -756,7 +795,7 @@ function renderFlow(){
     const status=x.done?(isIn?'RICEVUTA':'PAGATO'):(isOverdue?(isIn?'SCADUTA':'SCADUTO'):(isIn?'DA RICEVERE':'DA PAGARE'));
     const cls=x.done?'done':(isOverdue?'overdue':'pending');
     row.innerHTML='<button class="flowUnifiedMain"><span><span class="flowUnifiedName">'+esc(x.name)+'</span><span class="flowUnifiedDate">'+fmtMovementDate(x.date)+'</span></span><span class="flowUnifiedAmount">'+money(x.amount)+'</span><span>›</span></button><button class="flowUnifiedStatus '+cls+'">'+status+' ›</button>';
-    row.querySelector('.flowUnifiedMain').onclick=()=>openEditEntry(x.entryId);
+    row.querySelector('.flowUnifiedMain').onclick=()=>x.done?openMovementDetail(x.id):openOccurrenceActions(x);
     row.querySelector('.flowUnifiedStatus').onclick=()=>x.done?openReopenMovement(x):completeOccurrenceImmediate(x);
     el.appendChild(row);
   });
@@ -779,6 +818,54 @@ function undoHistory(id){
   state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
   state.history=state.history.filter(x=>x.id!==id);save();if(!$('flow').classList.contains('hidden'))renderFlow();if(!$('home').classList.contains('hidden'))renderHome();
 }
+
+function openOccurrenceActions(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const recurring=entry.recurrence&&entry.recurrence.kind!=='single';
+  if(!recurring){openEntryEditor(entry,entry.type);return}
+  openModal(entry.type==='income'?'Modifica entrata':'Modifica pagamento','<div class="hint">Questa voce è ricorrente.</div><div class="guideTopics"><button id="occOnly" class="guideTopic">Modifica solo questa scadenza</button><button id="occFuture" class="guideTopic">Modifica questa e tutte le future</button></div>');
+  $('occOnly').onclick=()=>openSingleOccurrenceEditor(x);
+  $('occFuture').onclick=()=>openFutureOccurrenceEditor(x);
+}
+function occurrenceCategoryOptions(type,current){return categoryOptions(type,current)}
+function openSingleOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal(entry.type==='income'?'Modifica questa entrata':'Modifica questo pagamento',
+    '<div class="field"><label>Nome</label><input id="occName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="occAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data</label><input id="occDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="occCategory">'+occurrenceCategoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="occNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="occDelete" class="btn deleteBtn">Elimina</button><button id="occSave" class="btn">Salva</button></div>');
+  $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
+  $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openFutureOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const eff=effectiveEntryForMonth(entry,x.month)||entry;
+  openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
+    '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Giorno del mese</label><input id="futDay" type="number" min="1" max="31" value="'+Number((x.date||'').slice(8,10))+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
+  $('futSave').onclick=()=>{const name=$('futName').value.trim(),amount=Number($('futAmount').value),day=Number($('futDay').value);if(!name||!Number.isFinite(amount)||amount<=0||day<1||day>31)return flashModal('Controlla nome, importo e giorno.');const fields={name,amount,day,category:$('futCategory').value==='__new__'?'':$('futCategory').value,note:$('futNote').value.trim(),recurrence:eff.recurrence};if(fields.recurrence&&fields.recurrence.kind==='monthly')fields.recurrence=Object.assign({},fields.recurrence,{startMonth:x.month});if(fields.recurrence&&fields.recurrence.kind==='single')fields.recurrence={kind:'single',month:x.month};const arr=Array.isArray(state.futureChanges[entry.id])?state.futureChanges[entry.id]:[];state.futureChanges[entry.id]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,fields}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));save();closeModal();renderFlow()};
+  $('futDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openDeleteOccurrenceChoice(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal('Elimina scadenza','<div class="guideTopics"><button id="deleteOccOnly" class="guideTopic">Elimina solo questa scadenza</button><button id="deleteOccFuture" class="guideTopic">Elimina questa e tutte le future</button></div><button id="deleteOccCancel" class="btn secondary" style="margin-top:12px">Annulla</button>');
+  $('deleteOccCancel').onclick=()=>{closeModal();renderFlow()};
+  $('deleteOccOnly').onclick=()=>confirmOccurrenceDeletion(x,false);
+  $('deleteOccFuture').onclick=()=>confirmOccurrenceDeletion(x,true);
+}
+function confirmOccurrenceDeletion(x,future){
+  openModal('Vuoi davvero eliminare?','<div class="note">'+(future?'Questa scadenza e tutte le future non compariranno più. I movimenti già confermati restano nello storico.':'Verrà eliminata soltanto questa scadenza. I movimenti già confermati restano nello storico.')+'</div><div class="modalBtns"><button id="deleteOccNo" class="btn secondary">Annulla</button><button id="deleteOccYes" class="btn deleteBtn">Elimina</button></div>');
+  $('deleteOccNo').onclick=()=>openDeleteOccurrenceChoice(x);
+  $('deleteOccYes').onclick=()=>{if(future){const arr=Array.isArray(state.futureChanges[x.entryId])?state.futureChanges[x.entryId]:[];state.futureChanges[x.entryId]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,deleted:true}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth))}else state.occurrenceOverrides[occurrenceOverrideKey(x.entryId,x.month)]={deleted:true};save();closeModal();renderFlow()};
+}
+
 function openAddEntry(type){openEntryEditor(null,type)}
 function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
 const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Benzina','Luce','Gas','Altro']};
@@ -904,6 +991,7 @@ function confirmDeleteEntry(entry){
   $('deleteNo').onclick=()=>{closeModal();renderFlow()};
   $('deleteYes').onclick=()=>{
     state.entries=state.entries.filter(e=>e.id!==entry.id);
+    delete state.futureChanges[entry.id];Object.keys(state.occurrenceOverrides).filter(k=>k.startsWith(entry.id+'|')).forEach(k=>delete state.occurrenceOverrides[k]);
     state.notifications.selected=(state.notifications.selected||[]).filter(id=>id!==entry.id);
     save();closeModal();renderFlow();
   };
