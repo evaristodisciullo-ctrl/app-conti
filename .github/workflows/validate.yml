@@ -1,0 +1,22 @@
+name: Validate app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract JavaScript
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          html = Path("index.html").read_text(encoding="utf-8")
+          m = re.search(r"<script>([\s\S]*?)</script>", html)
+          if not m:
+              raise SystemExit("script not found")
+          Path("/tmp/app.js").write_text(m.group(1), encoding="utf-8")
+      - name: Check JavaScript syntax
+        run: node --check /tmp/app.js
