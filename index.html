@@ -466,8 +466,8 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},version:5});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
@@ -504,7 +504,7 @@ function openGuide(){
   $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
 }
 function downloadBackup(){
-  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};
+  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,hiddenCategories:state.hiddenCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage,security:state.security}};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
   a.href=url;a.download='in-ordine-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -514,19 +514,63 @@ function openBackupSettings(){
   $('backupRestore').onclick=()=>$('backupFile').click();
   $('backupFile').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();const current={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));downloadBackup();Object.assign(state,obj.data);save();closeModal();show('landing')}catch(err){flashModal('Il file selezionato non è un backup valido.')}};
 }
+function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function b64urlToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
+async function hashPin(pin){const data=new TextEncoder().encode('in-ordine|'+pin);return bytesToB64url(await crypto.subtle.digest('SHA-256',data))}
+function securityFresh(){return !!(state.security&&state.security.enabled&&Date.now()-Number(state.security.lastActivity||0)<10*60*1000)}
+function touchSecurity(){if(state.security&&state.security.enabled&&document.querySelector('#landing.hidden')){state.security.lastActivity=Date.now();save()}}
+async function registerDeviceSecurity(){
+  if(!window.PublicKeyCredential||!navigator.credentials)return false;
+  try{
+    const challenge=crypto.getRandomValues(new Uint8Array(32)),userId=crypto.getRandomValues(new Uint8Array(16));
+    const cred=await navigator.credentials.create({publicKey:{challenge,rp:{name:'In Ordine'},user:{id:userId,name:'utente@inordine.local',displayName:'Utente In Ordine'},pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},timeout:60000,attestation:'none'}});
+    if(!cred)return false;state.security.credentialId=bytesToB64url(cred.rawId);save();return true;
+  }catch(e){return false}
+}
+async function authenticateDeviceSecurity(){
+  if(!state.security.credentialId||!window.PublicKeyCredential||!navigator.credentials)return false;
+  try{
+    const assertion=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64urlToBytes(state.security.credentialId)}],userVerification:'required',timeout:60000}});
+    return !!assertion;
+  }catch(e){return false}
+}
+function enterContiAfterUnlock(){
+  state.security.lastActivity=Date.now();save();
+  if(state.balance===null){hydrateFirstSetup();show('setup');return}
+  if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense');return}
+  if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome');return}
+  show('home');
+}
+function openUnlock(){
+  openModal('Sblocca Conti economici','<div class="field"><label>PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>'+(state.security.credentialId?'<button id="unlockDevice" class="btn secondary" style="margin-top:8px">Usa sicurezza del telefono</button>':'')+'<div class="hint" style="margin-top:10px">La sicurezza del telefono può usare impronta, viso o codice dispositivo, in base alle impostazioni del telefono.</div><div class="modalBtns"><button id="unlockCancel" class="btn secondary">Annulla</button><button id="unlockPinBtn" class="btn">Sblocca</button></div>');
+  $('unlockCancel').onclick=closeModal;
+  $('unlockPinBtn').onclick=async()=>{const h=await hashPin($('unlockPin').value);if(h!==state.security.pinHash)return flashModal('PIN non corretto.');closeModal();enterContiAfterUnlock()};
+  if($('unlockDevice'))$('unlockDevice').onclick=async()=>{if(await authenticateDeviceSecurity()){closeModal();enterContiAfterUnlock()}else flashModal('Autenticazione del telefono non riuscita.')};
+}
 function openSecuritySettings(){
-  openModal('Protezione Conti economici','<div class="note">La protezione con PIN e biometria verrà collegata al sistema di sicurezza del telefono nella versione mobile. I dati non verranno mai cancellati per recuperare l’accesso.</div>');
+  if(!state.security.enabled){
+    openModal('Protezione Conti economici','<div class="hint">Proteggi solo Conti economici. Dopo 10 minuti senza utilizzo sarà richiesto un nuovo sblocco.</div><div class="field"><label>Crea PIN</label><input id="securityPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti PIN</label><input id="securityPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="securityCancel" class="btn secondary">Annulla</button><button id="securityEnable" class="btn">Attiva</button></div>');
+    $('securityCancel').onclick=closeModal;
+    $('securityEnable').onclick=async()=>{const p1=$('securityPin1').value,p2=$('securityPin2').value;if(!/^\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.enabled=true;state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();const ok=await registerDeviceSecurity();openModal('Protezione attivata','<div class="note">PIN attivato.'+(ok?' Anche la sicurezza del telefono è stata collegata.':' Puoi collegare impronta/viso in seguito da questa schermata.')+'</div>')};
+    return;
+  }
+  openModal('Protezione Conti economici','<div class="note">Protezione attiva. Conti economici si blocca dopo 10 minuti senza utilizzo.</div><div class="guideTopics"><button id="securityDevice" class="guideTopic">'+(state.security.credentialId?'Ricollega':'Collega')+' sicurezza del telefono</button><button id="securityChangePin" class="guideTopic">Cambia PIN</button><button id="securityDisable" class="guideTopic">Disattiva protezione</button></div>');
+  $('securityDevice').onclick=async()=>{const ok=await registerDeviceSecurity();if(ok)openSecuritySettings();else flashModal('Il dispositivo o il browser non ha completato la configurazione.')};
+  $('securityChangePin').onclick=()=>openChangePin();
+  $('securityDisable').onclick=()=>{openModal('Disattiva protezione','<div class="field"><label>PIN attuale</label><input id="disablePin" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="disableNo" class="btn secondary">Annulla</button><button id="disableYes" class="btn">Disattiva</button></div>');$('disableNo').onclick=openSecuritySettings;$('disableYes').onclick=async()=>{if(await hashPin($('disablePin').value)!==state.security.pinHash)return flashModal('PIN non corretto.');state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};save();closeModal()}};
+}
+function openChangePin(){
+  openModal('Cambia PIN','<div class="field"><label>PIN attuale</label><input id="oldPin" type="password" inputmode="numeric"></div><div class="field"><label>Nuovo PIN</label><input id="newPin1" type="password" inputmode="numeric"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="newPin2" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="changePinNo" class="btn secondary">Annulla</button><button id="changePinYes" class="btn">Salva</button></div>');
+  $('changePinNo').onclick=openSecuritySettings;
+  $('changePinYes').onclick=async()=>{if(await hashPin($('oldPin').value)!==state.security.pinHash)return flashModal('PIN attuale non corretto.');const p1=$('newPin1').value,p2=$('newPin2').value;if(!/^\d{4,8}$/.test(p1)||p1!==p2)return flashModal('Controlla il nuovo PIN.');state.security.pinHash=await hashPin(p1);save();openSecuritySettings()};
 }
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
   state.profile.fullName=nick;save();
-  if(state.balance===null){hydrateFirstSetup();show('setup');return}
-  if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense');return}
-  if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome');return}
-  if(!state.setupDone&&state.setupStage==='notifications'){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}
-  show('home');
+  if(state.security&&state.security.enabled&&!securityFresh()){openUnlock();return}
+  enterContiAfterUnlock();
 }
 
 function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
@@ -681,7 +725,6 @@ function renderMovementList(el,arr){
 }
 function restoreSetupCopy(){}
 function openFlow(type){quickEditMode=null;currentFlow=type;flowFilter='all';show('flow')}
-function openFlow(type){quickEditMode=null;restoreSetupCopy();currentFlow=type;flowMonth=ymNow();show('flow')}
 function buildFlowItems(type){
   const ym=ymNow(),today=todayISO();
   const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
@@ -743,8 +786,50 @@ const DEFAULT_CATEGORIES={
   income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
   expense:['Casa','Auto','Bollette','Salute','Altro']
 };
-function allCategories(type){return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).sort((a,b)=>a.localeCompare(b,'it'))}
+function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
 function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
+
+function openCategoryManagement(){
+  const renderSection=type=>{
+    const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
+    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+(DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata'+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
+    return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
+  };
+  openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
+  document.querySelectorAll('.catAdd').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,''));
+  document.querySelectorAll('.catRename').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,b.dataset.cat));
+  document.querySelectorAll('.catDelete').forEach(b=>b.onclick=()=>confirmDeleteCategory(b.dataset.type,b.dataset.cat));
+}
+function openCategoryNameEditor(type,oldName){
+  openModal(oldName?'Rinomina categoria':'Nuova categoria','<div class="field"><label>Nome</label><input id="categoryNameEdit" placeholder="Scrivi qua" value="'+escAttr(oldName||'')+'"></div><div class="modalBtns"><button id="categoryNameCancel" class="btn secondary">Annulla</button><button id="categoryNameSave" class="btn">Salva</button></div>');
+  $('categoryNameCancel').onclick=openCategoryManagement;
+  $('categoryNameSave').onclick=()=>{
+    const name=$('categoryNameEdit').value.trim();if(!name)return flashModal('Scrivi il nome della categoria.');
+    const existing=new Set(allCategories(type));if(name!==oldName&&existing.has(name))return flashModal('Questa categoria esiste già.');
+    if(oldName){
+      state.entries.filter(e=>e.type===type&&e.category===oldName).forEach(e=>e.category=name);
+      state.history.filter(h=>h.type===type&&h.category===oldName).forEach(h=>h.category=name);
+      if((DEFAULT_CATEGORIES[type]||[]).includes(oldName)){if(!state.hiddenCategories[type].includes(oldName))state.hiddenCategories[type].push(oldName)}
+      state.customCategories[type]=state.customCategories[type].filter(x=>x!==oldName);
+      if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    }else if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    save();openCategoryManagement();
+  };
+}
+function confirmDeleteCategory(type,name){
+  openModal('Elimina categoria','<div class="note">Eliminare “'+esc(name)+'”? Le entrate o i pagamenti collegati resteranno, ma passeranno a “Senza categoria”.</div><div class="modalBtns"><button id="categoryDeleteNo" class="btn secondary">Annulla</button><button id="categoryDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+  $('categoryDeleteNo').onclick=openCategoryManagement;
+  $('categoryDeleteYes').onclick=()=>{
+    state.entries.filter(e=>e.type===type&&e.category===name).forEach(e=>e.category='');
+    state.history.filter(h=>h.type===type&&h.category===name).forEach(h=>h.category='');
+    state.customCategories[type]=state.customCategories[type].filter(x=>x!==name);
+    if((DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.hiddenCategories[type].includes(name))state.hiddenCategories[type].push(name);
+    if(state.budgetPlans)state.budgetPlans.forEach(p=>{if(p.limits&&Object.prototype.hasOwnProperty.call(p.limits,name))delete p.limits[name]});
+    if(state.budgetNotifications&&state.budgetNotifications.categories)delete state.budgetNotifications.categories[name];
+    save();openCategoryManagement();
+  };
+}
+
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(!r)return ymNow();return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
   const isNew=!entry;
@@ -1164,7 +1249,7 @@ $('settingsSearch').addEventListener('input',()=>{
 $('settingsIncome').onclick=()=>openFlow('income');
 $('settingsExpense').onclick=()=>openFlow('expense');
 $('settingsMovements').onclick=()=>show('movements');
-$('settingsCategories').onclick=()=>{summaryMonth=ymNow();show('summary')};
+$('settingsCategories').onclick=openCategoryManagement;
 $('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
 $('settingsNotifications').onclick=()=>{notificationsOnboarding=false;show('notifications')};
 $('settingsProfile').onclick=openProfileSettings;
@@ -1197,7 +1282,8 @@ $('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};
 $('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};
 $('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};
 $('budgetAdd').onclick=openBudgetChoice;
-$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
+document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
 show('landing');
 })();
 </script>
