@@ -192,11 +192,54 @@
 #setup .barsIcon i{display:block;width:6px;border-radius:3px 3px 1px 1px;background:#1478df}.barsIcon i:nth-child(1){height:14px}.barsIcon i:nth-child(2){height:23px}.barsIcon i:nth-child(3){height:31px}
 @media(max-width:410px){#setup{padding-left:16px;padding-right:16px}#setup .setupTop{min-height:220px}#setup .setupBrand{padding-top:66px;padding-left:5px}#setup .brand{font-size:34px}#setup .sub{font-size:18px}#setup .setupPhoneArt{right:-32px;transform:scale(.88);transform-origin:top right}#setup .setupCard{padding:22px 18px}#setup .setupCard h1{font-size:29px}#setup .textInput input,#setup .moneyInput input{font-size:18px}#setup .benefit{font-size:10px}#setup .benefitIcon{width:49px;height:49px}}
 
+
+/* IN ORDINE — schermata generale */
+.landing{padding:24px 4px 28px}
+.landingTitle{font-size:39px;font-weight:950;letter-spacing:-1px;margin:10px 4px 4px;color:#17324a}
+.landingLead{font-size:18px;font-weight:800;color:#49657b;margin:0 4px}
+.landingScript{font-size:15px;color:#6f8290;margin:6px 4px 24px;font-style:italic}
+.landingName{background:#fff;border:1px solid var(--line);border-radius:19px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.landingName label{display:block;font-size:14px;font-weight:900;margin-bottom:8px}
+.landingName input{width:100%;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 13px;outline:none;font-size:16px}
+.landingCards{display:flex;flex-direction:column;gap:13px}
+.landingCard{width:100%;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;grid-template-columns:48px 1fr auto;gap:13px;align-items:center;text-align:left;box-shadow:var(--shadow);color:var(--text)}
+.landingCardIcon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:24px;font-weight:900}
+.landingCardIcon.blue{background:#e6f2ff;color:#2478d4}.landingCardIcon.green{background:#eaf8f0;color:#168256}
+.landingCard strong{font-size:18px}.landingCard small{display:block;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.35}
+.landingCard .arrow{font-size:27px;color:#257bd8}
+.landingCard.future .arrow{color:#168256}
+.landingBottom{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+.homeLandingBack{border:0;background:transparent;color:var(--text);font-size:28px;padding:0 6px 0 0}
+#setup .nameField{display:none!important}
+
 </style>
 </head>
 <body>
 <div class="app">
-<section id="setup" class="screen setup hidden">
+<section id="landing" class="screen landing hidden">
+  <div class="landingTitle">In Ordine</div>
+  <div class="landingLead">Conti e attività, tutto sotto controllo.</div>
+  <div class="landingScript">Più tempo per ciò che conta</div>
+  <div class="landingName">
+    <label>Come vuoi essere chiamato?</label>
+    <input id="landingNickname" type="text" autocomplete="name" placeholder="Es. Marco">
+  </div>
+  <div class="landingCards">
+    <button id="landingConti" class="landingCard">
+      <span class="landingCardIcon blue">€</span>
+      <span><strong>Conti economici</strong><small>Monitora entrate, pagamenti e saldo.</small></span>
+      <span class="arrow">›</span>
+    </button>
+    <button id="landingTodo" class="landingCard future">
+      <span class="landingCardIcon green">✓</span>
+      <span><strong>Cose da fare</strong><small>Organizza impegni, scadenze e promemoria.</small></span>
+      <span class="arrow">›</span>
+    </button>
+  </div>
+  <div class="landingBottom">Scegli da dove iniziare.</div>
+</section>
+
+<section id="setup" class="screen setup hidden"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button>
   <div class="setupTop">
     <div class="setupBrand"><div class="brand"><span>Conti</span> <b>in mano</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te!</div></div>
     <div class="setupPhoneArt" aria-hidden="true">
@@ -242,7 +285,7 @@
 </section>
 
 <section id="home" class="screen hidden">
-  <div class="homeHero"><div><div class="homeBrand">Conti economici</div><div class="homeSub">Saldo, entrate, pagamenti. Sempre con te!</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
+  <div class="homeHero"><div style="display:flex;gap:7px;align-items:flex-start"><button id="homeBackLanding" class="homeLandingBack">←</button><div><div class="homeBrand">Conti economici</div><div class="homeSub">Saldo, entrate, pagamenti. Sempre con te!</div></div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
   <div class="card balanceCard"><div class="balanceRow"><div class="balanceLeft"><div class="balanceLabel">Saldo attuale</div><div id="homeBalance" class="balanceValue">€ 0,00</div></div><button id="editBalance" class="editBalance">✎ Modifica saldo</button></div></div>
   <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Pagamenti</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
   <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Saldo fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
@@ -298,7 +341,17 @@ const blank=()=>({balance:null,profile:{fullName:''},entries:[],history:[],adjus
 let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const nav=!['setup','setupIncome','setupExpense'].includes(id);$('bottomNav').classList.toggle('hidden',!nav);document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='budget'&&b.dataset.nav==='summary')));if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function openContiFromLanding(){
+  const nick=$('landingNickname')?$('landingNickname').value.trim():'';
+  state.profile.fullName=nick;save();
+  if(state.balance===null){hydrateFirstSetup();show('setup');return}
+  if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense');return}
+  if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome');return}
+  if(!state.setupDone&&state.setupStage==='notifications'){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}
+  show('home');
+}
+
+function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const nav=!['landing','setup','setupIncome','setupExpense'].includes(id);$('bottomNav').classList.toggle('hidden',!nav);document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='budget'&&b.dataset.nav==='summary')));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   return {
     id:e.id||'',
@@ -819,16 +872,22 @@ function flashModal(msg){let n=document.createElement('div');n.className='note';
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
-function hydrateFirstSetup(){if($('fullName'))$('fullName').value=state.profile&&state.profile.fullName||'';if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
-$('startBtn').onclick=()=>{const name=$('fullName').value.trim(),raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.profile.fullName=name;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('landingConti').onclick=openContiFromLanding;
+$('landingNickname').addEventListener('change',()=>{state.profile.fullName=$('landingNickname').value.trim();save()});
+$('landingTodo').onclick=()=>openModal('Cose da fare','<div class="note">Questa sezione verrà sviluppata dopo Conti economici.</div>');
+$('balanceBack').onclick=()=>show('landing');
+$('homeBackLanding').onclick=()=>show('landing');
+
+function hydrateFirstSetup(){if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
+$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
 $('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
 $('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
 $('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}if(!saved.length)throw new Error('Inserisci almeno una entrata oppure torna indietro.');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
 $('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
 $('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
-$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('fullName').value='';$('startBalance').value='';show('setup')}};
-if(state.balance===null){hydrateFirstSetup();show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value='';show('landing')}};
+show('landing');
 })();
 </script>
 </body>
