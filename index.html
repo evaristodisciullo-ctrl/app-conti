@@ -282,17 +282,17 @@
 
 <section id="setupIncome" class="screen hidden">
   <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Entrate <span>€</span></div></div>
-  <div class="onboardCard"><h2>Inserisci le tue entrate</h2><div id="incomeSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="incomeRows"></div><div class="onboardSpacer"></div><button id="saveIncomeSetup" class="btn onboardAction">SALVA ENTRATE E VAI ALLE USCITE →</button></div>
+  <div class="onboardCard"><h2>Scrivi le tue entrate</h2><div id="incomeSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="incomeRows"></div><div class="onboardSpacer"></div><button id="saveIncomeSetup" class="btn onboardAction">SALVA ENTRATE E VAI ALLE USCITE →</button></div>
 </section>
 
 <section id="setupExpense" class="screen hidden">
   <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Pagamenti <span>€</span></div></div>
-  <div class="onboardCard"><h2>Inserisci le tue pagamenti</h2><div id="expenseSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">SALVA E VAI AVANTI →</button></div>
+  <div class="onboardCard"><h2>Scrivi i tuoi pagamenti</h2><div id="expenseSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">Continua →</button></div>
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
-  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e pagamenti.</p></div>
+  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e i tuoi pagamenti.</p></div>
   <div class="notifyCard">
     <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e pagamento.</span></span></button>
     <button id="notifyCustom" class="notifyChoice"><span class="bell">🔔</span><span><strong>Scegli quali notifiche attivare</strong><span class="copy">Decidi tu per quali voci ricevere un promemoria.</span></span></button>
@@ -379,10 +379,6 @@
 </section>
 </div>
 
-<nav id="bottomNav"</section>
-</div>
-
-<nav id="bottomNav" class="bottomNav hidden"><button data-nav="home"><span class="nIcon">⌂</span><span>Home</span></button><button data-nav="movements"><span class="nIcon">↕</span><span>Movimenti</span></button><button data-nav="summary"><span class="nIcon">▤</span><span>Riepilogo</span></button><button data-nav="notifications" class="bellNav"><span class="nIcon">🔔</span><span>Notifiche</span></button><button data-nav="settings"><span class="nIcon">⚙</span><span>Impostazioni</span></button></nav>
 <div id="undoSnack" class="undoSnack hidden"><span id="undoSnackText"></span><button id="undoSnackBtn">ANNULLA</button></div><div id="modal" class="modal hidden"><div class="modalCard"><div class="modalHead"><div id="modalTitle" class="modalTitle"></div><button id="modalClose" class="close">×</button></div><div id="modalBody"></div></div></div>
 
 <script>
@@ -460,7 +456,7 @@ function openContiFromLanding(){
   show('home');
 }
 
-function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));$('bottomNav').classList.add('hidden');if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   return {
     id:e.id||'',
@@ -648,7 +644,7 @@ function renderMovementList(el,arr){
 }
 function restoreSetupCopy(){
   $('saveIncomeSetup').textContent='SALVA ENTRATE E VAI ALLE USCITE →';
-  $('saveExpenseSetup').textContent='SALVA E VAI AVANTI →';
+  $('saveExpenseSetup').textContent='Continua →';
   $('incomeSetupHint').textContent='I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.';
   $('expenseSetupHint').textContent='I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.';
 }
@@ -675,7 +671,7 @@ function closeQuickEntry(){
   if(type){currentFlow=type;show('flow')}
 }
 function openFlow(type){quickEditMode=null;restoreSetupCopy();currentFlow=type;flowMonth=ymNow();show('flow')}
-function renderFlow(){const isIn=currentFlow==='income',d=monthData(currentFlow,flowMonth);$('flowTitle').textContent=isIn?'Entrate':'Pagamenti';$('flowMonth').textContent=monthName(flowMonth);$('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';$('doneLabel').textContent=isIn?'Ricevuto':'Pagato';$('pendingLabel').textContent=isIn?'Da ricevere':'Da pagare';$('doneColTitle').textContent=isIn?'ENTRATE RICEVUTE':'USCITE PAGATE';$('pendingColTitle').textContent=isIn?'ENTRATE DA RICEVERE':'USCITE DA PAGARE';const doneTotal=d.done.reduce((s,x)=>s+x.amount,0),pendingTotal=d.pending.reduce((s,x)=>s+x.amount,0);$('doneTotal').textContent=money(doneTotal);$('pendingTotal').textContent=money(pendingTotal);$('doneColTotal').textContent=money(doneTotal);$('pendingColTotal').textContent=money(pendingTotal);$('doneColTotal').className='v '+(isIn?'incomeColor':'expenseColor');renderFlowCards($('doneFlowList'),d.done,true,isIn);renderFlowCards($('pendingFlowList'),d.pending,false,isIn)}
+function renderFlow(){const isIn=currentFlow==='income',d=monthData(currentFlow,flowMonth);$('flowTitle').textContent=isIn?'Entrate':'Pagamenti';$('flowMonth').textContent=monthName(flowMonth);$('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';$('doneLabel').textContent=isIn?'Ricevuto':'Pagato';$('pendingLabel').textContent=isIn?'Da ricevere':'Da pagare';$('doneColTitle').textContent=isIn?'ENTRATE RICEVUTE':'PAGAMENTI PAGATI';$('pendingColTitle').textContent=isIn?'ENTRATE DA RICEVERE':'PAGAMENTI DA PAGARE';const doneTotal=d.done.reduce((s,x)=>s+x.amount,0),pendingTotal=d.pending.reduce((s,x)=>s+x.amount,0);$('doneTotal').textContent=money(doneTotal);$('pendingTotal').textContent=money(pendingTotal);$('doneColTotal').textContent=money(doneTotal);$('pendingColTotal').textContent=money(pendingTotal);$('doneColTotal').className='v '+(isIn?'incomeColor':'expenseColor');renderFlowCards($('doneFlowList'),d.done,true,isIn);renderFlowCards($('pendingFlowList'),d.pending,false,isIn)}
 function renderFlowCards(el,arr,done,isIn){
   el.innerHTML='';
   if(!arr.length){el.innerHTML='<div class="empty" style="padding:12px 7px">Nessuna voce.</div>';return}
@@ -1013,7 +1009,6 @@ $('settingsBackup').onclick=openBackupSettings;
 $('settingsSecurity').onclick=openSecuritySettings;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
-$('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 show('landing');
 })();
