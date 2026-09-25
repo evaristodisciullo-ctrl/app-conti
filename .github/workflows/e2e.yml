@@ -89,6 +89,33 @@ jobs:
             assert.equal(await page.locator('#settingsBackup').isVisible(), true);
             assert.equal(await page.locator('#settingsIncome').isVisible(), false);
 
+            // Gestione categorie da Impostazioni
+            await page.fill('#settingsSearch','');
+            await page.click('#settingsCategories');
+            await page.click('#categoryManageOpen');
+            await page.locator('.catAdd[data-type="expense"]').click();
+            await page.fill('#categoryNameEdit','Test categoria');
+            await page.click('#categoryNameSave');
+            assert.match(await page.locator('#modalBody').innerText(), /Test categoria/);
+            await page.click('#modalClose');
+            await page.click('#settingsBack');
+
+            // Ricorrenza: crea un pagamento mensile e cancella solo la scadenza corrente.
+            await page.click('#homeExpense');
+            await page.click('#flowAdd');
+            await page.fill('#editName','Ricorrente test');
+            await page.fill('#editAmount','10');
+            await page.selectOption('#editRecKind','monthly');
+            await page.click('#editSave');
+            const recurringRow=page.locator('.flowUnifiedRow').filter({hasText:'Ricorrente test'}).first();
+            await recurringRow.locator('.flowUnifiedMain').click();
+            await page.click('#occOnly');
+            await page.click('#occDelete');
+            await page.click('#deleteOccOnly');
+            await page.click('#deleteOccYes');
+            assert.equal(await page.locator('.flowUnifiedRow').filter({hasText:'Ricorrente test'}).count(),0);
+            await page.click('#flowBack');
+
             // Persistenza al reload: deve riaprire In Ordine e mantenere saldo.
             await page.reload();
             await page.waitForSelector('#landing:not(.hidden)');
