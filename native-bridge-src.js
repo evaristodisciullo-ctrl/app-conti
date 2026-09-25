@@ -1,5 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import { NativeBiometric, BiometryType } from '@capgo/capacitor-native-biometric';
 
 async function requestNotifications(){
@@ -47,6 +49,17 @@ async function notifyNow(title,body,id=2147480000){
   }catch(e){ return false; }
 }
 
+async function saveBackupFile(text,filename){
+  if(!Capacitor.isNativePlatform()) return false;
+  try{
+    const path=filename||('in-ordine-backup-'+new Date().toISOString().slice(0,10)+'.json');
+    await Filesystem.writeFile({path,data:text,directory:Directory.Cache,encoding:Encoding.UTF8,recursive:true});
+    const uri=await Filesystem.getUri({path,directory:Directory.Cache});
+    await Share.share({title:'Backup In Ordine',text:'Backup dei dati di Conti economici',files:[uri.uri],dialogTitle:'Salva o condividi il backup'});
+    return true;
+  }catch(e){ return false; }
+}
+
 async function biometricAvailable(){
   if(!Capacitor.isNativePlatform()) return false;
   try{
@@ -85,6 +98,7 @@ window.InOrdineNative={
   requestNotifications,
   replaceNotifications,
   notifyNow,
+  saveBackupFile,
   biometricAvailable,
   authenticateDevice
 };
