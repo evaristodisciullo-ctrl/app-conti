@@ -652,8 +652,20 @@ function openBackupSettings(){
 function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64urlToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
 async function hashPin(pin){const data=new TextEncoder().encode('in-ordine|'+pin);return bytesToB64url(await crypto.subtle.digest('SHA-256',data))}
+let securityLockTimer=null;
 function securityFresh(){return !!(state.security&&state.security.enabled&&Date.now()-Number(state.security.lastActivity||0)<10*60*1000)}
-function touchSecurity(){if(state.security&&state.security.enabled&&document.querySelector('#landing.hidden')){state.security.lastActivity=Date.now();save()}}
+function scheduleSecurityLock(){
+  if(securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}
+  if(!state.security||!state.security.enabled||!document.querySelector('#landing.hidden'))return;
+  const remaining=Math.max(0,10*60*1000-(Date.now()-Number(state.security.lastActivity||0)));
+  securityLockTimer=setTimeout(()=>{securityLockTimer=null;if(state.security&&state.security.enabled){closeModal();show('landing')}},remaining);
+}
+function touchSecurity(){
+  if(state.security&&state.security.enabled&&document.querySelector('#landing.hidden')){
+    if(!securityFresh()){closeModal();show('landing');openUnlock();return}
+    state.security.lastActivity=Date.now();localStorage.setItem(KEY,JSON.stringify(state));scheduleSecurityLock();
+  }
+}
 async function registerDeviceSecurity(){
   if(nativeBridge()){
     try{const ok=await nativeBridge().biometricAvailable();if(ok){state.security.credentialId='native';save();return true}return false}catch(e){return false}
@@ -676,17 +688,24 @@ async function authenticateDeviceSecurity(){
   }catch(e){return false}
 }
 function enterContiAfterUnlock(){
-  state.security.lastActivity=Date.now();save();
+  state.security.lastActivity=Date.now();save();scheduleSecurityLock();
   if(state.balance===null){hydrateFirstSetup();show('setup');return}
   if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense');return}
   if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome');return}
   show('home');
 }
 function openUnlock(){
-  openModal('Sblocca Conti economici','<div class="field"><label>PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>'+(state.security.credentialId?'<button id="unlockDevice" class="btn secondary" style="margin-top:8px">Usa sicurezza del telefono</button>':'')+'<div class="hint" style="margin-top:10px">La sicurezza del telefono può usare impronta, viso o codice dispositivo, in base alle impostazioni del telefono.</div><div class="modalBtns"><button id="unlockCancel" class="btn secondary">Annulla</button><button id="unlockPinBtn" class="btn">Sblocca</button></div>');
+  const device=state.security.credentialId?'<button id="unlockDevice" class="btn secondary" style="margin-top:8px">Usa sicurezza del telefono</button><button id="forgotPin" class="optionalNoteBtn" style="text-align:center">Hai dimenticato il PIN?</button>':'';
+  openModal('Sblocca Conti economici','<div class="field"><label>PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>'+device+'<div class="hint" style="margin-top:10px">La sicurezza del telefono può usare impronta, viso o codice dispositivo, in base alle impostazioni del telefono.</div><div class="modalBtns"><button id="unlockCancel" class="btn secondary">Annulla</button><button id="unlockPinBtn" class="btn">Sblocca</button></div>');
   $('unlockCancel').onclick=closeModal;
   $('unlockPinBtn').onclick=async()=>{const h=await hashPin($('unlockPin').value);if(h!==state.security.pinHash)return flashModal('PIN non corretto.');closeModal();enterContiAfterUnlock()};
   if($('unlockDevice'))$('unlockDevice').onclick=async()=>{if(await authenticateDeviceSecurity()){closeModal();enterContiAfterUnlock()}else flashModal('Autenticazione del telefono non riuscita.')};
+  if($('forgotPin'))$('forgotPin').onclick=async()=>{if(await authenticateDeviceSecurity())openResetPinAfterDevice();else flashModal('Non è stato possibile verificare la sicurezza del telefono.')};
+}
+function openResetPinAfterDevice(){
+  openModal('Crea un nuovo PIN','<div class="note">Identità verificata con la sicurezza del telefono. I tuoi dati restano invariati.</div><div class="field"><label>Nuovo PIN</label><input id="recoverPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="recoverPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="recoverCancel" class="btn secondary">Annulla</button><button id="recoverSave" class="btn">Salva nuovo PIN</button></div>');
+  $('recoverCancel').onclick=openUnlock;
+  $('recoverSave').onclick=async()=>{const p1=$('recoverPin1').value,p2=$('recoverPin2').value;if(!/^\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();enterContiAfterUnlock()};
 }
 function openSecuritySettings(){
   if(!state.security.enabled){
@@ -796,7 +815,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -1654,6 +1673,15 @@ $('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()
 $('budgetAdd').onclick=openBudgetChoice;
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
+document.addEventListener('visibilitychange',()=>{
+  if(!state.security||!state.security.enabled)return;
+  if(document.hidden){
+    if(document.querySelector('#landing.hidden')){state.security.lastActivity=Date.now();localStorage.setItem(KEY,JSON.stringify(state))}
+    if(securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}
+  }else if(document.querySelector('#landing.hidden')){
+    if(!securityFresh()){closeModal();show('landing');openUnlock()}else scheduleSecurityLock();
+  }
+});
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
 setTimeout(queueNativeNotificationSync,500);
 show('landing');
