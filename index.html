@@ -466,8 +466,8 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:5});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},version:5});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
@@ -504,7 +504,7 @@ function openGuide(){
   $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
 }
 function downloadBackup(){
-  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};
+  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
   a.href=url;a.download='in-ordine-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -512,7 +512,7 @@ function openBackupSettings(){
   openModal('Backup e ripristino','<div class="hint">Il backup contiene soltanto i dati di Conti economici.</div><div class="modalBtns" style="margin-top:16px"><button id="backupCreate" class="btn">Crea backup</button><button id="backupRestore" class="btn secondary">Ripristina backup</button></div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
   $('backupCreate').onclick=downloadBackup;
   $('backupRestore').onclick=()=>$('backupFile').click();
-  $('backupFile').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();const current={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));Object.assign(state,obj.data);save();closeModal();show('landing')}catch(err){flashModal('Il file selezionato non è un backup valido.')}};
+  $('backupFile').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();const current={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,budgetPlans:state.budgetPlans,budgetNotifications:state.budgetNotifications,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));downloadBackup();Object.assign(state,obj.data);save();closeModal();show('landing')}catch(err){flashModal('Il file selezionato non è un backup valido.')}};
 }
 function openSecuritySettings(){
   openModal('Protezione Conti economici','<div class="note">La protezione con PIN e biometria verrà collegata al sistema di sicurezza del telefono nella versione mobile. I dati non verranno mai cancellati per recuperare l’accesso.</div>');
@@ -722,7 +722,7 @@ function completeOccurrenceImmediate(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   if(historyFor(x.entryId,x.month))return;
   const h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:x.date,month:x.month,category:entry.category||'',note:entry.note||''};
-  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();
+  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
 }
 function openReopenMovement(h){
   openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
@@ -1025,22 +1025,95 @@ function renderSummary(){
   renderCategoryBlock('income',summaryMonth,'incomeCategories','incomeCategoryTotal');
   renderCategoryBlock('expense',summaryMonth,'expenseCategories','expenseCategoryTotal');
 }
+function budgetPlanFor(ym){
+  const plans=[...(state.budgetPlans||[])].filter(p=>p&&p.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  const p=plans.length?plans[plans.length-1]:null;
+  return p?{total:Number(p.total||0),limits:Object.assign({},p.limits||{})}:{total:0,limits:{}};
+}
+function saveCurrentBudgetPlan(plan){
+  const ym=ymNow(),arr=state.budgetPlans||[],idx=arr.findIndex(p=>p.effectiveMonth===ym),copy={effectiveMonth:ym,total:Number(plan.total||0),limits:Object.assign({},plan.limits||{})};
+  if(idx>=0)arr[idx]=copy;else arr.push(copy);
+  state.budgetPlans=arr.sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  state.budgets=Object.assign({},copy.limits);
+}
+function monthPaidExpenses(ym){
+  return monthData('expense',ym).done;
+}
+function totalPaidExpenses(ym){return monthPaidExpenses(ym).reduce((s,x)=>s+Number(x.amount||0),0)}
 function renderBudget(){
   $('budgetMonth').textContent=monthName(budgetMonth);
-  const spentMap=Object.fromEntries(categoryTotals('expense',budgetMonth).map(x=>[x.name,x.amount]));
-  const cats=Array.from(new Set([...allCategories('expense'),...Object.keys(state.budgets),...Object.keys(spentMap).filter(x=>x!=='Senza categoria')]));
-  const rows=cats.map(name=>({name,spent:Number(spentMap[name]||0),limit:Number(state.budgets[name]||0)})).filter(x=>x.spent>0||x.limit>0).sort((a,b)=>b.spent-a.spent||a.name.localeCompare(b.name,'it'));
+  const current=budgetMonth===ymNow(),plan=budgetPlanFor(budgetMonth),spent=totalPaidExpenses(budgetMonth),spentMap=Object.fromEntries(categoryTotals('expense',budgetMonth).map(x=>[x.name,x.amount]));
+  const rows=[];
+  if(plan.total>0)rows.push({key:'__total__',name:'Budget totale mensile',spent,limit:plan.total,total:true});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name==='Senza categoria'||Number(limit)<=0)continue;rows.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),total:false})}
   const el=$('budgetList');
-  if(!rows.length){el.innerHTML='<div class="card empty">Non hai ancora impostato budget. Premi “+ Budget”.</div>';return}
-  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=x.limit>0?Math.min(pct,100):0;return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName">'+esc(x.name)+'</span><span class="budgetNumbers">'+money(x.spent)+' / '+(x.limit>0?money(x.limit):'nessun limite')+'</span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+(x.limit>0?pct+'% del budget':'Budget non impostato')+'</span><button class="budgetEdit" data-budget="'+escAttr(x.name)+'">'+(x.limit>0?'Modifica':'Imposta')+'</button></div></div>'}).join('');
-  el.querySelectorAll('.budgetEdit').forEach(b=>b.onclick=()=>openBudgetEditor(b.dataset.budget));
+  if(!rows.length){el.innerHTML='<div class="card empty">Non hai ancora impostato budget per questo mese.</div>';return}
+  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=Math.min(Math.max(pct,0),100);return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName">'+esc(x.name)+'</span><span class="budgetNumbers">'+money(x.spent)+' / '+money(x.limit)+'</span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+pct+'% del budget</span>'+(current?'<button class="budgetEdit" data-budget="'+escAttr(x.key)+'">Modifica</button>':'<span>Storico</span>')+'</div></div>'}).join('');
+  if(current)el.querySelectorAll('.budgetEdit').forEach(b=>b.onclick=()=>openBudgetEditor(b.dataset.budget));
+}
+function budgetNotifyConfig(key){
+  if(key==='__total__')return state.budgetNotifications.total||(state.budgetNotifications.total={enabled:false,mode:'over',sent:{}});
+  if(!state.budgetNotifications.categories[key])state.budgetNotifications.categories[key]={enabled:false,mode:'over',sent:{}};
+  return state.budgetNotifications.categories[key];
+}
+function openBudgetChoice(){
+  budgetMonth=ymNow();
+  openModal('Aggiungi budget','<div class="guideTopics"><button id="budgetTotalChoice" class="guideTopic">Budget totale mensile</button><button id="budgetCategoryChoice" class="guideTopic">Budget per categoria</button></div>');
+  $('budgetTotalChoice').onclick=()=>openBudgetEditor('__total__');
+  $('budgetCategoryChoice').onclick=()=>openBudgetEditor(null);
 }
 function openBudgetEditor(category){
-  const cats=allCategories('expense');
-  const options=cats.map(x=>'<option value="'+escAttr(x)+'" '+(x===category?'selected':'')+'>'+esc(x)+'</option>').join('');
-  openModal(category?'Modifica budget':'Aggiungi budget','<div class="field"><label>Categoria</label><select id="budgetCategory">'+options+'</select></div><div class="field"><label>Limite mensile</label><input id="budgetAmount" type="number" min="0" step="0.01" inputmode="decimal" value="'+(category&&state.budgets[category]?state.budgets[category]:'')+'" placeholder="0,00"></div><div class="note">Inserisci 0 per rimuovere il budget della categoria.</div><div class="modalBtns"><button id="budgetCancel" class="btn secondary">Annulla</button><button id="budgetSave" class="btn">Salva</button></div>');
+  budgetMonth=ymNow();
+  const plan=budgetPlanFor(ymNow()),isTotal=category==='__total__';
+  const cats=allCategories('expense').filter(x=>x!=='Senza categoria');
+  const selected=category&&!isTotal?category:(cats[0]||'');
+  const options=cats.map(x=>'<option value="'+escAttr(x)+'" '+(x===selected?'selected':'')+'>'+esc(x)+'</option>').join('');
+  const limit=isTotal?plan.total:Number(plan.limits[selected]||0),cfg=budgetNotifyConfig(isTotal?'__total__':selected);
+  openModal(isTotal?'Budget totale mensile':(category?'Modifica budget':'Budget per categoria'),
+    (isTotal?'':'<div class="field"><label>Categoria</label><select id="budgetCategory">'+options+'</select></div>')+
+    '<div class="field"><label>Limite mensile</label><input id="budgetAmount" type="number" min="0" step="0.01" inputmode="decimal" value="'+(limit||'')+'" placeholder="0,00"></div>'+
+    '<div class="field"><label>Notifiche Budget</label><select id="budgetNotifyMode"><option value="off">Disattivate</option><option value="80">Avviso all’80% + al superamento</option><option value="over">Solo al superamento</option></select></div>'+
+    '<div class="hint">Le notifiche Budget sono separate dalle notifiche di Entrate e Pagamenti.</div>'+
+    '<div class="modalBtns"><button id="budgetCancel" class="btn secondary">Annulla</button><button id="budgetSave" class="btn">Salva</button></div>');
+  $('budgetNotifyMode').value=cfg.enabled?(cfg.mode||'over'):'off';
+  if(!isTotal&&$('budgetCategory'))$('budgetCategory').onchange=()=>{const key=$('budgetCategory').value,nc=budgetNotifyConfig(key);$('budgetAmount').value=plan.limits[key]||'';$('budgetNotifyMode').value=nc.enabled?(nc.mode||'over'):'off'};
   $('budgetCancel').onclick=closeModal;
-  $('budgetSave').onclick=()=>{const cat=$('budgetCategory').value,v=Number($('budgetAmount').value);if(!cat||!Number.isFinite(v)||v<0)return flashModal('Controlla categoria e importo.');if(v===0)delete state.budgets[cat];else state.budgets[cat]=v;save();closeModal();renderBudget()};
+  $('budgetSave').onclick=async()=>{
+    const key=isTotal?'__total__':$('budgetCategory').value,v=Number($('budgetAmount').value),mode=$('budgetNotifyMode').value;
+    if(!key||key==='Senza categoria'||!Number.isFinite(v)||v<0)return flashModal('Controlla categoria e importo.');
+    const p=budgetPlanFor(ymNow());
+    if(isTotal)p.total=v;else{if(v===0)delete p.limits[key];else p.limits[key]=v}
+    saveCurrentBudgetPlan(p);
+    const nc=budgetNotifyConfig(key);nc.enabled=mode!=='off';nc.mode=mode==='off'?'over':mode;nc.sent={};
+    save();closeModal();
+    if(nc.enabled)await requestNotificationPermission();
+    renderBudget();
+    const sum=Object.values(p.limits).reduce((s,x)=>s+Number(x||0),0);
+    if(p.total>0&&sum>p.total)openModal('Budget salvato','<div class="note">La somma dei budget per categoria supera il Budget totale mensile. È consentito: i due controlli restano indipendenti.</div>');
+    checkBudgetNotifications(true);
+  };
+}
+async function checkBudgetNotifications(force){
+  const ym=ymNow(),plan=budgetPlanFor(ym),alerts=[],spentTotal=totalPaidExpenses(ym),spentMap=Object.fromEntries(categoryTotals('expense',ym).map(x=>[x.name,x.amount]));
+  const items=[];
+  if(plan.total>0)items.push({key:'__total__',name:'Budget totale',spent:spentTotal,limit:plan.total,cfg:budgetNotifyConfig('__total__')});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name!=='Senza categoria'&&Number(limit)>0)items.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),cfg:budgetNotifyConfig(name)})}
+  for(const x of items){
+    const cfg=x.cfg;if(!cfg||!cfg.enabled)continue;if(!cfg.sent)cfg.sent={};
+    const pct=x.limit?x.spent/x.limit*100:0,base=ym+'|'+x.key;
+    if(pct>=100){
+      const k=base+'|over';if(!cfg.sent[k]){alerts.push(x.name+' superato ('+Math.round(pct)+'%)');cfg.sent[k]=true;cfg.sent[base+'|80']=true}
+    }else if(cfg.mode==='80'&&pct>=80){
+      const k=base+'|80';if(!cfg.sent[k]){alerts.push(x.name+' all’'+Math.round(pct)+'%');cfg.sent[k]=true}
+    }
+  }
+  if(!alerts.length){save();return}
+  save();
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('Avviso Budget',{body:alerts.join('\n')})}catch(e){}
+  }else if(force){
+    openModal('Avviso Budget','<div class="note">'+alerts.map(esc).join('<br>')+'</div>');
+  }
 }
 function openBalanceEditor(){
   openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
@@ -1123,7 +1196,7 @@ $('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()
 $('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};
 $('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};
 $('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};
-$('budgetAdd').onclick=()=>openBudgetEditor(null);
+$('budgetAdd').onclick=openBudgetChoice;
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 show('landing');
 })();
