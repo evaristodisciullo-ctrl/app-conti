@@ -257,6 +257,15 @@
 .flowEmpty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;text-align:center;color:var(--muted)}
 @media(max-width:410px){.setupSimple .entryGridHead,.setupSimple .entryRow{grid-template-columns:1.15fr .82fr 1fr 28px;gap:5px}.flowUnifiedRow{grid-template-columns:minmax(0,1fr) 94px}.flowUnifiedMain{padding:10px}.flowUnifiedStatus{font-size:9px}}
 
+
+/* INSERIMENTO VOCE E DETTAGLIO MOVIMENTO */
+.suggestionLabel{font-size:12px;font-weight:850;color:var(--muted);margin:4px 0 7px}.suggestionChips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}.suggestionChip{border:1px solid #cfe0ee;background:#f5faff;color:#315f83;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:850}
+.notifyField{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px 13px;margin:14px 0}.notifyField input{width:22px!important;min-height:auto!important;height:22px}
+.notifyRuleBox{background:#f7fafc;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:-6px}.notifyRuleBox .field{margin:9px 0}.notifyRuleBox .field:first-child{margin-top:0}.notifyRuleBox .field:last-child{margin-bottom:0}
+.optionalNoteBtn{width:100%;border:0;background:transparent;text-align:left;color:var(--accent);font-weight:900;padding:9px 2px}
+.modal textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:13px;padding:11px;resize:vertical;font:inherit}
+.movementRow{cursor:pointer}.mIcon.adjustment{background:#e8ebff;color:#4d5cc5}.mAmount.adjustment{color:#4d5cc5}
+
 </style>
 </head>
 <body>
@@ -664,6 +673,7 @@ function renderMovementList(el,arr){
     const amount=isAdj?Math.abs(delta):Number(x.amount||0);
     const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
     r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
   });
 }
@@ -726,6 +736,7 @@ function undoHistory(id){
 }
 function openAddEntry(type){openEntryEditor(null,type)}
 function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
+const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Benzina','Luce','Gas','Altro']};
 const DEFAULT_CATEGORIES={
   income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
   expense:['Casa','Auto','Bollette','Salute','Altro']
@@ -734,27 +745,44 @@ function allCategories(type){return Array.from(new Set([...(DEFAULT_CATEGORIES[t
 function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(!r)return ymNow();return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
+  const isNew=!entry;
   const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?isoFor(entryStartMonth(entry),entry.day):todayISO();
   const noteValue=entry&&entry.note?entry.note:'';
+  const globalAll=state.notifications&&state.notifications.mode==='all';
+  const notifyDefault=entry?entry.notify===true:globalAll;
+  const rule=entry&&entry.notifyRule||null;
+  const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
+  const effectiveRule=rule||generalRule;
+  const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
+  const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
   openModal(title,
-    '<div class="field"><label>Nome</label><input id="editName" value="'+escAttr(entry?entry.name:'')+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="editAmount" type="number" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
+    suggestions+
+    '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
     '<div class="field"><label>Data</label><input id="editDate" type="date" value="'+dateValue+'"></div>'+
-    '<div class="field"><label>Ricorrenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
+    '<div class="field"><label>Frequenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
     '<div id="editRecExtra"></div>'+
-    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Nome nuova categoria"></div></div>'+
-    '<div class="notifyField"><label for="editNotify">Attiva notifiche 🛎️</label><input id="editNotify" type="checkbox" '+(entry&&entry.notify===true?'checked':'')+'></div>'+
+    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+    '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
+    '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
+      '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+      '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
+      '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
+    '</div>'+
     '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
     '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
-    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">Salva</button></div>'
+    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
   );
-  $('editRecKind').value=rec?rec.kind:'';
-  renderEditRecExtra(rec);
+  if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
+  $('editRecKind').value=rec?rec.kind:'single';
+  renderEditRecExtra(rec||{kind:'single'});
   $('editRecKind').onchange=()=>renderEditRecExtra(null);
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
   $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
+  $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
+  $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
   $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
   $('editSave').onclick=()=>{
     const name=$('editName').value.trim(),amount=Number($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
@@ -766,15 +794,16 @@ function openEntryEditor(entry,type){
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
     const notify=$('editNotify').checked;
+    const notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
     const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
-    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo, data e ricorrenza.');
+    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
-    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.note=note;id=entry.id}
-    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,recurrence:r,category,notify,note})}
+    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
+    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,recurrence:r,category,notify,notifyRule,note})}
     state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
     if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
     save();closeModal();renderFlow();
-  }
+  };
 }
 function confirmDeleteEntry(entry){
   const linked=state.history.filter(h=>h.entryId===entry.id);
@@ -860,6 +889,24 @@ async function checkDueNotifications(){
     try{new Notification(title,{body});n.sent[key]=true}catch(e){}
   }
   state.notifications=n;save();
+}
+function openMovementDetail(id){
+  const h=state.history.find(x=>x.id===id);if(!h)return;
+  if(h.type==='adjustment'){
+    openModal('Correzione saldo','<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="number" step="0.01" value="'+Number(h.delta||0)+'"></div><div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="moveReason" value="'+escAttr(h.reason||'')+'"></div><div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva</button></div>');
+    $('moveSave').onclick=()=>{const nd=Number($('moveDelta').value),date=$('moveDate').value;if(!Number.isFinite(nd)||!date)return flashModal('Controlla importo e data.');const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=date;h.month=date.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();};
+    $('moveDelete').onclick=()=>confirmDeleteMovement(h);
+    return;
+  }
+  const type=h.type,catOpts=categoryOptions(type,h.category||'');
+  openModal(h.type==='income'?'Dettaglio entrata ricevuta':'Dettaglio pagamento','<div class="field"><label>Voce</label><input value="'+escAttr(h.name)+'" readonly></div><div class="field"><label>Importo</label><input id="moveAmount" type="number" min="0.01" step="0.01" value="'+Number(h.amount||0)+'"></div><div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div><div class="field"><label>Categoria</label><select id="moveCategory">'+catOpts+'</select></div><div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="moveNote">'+esc(h.note||'')+'</textarea></div><div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva</button></div>');
+  $('moveSave').onclick=()=>{const a=Number($('moveAmount').value),date=$('moveDate').value;if(!Number.isFinite(a)||a<=0||!date)return flashModal('Controlla importo e data.');const old=Number(h.amount||0),diff=a-old;state.balance=Number(state.balance||0)+(type==='income'?diff:-diff);h.amount=a;h.date=date;h.month=date.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();save();closeModal();renderMovements();};
+  $('moveDelete').onclick=()=>confirmDeleteMovement(h);
+}
+function confirmDeleteMovement(h){
+  openModal('Elimina movimento','<div class="note">Il movimento verrà eliminato e il saldo verrà corretto. Se era collegato a una voce programmata, quella scadenza tornerà aperta.</div><div class="modalBtns"><button id="moveDeleteNo" class="btn secondary">Annulla</button><button id="moveDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+  $('moveDeleteNo').onclick=closeModal;
+  $('moveDeleteYes').onclick=()=>{if(h.type==='adjustment')state.balance=Number(state.balance||0)-Number(h.delta||0);else state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));state.history=state.history.filter(x=>x.id!==h.id);save();closeModal();if(!$('movements').classList.contains('hidden'))renderMovements();if(!$('flow').classList.contains('hidden'))renderFlow();};
 }
 function movementNames(){
   return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
