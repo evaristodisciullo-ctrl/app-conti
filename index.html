@@ -986,6 +986,11 @@ const DEFAULT_CATEGORIES={
 function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
 function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
 
+function openCategoryHub(){
+  openModal('Categorie','<div class="hint">Riepilogo e gestione delle categorie.</div><div class="guideTopics"><button id="categorySummaryOpen" class="guideTopic">Riepilogo categorie</button><button id="categoryManageOpen" class="guideTopic">Gestisci categorie</button></div>');
+  $('categorySummaryOpen').onclick=()=>{closeModal();summaryMonth=ymNow();show('summary')};
+  $('categoryManageOpen').onclick=openCategoryManagement;
+}
 function openCategoryManagement(){
   const renderSection=type=>{
     const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
@@ -1447,7 +1452,7 @@ $('settingsSearch').addEventListener('input',()=>{
 $('settingsIncome').onclick=()=>openFlow('income');
 $('settingsExpense').onclick=()=>openFlow('expense');
 $('settingsMovements').onclick=()=>show('movements');
-$('settingsCategories').onclick=openCategoryManagement;
+$('settingsCategories').onclick=openCategoryHub;
 $('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
 $('settingsNotifications').onclick=()=>{notificationsOnboarding=false;show('notifications')};
 $('settingsProfile').onclick=openProfileSettings;
