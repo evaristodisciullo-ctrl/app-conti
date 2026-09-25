@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eaf6ff">
-<title>Conti in mano</title>
+<title>Conti economici</title>
 <style>
 :root{--bg:#f4f8f5;--card:#fff;--text:#17324a;--muted:#718096;--line:#e1ebe5;--green:#159b62;--green2:#e9f8f0;--green3:#c9eedb;--red:#d83b45;--red2:#fff1f1;--blue:#2379d8;--yellow:#d49a00;--shadow:0 8px 24px rgba(17,55,40,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}.app{max-width:560px;margin:auto;min-height:100vh;padding:18px 14px 90px}.hidden{display:none!important}button,input,select{font:inherit}.screen{min-height:calc(100vh - 122px)}
@@ -198,7 +198,7 @@
 <div class="app">
 <section id="setup" class="screen setup hidden">
   <div class="setupTop">
-    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>in mano</b></div><div class="sub">Saldo, entrate, uscite.<br> Sempre con te!</div></div>
+    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>in mano</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te!</div></div>
     <div class="setupPhoneArt" aria-hidden="true">
       <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
       <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
@@ -206,7 +206,7 @@
     </div>
   </div>
   <div class="setupCard">
-    <div class="field nameField"><label>Nome e cognome</label><div class="textInput"><span class="personIcon">●</span><input id="fullName" type="text" autocomplete="name" placeholder="Es. Marco Rossi"></div></div>
+    <div class="field nameField"><label>Nome / nickname <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><div class="textInput"><span class="personIcon">●</span><input id="fullName" type="text" autocomplete="name" placeholder="Es. Marco"></div></div>
     <h1>Inserisci il tuo saldo attuale</h1>
     <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
     <div id="setupError" class="setupError hidden"></div>
@@ -226,15 +226,15 @@
 </section>
 
 <section id="setupExpense" class="screen hidden">
-  <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Uscite <span>€</span></div></div>
-  <div class="onboardCard"><h2>Inserisci le tue uscite</h2><div id="expenseSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">SALVA E VAI AVANTI →</button></div>
+  <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Pagamenti <span>€</span></div></div>
+  <div class="onboardCard"><h2>Inserisci le tue pagamenti</h2><div id="expenseSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">SALVA E VAI AVANTI →</button></div>
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
-  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e uscite.</p></div>
+  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e pagamenti.</p></div>
   <div class="notifyCard">
-    <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e uscita.</span></span></button>
+    <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e pagamento.</span></span></button>
     <button id="notifyCustom" class="notifyChoice"><span class="bell">🔔</span><span><strong>Scegli quali notifiche attivare</strong><span class="copy">Decidi tu per quali voci ricevere un promemoria.</span></span></button>
     <button id="notifySkip" class="notifySkip">Salta per ora</button>
     <div class="notifyHelp">Puoi attivare le notifiche quando vuoi cliccando sul <span class="inlineBell">🔔</span> nella barra in basso.</div>
@@ -242,10 +242,10 @@
 </section>
 
 <section id="home" class="screen hidden">
-  <div class="homeHero"><div><div class="homeBrand">Conti in mano</div><div class="homeSub">Saldo, entrate, uscite. Sempre con te!</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
+  <div class="homeHero"><div><div class="homeBrand">Conti economici</div><div class="homeSub">Saldo, entrate, pagamenti. Sempre con te!</div></div><button id="settingsTop" class="settingsTop"><span class="settingsIcon">⚙</span><span class="settingsLabel">Impostazioni</span></button></div>
   <div class="card balanceCard"><div class="balanceRow"><div class="balanceLeft"><div class="balanceLabel">Saldo attuale</div><div id="homeBalance" class="balanceValue">€ 0,00</div></div><button id="editBalance" class="editBalance">✎ Modifica saldo</button></div></div>
-  <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Uscite</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
-  <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Rimanenza prevista fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
+  <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Pagamenti</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
+  <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Saldo fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
   <div class="section homeMovementsCard"><div class="sectionHead"><h2>Movimenti</h2><div class="headActions"><button id="homeFilters" class="filterBtn">Filtri</button><button id="homeAllMovements" class="linkBtn">Vedi tutti ›</button></div></div><div id="homeMovements" class="list"></div></div>
 </section>
 
@@ -265,7 +265,7 @@
   <div class="card"><div class="settingsTitle">Riepilogo del mese</div><div id="summaryRows" class="summaryRows"></div></div>
   <div id="summaryCompare" class="card summaryCompare"></div>
   <div class="card categoryCard"><div class="categoryTitleRow"><div class="settingsTitle">Entrate per categoria</div><div id="incomeCategoryTotal" class="categoryTotal"></div></div><div id="incomeCategories" class="categoryList"></div></div>
-  <div class="card categoryCard"><div class="categoryTitleRow"><div class="settingsTitle">Uscite per categoria</div><div id="expenseCategoryTotal" class="categoryTotal"></div></div><div id="expenseCategories" class="categoryList"></div></div>
+  <div class="card categoryCard"><div class="categoryTitleRow"><div class="settingsTitle">Pagamenti per categoria</div><div id="expenseCategoryTotal" class="categoryTotal"></div></div><div id="expenseCategories" class="categoryList"></div></div>
   <button id="manageBudget" class="manageBudgetBtn"><span><strong>Gestisci budget</strong><small>Imposta i tuoi limiti di spesa</small></span><span class="chev">›</span></button>
 </section>
 
@@ -427,7 +427,7 @@ function commitSetupRows(containerId,type){
   const keepIds=new Set(parsed.map(e=>e.id));
   const removedIds=current.filter(e=>!keepIds.has(e.id)).map(e=>e.id);
   if(removedIds.some(id=>state.history.some(h=>h.entryId===id))){
-    throw new Error('Non posso rimuovere da questa schermata una voce che ha già movimenti confermati. Modificala dalla sezione Entrate/Uscite.');
+    throw new Error('Non posso rimuovere da questa schermata una voce che ha già movimenti confermati. Modificala dalla sezione Entrate/Pagamenti.');
   }
   state.entries=state.entries.filter(e=>e.type!==type).concat(parsed);
   state.setupDrafts[type]=parsed.map(setupEntryToDraft);
@@ -441,9 +441,49 @@ function occurs(entry,ym){const r=entry.recurrence;if(!r)return false;if(r.kind=
 function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&h.month===ym)}
 function monthData(type,ym){const done=[],pending=[];state.entries.filter(e=>e.type===type&&occurs(e,ym)).forEach(e=>{const h=historyFor(e.id,ym);if(h)done.push(Object.assign({},h,{category:h.category!=null?h.category:(e.category||''),note:h.note!=null?h.note:(e.note||'')}));else pending.push({entryId:e.id,type:e.type,name:e.name,amount:e.amount,date:isoFor(ym,e.day),month:ym,category:e.category||'',note:e.note||''})});done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending}}
 function monthTotals(ym){const i=monthData('income',ym),e=monthData('expense',ym);return{received:i.done.reduce((s,x)=>s+x.amount,0),toReceive:i.pending.reduce((s,x)=>s+x.amount,0),paid:e.done.reduce((s,x)=>s+x.amount,0),toPay:e.pending.reduce((s,x)=>s+x.amount,0)}}
-function projectedEnd(ym){const t=monthTotals(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
-function renderHome(){const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='balanceValue'+(state.balance<0?' neg':'');const month=ymNow(),mt=monthTotals(month);$('homeIncomeTotal').textContent=money(mt.received+mt.toReceive);$('homeExpenseTotal').textContent=money(mt.paid+mt.toPay);const p=projectedEnd(month);const pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='projectionValue'+(p<0?' neg':'');const list=$('homeMovements');const hist=[...state.history].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);renderMovementList(list,hist)}
-function renderMovementList(el,arr){el.innerHTML='';if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}arr.forEach(x=>{const r=document.createElement('div');r.className='movementRow';r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+(x.type==='income'?'↓':'↑')+'</div><div class="mMain"><div class="mName">'+esc(x.name)+'</div><div class="mType">'+(x.type==='income'?'Entrata':'Uscita')+'</div></div><div class="mAmount '+x.type+'">'+(x.type==='income'?'+ ':'- ')+money(x.amount)+'</div><div class="mChevron">›</div>';el.appendChild(r)})}
+function pendingThrough(type,ym){
+  const out=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    let cur=entryStartMonth(e),guard=0;
+    while(cur<=ym&&guard++<240){
+      if(occurs(e,cur)&&!historyFor(e.id,cur))out.push({entryId:e.id,type:e.type,name:e.name,amount:Number(e.amount||0),date:isoFor(cur,e.day),month:cur,category:e.category||'',note:e.note||''});
+      cur=addMonths(cur,1);
+    }
+  });
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function openTotalsThrough(ym){
+  return{
+    toReceive:pendingThrough('income',ym).reduce((s,x)=>s+x.amount,0),
+    toPay:pendingThrough('expense',ym).reduce((s,x)=>s+x.amount,0)
+  };
+}
+function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
+function renderHome(){
+  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='balanceValue'+(state.balance<0?' neg':'');
+  const month=ymNow(),open=openTotalsThrough(month);
+  $('homeIncomeTotal').textContent=money(open.toReceive);
+  $('homeExpenseTotal').textContent=money(open.toPay);
+  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='projectionValue'+(p<0?' neg':'');
+  const list=$('homeMovements'),hist=[...state.history].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  renderMovementList(list,hist);
+}
+function renderMovementList(el,arr){
+  el.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}
+  arr.forEach(x=>{
+    const r=document.createElement('div');
+    r.className='movementRow';
+    const isAdj=x.type==='adjustment';
+    const delta=isAdj?Number(x.delta||0):0;
+    const label=isAdj?'CORREZIONE SALDO':(x.type==='income'?'RICEVUTO':'PAGATO');
+    const sign=isAdj?(delta>=0?'+ ':'- '):(x.type==='income'?'+ ':'- ');
+    const amount=isAdj?Math.abs(delta):Number(x.amount||0);
+    const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
+    r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    el.appendChild(r);
+  });
+}
 function restoreSetupCopy(){
   $('saveIncomeSetup').textContent='SALVA ENTRATE E VAI ALLE USCITE →';
   $('saveExpenseSetup').textContent='SALVA E VAI AVANTI →';
@@ -462,7 +502,7 @@ function openQuickEntry(type){
     show('setupIncome');
   }else{
     $('saveExpenseSetup').textContent='SALVA TUTTO';
-    $('expenseSetupHint').textContent='Modifica più uscite insieme o aggiungine di nuove. Premi SALVA TUTTO quando hai finito.';
+    $('expenseSetupHint').textContent='Modifica più pagamenti insieme o aggiungine di nuove. Premi SALVA TUTTO quando hai finito.';
     show('setupExpense');
   }
 }
@@ -473,7 +513,7 @@ function closeQuickEntry(){
   if(type){currentFlow=type;show('flow')}
 }
 function openFlow(type){quickEditMode=null;restoreSetupCopy();currentFlow=type;flowMonth=ymNow();show('flow')}
-function renderFlow(){const isIn=currentFlow==='income',d=monthData(currentFlow,flowMonth);$('flowTitle').textContent=isIn?'Entrate':'Uscite';$('flowMonth').textContent=monthName(flowMonth);$('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi uscita';$('doneLabel').textContent=isIn?'Ricevuto':'Pagato';$('pendingLabel').textContent=isIn?'Da ricevere':'Da pagare';$('doneColTitle').textContent=isIn?'ENTRATE RICEVUTE':'USCITE PAGATE';$('pendingColTitle').textContent=isIn?'ENTRATE DA RICEVERE':'USCITE DA PAGARE';const doneTotal=d.done.reduce((s,x)=>s+x.amount,0),pendingTotal=d.pending.reduce((s,x)=>s+x.amount,0);$('doneTotal').textContent=money(doneTotal);$('pendingTotal').textContent=money(pendingTotal);$('doneColTotal').textContent=money(doneTotal);$('pendingColTotal').textContent=money(pendingTotal);$('doneColTotal').className='v '+(isIn?'incomeColor':'expenseColor');renderFlowCards($('doneFlowList'),d.done,true,isIn);renderFlowCards($('pendingFlowList'),d.pending,false,isIn)}
+function renderFlow(){const isIn=currentFlow==='income',d=monthData(currentFlow,flowMonth);$('flowTitle').textContent=isIn?'Entrate':'Pagamenti';$('flowMonth').textContent=monthName(flowMonth);$('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';$('doneLabel').textContent=isIn?'Ricevuto':'Pagato';$('pendingLabel').textContent=isIn?'Da ricevere':'Da pagare';$('doneColTitle').textContent=isIn?'ENTRATE RICEVUTE':'USCITE PAGATE';$('pendingColTitle').textContent=isIn?'ENTRATE DA RICEVERE':'USCITE DA PAGARE';const doneTotal=d.done.reduce((s,x)=>s+x.amount,0),pendingTotal=d.pending.reduce((s,x)=>s+x.amount,0);$('doneTotal').textContent=money(doneTotal);$('pendingTotal').textContent=money(pendingTotal);$('doneColTotal').textContent=money(doneTotal);$('pendingColTotal').textContent=money(pendingTotal);$('doneColTotal').className='v '+(isIn?'incomeColor':'expenseColor');renderFlowCards($('doneFlowList'),d.done,true,isIn);renderFlowCards($('pendingFlowList'),d.pending,false,isIn)}
 function renderFlowCards(el,arr,done,isIn){
   el.innerHTML='';
   if(!arr.length){el.innerHTML='<div class="empty" style="padding:12px 7px">Nessuna voce.</div>';return}
@@ -504,7 +544,7 @@ function showUndoSnack(h){
   undoSnackHistoryId=h.id;
   $('undoSnackText').textContent=h.name+' segnato come '+(h.type==='income'?'ricevuto':'pagato');
   $('undoSnack').classList.remove('hidden');
-  undoSnackTimer=setTimeout(hideUndoSnack,6000);
+  undoSnackTimer=setTimeout(hideUndoSnack,4000);
 }
 function undoFromSnack(){
   const id=undoSnackHistoryId;
@@ -517,14 +557,14 @@ function undoHistory(id){const h=state.history.find(x=>x.id===id);if(!h)return;s
 function openAddEntry(type){openEntryEditor(null,type)}
 function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
 const DEFAULT_CATEGORIES={
-  income:['Stipendio','Pensione','Affitto','Invalidità','Altro'],
-  expense:['Casa','Auto','Alimentari','Internet casa','Streaming','Telefono','Salute','Formazione','Acquisti','Altro']
+  income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
+  expense:['Casa','Auto','Bollette','Salute','Altro']
 };
 function allCategories(type){return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).sort((a,b)=>a.localeCompare(b,'it'))}
-function categoryOptions(type,current){let h='<option value="">Nessuna (facoltativa)</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
+function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(!r)return ymNow();return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
-  const title=entry?'Modifica voce':(type==='income'?'Aggiungi entrata':'Aggiungi uscita');
+  const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?isoFor(entryStartMonth(entry),entry.day):todayISO();
   const noteValue=entry&&entry.note?entry.note:'';
@@ -538,7 +578,7 @@ function openEntryEditor(entry,type){
     '<div class="notifyField"><label for="editNotify">Attiva notifiche 🛎️</label><input id="editNotify" type="checkbox" '+(entry&&entry.notify===true?'checked':'')+'></div>'+
     '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
     '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
-    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?'Elimina voce':'Annulla')+'</button><button id="editSave" class="btn">Salva</button></div>'
+    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">Salva</button></div>'
   );
   $('editRecKind').value=rec?rec.kind:'';
   renderEditRecExtra(rec);
@@ -569,19 +609,16 @@ function openEntryEditor(entry,type){
 function confirmDeleteEntry(entry){
   const linked=state.history.filter(h=>h.entryId===entry.id);
   const extra=linked.length
-    ? '<div class="note">Questa voce ha '+linked.length+' movimento'+(linked.length===1?' confermato':'i confermati')+'. Eliminandola verranno cancellati anche quei movimenti e il saldo verrà corretto automaticamente.</div>'
-    : '<div class="note">La voce verrà eliminata dalle entrate/uscite programmate.</div>';
-  openModal('Elimina '+(entry.type==='income'?'entrata':'uscita'),
+    ? '<div class="note">I movimenti già confermati resteranno nello storico e il saldo non verrà modificato.</div>'
+    : '<div class="note">La voce verrà eliminata dalle scadenze programmate.</div>';
+  openModal('Elimina '+(entry.type==='income'?'entrata':'pagamento'),
     '<div style="font-weight:900;font-size:18px;margin-top:12px">'+esc(entry.name)+'</div>'+extra+
     '<div class="modalBtns"><button id="deleteNo" class="btn secondary">Annulla</button><button id="deleteYes" class="btn deleteBtn">Elimina</button></div>'
   );
   $('deleteNo').onclick=()=>{closeModal();renderFlow()};
   $('deleteYes').onclick=()=>{
-    for(const h of linked){
-      state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
-    }
-    state.history=state.history.filter(h=>h.entryId!==entry.id);
     state.entries=state.entries.filter(e=>e.id!==entry.id);
+    state.notifications.selected=(state.notifications.selected||[]).filter(id=>id!==entry.id);
     save();closeModal();renderFlow();
   };
 }
@@ -661,9 +698,8 @@ function movementCutoff(period){
   if(period==='all')return null;
   const months=Number(period);
   if(!months)return null;
-  const d=todayDate();
-  d.setMonth(d.getMonth()-months);
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const start=addMonths(ymNow(),-(months-1));
+  return start+'-01';
 }
 function filteredMovements(){
   const cutoff=movementCutoff(movementFilters.period);
@@ -677,40 +713,27 @@ function filteredMovements(){
 function movementFilterText(){
   const parts=[];
   if(movementFilters.type==='income')parts.push('solo entrate');
-  if(movementFilters.type==='expense')parts.push('solo uscite');
+  if(movementFilters.type==='expense')parts.push('solo pagamenti');
+  if(movementFilters.type==='adjustment')parts.push('solo correzioni saldo');
   if(movementFilters.name!=='all')parts.push(movementFilters.name);
-  const labels={1:'ultimo mese',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimo anno'};
+  const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
   if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
   return parts.length?parts.join(' · '):'Tutti i movimenti · tutto il periodo';
 }
 function renderMovements(){
   const arr=filteredMovements();
   $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
-  const totalBox=$('movementFilteredTotal');
-  const filtersActive=movementFilters.type!=='all'||movementFilters.name!=='all'||movementFilters.period!=='all';
-  if(filtersActive){
-    const inc=arr.filter(x=>x.type==='income').reduce((sum,x)=>sum+Number(x.amount||0),0);
-    const exp=arr.filter(x=>x.type==='expense').reduce((sum,x)=>sum+Number(x.amount||0),0);
-    let label=movementFilters.name!=='all'?'Totale '+esc(movementFilters.name):'Totale del filtro';
-    let values='';
-    if(inc>0)values+='<span class="ftIncome">Entrate '+money(inc)+'</span>';
-    if(exp>0)values+='<span class="ftExpense">Uscite '+money(exp)+'</span>';
-    if(!values)values='<span>'+money(0)+'</span>';
-    totalBox.innerHTML='<span class="ftLabel">'+label+'</span><span class="ftValues">'+values+'</span>';
-    totalBox.classList.remove('hidden');
-  }else{
-    totalBox.classList.add('hidden');
-    totalBox.innerHTML='';
-  }
+  $('movementFilteredTotal').classList.add('hidden');
+  $('movementFilteredTotal').innerHTML='';
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
   const names=movementNames();
   let nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
   openModal('Filtri movimenti',
-    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Entrate e uscite</option><option value="income">Solo entrate</option><option value="expense">Solo uscite</option></select></div>'+
+    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutti</option><option value="income">Entrate</option><option value="expense">Pagamenti</option><option value="adjustment">Correzioni saldo</option></select></div>'+
     '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
-    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Ultimo mese</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimo anno</option></select></div>'+
+    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
     '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
   );
   $('mfType').value=movementFilters.type;
@@ -720,7 +743,7 @@ function openMovementFilters(){
   $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
 }
 function categoryTotals(type,ym){
-  const d=monthData(type,ym),all=[...d.done,...d.pending],m={};
+  const all=monthData(type,ym).done,m={};
   for(const x of all){const cat=(x.category||'').trim()||'Senza categoria';m[cat]=(m[cat]||0)+Number(x.amount||0)}
   return Object.entries(m).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount||a.name.localeCompare(b.name,'it'));
 }
@@ -732,14 +755,14 @@ function renderCategoryBlock(type,ym,containerId,totalId){
   el.querySelectorAll('.categoryRow').forEach(b=>b.onclick=()=>openCategoryDetails(type,b.dataset.cat,ym));
 }
 function openCategoryDetails(type,category,ym){
-  const d=monthData(type,ym),all=[...d.done,...d.pending].filter(x=>(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
+  const d=monthData(type,ym),all=[...d.done].filter(x=>(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
   const total=all.reduce((s,x)=>s+Number(x.amount||0),0);
   const rows=all.map(x=>'<div class="sumLine"><span><strong>'+esc(x.name)+'</strong><br><small style="color:var(--muted)">'+fmtMovementDate(x.date)+'</small></span><strong class="'+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</strong></div>').join('');
-  openModal(category,'<div class="hint">'+(type==='income'?'Entrate':'Uscite')+' · '+monthName(ym)+'</div><div style="margin-top:8px">'+rows+'</div><div class="sumLine total"><span>Totale</span><strong>'+money(total)+'</strong></div>');
+  openModal(category,'<div class="hint">'+(type==='income'?'Entrate':'Pagamenti')+' · '+monthName(ym)+'</div><div style="margin-top:8px">'+rows+'</div><div class="sumLine total"><span>Totale</span><strong>'+money(total)+'</strong></div>');
 }
 function comparisonText(diff,kind){
   const abs=money(Math.abs(diff));
-  if(Math.abs(diff)<0.005)return kind==='income'?'Entrate uguali al mese precedente':'Uscite uguali al mese precedente';
+  if(Math.abs(diff)<0.005)return kind==='income'?'Entrate uguali al mese precedente':'Pagamenti uguali al mese precedente';
   if(kind==='income')return diff>0?'Hai ricevuto '+abs+' in più':'Hai ricevuto '+abs+' in meno';
   return diff>0?'Hai speso '+abs+' in più':'Hai speso '+abs+' in meno';
 }
@@ -749,8 +772,8 @@ function renderSummary(){
   const bv=$('summaryBalanceValue');bv.textContent=money(state.balance);bv.className='value'+(Number(state.balance)<0?' neg':'');
   $('summaryRows').innerHTML=
     '<div class="sumGroup"><div class="sumGroupTitle">Entrate</div><div class="sumLine"><span>Ricevute</span><strong class="incomeColor">'+money(t.received)+'</strong></div><div class="sumLine"><span>Da ricevere</span><strong>'+money(t.toReceive)+'</strong></div><div class="sumLine total"><span>Totale entrate</span><strong class="incomeColor">'+money(inc)+'</strong></div></div>'+
-    '<div class="sumGroup"><div class="sumGroupTitle">Uscite</div><div class="sumLine"><span>Pagate</span><strong>'+money(t.paid)+'</strong></div><div class="sumLine"><span>Da pagare</span><strong>'+money(t.toPay)+'</strong></div><div class="sumLine total"><span>Totale uscite</span><strong>'+money(exp)+'</strong></div></div>'+
-    '<div class="sumGroup"><div class="sumGroupTitle">Fine mese</div><div class="sumLine total"><span>Rimanenza prevista</span><strong class="'+(p<0?'expenseColor':'incomeColor')+'">'+money(p)+'</strong></div></div>';
+    '<div class="sumGroup"><div class="sumGroupTitle">Pagamenti</div><div class="sumLine"><span>Pagate</span><strong>'+money(t.paid)+'</strong></div><div class="sumLine"><span>Da pagare</span><strong>'+money(t.toPay)+'</strong></div><div class="sumLine total"><span>Totale pagamenti</span><strong>'+money(exp)+'</strong></div></div>'+
+    '<div class="sumGroup"><div class="sumGroupTitle">Fine mese</div><div class="sumLine total"><span>Saldo fine mese</span><strong class="'+(p<0?'expenseColor':'incomeColor')+'">'+money(p)+'</strong></div></div>';
   const prev=addMonths(summaryMonth,-1),pt=monthTotals(prev),pinc=pt.received+pt.toReceive,pexp=pt.paid+pt.toPay;
   const di=inc-pinc,de=exp-pexp;
   $('summaryCompare').innerHTML='<div class="compareTitle">Rispetto a '+monthName(prev).toLowerCase()+'</div><div class="compareLine"><span>'+comparisonText(di,'income')+'</span><strong class="'+(di>=0?'incomeColor':'')+'">'+(di>0?'+ ':'')+money(di)+'</strong></div><div class="compareLine"><span>'+comparisonText(de,'expense')+'</span><strong>'+((de>0)?'+ ':'')+money(de)+'</strong></div>';
@@ -774,7 +797,22 @@ function openBudgetEditor(category){
   $('budgetCancel').onclick=closeModal;
   $('budgetSave').onclick=()=>{const cat=$('budgetCategory').value,v=Number($('budgetAmount').value);if(!cat||!Number.isFinite(v)||v<0)return flashModal('Controlla categoria e importo.');if(v===0)delete state.budgets[cat];else state.budgets[cat]=v;save();closeModal();renderBudget()};
 }
-function openBalanceEditor(){openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="note">La modifica non crea un movimento.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');$('balCancel').onclick=closeModal;$('balSave').onclick=()=>{const v=Number($('newBalance').value);if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');state.balance=v;save();closeModal();if(!$('home').classList.contains('hidden'))renderHome()}}
+function openBalanceEditor(){
+  openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  $('balCancel').onclick=closeModal;
+  $('balSave').onclick=()=>{
+    const v=Number($('newBalance').value);
+    if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
+    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim();
+    if(Math.abs(delta)>0.0001){
+      const date=todayISO();
+      state.history.push({id:'a'+Date.now(),entryId:null,type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason,category:''});
+    }
+    state.balance=v;save();closeModal();
+    if(!$('home').classList.contains('hidden'))renderHome();
+    if(!$('movements').classList.contains('hidden'))renderMovements();
+  };
+}
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
 function closeModal(){$('modal').classList.add('hidden');$('modalBody').innerHTML=''}
 function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
@@ -782,15 +820,15 @@ function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
 function hydrateFirstSetup(){if($('fullName'))$('fullName').value=state.profile&&state.profile.fullName||'';if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
-$('startBtn').onclick=()=>{const name=$('fullName').value.trim(),raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(!name){err.textContent='Inserisci nome e cognome.';err.classList.remove('hidden');$('fullName').focus();return}if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.profile.fullName=name;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('startBtn').onclick=()=>{const name=$('fullName').value.trim(),raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.profile.fullName=name;state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
 $('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
 $('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
 $('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}if(!saved.length)throw new Error('Inserisci almeno una entrata oppure torna indietro.');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
-$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=false;state.setupStage='notifications';notificationsOnboarding=true;save();show('notifications')}catch(e){openModal('Controlla le uscite','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
 $('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
-$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, uscite e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('fullName').value='';$('startBalance').value='';show('setup')}};
-if(state.balance===null){hydrateFirstSetup();show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){notificationsOnboarding=true;show('notifications')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();$('fullName').value='';$('startBalance').value='';show('setup')}};
+if(state.balance===null){hydrateFirstSetup();show('setup')}else if(!state.setupDone&&state.setupStage==='notifications'){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}else if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense')}else if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome')}else if(!state.setupDone){show('setup')}else show('home');
 })();
 </script>
 </body>
