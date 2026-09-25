@@ -229,6 +229,34 @@
 .guideTopics{display:flex;flex-direction:column;gap:8px;margin-top:10px}.guideTopic{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;text-align:left;font-weight:850;color:var(--text)}
 .homeSettingsCard{width:100%;margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:space-between;color:var(--text);box-shadow:var(--shadow);font-weight:900}
 
+
+/* SETUP E LISTE APPROVATE */
+.setupSimple .onboardHeader{background:linear-gradient(135deg,#2087e8,#62b5f4);border-radius:0 0 30px 30px;padding-bottom:34px}
+.setupSimple .onboardTitle{font-size:28px}
+.setupMiniArt{font-size:34px;line-height:1}
+.setupSimple .onboardCard{margin-top:14px}
+.setupSimple .entryGridHead,.setupSimple .entryRow{grid-template-columns:1.2fr .85fr 1.12fr 30px;gap:7px}
+.setupSimple .entryGridHead div:last-child{visibility:hidden}
+.setupSimple .entryRow input{height:44px}
+.setupSimple .entryRow .rDelete{height:44px;border:0;background:#f3f6f8;border-radius:10px;color:#7b8b97;font-size:18px}
+.setupSimple .rowMeta{grid-column:1/-1;color:#317fbd;font-size:10px;margin:0 3px 4px}
+.setupAddRow{width:100%;border:0;background:transparent;color:var(--accent);font-weight:900;padding:12px 4px;text-align:left}
+.setupContinue{margin-top:7px}.setupSkip{width:100%;border:0;background:transparent;color:#72818d;font-weight:850;padding:12px}
+.flowPage .pageHeader{margin-bottom:14px}
+.flowBanner{background:linear-gradient(135deg,#eaf5ff,#f8fbff);border:1px solid #d5e8fa;border-radius:18px;padding:15px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.flowBanner strong{font-size:17px}.flowBanner small{display:block;color:var(--muted);margin-top:3px}
+.flowTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
+.flowTab{border:1px solid #d8e1e8;background:#fff;border-radius:12px;padding:10px 7px;font-weight:850;font-size:12px;color:#526575}
+.flowTab.active{background:#e8f3ff;border-color:#9ec9f0;color:#1d6fb8}
+.flowUnified{display:flex;flex-direction:column;gap:9px}
+.flowUnifiedRow{display:grid;grid-template-columns:minmax(0,1fr) 118px;gap:8px;align-items:stretch}
+.flowUnifiedMain{border:1px solid #d8e8f5;background:#f3f9ff;border-radius:15px;padding:11px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto 18px;gap:8px;align-items:center;text-align:left;color:var(--text)}
+.flowUnifiedName{font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.flowUnifiedDate{font-size:11px;color:var(--muted);margin-top:3px}.flowUnifiedAmount{font-weight:950;white-space:nowrap}
+.flowUnifiedStatus{border:0;border-radius:15px;padding:9px 7px;font-size:10px;font-weight:950;display:flex;align-items:center;justify-content:center;text-align:center}
+.flowUnifiedStatus.pending{background:#fff2bf;color:#896600}.flowUnifiedStatus.done{background:#dff5e9;color:#087b52}.flowUnifiedStatus.overdue{background:#ffe0e2;color:#b32632}
+.flowEmpty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;text-align:center;color:var(--muted)}
+@media(max-width:410px){.setupSimple .entryGridHead,.setupSimple .entryRow{grid-template-columns:1.15fr .82fr 1fr 28px;gap:5px}.flowUnifiedRow{grid-template-columns:minmax(0,1fr) 94px}.flowUnifiedMain{padding:10px}.flowUnifiedStatus{font-size:9px}}
+
 </style>
 </head>
 <body>
@@ -280,17 +308,41 @@
   </div>
 </section>
 
-<section id="setupIncome" class="screen hidden">
-  <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Entrate <span>€</span></div></div>
-  <div class="onboardCard"><h2>Scrivi le tue entrate</h2><div id="incomeSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="incomeRows"></div><div class="onboardSpacer"></div><button id="saveIncomeSetup" class="btn onboardAction">SALVA ENTRATE E VAI ALLE USCITE →</button></div>
+<section id="setupIncome" class="screen setupSimple hidden">
+  <div class="onboardHeader">
+    <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupMiniArt" aria-hidden="true">👛💶</div></div>
+    <div class="onboardTitle">Conti economici</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+  </div>
+  <div class="onboardCard">
+    <h2>Scrivi le tue entrate</h2>
+    <div id="incomeSetupHint" class="onboardHint">Puoi aggiungerle ora o farlo dopo.</div>
+    <div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Data</div><div></div></div>
+    <div id="incomeRows"></div>
+    <button id="addIncomeSetup" class="setupAddRow">+ Aggiungi un’entrata</button>
+    <button id="saveIncomeSetup" class="btn setupContinue">Continua →</button>
+    <button id="skipIncomeSetup" class="setupSkip">Salta</button>
+  </div>
 </section>
 
-<section id="setupExpense" class="screen hidden">
-  <div class="onboardHeader"><div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><span>€</span></div><div class="onboardTitle">Pagamenti <span>€</span></div></div>
-  <div class="onboardCard"><h2>Scrivi i tuoi pagamenti</h2><div id="expenseSetupHint" class="onboardHint">I dati vengono salvati automaticamente mentre li inserisci. Puoi tornare indietro senza perderli.</div><div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Giorno</div><div>Ricorrenza</div></div><div id="expenseRows"></div><div class="onboardSpacer"></div><button id="saveExpenseSetup" class="btn onboardAction">Continua →</button></div>
+<section id="setupExpense" class="screen setupSimple hidden">
+  <div class="onboardHeader">
+    <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupMiniArt" aria-hidden="true">🐷💥🪙</div></div>
+    <div class="onboardTitle">Conti economici</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+  </div>
+  <div class="onboardCard">
+    <h2>Scrivi i tuoi pagamenti</h2>
+    <div id="expenseSetupHint" class="onboardHint">Puoi aggiungerli ora o farlo dopo.</div>
+    <div class="entryGridHead"><div>Nome</div><div>Importo</div><div>Data</div><div></div></div>
+    <div id="expenseRows"></div>
+    <button id="addExpenseSetup" class="setupAddRow">+ Aggiungi un pagamento</button>
+    <button id="saveExpenseSetup" class="btn setupContinue">Continua →</button>
+    <button id="skipExpenseSetup" class="setupSkip">Salta</button>
+  </div>
 </section>
 
-<section id="notifications" class="screen notificationsPage hidden">
+<section id="notifications"<section id="notifications" class="screen notificationsPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
   <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e i tuoi pagamenti.</p></div>
   <div class="notifyCard">
@@ -310,14 +362,24 @@
   <button id="homeSettingsCard" class="homeSettingsCard"><span>⚙ Impostazioni</span><span>›</span></button>
 </section>
 
-<section id="flow" class="screen hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="flowBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1 id="flowTitle">Entrate</h1></div><div class="flowActions"><button id="flowQuick" class="quickEntryBtn">Inserimento rapido</button><button id="flowAdd" class="addBtn">+ Aggiungi</button></div></div>
-  <div class="monthBar"><button id="monthPrev">‹</button><div id="flowMonth" class="monthCurrent">Settembre 2026</div><button id="monthNext">›</button></div>
-  <div class="summaryGrid"><div class="summaryBox good"><div id="doneLabel" class="label">Ricevuto</div><div id="doneTotal" class="value">€ 0,00</div></div><div class="summaryBox wait"><div id="pendingLabel" class="label">Da ricevere</div><div id="pendingTotal" class="value">€ 0,00</div></div></div>
-  <div class="twoCols"><div><div id="doneColTitle" class="colTitle">ENTRATE RICEVUTE</div><div id="doneFlowList" class="flowList"></div><div class="colTotal"><span>Totale</span><span id="doneColTotal" class="v incomeColor">€ 0,00</span></div></div><div><div id="pendingColTitle" class="colTitle">ENTRATE DA RICEVERE</div><div id="pendingFlowList" class="flowList"></div><div class="colTotal"><span>Totale</span><span id="pendingColTotal" class="v">€ 0,00</span></div></div></div>
+<section id="flow" class="screen flowPage hidden">
+  <div class="pageHeader">
+    <div class="pageTitleBlock"><button id="flowBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1 id="flowTitle">Entrate</h1></div>
+    <button id="flowAdd" class="addBtn">+ Aggiungi</button>
+  </div>
+  <div class="flowBanner">
+    <span><strong id="flowBannerTitle">Le tue entrate</strong><small id="flowBannerCopy">Tocca lo stato per confermare.</small></span>
+    <span style="font-size:28px" id="flowBannerIcon">↘</span>
+  </div>
+  <div class="flowTabs">
+    <button class="flowTab active" data-flow-filter="all">Tutte</button>
+    <button class="flowTab" data-flow-filter="pending" id="flowPendingTab">Da ricevere</button>
+    <button class="flowTab" data-flow-filter="done" id="flowDoneTab">Ricevute</button>
+  </div>
+  <div id="flowUnifiedList" class="flowUnified"></div>
 </section>
 
-<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
+<section id="movements"<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
 
 <section id="summary" class="screen summaryPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="summaryBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Riepilogo</h1></div></div>
