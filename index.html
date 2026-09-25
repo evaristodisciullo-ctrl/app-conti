@@ -351,7 +351,7 @@
 /* SELETTORE DATA */
 .rDateBtn,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dateDisplayBtn{height:50px;border-radius:13px;padding:0 12px;font-size:14px}
-.dateDisplayBtn.empty,.rDateBtn.empty{color:#98a7b2}
+.dateDisplayBtn.empty,.rDateBtn.empty{color:#98a7b2}.rDateBtn.empty:before,.dateDisplayBtn.empty:before{content:'| ';color:var(--accent);font-weight:950;animation:blinkCaret 1s steps(1) infinite}
 .pickerModal{z-index:160}.dateTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.dateTab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px;font-weight:850;color:#5d7183}.dateTab.active{background:#e7f3ff;border-color:#9ec9f0;color:#1c73c3}
 .datePanel{margin-top:8px}.dateManual{position:relative}.dateManual:before{content:"|";position:absolute;left:12px;top:13px;color:var(--accent);font-weight:900;animation:blinkCaret 1s steps(1) infinite;z-index:1}.dateManual input{padding-left:20px!important}
 @keyframes blinkCaret{50%{opacity:0}}
@@ -1170,7 +1170,7 @@ function openEntryEditor(entry,type){
   const isNew=!entry;
   const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
   const rec=entry?entry.recurrence:null;
-  const dateValue=entry?isoFor(entryStartMonth(entry),entry.day):todayISO();
+  const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
   const noteValue=entry&&entry.note?entry.note:'';
   const globalAll=state.notifications&&state.notifications.mode==='all';
   const notifyDefault=entry?entry.notify===true:globalAll;
@@ -1183,7 +1183,7 @@ function openEntryEditor(entry,type){
     suggestions+
     '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
-    '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn">'+esc(displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}))+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
+    '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn '+(dateValue?'':'empty')+'">'+esc(dateValue?displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}):'Scrivi la data')+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
     '<div class="field"><label>Frequenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
     '<div id="editRecExtra"></div>'+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
@@ -1199,9 +1199,9 @@ function openEntryEditor(entry,type){
   );
   $('modal').classList.add('fullEditor');
   if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
-  let editorDateSpec=entry&&entry.dateSpec||{kind:'day',iso:dateValue};
-  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;$('editDate').value=specDeadline(spec);$('editDateDisplay').textContent=displayDateSpec(spec);renderEditRecExtra(rec||null)});
-  $('editRecKind').value=rec?rec.kind:'single';
+  let editorDateSpec=entry&&entry.dateSpec||(dateValue?{kind:'day',iso:dateValue}:null);
+  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;$('editDate').value=specDeadline(spec);$('editDateDisplay').textContent=displayDateSpec(spec);$('editDateDisplay').classList.remove('empty');renderEditRecExtra(rec||null)});
+  $('editRecKind').value=rec?rec.kind:'';
   renderEditRecExtra(rec||{kind:'single'});
   $('editRecKind').onchange=()=>renderEditRecExtra(null);
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
