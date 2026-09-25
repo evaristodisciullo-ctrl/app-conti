@@ -313,6 +313,20 @@
 .lpB .lpBody{background:#73b7ef}
 .lpPhone{position:absolute;left:50%;bottom:13px;transform:translateX(-50%) rotate(-5deg);width:41px;height:69px;border-radius:10px;border:5px solid #17324a;background:#fff;display:grid;place-items:center;font-size:23px;font-weight:950;color:var(--accent);z-index:5;box-shadow:0 7px 15px rgba(28,70,100,.12)}
 
+
+/* ILLUSTRAZIONI SETUP */
+.setupWalletArt,.setupPiggyArt{position:relative;width:118px;height:82px;flex:0 0 118px}
+.walletBody{position:absolute;right:4px;bottom:6px;width:92px;height:58px;background:#126fc9;border-radius:15px;box-shadow:0 7px 0 rgba(15,79,139,.18)}
+.walletBody:after{content:"";position:absolute;right:0;top:17px;width:34px;height:25px;border-radius:10px 0 0 10px;background:#0b5cae}
+.walletBill{position:absolute;top:3px;width:48px;height:38px;background:#e8fff0;border:2px solid #82d5a3;border-radius:6px;color:#178553;font-weight:950;font-size:18px;display:grid;place-items:center;transform:rotate(-9deg)}
+.walletBill.b1{left:23px}.walletBill.b2{left:48px;top:0;transform:rotate(7deg)}
+.walletCoin{position:absolute;right:8px;top:8px;width:27px;height:27px;border-radius:50%;background:#ffd55a;color:#9c7000;display:grid;place-items:center;font-weight:950}
+.setupPiggyArt .pigBody{position:absolute;left:16px;top:20px;width:76px;height:49px;border-radius:48% 45% 42% 42%;background:#f49aaa}
+.pigEar{position:absolute;left:68px;top:10px;width:22px;height:23px;background:#f49aaa;clip-path:polygon(0 100%,48% 0,100% 100%)}
+.pigLeg{position:absolute;top:60px;width:12px;height:15px;border-radius:0 0 5px 5px;background:#e77f92}.pigLeg.l1{left:31px}.pigLeg.l2{left:69px}
+.pigCrack{position:absolute;left:50px;top:29px;font-size:33px;line-height:1;color:#b94c62;font-weight:950;transform:rotate(23deg)}
+.pigCoin{position:absolute;width:27px;height:27px;border-radius:50%;background:#ffd55a;color:#916a00;display:grid;place-items:center;font-size:13px;font-weight:950}.pigCoin.c1{right:1px;top:27px;transform:rotate(12deg)}.pigCoin.c2{right:20px;top:54px;transform:rotate(-12deg)}
+
 </style>
 </head>
 <body>
@@ -366,7 +380,7 @@
 
 <section id="setupIncome" class="screen setupSimple hidden">
   <div class="onboardHeader">
-    <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupMiniArt" aria-hidden="true">👛💶</div></div>
+    <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupWalletArt" aria-hidden="true"><span class="walletBody"></span><span class="walletBill b1">€</span><span class="walletBill b2">€</span><span class="walletCoin">€</span></div></div>
     <div class="onboardTitle">Conti economici</div>
     <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
   </div>
@@ -383,7 +397,7 @@
 
 <section id="setupExpense" class="screen setupSimple hidden">
   <div class="onboardHeader">
-    <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupMiniArt" aria-hidden="true">🐷💥🪙</div></div>
+    <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupPiggyArt" aria-hidden="true"><span class="pigBody"></span><span class="pigEar"></span><span class="pigLeg l1"></span><span class="pigLeg l2"></span><span class="pigCrack">⌁</span><span class="pigCoin c1">€</span><span class="pigCoin c2">€</span></div></div>
     <div class="onboardTitle">Conti economici</div>
     <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
   </div>
