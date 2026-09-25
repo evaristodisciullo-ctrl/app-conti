@@ -1192,6 +1192,7 @@ async function finishNotificationChoice(mode,selected){
     state.entries.forEach(e=>{e.notify=false;e.notifyRule=null});
     state.notifications.selected=[];
     state.notifications.sent={};
+    state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};
   }
   save();
   if(mode!=='off'){
