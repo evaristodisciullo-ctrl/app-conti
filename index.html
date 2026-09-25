@@ -337,6 +337,16 @@
 .modal.fullEditor #modalBody>.field,.modal.fullEditor #modalBody>.notifyField,.modal.fullEditor #modalBody>.notifyRuleBox,.modal.fullEditor #modalBody>.suggestionLabel,.modal.fullEditor #modalBody>.suggestionChips,.modal.fullEditor #modalBody>.optionalNoteBtn,.modal.fullEditor #modalBody>#noteWrap{max-width:520px;margin-left:auto;margin-right:auto}
 .modal.fullEditor .field input,.modal.fullEditor .field select,.modal.fullEditor textarea{background:#fff}
 
+
+/* SALDO INIZIALE */
+#setup{padding-top:8px}
+#setup .setupTop{background:linear-gradient(135deg,#eaf6ff,#f9fcff);border-radius:24px;padding:18px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;min-height:145px}
+#setup .brand{color:#17324a;font-size:29px;line-height:1.02}#setup .brand b{display:block;color:var(--accent)}
+#setup .sub{color:#526f85;line-height:1.35;margin-top:8px}
+#setup .setupCard{margin-top:14px;border-radius:22px;padding:21px}
+#setup .setupCard h1{font-size:25px;margin:0 0 18px}
+#setup .btn{background:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -366,7 +376,7 @@
 
 <section id="setup" class="screen setup hidden"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button>
   <div class="setupTop">
-    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>in mano</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te!</div></div>
+    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te.</div></div>
     <div class="setupPhoneArt" aria-hidden="true">
       <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
       <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
@@ -380,11 +390,6 @@
     <div id="setupError" class="setupError hidden"></div>
     <button id="startBtn" class="btn">Continua <span aria-hidden="true">→</span></button>
     <div class="safe">Potrai modificare il saldo in qualsiasi momento</div>
-  </div>
-  <div class="benefits">
-    <div class="benefit"><span class="benefitIcon barsIcon"><i></i><i></i><i></i></span><strong>Più Controllo</strong></div>
-    <div class="benefit"><span class="benefitIcon bulbIcon">☀</span><strong>Più Consapevolezza</strong></div>
-    <div class="benefit"><span class="benefitIcon leafIcon">♢</span><strong>Meno Stress</strong></div>
   </div>
 </section>
 
