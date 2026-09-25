@@ -1,0 +1,102 @@
+name: Test app flows
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 --no-save
+          npx playwright install --with-deps chromium
+      - name: Start app
+        run: |
+          python3 -m http.server 4173 >/tmp/inordine-server.log 2>&1 &
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+      - name: Run core flow tests
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          const assert = require('node:assert/strict');
+          (async()=>{
+            const browser = await chromium.launch({headless:true});
+            const page = await browser.newPage();
+            await page.goto('http://127.0.0.1:4173/', {waitUntil:'domcontentloaded'});
+            await page.evaluate(()=>localStorage.clear());
+            await page.reload();
+            await page.waitForSelector('#landing:not(.hidden)');
+            assert.equal(await page.locator('#landingConti').isVisible(), true);
+
+            await page.click('#landingConti');
+            await page.waitForSelector('#setup:not(.hidden)');
+            await page.fill('#startBalance','1000');
+            await page.click('#startBtn');
+
+            await page.waitForSelector('#setupIncome:not(.hidden)');
+            await page.click('#skipIncomeSetup');
+            await page.waitForSelector('#setupExpense:not(.hidden)');
+            await page.click('#skipExpenseSetup');
+            await page.waitForSelector('#home:not(.hidden)');
+            assert.match(await page.locator('#homeBalance').innerText(), /1\.000,00/);
+
+            // Entrata
+            await page.click('#homeIncome');
+            await page.waitForSelector('#flow:not(.hidden)');
+            await page.click('#flowAdd');
+            await page.fill('#editName','Test entrata');
+            await page.fill('#editAmount','50');
+            await page.click('#editSave');
+            await page.waitForSelector('.flowUnifiedStatus.pending');
+            assert.match(await page.locator('.flowUnifiedName').first().innerText(), /Test entrata/);
+            await page.locator('.flowUnifiedStatus.pending').first().click();
+            await page.click('#flowBack');
+            await page.waitForSelector('#home:not(.hidden)');
+            assert.match(await page.locator('#homeBalance').innerText(), /1\.050,00/);
+
+            // Pagamento
+            await page.click('#homeExpense');
+            await page.click('#flowAdd');
+            await page.fill('#editName','Test pagamento');
+            await page.fill('#editAmount','20');
+            await page.click('#editSave');
+            await page.locator('.flowUnifiedStatus.pending').first().click();
+            await page.click('#flowBack');
+            assert.match(await page.locator('#homeBalance').innerText(), /1\.030,00/);
+
+            // Correzione saldo
+            await page.click('#editBalance');
+            await page.fill('#newBalance','1040');
+            await page.fill('#balanceReason','Test correzione');
+            await page.click('#balSave');
+            assert.match(await page.locator('#homeBalance').innerText(), /1\.040,00/);
+            await page.click('#homeAllMovements');
+            await page.waitForSelector('#movements:not(.hidden)');
+            const movements = await page.locator('.movementRow').count();
+            assert.ok(movements >= 3);
+
+            // Impostazioni / ricerca
+            await page.click('#movementsBack');
+            await page.click('#homeSettingsCard');
+            await page.waitForSelector('#settings:not(.hidden)');
+            await page.fill('#settingsSearch','backup');
+            assert.equal(await page.locator('#settingsBackup').isVisible(), true);
+            assert.equal(await page.locator('#settingsIncome').isVisible(), false);
+
+            // Persistenza al reload: deve riaprire In Ordine e mantenere saldo.
+            await page.reload();
+            await page.waitForSelector('#landing:not(.hidden)');
+            await page.click('#landingConti');
+            await page.waitForSelector('#home:not(.hidden)');
+            assert.match(await page.locator('#homeBalance').innerText(), /1\.040,00/);
+
+            await browser.close();
+            console.log('Core flow tests passed');
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
