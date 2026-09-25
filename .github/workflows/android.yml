@@ -1,0 +1,52 @@
+name: Build Android
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install dependencies
+        run: npm install
+      - name: Prepare web app
+        run: |
+          rm -rf www
+          mkdir -p www
+          cp index.html manifest.webmanifest sw.js icon.svg www/
+          npx esbuild native-bridge-src.js --bundle --format=iife --platform=browser --outfile=www/native-bridge.js
+      - name: Create Android project
+        run: |
+          rm -rf android
+          npx cap add android
+          npx cap sync android
+      - name: Enable exact notification scheduling
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path("android/app/src/main/AndroidManifest.xml")
+          s=p.read_text()
+          perm='<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />'
+          if perm not in s:
+              s=s.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">','<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    '+perm)
+          p.write_text(s)
+      - name: Build debug APK
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: In-Ordine-Android
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
