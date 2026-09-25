@@ -327,6 +327,16 @@
 .pigCrack{position:absolute;left:50px;top:29px;font-size:33px;line-height:1;color:#b94c62;font-weight:950;transform:rotate(23deg)}
 .pigCoin{position:absolute;width:27px;height:27px;border-radius:50%;background:#ffd55a;color:#916a00;display:grid;place-items:center;font-size:13px;font-weight:950}.pigCoin.c1{right:1px;top:27px;transform:rotate(12deg)}.pigCoin.c2{right:20px;top:54px;transform:rotate(-12deg)}
 
+
+/* MODIFICA / AGGIUNGI A SCHERMO INTERO */
+.modal.fullEditor{background:var(--bg);padding:0;align-items:stretch}
+.modal.fullEditor .modalCard{width:min(560px,100%);height:100vh;max-height:none;border-radius:0;box-shadow:none;padding:18px 16px 28px;margin:auto;background:var(--bg)}
+.modal.fullEditor .modalHead{position:sticky;top:-18px;z-index:3;background:var(--bg);padding:18px 0 12px;margin-bottom:4px}
+.modal.fullEditor .modalTitle{font-size:28px}
+.modal.fullEditor .close{font-size:27px}
+.modal.fullEditor #modalBody>.field,.modal.fullEditor #modalBody>.notifyField,.modal.fullEditor #modalBody>.notifyRuleBox,.modal.fullEditor #modalBody>.suggestionLabel,.modal.fullEditor #modalBody>.suggestionChips,.modal.fullEditor #modalBody>.optionalNoteBtn,.modal.fullEditor #modalBody>#noteWrap{max-width:520px;margin-left:auto;margin-right:auto}
+.modal.fullEditor .field input,.modal.fullEditor .field select,.modal.fullEditor textarea{background:#fff}
+
 </style>
 </head>
 <body>
@@ -1064,6 +1074,7 @@ function openEntryEditor(entry,type){
     '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
     '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
   );
+  $('modal').classList.add('fullEditor');
   if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
   $('editRecKind').value=rec?rec.kind:'single';
   renderEditRecExtra(rec||{kind:'single'});
@@ -1420,7 +1431,7 @@ function openBalanceEditor(){
   };
 }
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
-function closeModal(){$('modal').classList.add('hidden');$('modalBody').innerHTML=''}
+function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('fullEditor');$('modalBody').innerHTML=''}
 function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
