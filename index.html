@@ -459,13 +459,15 @@ const $=id=>document.getElementById(id);
 const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(n)||0);
 const todayDate=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};const todayISO=()=>{const d=todayDate();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const ymNow=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
+const addDaysISO=(iso,n)=>{const p=iso.split('-').map(Number),d=new Date(p[0],p[1]-1,p[2]);d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const daysBetween=(a,b)=>{const pa=a.split('-').map(Number),pb=b.split('-').map(Number);return Math.round((new Date(pb[0],pb[1]-1,pb[2])-new Date(pa[0],pa[1]-1,pa[2]))/86400000)};
 const monthName=ym=>{const p=ym.split('-').map(Number);const s=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,1));return s.charAt(0).toUpperCase()+s.slice(1)};
 const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-1+n,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:5});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:5});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
@@ -794,7 +796,7 @@ function openEntryEditor(entry,type){
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
     const notify=$('editNotify').checked;
-    const notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
     const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
     if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
@@ -847,6 +849,9 @@ function renderNotifications(){
   const mode=state.notifications.mode||'off';
   $('notifyAll').classList.toggle('active',mode==='all');
   $('notifyCustom').classList.toggle('active',mode==='custom');
+  $('notifySkip').textContent=mode==='off'?'Notifiche disattivate':'Disattiva tutte le notifiche';
+  const help=$('notifications').querySelector('.notifyHelp');
+  if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
 }
 async function requestNotificationPermission(){
   if(!('Notification' in window))return 'unsupported';
@@ -854,61 +859,84 @@ async function requestNotificationPermission(){
   if(Notification.permission==='denied')return 'denied';
   try{return await Notification.requestPermission()}catch(e){return 'unsupported'}
 }
+function notificationRuleFields(prefix,rule,title){
+  return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div>'+
+    '<div class="field"><label>Quando avvisare</label><select id="'+prefix+'Timing"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+    '<div class="field"><label>Orario</label><input id="'+prefix+'Time" type="time" value="'+escAttr(rule.time||'09:00')+'"></div>'+
+    '<div class="field"><label>Promemoria dopo la scadenza</label><select id="'+prefix+'Overdue"><option value="none">Nessuno</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div></div>';
+}
+function openGlobalNotificationRules(){
+  const ir=state.notifications.rules.income||{timing:'same',time:'09:00',overdue:'none'},er=state.notifications.rules.expense||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Attiva tutte le notifiche','<div class="hint">Imposta subito due regole separate. I Budget non sono inclusi.</div>'+notificationRuleFields('nIncome',ir,'Entrate')+notificationRuleFields('nExpense',er,'Pagamenti')+'<div class="modalBtns"><button id="nAllCancel" class="btn secondary">Annulla</button><button id="nAllSave" class="btn">Attiva tutte</button></div>');
+  $('nIncomeTiming').value=ir.timing||'same';$('nIncomeOverdue').value=ir.overdue||'none';$('nExpenseTiming').value=er.timing||'same';$('nExpenseOverdue').value=er.overdue||'none';
+  $('nAllCancel').onclick=closeModal;
+  $('nAllSave').onclick=async()=>{
+    state.notifications.rules.income={timing:$('nIncomeTiming').value,time:$('nIncomeTime').value||'09:00',overdue:$('nIncomeOverdue').value};
+    state.notifications.rules.expense={timing:$('nExpenseTiming').value,time:$('nExpenseTime').value||'09:00',overdue:$('nExpenseOverdue').value};
+    closeModal();await finishNotificationChoice('all',[]);
+  };
+}
 async function finishNotificationChoice(mode,selected){
   state.notifications.mode=mode;
   state.notifications.selected=selected||[];
-  if(mode==='all')state.entries.forEach(e=>e.notify=true);
+  if(mode==='all'){
+    state.entries.forEach(e=>{e.notify=true;e.notifyRule=null});
+    state.notifications.selected=state.entries.map(e=>e.id);
+  }
   if(mode==='custom')state.entries.forEach(e=>e.notify=state.notifications.selected.includes(e.id));
-  if(mode==='off')state.entries.forEach(e=>e.notify=false);
+  if(mode==='off'){
+    state.entries.forEach(e=>{e.notify=false;e.notifyRule=null});
+    state.notifications.selected=[];
+    state.notifications.sent={};
+  }
   save();
-  if(mode!=='off')await requestNotificationPermission();
-  if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}
-  else renderNotifications();
+  if(mode!=='off'){
+    const permission=await requestNotificationPermission();
+    if(permission==='denied')openModal('Notifiche bloccate','<div class="note">Le notifiche sono disattivate sul telefono/browser. Puoi abilitarle dalle impostazioni del dispositivo o del browser.</div>');
+    else if(permission==='unsupported')openModal('Notifiche non disponibili','<div class="note">Questo browser non supporta le notifiche. Le impostazioni restano salvate per la versione installata dell’app.</div>');
+  }
+  renderNotifications();
 }
 function openCustomNotifications(){
-  const selected=new Set(state.entries.filter(e=>e.notify===true).map(e=>e.id).concat(state.notifications.selected||[]));
+  const selected=new Set(state.entries.filter(e=>e.notify===true).map(e=>e.id));
   const entries=[...state.entries].sort((a,b)=>a.type.localeCompare(b.type)||a.name.localeCompare(b.name,'it'));
-  let list=entries.map(e=>'<label class="notifyToggle"><span><b>'+esc(e.name)+'</b><small>'+(e.type==='income'?'Entrata':'Uscita')+'</small></span><input type="checkbox" value="'+escAttr(e.id)+'" '+(selected.has(e.id)?'checked':'')+'></label>').join('');
+  let list=entries.map(e=>'<label class="notifyToggle"><span><b>'+esc(e.name)+'</b><small>'+(e.type==='income'?'Entrata':'Pagamento')+'</small></span><input type="checkbox" value="'+escAttr(e.id)+'" '+(selected.has(e.id)?'checked':'')+'></label>').join('');
   if(!list)list='<div class="empty">Non hai ancora voci da selezionare.</div>';
-  openModal('Scegli le notifiche','<div class="hint">Attiva solo le voci per cui vuoi ricevere un promemoria.</div><div id="notifyPickList" class="notifyList">'+list+'</div><div class="modalBtns"><button id="notifyPickCancel" class="btn secondary">Annulla</button><button id="notifyPickSave" class="btn">Salva scelte</button></div>');
+  openModal('Scegli le notifiche','<div class="hint">Decidi per quali voci ricevere un promemoria.</div><div id="notifyPickList" class="notifyList">'+list+'</div><div class="modalBtns"><button id="notifyPickCancel" class="btn secondary">Annulla</button><button id="notifyPickSave" class="btn">Salva scelte</button></div>');
   $('notifyPickCancel').onclick=closeModal;
   $('notifyPickSave').onclick=async()=>{const ids=Array.from(document.querySelectorAll('#notifyPickList input:checked')).map(x=>x.value);closeModal();await finishNotificationChoice('custom',ids)};
 }
+function notificationTimeReached(rule){
+  const now=new Date(),parts=(rule.time||'09:00').split(':').map(Number),mins=now.getHours()*60+now.getMinutes(),target=(parts[0]||0)*60+(parts[1]||0);
+  return mins>=target;
+}
 async function checkDueNotifications(){
-  const n=state.notifications||{mode:'off',selected:[],sent:{}};
-  if(!('Notification' in window)||Notification.permission!=='granted')return;
-  const ym=ymNow(),today=todayISO();
-  const pending=[...monthData('income',ym).pending,...monthData('expense',ym).pending].filter(x=>x.date===today);
+  const n=state.notifications||{};
+  if(n.mode==='off'||!('Notification' in window)||Notification.permission!=='granted')return;
+  const today=todayISO(),ym=ymNow(),pending=[...pendingThrough('income',ym),...pendingThrough('expense',ym)],alerts=[];
   for(const x of pending){
-    const entry=state.entries.find(e=>e.id===x.entryId);
-    if(!entry||entry.notify!==true)continue;
-    const key=x.entryId+'|'+x.date;
-    if(n.sent&&n.sent[key])continue;
-    const title=x.type==='income'?'Entrata da ricevere':'Pagamento da fare';
-    const body=x.name+' · '+money(x.amount);
-    try{new Notification(title,{body});n.sent[key]=true}catch(e){}
+    const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
+    const rule=entry.notifyRule||(n.rules&&n.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
+    if(!notificationTimeReached(rule))continue;
+    const diff=daysBetween(x.date,today);
+    const reasons=[];
+    if((rule.timing==='same'||rule.timing==='both')&&diff===0)reasons.push('oggi');
+    if((rule.timing==='before'||rule.timing==='both')&&diff===-1)reasons.push('domani');
+    if(diff>0&&rule.overdue!=='none'){
+      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      if(every&&diff%every===0)reasons.push('scaduta');
+    }
+    for(const reason of reasons){
+      const key=x.entryId+'|'+x.date+'|'+today+'|'+reason;
+      if(n.sent&&n.sent[key])continue;
+      alerts.push({x,reason,key});
+    }
   }
-  state.notifications=n;save();
+  if(!alerts.length)return;
+  const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
+  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
 }
-function openMovementDetail(id){
-  const h=state.history.find(x=>x.id===id);if(!h)return;
-  if(h.type==='adjustment'){
-    openModal('Correzione saldo','<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="number" step="0.01" value="'+Number(h.delta||0)+'"></div><div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="moveReason" value="'+escAttr(h.reason||'')+'"></div><div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva</button></div>');
-    $('moveSave').onclick=()=>{const nd=Number($('moveDelta').value),date=$('moveDate').value;if(!Number.isFinite(nd)||!date)return flashModal('Controlla importo e data.');const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=date;h.month=date.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();};
-    $('moveDelete').onclick=()=>confirmDeleteMovement(h);
-    return;
-  }
-  const type=h.type,catOpts=categoryOptions(type,h.category||'');
-  openModal(h.type==='income'?'Dettaglio entrata ricevuta':'Dettaglio pagamento','<div class="field"><label>Voce</label><input value="'+escAttr(h.name)+'" readonly></div><div class="field"><label>Importo</label><input id="moveAmount" type="number" min="0.01" step="0.01" value="'+Number(h.amount||0)+'"></div><div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div><div class="field"><label>Categoria</label><select id="moveCategory">'+catOpts+'</select></div><div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="moveNote">'+esc(h.note||'')+'</textarea></div><div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva</button></div>');
-  $('moveSave').onclick=()=>{const a=Number($('moveAmount').value),date=$('moveDate').value;if(!Number.isFinite(a)||a<=0||!date)return flashModal('Controlla importo e data.');const old=Number(h.amount||0),diff=a-old;state.balance=Number(state.balance||0)+(type==='income'?diff:-diff);h.amount=a;h.date=date;h.month=date.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();save();closeModal();renderMovements();};
-  $('moveDelete').onclick=()=>confirmDeleteMovement(h);
-}
-function confirmDeleteMovement(h){
-  openModal('Elimina movimento','<div class="note">Il movimento verrà eliminato e il saldo verrà corretto. Se era collegato a una voce programmata, quella scadenza tornerà aperta.</div><div class="modalBtns"><button id="moveDeleteNo" class="btn secondary">Annulla</button><button id="moveDeleteYes" class="btn deleteBtn">Elimina</button></div>');
-  $('moveDeleteNo').onclick=closeModal;
-  $('moveDeleteYes').onclick=()=>{if(h.type==='adjustment')state.balance=Number(state.balance||0)-Number(h.delta||0);else state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));state.history=state.history.filter(x=>x.id!==h.id);save();closeModal();if(!$('movements').classList.contains('hidden'))renderMovements();if(!$('flow').classList.contains('hidden'))renderFlow();};
-}
-function movementNames(){
+function movementNames(){function movementNames(){
   return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
 }
 function movementCutoff(period){
@@ -1073,9 +1101,9 @@ $('settingsBackup').onclick=openBackupSettings;
 $('settingsSecurity').onclick=openSecuritySettings;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>show('home');
-$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);
+$('notifyAll').onclick=openGlobalNotificationRules;
 $('notifyCustom').onclick=openCustomNotifications;
-$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();show('home')};
+$('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
 $('movementsBack').onclick=()=>show('home');
 $('summaryBack').onclick=()=>show('home');
 $('budgetBack').onclick=()=>show('summary');
