@@ -1,0 +1,16 @@
+{
+  "name": "in-ordine",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/local-notifications": "8.2.1",
+    "@capgo/capacitor-native-biometric": "8.6.11"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2",
+    "esbuild": "^0.25.10"
+  }
+}
