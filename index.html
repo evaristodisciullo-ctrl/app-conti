@@ -586,6 +586,7 @@
 
 <div id="undoSnack" class="undoSnack hidden"><span id="undoSnackText"></span><button id="undoSnackBtn">ANNULLA</button></div><div id="modal" class="modal hidden"><div class="modalCard"><div class="modalHead"><div id="modalTitle" class="modalTitle"></div><button id="modalClose" class="close">×</button></div><div id="modalBody"></div></div></div>
 
+<script src="./native-bridge.js"></script>
 <script>
 (function(){
 const KEY='quantoPrototypeV1';
@@ -654,6 +655,9 @@ async function hashPin(pin){const data=new TextEncoder().encode('in-ordine|'+pin
 function securityFresh(){return !!(state.security&&state.security.enabled&&Date.now()-Number(state.security.lastActivity||0)<10*60*1000)}
 function touchSecurity(){if(state.security&&state.security.enabled&&document.querySelector('#landing.hidden')){state.security.lastActivity=Date.now();save()}}
 async function registerDeviceSecurity(){
+  if(nativeBridge()){
+    try{const ok=await nativeBridge().biometricAvailable();if(ok){state.security.credentialId='native';save();return true}return false}catch(e){return false}
+  }
   if(!window.PublicKeyCredential||!navigator.credentials)return false;
   try{
     const challenge=crypto.getRandomValues(new Uint8Array(32)),userId=crypto.getRandomValues(new Uint8Array(16));
@@ -662,6 +666,9 @@ async function registerDeviceSecurity(){
   }catch(e){return false}
 }
 async function authenticateDeviceSecurity(){
+  if(nativeBridge()){
+    try{return await nativeBridge().authenticateDevice()}catch(e){return false}
+  }
   if(!state.security.credentialId||!window.PublicKeyCredential||!navigator.credentials)return false;
   try{
     const assertion=await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:'public-key',id:b64urlToBytes(state.security.credentialId)}],userVerification:'required',timeout:60000}});
@@ -781,7 +788,7 @@ function openDateChooser(initialSpec,onConfirm){
   };
 }
 
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));queueNativeNotificationSync()}
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
   state.profile.fullName=nick;save();
@@ -1251,7 +1258,53 @@ function renderNotifications(){
   const help=$('notifications').querySelector('.notifyHelp');
   if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
 }
+function nativeBridge(){return window.InOrdineNative&&window.InOrdineNative.isNative?window.InOrdineNative:null}
+function notificationIdFromKey(key){
+  let h=2166136261;
+  for(let i=0;i<key.length;i++){h^=key.charCodeAt(i);h=Math.imul(h,16777619)}
+  return Math.abs(h)%2000000000+1000;
+}
+function dateTimeISO(date,time){
+  const parts=(time||'09:00').split(':').map(Number),p=date.split('-').map(Number);
+  return new Date(p[0],p[1]-1,p[2],parts[0]||0,parts[1]||0,0,0);
+}
+function buildNativeNotificationSchedule(){
+  if(!nativeBridge()||!state.notifications||state.notifications.mode==='off')return [];
+  const end=addMonths(ymNow(),12),all=[...pendingThrough('income',end),...pendingThrough('expense',end)],now=Date.now(),groups=new Map();
+  const add=(date,time,x,label)=>{
+    const at=dateTimeISO(date,time);if(at.getTime()<=now)return;
+    const key=at.toISOString();
+    if(!groups.has(key))groups.set(key,{at,rows:[]});
+    groups.get(key).rows.push({x,label});
+  };
+  for(const x of all){
+    const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
+    const rule=entry.notifyRule||(state.notifications.rules&&state.notifications.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
+    if(rule.timing==='same'||rule.timing==='both')add(x.date,rule.time,x,'oggi');
+    if(rule.timing==='before'||rule.timing==='both')add(addDaysISO(x.date,-1),rule.time,x,'domani');
+    if(rule.overdue!=='none'){
+      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      if(every){
+        const start=addDaysISO(x.date,every);
+        for(let d=start,count=0;count<60&&daysBetween(todayISO(),d)<=120;d=addDaysISO(d,every),count++)add(d,rule.time,x,'scaduto');
+      }
+    }
+  }
+  return [...groups.entries()].sort((a,b)=>a[1].at-b[1].at).slice(0,60).map(([key,g])=>{
+    const rows=g.rows.slice(0,5),body=rows.map(r=>r.x.name+' · '+money(r.x.amount)+(r.label==='scaduto'?' · scaduto':'')).join('\n')+(g.rows.length>5?'\n+'+(g.rows.length-5)+' altre':'');
+    return {id:notificationIdFromKey(key),title:g.rows.length===1?'Promemoria Conti economici':g.rows.length+' promemoria Conti economici',body,at:g.at.toISOString(),extra:{screen:'conti'}};
+  });
+}
+let nativeSyncTimer=null;
+function queueNativeNotificationSync(){
+  if(!nativeBridge())return;
+  if(nativeSyncTimer)clearTimeout(nativeSyncTimer);
+  nativeSyncTimer=setTimeout(async()=>{nativeSyncTimer=null;try{await nativeBridge().replaceNotifications(buildNativeNotificationSchedule())}catch(e){}},250);
+}
+window.addEventListener('inordine-native-ready',()=>queueNativeNotificationSync());
+
 async function requestNotificationPermission(){
+  if(nativeBridge())return nativeBridge().requestNotifications();
   if(!('Notification' in window))return 'unsupported';
   if(Notification.permission==='granted')return 'granted';
   if(Notification.permission==='denied')return 'denied';
@@ -1311,6 +1364,7 @@ function notificationTimeReached(rule){
 }
 async function checkDueNotifications(){
   const n=state.notifications||{};
+  if(nativeBridge()){queueNativeNotificationSync();return}
   if(n.mode==='off'||!('Notification' in window)||Notification.permission!=='granted')return;
   const today=todayISO(),ym=ymNow(),pending=[...pendingThrough('income',ym),...pendingThrough('expense',ym)],alerts=[];
   for(const x of pending){
@@ -1508,7 +1562,9 @@ async function checkBudgetNotifications(force){
   }
   if(!alerts.length){save();return}
   save();
-  if('Notification' in window&&Notification.permission==='granted'){
+  if(nativeBridge()){
+    try{await nativeBridge().notifyNow('Avviso Budget',alerts.join('\n'),notificationIdFromKey('budget|'+ym+'|'+alerts.join('|')))}catch(e){}
+  }else if('Notification' in window&&Notification.permission==='granted'){
     try{new Notification('Avviso Budget',{body:alerts.join('\n')})}catch(e){}
   }else if(force){
     openModal('Avviso Budget','<div class="note">'+alerts.map(esc).join('<br>')+'</div>');
@@ -1599,6 +1655,7 @@ $('budgetAdd').onclick=openBudgetChoice;
 $('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+setTimeout(queueNativeNotificationSync,500);
 show('landing');
 })();
 </script>
