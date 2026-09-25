@@ -1,0 +1,10 @@
+{
+  "appId": "it.inordine.app",
+  "appName": "In Ordine",
+  "webDir": "www",
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#2479d8"
+    }
+  }
+}
