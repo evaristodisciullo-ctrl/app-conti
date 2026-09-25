@@ -289,7 +289,7 @@
 .homeSummaryRow:last-child{border-bottom:0}
 .homeSummaryIcon{grid-area:icon;width:31px;height:31px;border-radius:9px;display:grid;place-items:center;font-weight:950}
 .homeSummaryLabel{grid-area:label;font-size:12px;font-weight:950;letter-spacing:.25px}
-.homeSummaryValue{grid-area:value;font-size:17px;font-weight:950;white-space:nowrap}
+.homeSummaryValue{grid-area:value;font-size:17px;font-weight:950;white-space:nowrap}.homeSummaryValue.neg{color:var(--red)}
 .homeSummaryEdit{grid-area:edit;justify-self:end;border:0;background:transparent;color:var(--accent);font-size:11px;font-weight:900;padding:1px 0 0}
 .homeSummaryRow.totalRow{background:#f6f9fc;margin:4px -5px;border-radius:13px;border-bottom:0;padding-left:7px;padding-right:7px}
 .homeActionCard{width:100%;border:1px solid var(--line);border-radius:18px;background:#fff;margin-top:12px;padding:14px;display:grid;grid-template-columns:38px minmax(0,1fr) 15px;gap:11px;align-items:center;text-align:left;color:var(--text);box-shadow:var(--shadow)}
@@ -818,13 +818,11 @@ function openTotalsThrough(ym){
 }
 function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
 function renderHome(){
-  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='balanceValue'+(state.balance<0?' neg':'');
+  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
   const month=ymNow(),open=openTotalsThrough(month);
   $('homeIncomeTotal').textContent=money(open.toReceive);
   $('homeExpenseTotal').textContent=money(open.toPay);
-  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='projectionValue'+(p<0?' neg':'');
-  const list=$('homeMovements'),hist=[...state.history].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-  renderMovementList(list,hist);
+  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
 }
 function renderMovementList(el,arr){
   el.innerHTML='';
