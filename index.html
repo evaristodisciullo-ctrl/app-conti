@@ -212,6 +212,23 @@
 .homeLandingBack{border:0;background:transparent;color:var(--text);font-size:28px;padding:0 6px 0 0}
 #setup .nameField{display:none!important}
 
+
+/* IMPOSTAZIONI DEFINITIVE */
+:root{--accent:#2479d8}
+.btn:not(.deleteBtn),.addBtn{background:var(--accent)}
+.editBalance,.linkBtn,.budgetEdit{color:var(--accent)}
+.settingsSearch{width:100%;height:48px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:0 14px;font-size:15px;outline:none;margin-bottom:16px}
+.settingsGroup{margin-bottom:20px}.settingsGroupTitle{font-size:12px;font-weight:950;letter-spacing:.8px;color:#708292;margin:0 3px 8px;text-transform:uppercase}
+.settingsMenu{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.settingsRow{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:11px;padding:13px 14px;text-align:left;color:var(--text)}
+.settingsRow:last-child{border-bottom:0}.settingsRowIcon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:18px;font-weight:900}
+.settingsRowText strong{font-size:15px}.settingsRowText small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.settingsRowArrow{font-size:23px;color:#8393a0}
+.iBlue{background:#e5f1ff;color:#216fc4}.iGreen{background:#e7f7ee;color:#168052}.iOrange{background:#fff0dd;color:#c36c13}.iPurple{background:#f0e9ff;color:#7450bc}.iPink{background:#ffe8f1;color:#b94f79}.iTeal{background:#e5f7f6;color:#21817b}.iYellow{background:#fff7cf;color:#9b7a00}.iRed{background:#ffe7e8;color:#bd3640}.iIndigo{background:#e9ebff;color:#4d5cc5}.iGray{background:#edf0f2;color:#63717d}
+.settingsDanger{margin-top:24px}.settingsDanger .settingsRowText strong{color:var(--red)}
+.colorGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.colorChoice{border:2px solid transparent;border-radius:14px;padding:11px 6px;background:#f6f8fa;font-weight:850}.colorChoice.active{border-color:var(--text)}
+.guideTopics{display:flex;flex-direction:column;gap:8px;margin-top:10px}.guideTopic{border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px;text-align:left;font-weight:850;color:var(--text)}
+.homeSettingsCard{width:100%;margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;justify-content:space-between;color:var(--text);box-shadow:var(--shadow);font-weight:900}
+
 </style>
 </head>
 <body>
@@ -290,6 +307,7 @@
   <div class="mainTiles"><button class="navTile income" id="homeIncome"><span class="roundIcon">↓</span><span class="navText"><strong>Entrate</strong><span id="homeIncomeTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button><button class="navTile expense" id="homeExpense"><span class="roundIcon">↓</span><span class="navText"><strong>Pagamenti</strong><span id="homeExpenseTotal" class="navTileTotal">€ 0,00</span></span><span class="chev">›</span></button></div>
   <button class="projection" id="homeProjection"><span class="projectionIcon" aria-hidden="true"><i></i><i></i><i></i></span><span class="projectionMain"><span class="projectionLabel">Saldo fine mese <span class="infoBubble">i</span></span><span id="homeProjectionValue" class="projectionValue">€ 0,00</span></span><span class="chev">›</span></button>
   <div class="section homeMovementsCard"><div class="sectionHead"><h2>Movimenti</h2><div class="headActions"><button id="homeFilters" class="filterBtn">Filtri</button><button id="homeAllMovements" class="linkBtn">Vedi tutti ›</button></div></div><div id="homeMovements" class="list"></div></div>
+  <button id="homeSettingsCard" class="homeSettingsCard"><span>⚙ Impostazioni</span><span>›</span></button>
 </section>
 
 <section id="flow" class="screen hidden">
@@ -319,7 +337,49 @@
   <div id="budgetList" class="budgetList"></div>
 </section>
 
-<section id="settings" class="screen settingsPage hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="settingsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Impostazioni</h1></div></div><div class="card"><div class="settingsTitle">Saldo</div><div class="hint">Puoi correggere il saldo reale senza creare un movimento.</div><button id="settingsEditBalance" class="btn secondary" style="margin-top:13px">Modifica saldo</button></div><div class="card danger"><div class="settingsTitle">Ricomincia da capo</div><div class="hint">Cancella il prototipo attuale e torna alla prima schermata. I dati della vecchia versione dell’app non vengono toccati.</div><button id="resetPrototype" class="btn">Cancella tutti i dati</button></div></section>
+<section id="settings" class="screen settingsPage hidden">
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="settingsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Impostazioni</h1></div></div>
+  <input id="settingsSearch" class="settingsSearch" placeholder="Cerca nelle impostazioni">
+
+  <div class="settingsGroup" data-settings-group>
+    <div class="settingsGroupTitle">Conti</div>
+    <div class="settingsMenu">
+      <button class="settingsRow" id="settingsEditBalance" data-search="saldo modifica saldo"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Saldo / Modifica saldo</strong><small>Correggi il saldo attuale</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsIncome" data-search="entrate"><span class="settingsRowIcon iGreen">↓</span><span class="settingsRowText"><strong>Entrate</strong><small>Visualizza e gestisci le entrate</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsExpense" data-search="pagamenti uscite"><span class="settingsRowIcon iOrange">↑</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Visualizza e gestisci i pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Storico di ricevuti, pagati e correzioni</small></span><span class="settingsRowArrow">›</span></button>
+    </div>
+  </div>
+
+  <div class="settingsGroup" data-settings-group>
+    <div class="settingsGroupTitle">Organizzazione</div>
+    <div class="settingsMenu">
+      <button class="settingsRow" id="settingsCategories" data-search="categorie riepilogo categorie"><span class="settingsRowIcon iPink">▦</span><span class="settingsRowText"><strong>Categorie</strong><small>Organizza entrate e pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBudget" data-search="budget limite spesa"><span class="settingsRowIcon iTeal">◔</span><span class="settingsRowText"><strong>Budget</strong><small>Limiti mensili di spesa</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsNotifications" data-search="notifiche promemoria avvisi"><span class="settingsRowIcon iYellow">🔔</span><span class="settingsRowText"><strong>Notifiche</strong><small>Gestisci entrate e pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+    </div>
+  </div>
+
+  <div class="settingsGroup" data-settings-group>
+    <div class="settingsGroupTitle">App</div>
+    <div class="settingsMenu">
+      <button class="settingsRow" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsColor" data-search="colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Colore dell’app</strong><small>Scegli il colore principale</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Come funziona l’app</strong><small>Guida breve per argomento</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e ripristino</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Protezione Conti economici</strong><small>PIN e biometria</small></span><span class="settingsRowArrow">›</span></button>
+    </div>
+  </div>
+
+  <div class="settingsGroup settingsDanger" data-settings-group>
+    <div class="settingsMenu">
+      <button class="settingsRow" id="resetPrototype" data-search="cancella tutti dati reset"><span class="settingsRowIcon iRed">×</span><span class="settingsRowText"><strong>Cancella tutti i dati dei conti</strong><small>Profilo e colore dell’app restano invariati</small></span><span class="settingsRowArrow">›</span></button>
+    </div>
+  </div>
+</section>
+</div>
+
+<nav id="bottomNav"</section>
 </div>
 
 <nav id="bottomNav" class="bottomNav hidden"><button data-nav="home"><span class="nIcon">⌂</span><span>Home</span></button><button data-nav="movements"><span class="nIcon">↕</span><span>Movimenti</span></button><button data-nav="summary"><span class="nIcon">▤</span><span>Riepilogo</span></button><button data-nav="notifications" class="bellNav"><span class="nIcon">🔔</span><span>Notifiche</span></button><button data-nav="settings"><span class="nIcon">⚙</span><span>Impostazioni</span></button></nav>
@@ -337,9 +397,58 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:4});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{}},customCategories:{income:[],expense:[]},budgets:{},setupDrafts:{income:[],expense:[]},version:5});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(state.notifications.mode==='all')state.entries.forEach(e=>e.notify=true);if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
+
+const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
+function applyAppColor(name){const v=APP_COLORS[name]||APP_COLORS.Blu;document.documentElement.style.setProperty('--accent',v)}
+function openProfileSettings(){
+  openModal('Profilo / Nome','<div class="field"><label>Nome / nickname <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="profileNickname" value="'+escAttr(state.profile.fullName||'')+'" placeholder="Es. Marco"></div><div class="modalBtns"><button id="profileCancel" class="btn secondary">Annulla</button><button id="profileSave" class="btn">Salva</button></div>');
+  $('profileCancel').onclick=closeModal;$('profileSave').onclick=()=>{state.profile.fullName=$('profileNickname').value.trim();save();if($('landingNickname'))$('landingNickname').value=state.profile.fullName;closeModal()};
+}
+function openColorSettings(){
+  let selected=state.appColor||'Blu';
+  const buttons=Object.keys(APP_COLORS).map(n=>'<button class="colorChoice '+(n===selected?'active':'')+'" data-color="'+n+'">'+n+'</button>').join('');
+  openModal('Colore dell’app','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
+  $('colorGrid').querySelectorAll('.colorChoice').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);$('colorGrid').querySelectorAll('.colorChoice').forEach(x=>x.classList.toggle('active',x===b))});
+  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');closeModal()};
+  $('colorSave').onclick=()=>{state.appColor=selected;save();applyAppColor(selected);closeModal()};
+}
+const GUIDE={
+  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo con Modifica saldo.',
+  'Entrate':'Aggiungi le entrate e segnala RICEVUTO solo quando i soldi sono realmente arrivati.',
+  'Pagamenti':'Aggiungi i pagamenti e segnala PAGATO solo quando il pagamento è stato realmente effettuato.',
+  'Date e frequenza':'Scegli la data e, se serve, imposta una ricorrenza. Le scadenze si generano automaticamente.',
+  'Stati e scadenze':'Da ricevere/Da pagare restano aperti. Dal giorno successivo alla scadenza diventano scaduti.',
+  'Movimenti':'Qui trovi solo eventi reali: Ricevuto, Pagato e Correzione saldo.',
+  'Categorie':'Le categorie sono facoltative e servono a capire dove entrano o escono i soldi.',
+  'Budget':'I budget sono facoltativi e riguardano solo i pagamenti realmente effettuati.',
+  'Notifiche':'Puoi attivarle per tutte le entrate e i pagamenti o gestirle voce per voce.',
+  'Modifica ed elimina':'Puoi modificare o eliminare le voci. I movimenti già confermati restano nello storico salvo modifica del movimento stesso.',
+  'Fine mese':'Le voci completate restano nello storico; quelle scadute e ancora aperte continuano a comparire.',
+  'Colori':'Verde indica completato, giallo in attesa e rosso scaduto o errore.'
+};
+function openGuide(){
+  const topics=Object.keys(GUIDE).map((t,i)=>'<button class="guideTopic" data-topic="'+i+'">'+esc(t)+'</button>').join('');
+  openModal('Come funziona l’app','<div class="hint">Scegli solo l’argomento che ti serve.</div><div id="guideTopics" class="guideTopics">'+topics+'</div>');
+  $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
+}
+function downloadBackup(){
+  const payload={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
+  a.href=url;a.download='in-ordine-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function openBackupSettings(){
+  openModal('Backup e ripristino','<div class="hint">Il backup contiene soltanto i dati di Conti economici.</div><div class="modalBtns" style="margin-top:16px"><button id="backupCreate" class="btn">Crea backup</button><button id="backupRestore" class="btn secondary">Ripristina backup</button></div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
+  $('backupCreate').onclick=downloadBackup;
+  $('backupRestore').onclick=()=>$('backupFile').click();
+  $('backupFile').onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();const current={format:'in-ordine-conti',version:1,createdAt:new Date().toISOString(),data:{balance:state.balance,entries:state.entries,history:state.history,notifications:state.notifications,customCategories:state.customCategories,budgets:state.budgets,setupDrafts:state.setupDrafts,setupDone:state.setupDone,setupStage:state.setupStage}};localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));Object.assign(state,obj.data);save();closeModal();show('landing')}catch(err){flashModal('Il file selezionato non è un backup valido.')}};
+}
+function openSecuritySettings(){
+  openModal('Protezione Conti economici','<div class="note">La protezione con PIN e biometria verrà collegata al sistema di sicurezza del telefono nella versione mobile. I dati non verranno mai cancellati per recuperare l’accesso.</div>');
+}
+
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
@@ -351,7 +460,7 @@ function openContiFromLanding(){
   show('home');
 }
 
-function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const nav=!['landing','setup','setupIncome','setupExpense'].includes(id);$('bottomNav').classList.toggle('hidden',!nav);document.querySelectorAll('#bottomNav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id||(id==='budget'&&b.dataset.nav==='summary')));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));$('bottomNav').classList.add('hidden');if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   return {
     id:e.id||'',
@@ -884,9 +993,28 @@ $('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry()
 $('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
 $('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}if(!saved.length)throw new Error('Inserisci almeno una entrata oppure torna indietro.');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
 $('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
-$('settingsTop').onclick=()=>show('settings');$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
+$('settingsTop').onclick=()=>show('settings');
+
+$('settingsSearch').addEventListener('input',()=>{
+  const q=$('settingsSearch').value.trim().toLowerCase();
+  document.querySelectorAll('.settingsRow').forEach(r=>{if(r.id==='resetPrototype'||r.closest('#settings'))r.classList.toggle('hidden',q&&!((r.dataset.search||'')+' '+r.textContent).toLowerCase().includes(q))});
+  document.querySelectorAll('[data-settings-group]').forEach(g=>g.classList.toggle('hidden',!Array.from(g.querySelectorAll('.settingsRow')).some(r=>!r.classList.contains('hidden'))));
+});
+$('settingsIncome').onclick=()=>openFlow('income');
+$('settingsExpense').onclick=()=>openFlow('expense');
+$('settingsMovements').onclick=()=>show('movements');
+$('settingsCategories').onclick=()=>{summaryMonth=ymNow();show('summary')};
+$('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
+$('settingsNotifications').onclick=()=>{notificationsOnboarding=false;show('notifications')};
+$('settingsProfile').onclick=openProfileSettings;
+$('settingsColor').onclick=openColorSettings;
+$('settingsGuide').onclick=openGuide;
+$('settingsBackup').onclick=openBackupSettings;
+$('settingsSecurity').onclick=openSecuritySettings;
+$('homeSettingsCard').onclick=()=>show('settings');
+$('notificationsBack').onclick=()=>{if(notificationsOnboarding){createRows('expenseRows','expense');show('setupExpense')}else show('home')};$('notifyAll').onclick=()=>finishNotificationChoice('all',[]);$('notifyCustom').onclick=openCustomNotifications;$('notifySkip').onclick=()=>{state.notifications.mode='off';state.notifications.selected=[];state.entries.forEach(e=>e.notify=false);save();if(notificationsOnboarding){state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save()}show('home')};$('movementsBack').onclick=()=>show('home');$('summaryBack').onclick=()=>show('home');$('budgetBack').onclick=()=>show('summary');$('settingsBack').onclick=()=>show('home');$('homeIncome').onclick=()=>openFlow('income');$('homeExpense').onclick=()=>openFlow('expense');$('editBalance').onclick=openBalanceEditor;$('settingsEditBalance').onclick=openBalanceEditor;$('homeAllMovements').onclick=()=>show('movements');$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};$('movementsFilters').onclick=openMovementFilters;$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};$('flowBack').onclick=()=>show('home');$('flowQuick').onclick=()=>openQuickEntry(currentFlow);$('flowAdd').onclick=()=>openAddEntry(currentFlow);$('monthPrev').onclick=()=>{flowMonth=addMonths(flowMonth,-1);renderFlow()};$('monthNext').onclick=()=>{flowMonth=addMonths(flowMonth,1);renderFlow()};$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};$('budgetAdd').onclick=()=>openBudgetEditor(null);
 $('bottomNav').onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=b.dataset.nav;if(n==='home')show('home');if(n==='movements')show('movements');if(n==='summary'){summaryMonth=ymNow();show('summary')}if(n==='notifications'){notificationsOnboarding=false;show('notifications')}if(n==='settings')show('settings')};
-$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti e movimenti di questo prototipo?</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value='';show('landing')}};
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
 show('landing');
 })();
 </script>
