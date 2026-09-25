@@ -577,7 +577,7 @@ const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Numb
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
 const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow(),recurrenceTarget=null,quickEditMode=null;let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;let notificationsOnboarding=false;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
@@ -815,14 +815,16 @@ function effectiveOccurrence(entry,ym){
   return out;
 }
 function occurs(entry,ym){return !!effectiveOccurrence(entry,ym)}
-function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&h.month===ym)}
+function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&(h.occurrenceMonth||h.month)===ym)}
 function monthData(type,ym){
-  const done=[],pending=[];
+  const pending=[];
   state.entries.filter(e=>e.type===type).forEach(e=>{
     const occ=effectiveOccurrence(e,ym);if(!occ)return;
-    const h=historyFor(e.id,ym);
-    if(h)done.push(Object.assign({},h,{category:h.category!=null?h.category:(occ.category||''),note:h.note!=null?h.note:(occ.note||'')}));
-    else pending.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:ym,category:occ.category||'',note:occ.note||''});
+    if(!historyFor(e.id,ym))pending.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:ym,category:occ.category||'',note:occ.note||''});
+  });
+  const done=state.history.filter(h=>h.type===type&&h.month===ym).map(h=>{
+    const e=state.entries.find(x=>x.id===h.entryId),occ=e?effectiveOccurrence(e,h.occurrenceMonth||ym):null;
+    return Object.assign({},h,{category:h.category!=null?h.category:(occ&&occ.category||''),note:h.note!=null?h.note:(occ&&occ.note||'')});
   });
   done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending};
 }
@@ -911,7 +913,7 @@ function renderFlow(){
 function completeOccurrenceImmediate(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   if(historyFor(x.entryId,x.month))return;
-  const h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:x.date,month:x.month,category:entry.category||'',note:entry.note||''};
+  const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
   state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
 }
 function openReopenMovement(h){
@@ -1269,7 +1271,7 @@ function openMovementFilters(){
   $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
 }
 function categoryTotals(type,ym){
-  const all=monthData(type,ym).done,m={};
+  const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
   for(const x of all){const cat=(x.category||'').trim()||'Senza categoria';m[cat]=(m[cat]||0)+Number(x.amount||0)}
   return Object.entries(m).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount||a.name.localeCompare(b.name,'it'));
 }
@@ -1281,7 +1283,7 @@ function renderCategoryBlock(type,ym,containerId,totalId){
   el.querySelectorAll('.categoryRow').forEach(b=>b.onclick=()=>openCategoryDetails(type,b.dataset.cat,ym));
 }
 function openCategoryDetails(type,category,ym){
-  const d=monthData(type,ym),all=[...d.done].filter(x=>(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
+  const all=state.history.filter(x=>x.type===type&&x.month===ym&&(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
   const total=all.reduce((s,x)=>s+Number(x.amount||0),0);
   const rows=all.map(x=>'<div class="sumLine"><span><strong>'+esc(x.name)+'</strong><br><small style="color:var(--muted)">'+fmtMovementDate(x.date)+'</small></span><strong class="'+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</strong></div>').join('');
   openModal(category,'<div class="hint">'+(type==='income'?'Entrate':'Pagamenti')+' · '+monthName(ym)+'</div><div style="margin-top:8px">'+rows+'</div><div class="sumLine total"><span>Totale</span><strong>'+money(total)+'</strong></div>');
@@ -1318,7 +1320,7 @@ function saveCurrentBudgetPlan(plan){
   state.budgets=Object.assign({},copy.limits);
 }
 function monthPaidExpenses(ym){
-  return monthData('expense',ym).done;
+  return state.history.filter(h=>h.type==='expense'&&h.month===ym);
 }
 function totalPaidExpenses(ym){return monthPaidExpenses(ym).reduce((s,x)=>s+Number(x.amount||0),0)}
 function renderBudget(){
