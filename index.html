@@ -347,6 +347,15 @@
 #setup .setupCard h1{font-size:25px;margin:0 0 18px}
 #setup .btn{background:var(--accent)}
 
+
+/* SELETTORE DATA */
+.rDateBtn,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dateDisplayBtn{height:50px;border-radius:13px;padding:0 12px;font-size:14px}
+.dateDisplayBtn.empty,.rDateBtn.empty{color:#98a7b2}
+.pickerModal{z-index:160}.dateTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.dateTab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px;font-weight:850;color:#5d7183}.dateTab.active{background:#e7f3ff;border-color:#9ec9f0;color:#1c73c3}
+.datePanel{margin-top:8px}.dateManual{position:relative}.dateManual:before{content:"|";position:absolute;left:12px;top:13px;color:var(--accent);font-weight:900;animation:blinkCaret 1s steps(1) infinite;z-index:1}.dateManual input{padding-left:20px!important}
+@keyframes blinkCaret{50%{opacity:0}}
+
 </style>
 </head>
 <body>
@@ -688,6 +697,1713 @@ function openChangePin(){
   openModal('Cambia PIN','<div class="field"><label>PIN attuale</label><input id="oldPin" type="password" inputmode="numeric"></div><div class="field"><label>Nuovo PIN</label><input id="newPin1" type="password" inputmode="numeric"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="newPin2" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="changePinNo" class="btn secondary">Annulla</button><button id="changePinYes" class="btn">Salva</button></div>');
   $('changePinNo').onclick=openSecuritySettings;
   $('changePinYes').onclick=async()=>{if(await hashPin($('oldPin').value)!==state.security.pinHash)return flashModal('PIN attuale non corretto.');const p1=$('newPin1').value,p2=$('newPin2').value;if(!/^\d{4,8}$/.test(p1)||p1!==p2)return flashModal('Controlla il nuovo PIN.');state.security.pinHash=await hashPin(p1);save();openSecuritySettings()};
+}
+
+
+function openPickerModal(title,body){
+  closePickerModal();
+  const w=document.createElement('div');w.id='pickerModal';w.className='modal pickerModal';
+  w.innerHTML='<div class="modalCard"><div class="modalHead"><div class="modalTitle">'+esc(title)+'</div><button id="pickerClose" class="close">×</button></div><div id="pickerBody">'+body+'</div></div>';
+  document.body.appendChild(w);document.getElementById('pickerClose').onclick=closePickerModal;
+}
+function closePickerModal(){const e=document.getElementById('pickerModal');if(e)e.remove()}
+function p$(id){return document.getElementById(id)}
+const IT_MONTHS=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+function lastDayISO(ym){const [y,m]=ym.split('-').map(Number),d=new Date(y,m,0).getDate();return ym+'-'+String(d).padStart(2,'0')}
+function displayDateSpec(spec){
+  if(!spec)return '';
+  if(spec.kind==='day')return fmtMovementDate(spec.iso);
+  if(spec.kind==='monthYear')return monthName(spec.ym);
+  if(spec.kind==='year')return String(spec.year);
+  if(spec.kind==='monthOnly')return IT_MONTHS[(Number(spec.month)||1)-1].replace(/^./,x=>x.toUpperCase());
+  return '';
+}
+function specDeadline(spec){
+  if(!spec)return '';
+  if(spec.kind==='day')return spec.iso;
+  if(spec.kind==='monthYear')return lastDayISO(spec.ym);
+  if(spec.kind==='year')return String(spec.year)+'-12-31';
+  if(spec.kind==='monthOnly'){
+    const now=todayDate(),m=Number(spec.month),y=now.getFullYear(),target=(m<now.getMonth()+1)?y+1:y;
+    return lastDayISO(target+'-'+String(m).padStart(2,'0'));
+  }
+  return '';
+}
+function parseFlexibleDate(raw){
+  let s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
+  if(!s)return null;
+  let m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(m)return{kind:'day',iso:s};
+  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);if(m){const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]),dt=new Date(y,mo-1,d);if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')}}
+  if(/^\d{4}$/.test(s)){const y=Number(s);if(y>=1900&&y<=2200)return{kind:'year',year:y}}
+  for(let i=0;i<IT_MONTHS.length;i++){
+    const name=IT_MONTHS[i],short=name.slice(0,3);
+    let rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})
+function openContiFromLanding(){
+  const nick=$('landingNickname')?$('landingNickname').value.trim():'';
+  state.profile.fullName=nick;save();
+  if(state.security&&state.security.enabled&&!securityFresh()){openUnlock();return}
+  enterContiAfterUnlock();
+}
+
+function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function setupEntryToDraft(e){
+  const start=entryStartMonth(e);
+  return {id:e.id||'',name:e.name||'',amount:String(e.amount==null?'':e.amount),date:e.dateSpec?specDeadline(e.dateSpec):(start?isoFor(start,e.day):''),dateSpec:e.dateSpec||null,recurrence:e.recurrence||null};
+}
+function setupSource(type){
+  const draft=state.setupDrafts&&Array.isArray(state.setupDrafts[type])?state.setupDrafts[type]:[];
+  if(draft.length)return draft;
+  return state.entries.filter(e=>e.type===type).map(setupEntryToDraft);
+}
+function recurrenceOptions(){
+  return '<option value="">Come si ripete?</option><option value="monthly">Ogni mese</option><option value="single">Una volta</option><option value="count">Altro · per X mesi</option><option value="until">Altro · fino a un mese</option><option value="selected">Altro · mesi selezionati</option>';
+}
+function createRows(containerId,type){
+  const el=$(containerId);el.innerHTML='';
+  const src=setupSource(type);
+  if(src.length)src.forEach(d=>appendSetupRow(el,type,d));else appendSetupRow(el,type,null);
+}
+function appendSetupRow(el,type,draft){
+  const r=document.createElement('div');r.className='entryRow';
+  r.dataset.entryId=draft&&draft.id?draft.id:'';
+  r.dataset.recurrence=draft&&draft.recurrence?JSON.stringify(draft.recurrence):'';
+  let dateSpec=draft&&draft.dateSpec||null,dateValue=draft&&draft.date||'';
+  if(!dateValue&&draft&&draft.recurrence&&draft.day)dateValue=isoFor(entryStartMonth(draft),draft.day);
+  if(!dateSpec&&dateValue)dateSpec={kind:'day',iso:dateValue};
+  r.dataset.dateSpec=dateSpec?JSON.stringify(dateSpec):'';
+  const dateLabel=dateSpec?displayDateSpec(dateSpec):'Scrivi la data';
+  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Stipendio':'Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
+    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'1.400 €':'387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
+    '<input class="rDate" type="hidden" value="'+escAttr(dateValue)+'"><button type="button" class="rDateBtn '+(dateSpec?'':'empty')+'">'+esc(dateLabel)+'</button>'+
+    '<button class="rDelete" aria-label="Elimina riga">×</button><div class="rowMeta">'+(draft&&draft.recurrence?esc(recurrenceSummary(draft.recurrence)):'')+'</div>';
+  el.appendChild(r);
+  r.querySelector('.rDelete').onclick=()=>{r.remove();if(!el.querySelector('.entryRow'))appendSetupRow(el,type,null);persistSetupDraft(containerIdFor(type),type)};
+  r.querySelectorAll('.rName,.rAmount').forEach(inp=>inp.addEventListener('input',()=>persistSetupDraft(containerIdFor(type),type)));
+  r.querySelector('.rDateBtn').onclick=()=>{
+    let initial=null;try{initial=JSON.parse(r.dataset.dateSpec||'null')}catch(e){}
+    openDateChooser(initial,spec=>{
+      const date=specDeadline(spec);r.dataset.dateSpec=JSON.stringify(spec);r.querySelector('.rDate').value=date;r.querySelector('.rDateBtn').textContent=displayDateSpec(spec);r.querySelector('.rDateBtn').classList.remove('empty');
+      let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
+      if(cfg){const ym=date.slice(0,7);if(cfg.kind==='monthly')cfg.startMonth=ym;if(cfg.kind==='single')cfg.month=ym;if(cfg.kind==='count')cfg.startMonth=ym;if(cfg.kind==='until')cfg.startMonth=ym;r.dataset.recurrence=JSON.stringify(cfg);r.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type)}
+      else openSetupRepeatChoice(r,type);
+    });
+  };
+}
+function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
+function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDate').value)}
+function cleanAmount(v){
+  let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');
+  if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');
+  else if(s.includes(','))s=s.replace(',','.');
+  return Number(s);
+}
+function collectSetupDraft(containerId,type){
+  const out=[];
+  for(const r of Array.from($(containerId).querySelectorAll('.entryRow'))){
+    if(!rowHasData(r))continue;
+    let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
+    let dateSpec=null;try{dateSpec=JSON.parse(r.dataset.dateSpec||'null')}catch(e){}out.push({id:r.dataset.entryId||'',name:r.querySelector('.rName').value.trim(),amount:r.querySelector('.rAmount').value.trim(),date:r.querySelector('.rDate').value,dateSpec,recurrence:cfg});
+  }
+  return out;
+}
+function persistSetupDraft(containerId,type){if(!$(containerId))return;state.setupDrafts[type]=collectSetupDraft(containerId,type);save()}
+function setupRowsToEntries(containerId,type){
+  const rows=collectSetupDraft(containerId,type),out=[],errors=[];
+  rows.forEach((d,index)=>{
+    const amount=cleanAmount(d.amount),date=d.date,cfg=d.recurrence,day=date?Number(date.slice(8,10)):0;
+    const rowErrors=[];
+    if(!d.name)rowErrors.push('manca il nome');
+    if(!Number.isFinite(amount)||amount<=0)rowErrors.push('importo non valido');
+    if(!date||day<1||day>31)rowErrors.push('data non valida');
+    if(!validRecurrence(cfg))rowErrors.push('scegli come si ripete');
+    if(rowErrors.length){errors.push('riga '+(index+1)+': '+rowErrors.join(', '));return}
+    const old=d.id?state.entries.find(e=>e.id===d.id&&e.type===type):null;
+    out.push({id:old?old.id:'e'+Date.now()+Math.random(),type,name:d.name,amount,day,dateSpec:d.dateSpec||{kind:'day',iso:date},recurrence:cfg,category:old&&old.category||'',notify:old&&old.notify===true,note:old&&old.note||'',notifyRule:old&&old.notifyRule||null});
+  });
+  if(errors.length)throw new Error(errors.slice(0,4).join(' · '));
+  return out;
+}
+function commitSetupRows(containerId,type){
+  persistSetupDraft(containerId,type);
+  const parsed=setupRowsToEntries(containerId,type);
+  state.entries=state.entries.filter(e=>e.type!==type).concat(parsed);
+  state.setupDrafts[type]=parsed.map(setupEntryToDraft);save();return parsed;
+}
+function openSetupRepeatChoice(row,type){
+  const date=row.querySelector('.rDate').value;if(!date)return;
+  openModal('Come si ripete?','<div class="guideTopics"><button id="repMonthly" class="guideTopic">Ogni mese</button><button id="repOnce" class="guideTopic">Una volta</button><button id="repOther" class="guideTopic">Altro ›</button></div>');
+  $('repMonthly').onclick=()=>{const cfg={kind:'monthly',startMonth:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+  $('repOnce').onclick=()=>{const cfg={kind:'single',month:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+  $('repOther').onclick=()=>openSetupAdvanced(row,type,date);
+}
+function openSetupAdvanced(row,type,date){
+  const start=date.slice(0,7);
+  openModal('Altro','<div class="field"><label>Tipo</label><select id="setupOtherKind"><option value="count">Per un numero di mesi</option><option value="until">Fino a un mese</option><option value="selected">Mesi selezionati</option></select></div><div id="setupOtherExtra"></div><div class="modalBtns"><button id="setupOtherCancel" class="btn secondary">Annulla</button><button id="setupOtherSave" class="btn">Conferma</button></div>');
+  const draw=()=>{const k=$('setupOtherKind').value;if(k==='count')$('setupOtherExtra').innerHTML='<div class="field"><label>Numero mesi</label><input id="setupCount" type="number" min="1" value="2"></div>';if(k==='until')$('setupOtherExtra').innerHTML='<div class="field"><label>Fino a</label><input id="setupUntil" type="month" value="'+addMonths(start,2)+'"></div>';if(k==='selected'){let h='';for(let i=0;i<12;i++){const ym=addMonths(start,i);h+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"> '+monthName(ym)+'</label>'}$('setupOtherExtra').innerHTML='<div class="field"><label>Mesi</label><div id="setupMonths" class="monthChecks">'+h+'</div></div>'}};
+  draw();$('setupOtherKind').onchange=draw;
+  $('setupOtherCancel').onclick=()=>openSetupRepeatChoice(row,type);
+  $('setupOtherSave').onclick=()=>{const k=$('setupOtherKind').value;let cfg;if(k==='count')cfg={kind:'count',startMonth:start,count:Number($('setupCount').value)};if(k==='until')cfg={kind:'until',startMonth:start,endMonth:$('setupUntil').value};if(k==='selected')cfg={kind:'selected',months:Array.from(document.querySelectorAll('#setupMonths input:checked')).map(x=>x.value)};if(!validRecurrence(cfg))return flashModal('Completa la ricorrenza.');row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+}
+function validRecurrence(c){if(!c)return false;if(c.kind==='monthly')return !!c.startMonth;if(c.kind==='single')return !!c.month;if(c.kind==='count')return !!c.startMonth&&c.count>0;if(c.kind==='until')return !!c.startMonth&&!!c.endMonth&&c.endMonth>=c.startMonth;if(c.kind==='selected')return Array.isArray(c.months)&&c.months.length>0;return false}
+function recurrenceSummary(c){if(c.kind==='monthly')return 'Da '+monthName(c.startMonth);if(c.kind==='single')return monthName(c.month);if(c.kind==='count')return c.count+' mesi da '+monthName(c.startMonth);if(c.kind==='until')return 'Da '+monthName(c.startMonth)+' a '+monthName(c.endMonth);if(c.kind==='selected')return c.months.length+' mesi selezionati';return ''}
+function recurrenceOccurs(r,ym){
+  if(!r)return false;
+  if(r.kind==='monthly')return ym>=r.startMonth;
+  if(r.kind==='single')return ym===r.month;
+  if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}
+  if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;
+  if(r.kind==='selected')return Array.isArray(r.months)&&r.months.includes(ym);
+  return false;
+}
+function futureChangeFor(entryId,ym){
+  const arr=Array.isArray(state.futureChanges[entryId])?state.futureChanges[entryId]:[];
+  return arr.filter(x=>x.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth)).slice(-1)[0]||null;
+}
+function effectiveEntryForMonth(entry,ym){
+  const ch=futureChangeFor(entry.id,ym);
+  if(ch&&ch.deleted)return null;
+  const out=Object.assign({},entry,ch&&ch.fields||{});
+  return out;
+}
+function occurrenceOverrideKey(entryId,ym){return entryId+'|'+ym}
+function effectiveOccurrence(entry,ym){
+  const eff=effectiveEntryForMonth(entry,ym);if(!eff||!recurrenceOccurs(eff.recurrence,ym))return null;
+  const ov=state.occurrenceOverrides[occurrenceOverrideKey(entry.id,ym)];
+  if(ov&&ov.deleted)return null;
+  const out=Object.assign({},eff,ov&&ov.fields||{});
+  out.entryId=entry.id;out.type=entry.type;out.month=ym;
+  out.date=ov&&ov.fields&&ov.fields.date?ov.fields.date:isoFor(ym,out.day);out.dateLabel=(ov&&ov.fields&&ov.fields.dateLabel)||((out.dateSpec&&out.recurrence&&out.recurrence.kind==='single')?displayDateSpec(out.dateSpec):'');
+  return out;
+}
+function occurs(entry,ym){return !!effectiveOccurrence(entry,ym)}
+function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&(h.occurrenceMonth||h.month)===ym)}
+function monthData(type,ym){
+  const pending=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    const occ=effectiveOccurrence(e,ym);if(!occ)return;
+    if(!historyFor(e.id,ym))pending.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,dateLabel:occ.dateLabel||'',month:ym,category:occ.category||'',note:occ.note||''});
+  });
+  const done=state.history.filter(h=>h.type===type&&h.month===ym).map(h=>{
+    const e=state.entries.find(x=>x.id===h.entryId),occ=e?effectiveOccurrence(e,h.occurrenceMonth||ym):null;
+    return Object.assign({},h,{category:h.category!=null?h.category:(occ&&occ.category||''),note:h.note!=null?h.note:(occ&&occ.note||'')});
+  });
+  done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending};
+}
+function monthTotals(ym){const i=monthData('income',ym),e=monthData('expense',ym);return{received:i.done.reduce((s,x)=>s+x.amount,0),toReceive:i.pending.reduce((s,x)=>s+x.amount,0),paid:e.done.reduce((s,x)=>s+x.amount,0),toPay:e.pending.reduce((s,x)=>s+x.amount,0)}}
+function pendingThrough(type,ym){
+  const out=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    let cur=entryStartMonth(e),guard=0;
+    while(cur<=ym&&guard++<240){
+      const occ=effectiveOccurrence(e,cur);
+      if(occ&&!historyFor(e.id,cur))out.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:cur,category:occ.category||'',note:occ.note||''});
+      cur=addMonths(cur,1);
+    }
+  });
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function openTotalsThrough(ym){
+  return{
+    toReceive:pendingThrough('income',ym).reduce((s,x)=>s+x.amount,0),
+    toPay:pendingThrough('expense',ym).reduce((s,x)=>s+x.amount,0)
+  };
+}
+function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
+function renderHome(){
+  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
+  const month=ymNow(),open=openTotalsThrough(month);
+  $('homeIncomeTotal').textContent=money(open.toReceive);
+  $('homeExpenseTotal').textContent=money(open.toPay);
+  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
+}
+function renderMovementList(el,arr){
+  el.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}
+  arr.forEach(x=>{
+    const r=document.createElement('div');
+    r.className='movementRow';
+    const isAdj=x.type==='adjustment';
+    const delta=isAdj?Number(x.delta||0):0;
+    const label=isAdj?'CORREZIONE SALDO':(x.type==='income'?'RICEVUTO':'PAGATO');
+    const sign=isAdj?(delta>=0?'+ ':'- '):(x.type==='income'?'+ ':'- ');
+    const amount=isAdj?Math.abs(delta):Number(x.amount||0);
+    const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
+    r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    if(x.id)r.onclick=()=>openMovementDetail(x.id);
+    el.appendChild(r);
+  });
+}
+function restoreSetupCopy(){}
+function openFlow(type){quickEditMode=null;currentFlow=type;flowFilter='all';show('flow')}
+function buildFlowItems(type){
+  const ym=ymNow(),today=todayISO();
+  const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
+  const done=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
+  return [...open,...done].sort((a,b)=>{
+    const ra=a.done?2:(a.overdue?0:1),rb=b.done?2:(b.overdue?0:1);
+    if(ra!==rb)return ra-rb;
+    return a.date.localeCompare(b.date);
+  });
+}
+function renderFlow(){
+  const isIn=currentFlow==='income';
+  $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
+  $('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';
+  $('flowBannerTitle').textContent=isIn?'Le tue entrate':'I tuoi pagamenti';
+  $('flowBannerCopy').textContent='Tocca lo stato per '+(isIn?'segnare come ricevuto.':'segnare come pagato.');
+  $('flowBannerIcon').textContent=isIn?'↘':'↗';
+  $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
+  $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
+  document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
+  let arr=buildFlowItems(currentFlow);
+  if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
+  if(flowFilter==='done')arr=arr.filter(x=>x.done);
+  const el=$('flowUnifiedList');el.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="flowEmpty">Nessuna voce da mostrare.</div>';return}
+  arr.forEach(x=>{
+    const row=document.createElement('div');row.className='flowUnifiedRow';
+    const isOverdue=!x.done&&x.date<todayISO();
+    const status=x.done?(isIn?'RICEVUTA':'PAGATO'):(isOverdue?(isIn?'SCADUTA':'SCADUTO'):(isIn?'DA RICEVERE':'DA PAGARE'));
+    const cls=x.done?'done':(isOverdue?'overdue':'pending');
+    row.innerHTML='<button class="flowUnifiedMain"><span><span class="flowUnifiedName">'+esc(x.name)+'</span><span class="flowUnifiedDate">'+fmtMovementDate(x.date)+'</span></span><span class="flowUnifiedAmount">'+money(x.amount)+'</span><span>›</span></button><button class="flowUnifiedStatus '+cls+'">'+status+' ›</button>';
+    row.querySelector('.flowUnifiedMain').onclick=()=>x.done?openMovementDetail(x.id):openOccurrenceActions(x);
+    row.querySelector('.flowUnifiedStatus').onclick=()=>x.done?openReopenMovement(x):completeOccurrenceImmediate(x);
+    el.appendChild(row);
+  });
+}
+function completeOccurrenceImmediate(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  if(historyFor(x.entryId,x.month))return;
+  const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
+  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+}
+function openReopenMovement(h){
+  openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
+  $('reopenCancel').onclick=closeModal;$('reopenYes').onclick=()=>{closeModal();undoHistory(h.id)};
+}
+function hideUndoSnack(){if(undoSnackTimer){clearTimeout(undoSnackTimer);undoSnackTimer=null}undoSnackHistoryId=null;$('undoSnack').classList.add('hidden')}
+function showUndoSnack(h){if(undoSnackTimer)clearTimeout(undoSnackTimer);undoSnackHistoryId=h.id;$('undoSnackText').textContent=h.name+' segnato come '+(h.type==='income'?'ricevuto':'pagato');$('undoSnack').classList.remove('hidden');undoSnackTimer=setTimeout(hideUndoSnack,4000)}
+function undoFromSnack(){const id=undoSnackHistoryId;if(!id)return;hideUndoSnack();undoHistory(id)}
+function undoHistory(id){
+  const h=state.history.find(x=>x.id===id);if(!h||h.type==='adjustment')return;
+  state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
+  state.history=state.history.filter(x=>x.id!==id);save();if(!$('flow').classList.contains('hidden'))renderFlow();if(!$('home').classList.contains('hidden'))renderHome();
+}
+
+function openOccurrenceActions(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const recurring=entry.recurrence&&entry.recurrence.kind!=='single';
+  if(!recurring){openEntryEditor(entry,entry.type);return}
+  openModal(entry.type==='income'?'Modifica entrata':'Modifica pagamento','<div class="hint">Questa voce è ricorrente.</div><div class="guideTopics"><button id="occOnly" class="guideTopic">Modifica solo questa scadenza</button><button id="occFuture" class="guideTopic">Modifica questa e tutte le future</button></div>');
+  $('occOnly').onclick=()=>openSingleOccurrenceEditor(x);
+  $('occFuture').onclick=()=>openFutureOccurrenceEditor(x);
+}
+function occurrenceCategoryOptions(type,current){return categoryOptions(type,current)}
+function openSingleOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal(entry.type==='income'?'Modifica questa entrata':'Modifica questo pagamento',
+    '<div class="field"><label>Nome</label><input id="occName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="occAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data</label><input id="occDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="occCategory">'+occurrenceCategoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="occNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="occDelete" class="btn deleteBtn">Elimina</button><button id="occSave" class="btn">Salva</button></div>');
+  $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
+  $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openFutureOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const eff=effectiveEntryForMonth(entry,x.month)||entry;
+  openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
+    '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Giorno del mese</label><input id="futDay" type="number" min="1" max="31" value="'+Number((x.date||'').slice(8,10))+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
+  $('futSave').onclick=()=>{const name=$('futName').value.trim(),amount=Number($('futAmount').value),day=Number($('futDay').value);if(!name||!Number.isFinite(amount)||amount<=0||day<1||day>31)return flashModal('Controlla nome, importo e giorno.');const fields={name,amount,day,category:$('futCategory').value==='__new__'?'':$('futCategory').value,note:$('futNote').value.trim(),recurrence:eff.recurrence};if(fields.recurrence&&fields.recurrence.kind==='monthly')fields.recurrence=Object.assign({},fields.recurrence,{startMonth:x.month});if(fields.recurrence&&fields.recurrence.kind==='single')fields.recurrence={kind:'single',month:x.month};const arr=Array.isArray(state.futureChanges[entry.id])?state.futureChanges[entry.id]:[];state.futureChanges[entry.id]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,fields}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));save();closeModal();renderFlow()};
+  $('futDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openDeleteOccurrenceChoice(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal('Elimina scadenza','<div class="guideTopics"><button id="deleteOccOnly" class="guideTopic">Elimina solo questa scadenza</button><button id="deleteOccFuture" class="guideTopic">Elimina questa e tutte le future</button></div><button id="deleteOccCancel" class="btn secondary" style="margin-top:12px">Annulla</button>');
+  $('deleteOccCancel').onclick=()=>{closeModal();renderFlow()};
+  $('deleteOccOnly').onclick=()=>confirmOccurrenceDeletion(x,false);
+  $('deleteOccFuture').onclick=()=>confirmOccurrenceDeletion(x,true);
+}
+function confirmOccurrenceDeletion(x,future){
+  openModal('Vuoi davvero eliminare?','<div class="note">'+(future?'Questa scadenza e tutte le future non compariranno più. I movimenti già confermati restano nello storico.':'Verrà eliminata soltanto questa scadenza. I movimenti già confermati restano nello storico.')+'</div><div class="modalBtns"><button id="deleteOccNo" class="btn secondary">Annulla</button><button id="deleteOccYes" class="btn deleteBtn">Elimina</button></div>');
+  $('deleteOccNo').onclick=()=>openDeleteOccurrenceChoice(x);
+  $('deleteOccYes').onclick=()=>{if(future){const arr=Array.isArray(state.futureChanges[x.entryId])?state.futureChanges[x.entryId]:[];state.futureChanges[x.entryId]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,deleted:true}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth))}else state.occurrenceOverrides[occurrenceOverrideKey(x.entryId,x.month)]={deleted:true};save();closeModal();renderFlow()};
+}
+
+function openAddEntry(type){openEntryEditor(null,type)}
+function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
+const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Benzina','Luce','Gas','Altro']};
+const DEFAULT_CATEGORIES={
+  income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
+  expense:['Casa','Auto','Bollette','Salute','Altro']
+};
+function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
+function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
+
+function openCategoryHub(){
+  openModal('Categorie','<div class="hint">Riepilogo e gestione delle categorie.</div><div class="guideTopics"><button id="categorySummaryOpen" class="guideTopic">Riepilogo categorie</button><button id="categoryManageOpen" class="guideTopic">Gestisci categorie</button></div>');
+  $('categorySummaryOpen').onclick=()=>{closeModal();summaryMonth=ymNow();show('summary')};
+  $('categoryManageOpen').onclick=openCategoryManagement;
+}
+function openCategoryManagement(){
+  const renderSection=type=>{
+    const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
+    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+((DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata')+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
+    return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
+  };
+  openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
+  document.querySelectorAll('.catAdd').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,''));
+  document.querySelectorAll('.catRename').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,b.dataset.cat));
+  document.querySelectorAll('.catDelete').forEach(b=>b.onclick=()=>confirmDeleteCategory(b.dataset.type,b.dataset.cat));
+}
+function openCategoryNameEditor(type,oldName){
+  openModal(oldName?'Rinomina categoria':'Nuova categoria','<div class="field"><label>Nome</label><input id="categoryNameEdit" placeholder="Scrivi qua" value="'+escAttr(oldName||'')+'"></div><div class="modalBtns"><button id="categoryNameCancel" class="btn secondary">Annulla</button><button id="categoryNameSave" class="btn">Salva</button></div>');
+  $('categoryNameCancel').onclick=openCategoryManagement;
+  $('categoryNameSave').onclick=()=>{
+    const name=$('categoryNameEdit').value.trim();if(!name)return flashModal('Scrivi il nome della categoria.');
+    const existing=new Set(allCategories(type));if(name!==oldName&&existing.has(name))return flashModal('Questa categoria esiste già.');
+    if(oldName){
+      state.entries.filter(e=>e.type===type&&e.category===oldName).forEach(e=>e.category=name);
+      state.history.filter(h=>h.type===type&&h.category===oldName).forEach(h=>h.category=name);
+      if((DEFAULT_CATEGORIES[type]||[]).includes(oldName)){if(!state.hiddenCategories[type].includes(oldName))state.hiddenCategories[type].push(oldName)}
+      state.customCategories[type]=state.customCategories[type].filter(x=>x!==oldName);
+      if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    }else if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    save();openCategoryManagement();
+  };
+}
+function confirmDeleteCategory(type,name){
+  openModal('Elimina categoria','<div class="note">Eliminare “'+esc(name)+'”? Le entrate o i pagamenti collegati resteranno, ma passeranno a “Senza categoria”.</div><div class="modalBtns"><button id="categoryDeleteNo" class="btn secondary">Annulla</button><button id="categoryDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+  $('categoryDeleteNo').onclick=openCategoryManagement;
+  $('categoryDeleteYes').onclick=()=>{
+    state.entries.filter(e=>e.type===type&&e.category===name).forEach(e=>e.category='');
+    state.history.filter(h=>h.type===type&&h.category===name).forEach(h=>h.category='');
+    state.customCategories[type]=state.customCategories[type].filter(x=>x!==name);
+    if((DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.hiddenCategories[type].includes(name))state.hiddenCategories[type].push(name);
+    if(state.budgetPlans)state.budgetPlans.forEach(p=>{if(p.limits&&Object.prototype.hasOwnProperty.call(p.limits,name))delete p.limits[name]});
+    if(state.budgetNotifications&&state.budgetNotifications.categories)delete state.budgetNotifications.categories[name];
+    save();openCategoryManagement();
+  };
+}
+
+function entryStartMonth(entry){const r=entry&&entry.recurrence;if(!r)return ymNow();return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
+function openEntryEditor(entry,type){
+  const isNew=!entry;
+  const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
+  const rec=entry?entry.recurrence:null;
+  const dateValue=entry?isoFor(entryStartMonth(entry),entry.day):todayISO();
+  const noteValue=entry&&entry.note?entry.note:'';
+  const globalAll=state.notifications&&state.notifications.mode==='all';
+  const notifyDefault=entry?entry.notify===true:globalAll;
+  const rule=entry&&entry.notifyRule||null;
+  const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
+  const effectiveRule=rule||generalRule;
+  const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
+  const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
+  openModal(title,
+    suggestions+
+    '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
+    '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn">'+esc(displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}))+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
+    '<div class="field"><label>Frequenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
+    '<div id="editRecExtra"></div>'+
+    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+    '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
+    '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
+      '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+      '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
+      '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
+    '</div>'+
+    '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
+    '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
+    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
+  );
+  $('modal').classList.add('fullEditor');
+  if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
+  let editorDateSpec=entry&&entry.dateSpec||{kind:'day',iso:dateValue};
+  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;$('editDate').value=specDeadline(spec);$('editDateDisplay').textContent=displayDateSpec(spec);renderEditRecExtra(rec||null)});
+    $('editRecKind').value=rec?rec.kind:'single';
+  renderEditRecExtra(rec||{kind:'single'});
+  $('editRecKind').onchange=()=>renderEditRecExtra(null);
+  $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
+  $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
+  $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
+  $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
+  $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
+  $('editSave').onclick=()=>{
+    const name=$('editName').value.trim(),amount=Number($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
+    const day=date?Number(date.slice(8,10)):0;
+    let category=$('editCategory').value;
+    if(category==='__new__'){
+      category=$('newCategory').value.trim();
+      if(!category)return flashModal('Scrivi il nome della nuova categoria.');
+      if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
+    }
+    const notify=$('editNotify').checked;
+    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
+    const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
+    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
+    let id;
+    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
+    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,notify,notifyRule,note})}
+    state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
+    if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
+    save();closeModal();renderFlow();
+  };
+}
+function confirmDeleteEntry(entry){
+  const linked=state.history.filter(h=>h.entryId===entry.id);
+  const extra=linked.length
+    ? '<div class="note">I movimenti già confermati resteranno nello storico e il saldo non verrà modificato.</div>'
+    : '<div class="note">La voce verrà eliminata dalle scadenze programmate.</div>';
+  openModal('Elimina '+(entry.type==='income'?'entrata':'pagamento'),
+    '<div style="font-weight:900;font-size:18px;margin-top:12px">'+esc(entry.name)+'</div>'+extra+
+    '<div class="modalBtns"><button id="deleteNo" class="btn secondary">Annulla</button><button id="deleteYes" class="btn deleteBtn">Elimina</button></div>'
+  );
+  $('deleteNo').onclick=()=>{closeModal();renderFlow()};
+  $('deleteYes').onclick=()=>{
+    state.entries=state.entries.filter(e=>e.id!==entry.id);
+    delete state.futureChanges[entry.id];Object.keys(state.occurrenceOverrides).filter(k=>k.startsWith(entry.id+'|')).forEach(k=>delete state.occurrenceOverrides[k]);
+    state.notifications.selected=(state.notifications.selected||[]).filter(id=>id!==entry.id);
+    save();closeModal();renderFlow();
+  };
+}
+function renderEditRecExtra(rec){
+  const kind=$('editRecKind').value;
+  const base=($('editDate')&&$('editDate').value?$('editDate').value.slice(0,7):ymNow());
+  let h='';
+  if(kind==='count')h='<div class="field"><label>Numero mesi</label><input id="erCount" type="number" min="1" value="'+(rec&&rec.count||2)+'"></div>';
+  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="month" value="'+(rec&&rec.endMonth||addMonths(base,2))+'"></div>';
+  if(kind==='selected'){
+    let cc='';
+    for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}
+    h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>';
+  }
+  $('editRecExtra').innerHTML=h;
+}
+function collectEditRecurrence(){
+  const k=$('editRecKind').value,date=$('editDate').value,start=date?date.slice(0,7):'';
+  if(k==='monthly')return{kind:k,startMonth:start};
+  if(k==='single')return{kind:k,month:start};
+  if(k==='count')return{kind:k,startMonth:start,count:Number($('erCount').value)};
+  if(k==='until')return{kind:k,startMonth:start,endMonth:$('erEnd').value};
+  if(k==='selected')return{kind:k,months:Array.from(document.querySelectorAll('#erMonths input:checked')).map(x=>x.value)};
+  return null;
+}
+function renderNotifications(){
+  const mode=state.notifications.mode||'off';
+  $('notifyAll').classList.toggle('active',mode==='all');
+  $('notifyCustom').classList.toggle('active',mode==='custom');
+  $('notifySkip').textContent=mode==='off'?'Notifiche disattivate':'Disattiva tutte le notifiche';
+  const help=$('notifications').querySelector('.notifyHelp');
+  if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
+}
+async function requestNotificationPermission(){
+  if(!('Notification' in window))return 'unsupported';
+  if(Notification.permission==='granted')return 'granted';
+  if(Notification.permission==='denied')return 'denied';
+  try{return await Notification.requestPermission()}catch(e){return 'unsupported'}
+}
+function notificationRuleFields(prefix,rule,title){
+  return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div>'+
+    '<div class="field"><label>Quando avvisare</label><select id="'+prefix+'Timing"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+    '<div class="field"><label>Orario</label><input id="'+prefix+'Time" type="time" value="'+escAttr(rule.time||'09:00')+'"></div>'+
+    '<div class="field"><label>Promemoria dopo la scadenza</label><select id="'+prefix+'Overdue"><option value="none">Nessuno</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div></div>';
+}
+function openGlobalNotificationRules(){
+  const ir=state.notifications.rules.income||{timing:'same',time:'09:00',overdue:'none'},er=state.notifications.rules.expense||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Attiva tutte le notifiche','<div class="hint">Imposta subito due regole separate. I Budget non sono inclusi.</div>'+notificationRuleFields('nIncome',ir,'Entrate')+notificationRuleFields('nExpense',er,'Pagamenti')+'<div class="modalBtns"><button id="nAllCancel" class="btn secondary">Annulla</button><button id="nAllSave" class="btn">Attiva tutte</button></div>');
+  $('nIncomeTiming').value=ir.timing||'same';$('nIncomeOverdue').value=ir.overdue||'none';$('nExpenseTiming').value=er.timing||'same';$('nExpenseOverdue').value=er.overdue||'none';
+  $('nAllCancel').onclick=closeModal;
+  $('nAllSave').onclick=async()=>{
+    state.notifications.rules.income={timing:$('nIncomeTiming').value,time:$('nIncomeTime').value||'09:00',overdue:$('nIncomeOverdue').value};
+    state.notifications.rules.expense={timing:$('nExpenseTiming').value,time:$('nExpenseTime').value||'09:00',overdue:$('nExpenseOverdue').value};
+    closeModal();await finishNotificationChoice('all',[]);
+  };
+}
+async function finishNotificationChoice(mode,selected){
+  state.notifications.mode=mode;
+  state.notifications.selected=selected||[];
+  if(mode==='all'){
+    state.entries.forEach(e=>{e.notify=true;e.notifyRule=null});
+    state.notifications.selected=state.entries.map(e=>e.id);
+  }
+  if(mode==='custom')state.entries.forEach(e=>e.notify=state.notifications.selected.includes(e.id));
+  if(mode==='off'){
+    state.entries.forEach(e=>{e.notify=false;e.notifyRule=null});
+    state.notifications.selected=[];
+    state.notifications.sent={};
+    state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};
+  }
+  save();
+  if(mode!=='off'){
+    const permission=await requestNotificationPermission();
+    if(permission==='denied')openModal('Notifiche bloccate','<div class="note">Le notifiche sono disattivate sul telefono/browser. Puoi abilitarle dalle impostazioni del dispositivo o del browser.</div>');
+    else if(permission==='unsupported')openModal('Notifiche non disponibili','<div class="note">Questo browser non supporta le notifiche. Le impostazioni restano salvate per la versione installata dell’app.</div>');
+  }
+  renderNotifications();
+}
+function openCustomNotifications(){
+  const selected=new Set(state.entries.filter(e=>e.notify===true).map(e=>e.id));
+  const entries=[...state.entries].sort((a,b)=>a.type.localeCompare(b.type)||a.name.localeCompare(b.name,'it'));
+  let list=entries.map(e=>'<label class="notifyToggle"><span><b>'+esc(e.name)+'</b><small>'+(e.type==='income'?'Entrata':'Pagamento')+'</small></span><input type="checkbox" value="'+escAttr(e.id)+'" '+(selected.has(e.id)?'checked':'')+'></label>').join('');
+  if(!list)list='<div class="empty">Non hai ancora voci da selezionare.</div>';
+  openModal('Scegli le notifiche','<div class="hint">Decidi per quali voci ricevere un promemoria.</div><div id="notifyPickList" class="notifyList">'+list+'</div><div class="modalBtns"><button id="notifyPickCancel" class="btn secondary">Annulla</button><button id="notifyPickSave" class="btn">Salva scelte</button></div>');
+  $('notifyPickCancel').onclick=closeModal;
+  $('notifyPickSave').onclick=async()=>{const ids=Array.from(document.querySelectorAll('#notifyPickList input:checked')).map(x=>x.value);closeModal();await finishNotificationChoice('custom',ids)};
+}
+function notificationTimeReached(rule){
+  const now=new Date(),parts=(rule.time||'09:00').split(':').map(Number),mins=now.getHours()*60+now.getMinutes(),target=(parts[0]||0)*60+(parts[1]||0);
+  return mins>=target;
+}
+async function checkDueNotifications(){
+  const n=state.notifications||{};
+  if(n.mode==='off'||!('Notification' in window)||Notification.permission!=='granted')return;
+  const today=todayISO(),ym=ymNow(),pending=[...pendingThrough('income',ym),...pendingThrough('expense',ym)],alerts=[];
+  for(const x of pending){
+    const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
+    const rule=entry.notifyRule||(n.rules&&n.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
+    if(!notificationTimeReached(rule))continue;
+    const diff=daysBetween(x.date,today);
+    const reasons=[];
+    if((rule.timing==='same'||rule.timing==='both')&&diff===0)reasons.push('oggi');
+    if((rule.timing==='before'||rule.timing==='both')&&diff===-1)reasons.push('domani');
+    if(diff>0&&rule.overdue!=='none'){
+      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      if(every&&diff%every===0)reasons.push('scaduta');
+    }
+    for(const reason of reasons){
+      const key=x.entryId+'|'+x.date+'|'+today+'|'+reason;
+      if(n.sent&&n.sent[key])continue;
+      alerts.push({x,reason,key});
+    }
+  }
+  if(!alerts.length)return;
+  const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
+  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+}
+function movementNames(){
+  return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+}
+function movementCutoff(period){
+  if(period==='all')return null;
+  const months=Number(period);
+  if(!months)return null;
+  const start=addMonths(ymNow(),-(months-1));
+  return start+'-01';
+}
+function filteredMovements(){
+  const cutoff=movementCutoff(movementFilters.period);
+  return [...state.history].filter(x=>{
+    if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
+    if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
+    if(cutoff&&x.date<cutoff)return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function movementFilterText(){
+  const parts=[];
+  if(movementFilters.type==='income')parts.push('solo entrate');
+  if(movementFilters.type==='expense')parts.push('solo pagamenti');
+  if(movementFilters.type==='adjustment')parts.push('solo correzioni saldo');
+  if(movementFilters.name!=='all')parts.push(movementFilters.name);
+  const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
+  if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
+  return parts.length?parts.join(' · '):'Tutti i movimenti · tutto il periodo';
+}
+function renderMovements(){
+  const arr=filteredMovements();
+  $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
+  $('movementFilteredTotal').classList.add('hidden');
+  $('movementFilteredTotal').innerHTML='';
+  renderMovementList($('allMovements'),arr);
+}
+function openMovementFilters(){
+  const names=movementNames();
+  let nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  openModal('Filtri movimenti',
+    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutti</option><option value="income">Entrate</option><option value="expense">Pagamenti</option><option value="adjustment">Correzioni saldo</option></select></div>'+
+    '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
+    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
+    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
+  );
+  $('mfType').value=movementFilters.type;
+  $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
+  $('mfPeriod').value=movementFilters.period;
+  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',period:'all'};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
+}
+function categoryTotals(type,ym){
+  const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
+  for(const x of all){const cat=(x.category||'').trim()||'Senza categoria';m[cat]=(m[cat]||0)+Number(x.amount||0)}
+  return Object.entries(m).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount||a.name.localeCompare(b.name,'it'));
+}
+function renderCategoryBlock(type,ym,containerId,totalId){
+  const arr=categoryTotals(type,ym),total=arr.reduce((s,x)=>s+x.amount,0),el=$(containerId);
+  $(totalId).textContent='Totale '+money(total);
+  if(!arr.length){el.innerHTML='<div class="empty">Nessuna voce nel mese.</div>';return}
+  el.innerHTML=arr.map(x=>'<button class="categoryRow" data-cat="'+escAttr(x.name)+'"><span class="categoryName">'+esc(x.name)+'</span><span class="categoryMeta"><span class="categoryAmount '+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</span><span class="categoryPct">'+(total?Math.round(x.amount/total*100):0)+'%</span></span><span class="categoryArrow">›</span></button>').join('');
+  el.querySelectorAll('.categoryRow').forEach(b=>b.onclick=()=>openCategoryDetails(type,b.dataset.cat,ym));
+}
+function openCategoryDetails(type,category,ym){
+  const all=state.history.filter(x=>x.type===type&&x.month===ym&&(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
+  const total=all.reduce((s,x)=>s+Number(x.amount||0),0);
+  const rows=all.map(x=>'<div class="sumLine"><span><strong>'+esc(x.name)+'</strong><br><small style="color:var(--muted)">'+fmtMovementDate(x.date)+'</small></span><strong class="'+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</strong></div>').join('');
+  openModal(category,'<div class="hint">'+(type==='income'?'Entrate':'Pagamenti')+' · '+monthName(ym)+'</div><div style="margin-top:8px">'+rows+'</div><div class="sumLine total"><span>Totale</span><strong>'+money(total)+'</strong></div>');
+}
+function comparisonText(diff,kind){
+  const abs=money(Math.abs(diff));
+  if(Math.abs(diff)<0.005)return kind==='income'?'Entrate uguali al mese precedente':'Pagamenti uguali al mese precedente';
+  if(kind==='income')return diff>0?'Hai ricevuto '+abs+' in più':'Hai ricevuto '+abs+' in meno';
+  return diff>0?'Hai speso '+abs+' in più':'Hai speso '+abs+' in meno';
+}
+function renderSummary(){
+  $('sumMonth').textContent=monthName(summaryMonth);
+  const t=monthTotals(summaryMonth),p=projectedEnd(summaryMonth),inc=t.received+t.toReceive,exp=t.paid+t.toPay;
+  const bv=$('summaryBalanceValue');bv.textContent=money(state.balance);bv.className='value'+(Number(state.balance)<0?' neg':'');
+  $('summaryRows').innerHTML=
+    '<div class="sumGroup"><div class="sumGroupTitle">Entrate</div><div class="sumLine"><span>Ricevute</span><strong class="incomeColor">'+money(t.received)+'</strong></div><div class="sumLine"><span>Da ricevere</span><strong>'+money(t.toReceive)+'</strong></div><div class="sumLine total"><span>Totale entrate</span><strong class="incomeColor">'+money(inc)+'</strong></div></div>'+
+    '<div class="sumGroup"><div class="sumGroupTitle">Pagamenti</div><div class="sumLine"><span>Pagate</span><strong>'+money(t.paid)+'</strong></div><div class="sumLine"><span>Da pagare</span><strong>'+money(t.toPay)+'</strong></div><div class="sumLine total"><span>Totale pagamenti</span><strong>'+money(exp)+'</strong></div></div>'+
+    '<div class="sumGroup"><div class="sumGroupTitle">Fine mese</div><div class="sumLine total"><span>Saldo fine mese</span><strong class="'+(p<0?'expenseColor':'incomeColor')+'">'+money(p)+'</strong></div></div>';
+  const prev=addMonths(summaryMonth,-1),pt=monthTotals(prev),pinc=pt.received+pt.toReceive,pexp=pt.paid+pt.toPay;
+  const di=inc-pinc,de=exp-pexp;
+  $('summaryCompare').innerHTML='<div class="compareTitle">Rispetto a '+monthName(prev).toLowerCase()+'</div><div class="compareLine"><span>'+comparisonText(di,'income')+'</span><strong class="'+(di>=0?'incomeColor':'')+'">'+(di>0?'+ ':'')+money(di)+'</strong></div><div class="compareLine"><span>'+comparisonText(de,'expense')+'</span><strong>'+((de>0)?'+ ':'')+money(de)+'</strong></div>';
+  renderCategoryBlock('income',summaryMonth,'incomeCategories','incomeCategoryTotal');
+  renderCategoryBlock('expense',summaryMonth,'expenseCategories','expenseCategoryTotal');
+}
+function budgetPlanFor(ym){
+  const plans=[...(state.budgetPlans||[])].filter(p=>p&&p.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  const p=plans.length?plans[plans.length-1]:null;
+  return p?{total:Number(p.total||0),limits:Object.assign({},p.limits||{})}:{total:0,limits:{}};
+}
+function saveCurrentBudgetPlan(plan){
+  const ym=ymNow(),arr=state.budgetPlans||[],idx=arr.findIndex(p=>p.effectiveMonth===ym),copy={effectiveMonth:ym,total:Number(plan.total||0),limits:Object.assign({},plan.limits||{})};
+  if(idx>=0)arr[idx]=copy;else arr.push(copy);
+  state.budgetPlans=arr.sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  state.budgets=Object.assign({},copy.limits);
+}
+function monthPaidExpenses(ym){
+  return state.history.filter(h=>h.type==='expense'&&h.month===ym);
+}
+function totalPaidExpenses(ym){return monthPaidExpenses(ym).reduce((s,x)=>s+Number(x.amount||0),0)}
+function renderBudget(){
+  $('budgetMonth').textContent=monthName(budgetMonth);
+  const current=budgetMonth===ymNow(),plan=budgetPlanFor(budgetMonth),spent=totalPaidExpenses(budgetMonth),spentMap=Object.fromEntries(categoryTotals('expense',budgetMonth).map(x=>[x.name,x.amount]));
+  const rows=[];
+  if(plan.total>0)rows.push({key:'__total__',name:'Budget totale mensile',spent,limit:plan.total,total:true});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name==='Senza categoria'||Number(limit)<=0)continue;rows.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),total:false})}
+  const el=$('budgetList');
+  if(!rows.length){el.innerHTML='<div class="card empty">Non hai ancora impostato budget per questo mese.</div>';return}
+  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=Math.min(Math.max(pct,0),100);return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName">'+esc(x.name)+'</span><span class="budgetNumbers">'+money(x.spent)+' / '+money(x.limit)+'</span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+pct+'% del budget</span>'+(current?'<button class="budgetEdit" data-budget="'+escAttr(x.key)+'">Modifica</button>':'<span>Storico</span>')+'</div></div>'}).join('');
+  if(current)el.querySelectorAll('.budgetEdit').forEach(b=>b.onclick=()=>openBudgetEditor(b.dataset.budget));
+}
+function budgetNotifyConfig(key){
+  if(key==='__total__')return state.budgetNotifications.total||(state.budgetNotifications.total={enabled:false,mode:'over',sent:{}});
+  if(!state.budgetNotifications.categories[key])state.budgetNotifications.categories[key]={enabled:false,mode:'over',sent:{}};
+  return state.budgetNotifications.categories[key];
+}
+function openBudgetChoice(){
+  budgetMonth=ymNow();
+  openModal('Aggiungi budget','<div class="guideTopics"><button id="budgetTotalChoice" class="guideTopic">Budget totale mensile</button><button id="budgetCategoryChoice" class="guideTopic">Budget per categoria</button></div>');
+  $('budgetTotalChoice').onclick=()=>openBudgetEditor('__total__');
+  $('budgetCategoryChoice').onclick=()=>openBudgetEditor(null);
+}
+function openBudgetEditor(category){
+  budgetMonth=ymNow();
+  const plan=budgetPlanFor(ymNow()),isTotal=category==='__total__';
+  const cats=allCategories('expense').filter(x=>x!=='Senza categoria');
+  const selected=category&&!isTotal?category:(cats[0]||'');
+  const options=cats.map(x=>'<option value="'+escAttr(x)+'" '+(x===selected?'selected':'')+'>'+esc(x)+'</option>').join('');
+  const limit=isTotal?plan.total:Number(plan.limits[selected]||0),cfg=budgetNotifyConfig(isTotal?'__total__':selected);
+  openModal(isTotal?'Budget totale mensile':(category?'Modifica budget':'Budget per categoria'),
+    (isTotal?'':'<div class="field"><label>Categoria</label><select id="budgetCategory">'+options+'</select></div>')+
+    '<div class="field"><label>Limite mensile</label><input id="budgetAmount" type="number" min="0" step="0.01" inputmode="decimal" value="'+(limit||'')+'" placeholder="0,00"></div>'+
+    '<div class="field"><label>Notifiche Budget</label><select id="budgetNotifyMode"><option value="off">Disattivate</option><option value="80">Avviso all’80% + al superamento</option><option value="over">Solo al superamento</option></select></div>'+
+    '<div class="hint">Le notifiche Budget sono separate dalle notifiche di Entrate e Pagamenti.</div>'+
+    '<div class="modalBtns"><button id="budgetCancel" class="btn secondary">Annulla</button><button id="budgetSave" class="btn">Salva</button></div>');
+  $('budgetNotifyMode').value=cfg.enabled?(cfg.mode||'over'):'off';
+  if(!isTotal&&$('budgetCategory'))$('budgetCategory').onchange=()=>{const key=$('budgetCategory').value,nc=budgetNotifyConfig(key);$('budgetAmount').value=plan.limits[key]||'';$('budgetNotifyMode').value=nc.enabled?(nc.mode||'over'):'off'};
+  $('budgetCancel').onclick=closeModal;
+  $('budgetSave').onclick=async()=>{
+    const key=isTotal?'__total__':$('budgetCategory').value,v=Number($('budgetAmount').value),mode=$('budgetNotifyMode').value;
+    if(!key||key==='Senza categoria'||!Number.isFinite(v)||v<0)return flashModal('Controlla categoria e importo.');
+    const p=budgetPlanFor(ymNow());
+    if(isTotal)p.total=v;else{if(v===0)delete p.limits[key];else p.limits[key]=v}
+    saveCurrentBudgetPlan(p);
+    const nc=budgetNotifyConfig(key);nc.enabled=mode!=='off';nc.mode=mode==='off'?'over':mode;nc.sent={};
+    save();closeModal();
+    if(nc.enabled)await requestNotificationPermission();
+    renderBudget();
+    const sum=Object.values(p.limits).reduce((s,x)=>s+Number(x||0),0);
+    if(p.total>0&&sum>p.total)openModal('Budget salvato','<div class="note">La somma dei budget per categoria supera il Budget totale mensile. È consentito: i due controlli restano indipendenti.</div>');
+    checkBudgetNotifications(true);
+  };
+}
+async function checkBudgetNotifications(force){
+  const ym=ymNow(),plan=budgetPlanFor(ym),alerts=[],spentTotal=totalPaidExpenses(ym),spentMap=Object.fromEntries(categoryTotals('expense',ym).map(x=>[x.name,x.amount]));
+  const items=[];
+  if(plan.total>0)items.push({key:'__total__',name:'Budget totale',spent:spentTotal,limit:plan.total,cfg:budgetNotifyConfig('__total__')});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name!=='Senza categoria'&&Number(limit)>0)items.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),cfg:budgetNotifyConfig(name)})}
+  for(const x of items){
+    const cfg=x.cfg;if(!cfg||!cfg.enabled)continue;if(!cfg.sent)cfg.sent={};
+    const pct=x.limit?x.spent/x.limit*100:0,base=ym+'|'+x.key;
+    if(pct>=100){
+      const k=base+'|over';if(!cfg.sent[k]){alerts.push(x.name+' superato ('+Math.round(pct)+'%)');cfg.sent[k]=true;cfg.sent[base+'|80']=true}
+    }else if(cfg.mode==='80'&&pct>=80){
+      const k=base+'|80';if(!cfg.sent[k]){alerts.push(x.name+' all’'+Math.round(pct)+'%');cfg.sent[k]=true}
+    }
+  }
+  if(!alerts.length){save();return}
+  save();
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('Avviso Budget',{body:alerts.join('\n')})}catch(e){}
+  }else if(force){
+    openModal('Avviso Budget','<div class="note">'+alerts.map(esc).join('<br>')+'</div>');
+  }
+}
+function openBalanceEditor(){
+  openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  $('balCancel').onclick=closeModal;
+  $('balSave').onclick=()=>{
+    const v=Number($('newBalance').value);
+    if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
+    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim();
+    if(Math.abs(delta)>0.0001){
+      const date=todayISO();
+      state.history.push({id:'a'+Date.now(),entryId:null,type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason,category:''});
+    }
+    state.balance=v;save();closeModal();
+    if(!$('home').classList.contains('hidden'))renderHome();
+    if(!$('movements').classList.contains('hidden'))renderMovements();
+  };
+}
+function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
+function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('fullEditor');$('modalBody').innerHTML=''}
+function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
+function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
+$('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
+$('landingConti').onclick=openContiFromLanding;
+$('landingNickname').addEventListener('change',()=>{state.profile.fullName=$('landingNickname').value.trim();save()});
+$('landingTodo').onclick=()=>openModal('Cose da fare','<div class="note">Questa sezione verrà sviluppata dopo Conti economici.</div>');
+$('balanceBack').onclick=()=>show('landing');
+$('homeBackLanding').onclick=()=>show('landing');
+
+function hydrateFirstSetup(){if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
+$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('addIncomeSetup').onclick=()=>appendSetupRow($('incomeRows'),'income',null);
+$('addExpenseSetup').onclick=()=>appendSetupRow($('expenseRows'),'expense',null);
+$('skipIncomeSetup').onclick=()=>{state.setupDrafts.income=[];state.entries=state.entries.filter(e=>e.type!=='income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')};
+$('skipExpenseSetup').onclick=()=>{state.setupDrafts.expense=[];state.entries=state.entries.filter(e=>e.type!=='expense');state.setupDone=true;state.setupStage='done';save();show('home')};
+document.querySelectorAll('.flowTab').forEach(b=>b.onclick=()=>{flowFilter=b.dataset.flowFilter;renderFlow()});
+$('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
+$('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
+$('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
+$('settingsTop').onclick=()=>show('settings');
+
+$('settingsSearch').addEventListener('input',()=>{
+  const q=$('settingsSearch').value.trim().toLowerCase();
+  document.querySelectorAll('.settingsRow').forEach(r=>{if(r.id==='resetPrototype'||r.closest('#settings'))r.classList.toggle('hidden',q&&!((r.dataset.search||'')+' '+r.textContent).toLowerCase().includes(q))});
+  document.querySelectorAll('[data-settings-group]').forEach(g=>g.classList.toggle('hidden',!Array.from(g.querySelectorAll('.settingsRow')).some(r=>!r.classList.contains('hidden'))));
+});
+$('settingsIncome').onclick=()=>openFlow('income');
+$('settingsExpense').onclick=()=>openFlow('expense');
+$('settingsMovements').onclick=()=>show('movements');
+$('settingsCategories').onclick=openCategoryHub;
+$('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
+$('settingsNotifications').onclick=()=>{notificationsOnboarding=false;show('notifications')};
+$('settingsProfile').onclick=openProfileSettings;
+$('settingsColor').onclick=openColorSettings;
+$('settingsGuide').onclick=openGuide;
+$('settingsBackup').onclick=openBackupSettings;
+$('settingsSecurity').onclick=openSecuritySettings;
+$('homeSettingsCard').onclick=()=>show('settings');
+$('notificationsBack').onclick=()=>show('home');
+$('notifyAll').onclick=openGlobalNotificationRules;
+$('notifyCustom').onclick=openCustomNotifications;
+$('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
+$('movementsBack').onclick=()=>show('home');
+$('summaryBack').onclick=()=>show('home');
+$('budgetBack').onclick=()=>show('summary');
+$('settingsBack').onclick=()=>show('home');
+$('homeIncome').onclick=()=>openFlow('income');
+$('homeExpense').onclick=()=>openFlow('expense');
+$('editBalance').onclick=openBalanceEditor;
+$('settingsEditBalance').onclick=openBalanceEditor;
+$('homeAllMovements').onclick=()=>show('movements');
+$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};
+$('movementsFilters').onclick=openMovementFilters;
+$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
+$('flowBack').onclick=()=>show('home');
+$('flowAdd').onclick=()=>openAddEntry(currentFlow);
+$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};
+$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
+$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};
+$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};
+$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};
+$('budgetAdd').onclick=openBudgetChoice;
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
+document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+show('landing');
+})();
+</script>
+<!-- e2e-trigger -->
+</body>
+</html>);let mm=s.match(rx);
+    if(mm)return{kind:'monthYear',ym:mm[1]+'-'+String(i+1).padStart(2,'0')};
+    rx=new RegExp('^(?:'+name+'|'+short+')
+function openContiFromLanding(){
+  const nick=$('landingNickname')?$('landingNickname').value.trim():'';
+  state.profile.fullName=nick;save();
+  if(state.security&&state.security.enabled&&!securityFresh()){openUnlock();return}
+  enterContiAfterUnlock();
+}
+
+function show(id){const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function setupEntryToDraft(e){
+  const start=entryStartMonth(e);
+  return {id:e.id||'',name:e.name||'',amount:String(e.amount==null?'':e.amount),date:start?isoFor(start,e.day):'',recurrence:e.recurrence||null};
+}
+function setupSource(type){
+  const draft=state.setupDrafts&&Array.isArray(state.setupDrafts[type])?state.setupDrafts[type]:[];
+  if(draft.length)return draft;
+  return state.entries.filter(e=>e.type===type).map(setupEntryToDraft);
+}
+function recurrenceOptions(){
+  return '<option value="">Come si ripete?</option><option value="monthly">Ogni mese</option><option value="single">Una volta</option><option value="count">Altro · per X mesi</option><option value="until">Altro · fino a un mese</option><option value="selected">Altro · mesi selezionati</option>';
+}
+function createRows(containerId,type){
+  const el=$(containerId);el.innerHTML='';
+  const src=setupSource(type);
+  if(src.length)src.forEach(d=>appendSetupRow(el,type,d));else appendSetupRow(el,type,null);
+}
+function appendSetupRow(el,type,draft){
+  const r=document.createElement('div');r.className='entryRow';
+  r.dataset.entryId=draft&&draft.id?draft.id:'';
+  r.dataset.recurrence=draft&&draft.recurrence?JSON.stringify(draft.recurrence):'';
+  let dateValue=draft&&draft.date||'';
+  if(!dateValue&&draft&&draft.recurrence&&draft.day)dateValue=isoFor(entryStartMonth(draft),draft.day);
+  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Stipendio':'Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
+    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'1.400 €':'387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
+    '<input class="rDate" type="date" value="'+escAttr(dateValue)+'">'+
+    '<button class="rDelete" aria-label="Elimina riga">×</button><div class="rowMeta">'+(draft&&draft.recurrence?esc(recurrenceSummary(draft.recurrence)):'')+'</div>';
+  el.appendChild(r);
+  r.querySelector('.rDelete').onclick=()=>{r.remove();if(!el.querySelector('.entryRow'))appendSetupRow(el,type,null);persistSetupDraft(containerIdFor(type),type)};
+  r.querySelectorAll('.rName,.rAmount').forEach(inp=>inp.addEventListener('input',()=>persistSetupDraft(containerIdFor(type),type)));
+  r.querySelector('.rDate').addEventListener('change',()=>{
+    const date=r.querySelector('.rDate').value;
+    if(!date){r.dataset.recurrence='';r.querySelector('.rowMeta').textContent='';persistSetupDraft(containerIdFor(type),type);return}
+    let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
+    if(cfg){
+      const ym=date.slice(0,7);
+      if(cfg.kind==='monthly')cfg.startMonth=ym;
+      if(cfg.kind==='single')cfg.month=ym;
+      if(cfg.kind==='count')cfg.startMonth=ym;
+      if(cfg.kind==='until')cfg.startMonth=ym;
+      r.dataset.recurrence=JSON.stringify(cfg);r.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);
+    }else openSetupRepeatChoice(r,type);
+  });
+}
+function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
+function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDate').value)}
+function cleanAmount(v){
+  let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');
+  if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');
+  else if(s.includes(','))s=s.replace(',','.');
+  return Number(s);
+}
+function collectSetupDraft(containerId,type){
+  const out=[];
+  for(const r of Array.from($(containerId).querySelectorAll('.entryRow'))){
+    if(!rowHasData(r))continue;
+    let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
+    out.push({id:r.dataset.entryId||'',name:r.querySelector('.rName').value.trim(),amount:r.querySelector('.rAmount').value.trim(),date:r.querySelector('.rDate').value,recurrence:cfg});
+  }
+  return out;
+}
+function persistSetupDraft(containerId,type){if(!$(containerId))return;state.setupDrafts[type]=collectSetupDraft(containerId,type);save()}
+function setupRowsToEntries(containerId,type){
+  const rows=collectSetupDraft(containerId,type),out=[],errors=[];
+  rows.forEach((d,index)=>{
+    const amount=cleanAmount(d.amount),date=d.date,cfg=d.recurrence,day=date?Number(date.slice(8,10)):0;
+    const rowErrors=[];
+    if(!d.name)rowErrors.push('manca il nome');
+    if(!Number.isFinite(amount)||amount<=0)rowErrors.push('importo non valido');
+    if(!date||day<1||day>31)rowErrors.push('data non valida');
+    if(!validRecurrence(cfg))rowErrors.push('scegli come si ripete');
+    if(rowErrors.length){errors.push('riga '+(index+1)+': '+rowErrors.join(', '));return}
+    const old=d.id?state.entries.find(e=>e.id===d.id&&e.type===type):null;
+    out.push({id:old?old.id:'e'+Date.now()+Math.random(),type,name:d.name,amount,day,recurrence:cfg,category:old&&old.category||'',notify:old&&old.notify===true,note:old&&old.note||'',notifyRule:old&&old.notifyRule||null});
+  });
+  if(errors.length)throw new Error(errors.slice(0,4).join(' · '));
+  return out;
+}
+function commitSetupRows(containerId,type){
+  persistSetupDraft(containerId,type);
+  const parsed=setupRowsToEntries(containerId,type);
+  state.entries=state.entries.filter(e=>e.type!==type).concat(parsed);
+  state.setupDrafts[type]=parsed.map(setupEntryToDraft);save();return parsed;
+}
+function openSetupRepeatChoice(row,type){
+  const date=row.querySelector('.rDate').value;if(!date)return;
+  openModal('Come si ripete?','<div class="guideTopics"><button id="repMonthly" class="guideTopic">Ogni mese</button><button id="repOnce" class="guideTopic">Una volta</button><button id="repOther" class="guideTopic">Altro ›</button></div>');
+  $('repMonthly').onclick=()=>{const cfg={kind:'monthly',startMonth:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+  $('repOnce').onclick=()=>{const cfg={kind:'single',month:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+  $('repOther').onclick=()=>openSetupAdvanced(row,type,date);
+}
+function openSetupAdvanced(row,type,date){
+  const start=date.slice(0,7);
+  openModal('Altro','<div class="field"><label>Tipo</label><select id="setupOtherKind"><option value="count">Per un numero di mesi</option><option value="until">Fino a un mese</option><option value="selected">Mesi selezionati</option></select></div><div id="setupOtherExtra"></div><div class="modalBtns"><button id="setupOtherCancel" class="btn secondary">Annulla</button><button id="setupOtherSave" class="btn">Conferma</button></div>');
+  const draw=()=>{const k=$('setupOtherKind').value;if(k==='count')$('setupOtherExtra').innerHTML='<div class="field"><label>Numero mesi</label><input id="setupCount" type="number" min="1" value="2"></div>';if(k==='until')$('setupOtherExtra').innerHTML='<div class="field"><label>Fino a</label><input id="setupUntil" type="month" value="'+addMonths(start,2)+'"></div>';if(k==='selected'){let h='';for(let i=0;i<12;i++){const ym=addMonths(start,i);h+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"> '+monthName(ym)+'</label>'}$('setupOtherExtra').innerHTML='<div class="field"><label>Mesi</label><div id="setupMonths" class="monthChecks">'+h+'</div></div>'}};
+  draw();$('setupOtherKind').onchange=draw;
+  $('setupOtherCancel').onclick=()=>openSetupRepeatChoice(row,type);
+  $('setupOtherSave').onclick=()=>{const k=$('setupOtherKind').value;let cfg;if(k==='count')cfg={kind:'count',startMonth:start,count:Number($('setupCount').value)};if(k==='until')cfg={kind:'until',startMonth:start,endMonth:$('setupUntil').value};if(k==='selected')cfg={kind:'selected',months:Array.from(document.querySelectorAll('#setupMonths input:checked')).map(x=>x.value)};if(!validRecurrence(cfg))return flashModal('Completa la ricorrenza.');row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
+}
+function validRecurrence(c){if(!c)return false;if(c.kind==='monthly')return !!c.startMonth;if(c.kind==='single')return !!c.month;if(c.kind==='count')return !!c.startMonth&&c.count>0;if(c.kind==='until')return !!c.startMonth&&!!c.endMonth&&c.endMonth>=c.startMonth;if(c.kind==='selected')return Array.isArray(c.months)&&c.months.length>0;return false}
+function recurrenceSummary(c){if(c.kind==='monthly')return 'Da '+monthName(c.startMonth);if(c.kind==='single')return monthName(c.month);if(c.kind==='count')return c.count+' mesi da '+monthName(c.startMonth);if(c.kind==='until')return 'Da '+monthName(c.startMonth)+' a '+monthName(c.endMonth);if(c.kind==='selected')return c.months.length+' mesi selezionati';return ''}
+function recurrenceOccurs(r,ym){
+  if(!r)return false;
+  if(r.kind==='monthly')return ym>=r.startMonth;
+  if(r.kind==='single')return ym===r.month;
+  if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}
+  if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;
+  if(r.kind==='selected')return Array.isArray(r.months)&&r.months.includes(ym);
+  return false;
+}
+function futureChangeFor(entryId,ym){
+  const arr=Array.isArray(state.futureChanges[entryId])?state.futureChanges[entryId]:[];
+  return arr.filter(x=>x.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth)).slice(-1)[0]||null;
+}
+function effectiveEntryForMonth(entry,ym){
+  const ch=futureChangeFor(entry.id,ym);
+  if(ch&&ch.deleted)return null;
+  const out=Object.assign({},entry,ch&&ch.fields||{});
+  return out;
+}
+function occurrenceOverrideKey(entryId,ym){return entryId+'|'+ym}
+function effectiveOccurrence(entry,ym){
+  const eff=effectiveEntryForMonth(entry,ym);if(!eff||!recurrenceOccurs(eff.recurrence,ym))return null;
+  const ov=state.occurrenceOverrides[occurrenceOverrideKey(entry.id,ym)];
+  if(ov&&ov.deleted)return null;
+  const out=Object.assign({},eff,ov&&ov.fields||{});
+  out.entryId=entry.id;out.type=entry.type;out.month=ym;
+  out.date=ov&&ov.fields&&ov.fields.date?ov.fields.date:isoFor(ym,out.day);
+  return out;
+}
+function occurs(entry,ym){return !!effectiveOccurrence(entry,ym)}
+function historyFor(entryId,ym){return state.history.find(h=>h.entryId===entryId&&(h.occurrenceMonth||h.month)===ym)}
+function monthData(type,ym){
+  const pending=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    const occ=effectiveOccurrence(e,ym);if(!occ)return;
+    if(!historyFor(e.id,ym))pending.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:ym,category:occ.category||'',note:occ.note||''});
+  });
+  const done=state.history.filter(h=>h.type===type&&h.month===ym).map(h=>{
+    const e=state.entries.find(x=>x.id===h.entryId),occ=e?effectiveOccurrence(e,h.occurrenceMonth||ym):null;
+    return Object.assign({},h,{category:h.category!=null?h.category:(occ&&occ.category||''),note:h.note!=null?h.note:(occ&&occ.note||'')});
+  });
+  done.sort((a,b)=>a.date.localeCompare(b.date));pending.sort((a,b)=>a.date.localeCompare(b.date));return{done,pending};
+}
+function monthTotals(ym){const i=monthData('income',ym),e=monthData('expense',ym);return{received:i.done.reduce((s,x)=>s+x.amount,0),toReceive:i.pending.reduce((s,x)=>s+x.amount,0),paid:e.done.reduce((s,x)=>s+x.amount,0),toPay:e.pending.reduce((s,x)=>s+x.amount,0)}}
+function pendingThrough(type,ym){
+  const out=[];
+  state.entries.filter(e=>e.type===type).forEach(e=>{
+    let cur=entryStartMonth(e),guard=0;
+    while(cur<=ym&&guard++<240){
+      const occ=effectiveOccurrence(e,cur);
+      if(occ&&!historyFor(e.id,cur))out.push({entryId:e.id,type:e.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,month:cur,category:occ.category||'',note:occ.note||''});
+      cur=addMonths(cur,1);
+    }
+  });
+  return out.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function openTotalsThrough(ym){
+  return{
+    toReceive:pendingThrough('income',ym).reduce((s,x)=>s+x.amount,0),
+    toPay:pendingThrough('expense',ym).reduce((s,x)=>s+x.amount,0)
+  };
+}
+function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
+function renderHome(){
+  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
+  const month=ymNow(),open=openTotalsThrough(month);
+  $('homeIncomeTotal').textContent=money(open.toReceive);
+  $('homeExpenseTotal').textContent=money(open.toPay);
+  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
+}
+function renderMovementList(el,arr){
+  el.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}
+  arr.forEach(x=>{
+    const r=document.createElement('div');
+    r.className='movementRow';
+    const isAdj=x.type==='adjustment';
+    const delta=isAdj?Number(x.delta||0):0;
+    const label=isAdj?'CORREZIONE SALDO':(x.type==='income'?'RICEVUTO':'PAGATO');
+    const sign=isAdj?(delta>=0?'+ ':'- '):(x.type==='income'?'+ ':'- ');
+    const amount=isAdj?Math.abs(delta):Number(x.amount||0);
+    const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
+    r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    if(x.id)r.onclick=()=>openMovementDetail(x.id);
+    el.appendChild(r);
+  });
+}
+function restoreSetupCopy(){}
+function openFlow(type){quickEditMode=null;currentFlow=type;flowFilter='all';show('flow')}
+function buildFlowItems(type){
+  const ym=ymNow(),today=todayISO();
+  const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
+  const done=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
+  return [...open,...done].sort((a,b)=>{
+    const ra=a.done?2:(a.overdue?0:1),rb=b.done?2:(b.overdue?0:1);
+    if(ra!==rb)return ra-rb;
+    return a.date.localeCompare(b.date);
+  });
+}
+function renderFlow(){
+  const isIn=currentFlow==='income';
+  $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
+  $('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';
+  $('flowBannerTitle').textContent=isIn?'Le tue entrate':'I tuoi pagamenti';
+  $('flowBannerCopy').textContent='Tocca lo stato per '+(isIn?'segnare come ricevuto.':'segnare come pagato.');
+  $('flowBannerIcon').textContent=isIn?'↘':'↗';
+  $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
+  $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
+  document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
+  let arr=buildFlowItems(currentFlow);
+  if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
+  if(flowFilter==='done')arr=arr.filter(x=>x.done);
+  const el=$('flowUnifiedList');el.innerHTML='';
+  if(!arr.length){el.innerHTML='<div class="flowEmpty">Nessuna voce da mostrare.</div>';return}
+  arr.forEach(x=>{
+    const row=document.createElement('div');row.className='flowUnifiedRow';
+    const isOverdue=!x.done&&x.date<todayISO();
+    const status=x.done?(isIn?'RICEVUTA':'PAGATO'):(isOverdue?(isIn?'SCADUTA':'SCADUTO'):(isIn?'DA RICEVERE':'DA PAGARE'));
+    const cls=x.done?'done':(isOverdue?'overdue':'pending');
+    row.innerHTML='<button class="flowUnifiedMain"><span><span class="flowUnifiedName">'+esc(x.name)+'</span><span class="flowUnifiedDate">'+fmtMovementDate(x.date)+'</span></span><span class="flowUnifiedAmount">'+money(x.amount)+'</span><span>›</span></button><button class="flowUnifiedStatus '+cls+'">'+status+' ›</button>';
+    row.querySelector('.flowUnifiedMain').onclick=()=>x.done?openMovementDetail(x.id):openOccurrenceActions(x);
+    row.querySelector('.flowUnifiedStatus').onclick=()=>x.done?openReopenMovement(x):completeOccurrenceImmediate(x);
+    el.appendChild(row);
+  });
+}
+function completeOccurrenceImmediate(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  if(historyFor(x.entryId,x.month))return;
+  const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
+  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+}
+function openReopenMovement(h){
+  openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
+  $('reopenCancel').onclick=closeModal;$('reopenYes').onclick=()=>{closeModal();undoHistory(h.id)};
+}
+function hideUndoSnack(){if(undoSnackTimer){clearTimeout(undoSnackTimer);undoSnackTimer=null}undoSnackHistoryId=null;$('undoSnack').classList.add('hidden')}
+function showUndoSnack(h){if(undoSnackTimer)clearTimeout(undoSnackTimer);undoSnackHistoryId=h.id;$('undoSnackText').textContent=h.name+' segnato come '+(h.type==='income'?'ricevuto':'pagato');$('undoSnack').classList.remove('hidden');undoSnackTimer=setTimeout(hideUndoSnack,4000)}
+function undoFromSnack(){const id=undoSnackHistoryId;if(!id)return;hideUndoSnack();undoHistory(id)}
+function undoHistory(id){
+  const h=state.history.find(x=>x.id===id);if(!h||h.type==='adjustment')return;
+  state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
+  state.history=state.history.filter(x=>x.id!==id);save();if(!$('flow').classList.contains('hidden'))renderFlow();if(!$('home').classList.contains('hidden'))renderHome();
+}
+
+function openOccurrenceActions(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const recurring=entry.recurrence&&entry.recurrence.kind!=='single';
+  if(!recurring){openEntryEditor(entry,entry.type);return}
+  openModal(entry.type==='income'?'Modifica entrata':'Modifica pagamento','<div class="hint">Questa voce è ricorrente.</div><div class="guideTopics"><button id="occOnly" class="guideTopic">Modifica solo questa scadenza</button><button id="occFuture" class="guideTopic">Modifica questa e tutte le future</button></div>');
+  $('occOnly').onclick=()=>openSingleOccurrenceEditor(x);
+  $('occFuture').onclick=()=>openFutureOccurrenceEditor(x);
+}
+function occurrenceCategoryOptions(type,current){return categoryOptions(type,current)}
+function openSingleOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal(entry.type==='income'?'Modifica questa entrata':'Modifica questo pagamento',
+    '<div class="field"><label>Nome</label><input id="occName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="occAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data</label><input id="occDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="occCategory">'+occurrenceCategoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="occNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="occDelete" class="btn deleteBtn">Elimina</button><button id="occSave" class="btn">Salva</button></div>');
+  $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
+  $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openFutureOccurrenceEditor(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  const eff=effectiveEntryForMonth(entry,x.month)||entry;
+  openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
+    '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Giorno del mese</label><input id="futDay" type="number" min="1" max="31" value="'+Number((x.date||'').slice(8,10))+'"></div>'+
+    '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
+  $('futSave').onclick=()=>{const name=$('futName').value.trim(),amount=Number($('futAmount').value),day=Number($('futDay').value);if(!name||!Number.isFinite(amount)||amount<=0||day<1||day>31)return flashModal('Controlla nome, importo e giorno.');const fields={name,amount,day,category:$('futCategory').value==='__new__'?'':$('futCategory').value,note:$('futNote').value.trim(),recurrence:eff.recurrence};if(fields.recurrence&&fields.recurrence.kind==='monthly')fields.recurrence=Object.assign({},fields.recurrence,{startMonth:x.month});if(fields.recurrence&&fields.recurrence.kind==='single')fields.recurrence={kind:'single',month:x.month};const arr=Array.isArray(state.futureChanges[entry.id])?state.futureChanges[entry.id]:[];state.futureChanges[entry.id]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,fields}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));save();closeModal();renderFlow()};
+  $('futDelete').onclick=()=>openDeleteOccurrenceChoice(x);
+}
+function openDeleteOccurrenceChoice(x){
+  const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
+  openModal('Elimina scadenza','<div class="guideTopics"><button id="deleteOccOnly" class="guideTopic">Elimina solo questa scadenza</button><button id="deleteOccFuture" class="guideTopic">Elimina questa e tutte le future</button></div><button id="deleteOccCancel" class="btn secondary" style="margin-top:12px">Annulla</button>');
+  $('deleteOccCancel').onclick=()=>{closeModal();renderFlow()};
+  $('deleteOccOnly').onclick=()=>confirmOccurrenceDeletion(x,false);
+  $('deleteOccFuture').onclick=()=>confirmOccurrenceDeletion(x,true);
+}
+function confirmOccurrenceDeletion(x,future){
+  openModal('Vuoi davvero eliminare?','<div class="note">'+(future?'Questa scadenza e tutte le future non compariranno più. I movimenti già confermati restano nello storico.':'Verrà eliminata soltanto questa scadenza. I movimenti già confermati restano nello storico.')+'</div><div class="modalBtns"><button id="deleteOccNo" class="btn secondary">Annulla</button><button id="deleteOccYes" class="btn deleteBtn">Elimina</button></div>');
+  $('deleteOccNo').onclick=()=>openDeleteOccurrenceChoice(x);
+  $('deleteOccYes').onclick=()=>{if(future){const arr=Array.isArray(state.futureChanges[x.entryId])?state.futureChanges[x.entryId]:[];state.futureChanges[x.entryId]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,deleted:true}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth))}else state.occurrenceOverrides[occurrenceOverrideKey(x.entryId,x.month)]={deleted:true};save();closeModal();renderFlow()};
+}
+
+function openAddEntry(type){openEntryEditor(null,type)}
+function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
+const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Benzina','Luce','Gas','Altro']};
+const DEFAULT_CATEGORIES={
+  income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
+  expense:['Casa','Auto','Bollette','Salute','Altro']
+};
+function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
+function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
+
+function openCategoryHub(){
+  openModal('Categorie','<div class="hint">Riepilogo e gestione delle categorie.</div><div class="guideTopics"><button id="categorySummaryOpen" class="guideTopic">Riepilogo categorie</button><button id="categoryManageOpen" class="guideTopic">Gestisci categorie</button></div>');
+  $('categorySummaryOpen').onclick=()=>{closeModal();summaryMonth=ymNow();show('summary')};
+  $('categoryManageOpen').onclick=openCategoryManagement;
+}
+function openCategoryManagement(){
+  const renderSection=type=>{
+    const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
+    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+((DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata')+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
+    return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
+  };
+  openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
+  document.querySelectorAll('.catAdd').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,''));
+  document.querySelectorAll('.catRename').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,b.dataset.cat));
+  document.querySelectorAll('.catDelete').forEach(b=>b.onclick=()=>confirmDeleteCategory(b.dataset.type,b.dataset.cat));
+}
+function openCategoryNameEditor(type,oldName){
+  openModal(oldName?'Rinomina categoria':'Nuova categoria','<div class="field"><label>Nome</label><input id="categoryNameEdit" placeholder="Scrivi qua" value="'+escAttr(oldName||'')+'"></div><div class="modalBtns"><button id="categoryNameCancel" class="btn secondary">Annulla</button><button id="categoryNameSave" class="btn">Salva</button></div>');
+  $('categoryNameCancel').onclick=openCategoryManagement;
+  $('categoryNameSave').onclick=()=>{
+    const name=$('categoryNameEdit').value.trim();if(!name)return flashModal('Scrivi il nome della categoria.');
+    const existing=new Set(allCategories(type));if(name!==oldName&&existing.has(name))return flashModal('Questa categoria esiste già.');
+    if(oldName){
+      state.entries.filter(e=>e.type===type&&e.category===oldName).forEach(e=>e.category=name);
+      state.history.filter(h=>h.type===type&&h.category===oldName).forEach(h=>h.category=name);
+      if((DEFAULT_CATEGORIES[type]||[]).includes(oldName)){if(!state.hiddenCategories[type].includes(oldName))state.hiddenCategories[type].push(oldName)}
+      state.customCategories[type]=state.customCategories[type].filter(x=>x!==oldName);
+      if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    }else if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
+    save();openCategoryManagement();
+  };
+}
+function confirmDeleteCategory(type,name){
+  openModal('Elimina categoria','<div class="note">Eliminare “'+esc(name)+'”? Le entrate o i pagamenti collegati resteranno, ma passeranno a “Senza categoria”.</div><div class="modalBtns"><button id="categoryDeleteNo" class="btn secondary">Annulla</button><button id="categoryDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+  $('categoryDeleteNo').onclick=openCategoryManagement;
+  $('categoryDeleteYes').onclick=()=>{
+    state.entries.filter(e=>e.type===type&&e.category===name).forEach(e=>e.category='');
+    state.history.filter(h=>h.type===type&&h.category===name).forEach(h=>h.category='');
+    state.customCategories[type]=state.customCategories[type].filter(x=>x!==name);
+    if((DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.hiddenCategories[type].includes(name))state.hiddenCategories[type].push(name);
+    if(state.budgetPlans)state.budgetPlans.forEach(p=>{if(p.limits&&Object.prototype.hasOwnProperty.call(p.limits,name))delete p.limits[name]});
+    if(state.budgetNotifications&&state.budgetNotifications.categories)delete state.budgetNotifications.categories[name];
+    save();openCategoryManagement();
+  };
+}
+
+function entryStartMonth(entry){const r=entry&&entry.recurrence;if(!r)return ymNow();return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
+function openEntryEditor(entry,type){
+  const isNew=!entry;
+  const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
+  const rec=entry?entry.recurrence:null;
+  const dateValue=entry?isoFor(entryStartMonth(entry),entry.day):todayISO();
+  const noteValue=entry&&entry.note?entry.note:'';
+  const globalAll=state.notifications&&state.notifications.mode==='all';
+  const notifyDefault=entry?entry.notify===true:globalAll;
+  const rule=entry&&entry.notifyRule||null;
+  const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
+  const effectiveRule=rule||generalRule;
+  const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
+  const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
+  openModal(title,
+    suggestions+
+    '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
+    '<div class="field"><label>Data</label><input id="editDate" type="date" value="'+dateValue+'"></div>'+
+    '<div class="field"><label>Frequenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
+    '<div id="editRecExtra"></div>'+
+    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+    '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
+    '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
+      '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+      '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
+      '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
+    '</div>'+
+    '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
+    '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
+    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
+  );
+  $('modal').classList.add('fullEditor');
+  if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
+  $('editRecKind').value=rec?rec.kind:'single';
+  renderEditRecExtra(rec||{kind:'single'});
+  $('editRecKind').onchange=()=>renderEditRecExtra(null);
+  $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
+  $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
+  $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
+  $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
+  $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
+  $('editSave').onclick=()=>{
+    const name=$('editName').value.trim(),amount=Number($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
+    const day=date?Number(date.slice(8,10)):0;
+    let category=$('editCategory').value;
+    if(category==='__new__'){
+      category=$('newCategory').value.trim();
+      if(!category)return flashModal('Scrivi il nome della nuova categoria.');
+      if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
+    }
+    const notify=$('editNotify').checked;
+    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
+    const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
+    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
+    let id;
+    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
+    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,recurrence:r,category,notify,notifyRule,note})}
+    state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
+    if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
+    save();closeModal();renderFlow();
+  };
+}
+function confirmDeleteEntry(entry){
+  const linked=state.history.filter(h=>h.entryId===entry.id);
+  const extra=linked.length
+    ? '<div class="note">I movimenti già confermati resteranno nello storico e il saldo non verrà modificato.</div>'
+    : '<div class="note">La voce verrà eliminata dalle scadenze programmate.</div>';
+  openModal('Elimina '+(entry.type==='income'?'entrata':'pagamento'),
+    '<div style="font-weight:900;font-size:18px;margin-top:12px">'+esc(entry.name)+'</div>'+extra+
+    '<div class="modalBtns"><button id="deleteNo" class="btn secondary">Annulla</button><button id="deleteYes" class="btn deleteBtn">Elimina</button></div>'
+  );
+  $('deleteNo').onclick=()=>{closeModal();renderFlow()};
+  $('deleteYes').onclick=()=>{
+    state.entries=state.entries.filter(e=>e.id!==entry.id);
+    delete state.futureChanges[entry.id];Object.keys(state.occurrenceOverrides).filter(k=>k.startsWith(entry.id+'|')).forEach(k=>delete state.occurrenceOverrides[k]);
+    state.notifications.selected=(state.notifications.selected||[]).filter(id=>id!==entry.id);
+    save();closeModal();renderFlow();
+  };
+}
+function renderEditRecExtra(rec){
+  const kind=$('editRecKind').value;
+  const base=($('editDate')&&$('editDate').value?$('editDate').value.slice(0,7):ymNow());
+  let h='';
+  if(kind==='count')h='<div class="field"><label>Numero mesi</label><input id="erCount" type="number" min="1" value="'+(rec&&rec.count||2)+'"></div>';
+  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="month" value="'+(rec&&rec.endMonth||addMonths(base,2))+'"></div>';
+  if(kind==='selected'){
+    let cc='';
+    for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}
+    h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>';
+  }
+  $('editRecExtra').innerHTML=h;
+}
+function collectEditRecurrence(){
+  const k=$('editRecKind').value,date=$('editDate').value,start=date?date.slice(0,7):'';
+  if(k==='monthly')return{kind:k,startMonth:start};
+  if(k==='single')return{kind:k,month:start};
+  if(k==='count')return{kind:k,startMonth:start,count:Number($('erCount').value)};
+  if(k==='until')return{kind:k,startMonth:start,endMonth:$('erEnd').value};
+  if(k==='selected')return{kind:k,months:Array.from(document.querySelectorAll('#erMonths input:checked')).map(x=>x.value)};
+  return null;
+}
+function renderNotifications(){
+  const mode=state.notifications.mode||'off';
+  $('notifyAll').classList.toggle('active',mode==='all');
+  $('notifyCustom').classList.toggle('active',mode==='custom');
+  $('notifySkip').textContent=mode==='off'?'Notifiche disattivate':'Disattiva tutte le notifiche';
+  const help=$('notifications').querySelector('.notifyHelp');
+  if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
+}
+async function requestNotificationPermission(){
+  if(!('Notification' in window))return 'unsupported';
+  if(Notification.permission==='granted')return 'granted';
+  if(Notification.permission==='denied')return 'denied';
+  try{return await Notification.requestPermission()}catch(e){return 'unsupported'}
+}
+function notificationRuleFields(prefix,rule,title){
+  return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div>'+
+    '<div class="field"><label>Quando avvisare</label><select id="'+prefix+'Timing"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+    '<div class="field"><label>Orario</label><input id="'+prefix+'Time" type="time" value="'+escAttr(rule.time||'09:00')+'"></div>'+
+    '<div class="field"><label>Promemoria dopo la scadenza</label><select id="'+prefix+'Overdue"><option value="none">Nessuno</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div></div>';
+}
+function openGlobalNotificationRules(){
+  const ir=state.notifications.rules.income||{timing:'same',time:'09:00',overdue:'none'},er=state.notifications.rules.expense||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Attiva tutte le notifiche','<div class="hint">Imposta subito due regole separate. I Budget non sono inclusi.</div>'+notificationRuleFields('nIncome',ir,'Entrate')+notificationRuleFields('nExpense',er,'Pagamenti')+'<div class="modalBtns"><button id="nAllCancel" class="btn secondary">Annulla</button><button id="nAllSave" class="btn">Attiva tutte</button></div>');
+  $('nIncomeTiming').value=ir.timing||'same';$('nIncomeOverdue').value=ir.overdue||'none';$('nExpenseTiming').value=er.timing||'same';$('nExpenseOverdue').value=er.overdue||'none';
+  $('nAllCancel').onclick=closeModal;
+  $('nAllSave').onclick=async()=>{
+    state.notifications.rules.income={timing:$('nIncomeTiming').value,time:$('nIncomeTime').value||'09:00',overdue:$('nIncomeOverdue').value};
+    state.notifications.rules.expense={timing:$('nExpenseTiming').value,time:$('nExpenseTime').value||'09:00',overdue:$('nExpenseOverdue').value};
+    closeModal();await finishNotificationChoice('all',[]);
+  };
+}
+async function finishNotificationChoice(mode,selected){
+  state.notifications.mode=mode;
+  state.notifications.selected=selected||[];
+  if(mode==='all'){
+    state.entries.forEach(e=>{e.notify=true;e.notifyRule=null});
+    state.notifications.selected=state.entries.map(e=>e.id);
+  }
+  if(mode==='custom')state.entries.forEach(e=>e.notify=state.notifications.selected.includes(e.id));
+  if(mode==='off'){
+    state.entries.forEach(e=>{e.notify=false;e.notifyRule=null});
+    state.notifications.selected=[];
+    state.notifications.sent={};
+    state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};
+  }
+  save();
+  if(mode!=='off'){
+    const permission=await requestNotificationPermission();
+    if(permission==='denied')openModal('Notifiche bloccate','<div class="note">Le notifiche sono disattivate sul telefono/browser. Puoi abilitarle dalle impostazioni del dispositivo o del browser.</div>');
+    else if(permission==='unsupported')openModal('Notifiche non disponibili','<div class="note">Questo browser non supporta le notifiche. Le impostazioni restano salvate per la versione installata dell’app.</div>');
+  }
+  renderNotifications();
+}
+function openCustomNotifications(){
+  const selected=new Set(state.entries.filter(e=>e.notify===true).map(e=>e.id));
+  const entries=[...state.entries].sort((a,b)=>a.type.localeCompare(b.type)||a.name.localeCompare(b.name,'it'));
+  let list=entries.map(e=>'<label class="notifyToggle"><span><b>'+esc(e.name)+'</b><small>'+(e.type==='income'?'Entrata':'Pagamento')+'</small></span><input type="checkbox" value="'+escAttr(e.id)+'" '+(selected.has(e.id)?'checked':'')+'></label>').join('');
+  if(!list)list='<div class="empty">Non hai ancora voci da selezionare.</div>';
+  openModal('Scegli le notifiche','<div class="hint">Decidi per quali voci ricevere un promemoria.</div><div id="notifyPickList" class="notifyList">'+list+'</div><div class="modalBtns"><button id="notifyPickCancel" class="btn secondary">Annulla</button><button id="notifyPickSave" class="btn">Salva scelte</button></div>');
+  $('notifyPickCancel').onclick=closeModal;
+  $('notifyPickSave').onclick=async()=>{const ids=Array.from(document.querySelectorAll('#notifyPickList input:checked')).map(x=>x.value);closeModal();await finishNotificationChoice('custom',ids)};
+}
+function notificationTimeReached(rule){
+  const now=new Date(),parts=(rule.time||'09:00').split(':').map(Number),mins=now.getHours()*60+now.getMinutes(),target=(parts[0]||0)*60+(parts[1]||0);
+  return mins>=target;
+}
+async function checkDueNotifications(){
+  const n=state.notifications||{};
+  if(n.mode==='off'||!('Notification' in window)||Notification.permission!=='granted')return;
+  const today=todayISO(),ym=ymNow(),pending=[...pendingThrough('income',ym),...pendingThrough('expense',ym)],alerts=[];
+  for(const x of pending){
+    const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
+    const rule=entry.notifyRule||(n.rules&&n.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
+    if(!notificationTimeReached(rule))continue;
+    const diff=daysBetween(x.date,today);
+    const reasons=[];
+    if((rule.timing==='same'||rule.timing==='both')&&diff===0)reasons.push('oggi');
+    if((rule.timing==='before'||rule.timing==='both')&&diff===-1)reasons.push('domani');
+    if(diff>0&&rule.overdue!=='none'){
+      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      if(every&&diff%every===0)reasons.push('scaduta');
+    }
+    for(const reason of reasons){
+      const key=x.entryId+'|'+x.date+'|'+today+'|'+reason;
+      if(n.sent&&n.sent[key])continue;
+      alerts.push({x,reason,key});
+    }
+  }
+  if(!alerts.length)return;
+  const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
+  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+}
+function movementNames(){
+  return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+}
+function movementCutoff(period){
+  if(period==='all')return null;
+  const months=Number(period);
+  if(!months)return null;
+  const start=addMonths(ymNow(),-(months-1));
+  return start+'-01';
+}
+function filteredMovements(){
+  const cutoff=movementCutoff(movementFilters.period);
+  return [...state.history].filter(x=>{
+    if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
+    if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
+    if(cutoff&&x.date<cutoff)return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+}
+function movementFilterText(){
+  const parts=[];
+  if(movementFilters.type==='income')parts.push('solo entrate');
+  if(movementFilters.type==='expense')parts.push('solo pagamenti');
+  if(movementFilters.type==='adjustment')parts.push('solo correzioni saldo');
+  if(movementFilters.name!=='all')parts.push(movementFilters.name);
+  const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
+  if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
+  return parts.length?parts.join(' · '):'Tutti i movimenti · tutto il periodo';
+}
+function renderMovements(){
+  const arr=filteredMovements();
+  $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
+  $('movementFilteredTotal').classList.add('hidden');
+  $('movementFilteredTotal').innerHTML='';
+  renderMovementList($('allMovements'),arr);
+}
+function openMovementFilters(){
+  const names=movementNames();
+  let nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  openModal('Filtri movimenti',
+    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutti</option><option value="income">Entrate</option><option value="expense">Pagamenti</option><option value="adjustment">Correzioni saldo</option></select></div>'+
+    '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
+    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
+    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
+  );
+  $('mfType').value=movementFilters.type;
+  $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
+  $('mfPeriod').value=movementFilters.period;
+  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',period:'all'};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
+}
+function categoryTotals(type,ym){
+  const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
+  for(const x of all){const cat=(x.category||'').trim()||'Senza categoria';m[cat]=(m[cat]||0)+Number(x.amount||0)}
+  return Object.entries(m).map(([name,amount])=>({name,amount})).sort((a,b)=>b.amount-a.amount||a.name.localeCompare(b.name,'it'));
+}
+function renderCategoryBlock(type,ym,containerId,totalId){
+  const arr=categoryTotals(type,ym),total=arr.reduce((s,x)=>s+x.amount,0),el=$(containerId);
+  $(totalId).textContent='Totale '+money(total);
+  if(!arr.length){el.innerHTML='<div class="empty">Nessuna voce nel mese.</div>';return}
+  el.innerHTML=arr.map(x=>'<button class="categoryRow" data-cat="'+escAttr(x.name)+'"><span class="categoryName">'+esc(x.name)+'</span><span class="categoryMeta"><span class="categoryAmount '+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</span><span class="categoryPct">'+(total?Math.round(x.amount/total*100):0)+'%</span></span><span class="categoryArrow">›</span></button>').join('');
+  el.querySelectorAll('.categoryRow').forEach(b=>b.onclick=()=>openCategoryDetails(type,b.dataset.cat,ym));
+}
+function openCategoryDetails(type,category,ym){
+  const all=state.history.filter(x=>x.type===type&&x.month===ym&&(((x.category||'').trim()||'Senza categoria')===category)).sort((a,b)=>a.date.localeCompare(b.date));
+  const total=all.reduce((s,x)=>s+Number(x.amount||0),0);
+  const rows=all.map(x=>'<div class="sumLine"><span><strong>'+esc(x.name)+'</strong><br><small style="color:var(--muted)">'+fmtMovementDate(x.date)+'</small></span><strong class="'+(type==='income'?'incomeColor':'')+'">'+money(x.amount)+'</strong></div>').join('');
+  openModal(category,'<div class="hint">'+(type==='income'?'Entrate':'Pagamenti')+' · '+monthName(ym)+'</div><div style="margin-top:8px">'+rows+'</div><div class="sumLine total"><span>Totale</span><strong>'+money(total)+'</strong></div>');
+}
+function comparisonText(diff,kind){
+  const abs=money(Math.abs(diff));
+  if(Math.abs(diff)<0.005)return kind==='income'?'Entrate uguali al mese precedente':'Pagamenti uguali al mese precedente';
+  if(kind==='income')return diff>0?'Hai ricevuto '+abs+' in più':'Hai ricevuto '+abs+' in meno';
+  return diff>0?'Hai speso '+abs+' in più':'Hai speso '+abs+' in meno';
+}
+function renderSummary(){
+  $('sumMonth').textContent=monthName(summaryMonth);
+  const t=monthTotals(summaryMonth),p=projectedEnd(summaryMonth),inc=t.received+t.toReceive,exp=t.paid+t.toPay;
+  const bv=$('summaryBalanceValue');bv.textContent=money(state.balance);bv.className='value'+(Number(state.balance)<0?' neg':'');
+  $('summaryRows').innerHTML=
+    '<div class="sumGroup"><div class="sumGroupTitle">Entrate</div><div class="sumLine"><span>Ricevute</span><strong class="incomeColor">'+money(t.received)+'</strong></div><div class="sumLine"><span>Da ricevere</span><strong>'+money(t.toReceive)+'</strong></div><div class="sumLine total"><span>Totale entrate</span><strong class="incomeColor">'+money(inc)+'</strong></div></div>'+
+    '<div class="sumGroup"><div class="sumGroupTitle">Pagamenti</div><div class="sumLine"><span>Pagate</span><strong>'+money(t.paid)+'</strong></div><div class="sumLine"><span>Da pagare</span><strong>'+money(t.toPay)+'</strong></div><div class="sumLine total"><span>Totale pagamenti</span><strong>'+money(exp)+'</strong></div></div>'+
+    '<div class="sumGroup"><div class="sumGroupTitle">Fine mese</div><div class="sumLine total"><span>Saldo fine mese</span><strong class="'+(p<0?'expenseColor':'incomeColor')+'">'+money(p)+'</strong></div></div>';
+  const prev=addMonths(summaryMonth,-1),pt=monthTotals(prev),pinc=pt.received+pt.toReceive,pexp=pt.paid+pt.toPay;
+  const di=inc-pinc,de=exp-pexp;
+  $('summaryCompare').innerHTML='<div class="compareTitle">Rispetto a '+monthName(prev).toLowerCase()+'</div><div class="compareLine"><span>'+comparisonText(di,'income')+'</span><strong class="'+(di>=0?'incomeColor':'')+'">'+(di>0?'+ ':'')+money(di)+'</strong></div><div class="compareLine"><span>'+comparisonText(de,'expense')+'</span><strong>'+((de>0)?'+ ':'')+money(de)+'</strong></div>';
+  renderCategoryBlock('income',summaryMonth,'incomeCategories','incomeCategoryTotal');
+  renderCategoryBlock('expense',summaryMonth,'expenseCategories','expenseCategoryTotal');
+}
+function budgetPlanFor(ym){
+  const plans=[...(state.budgetPlans||[])].filter(p=>p&&p.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  const p=plans.length?plans[plans.length-1]:null;
+  return p?{total:Number(p.total||0),limits:Object.assign({},p.limits||{})}:{total:0,limits:{}};
+}
+function saveCurrentBudgetPlan(plan){
+  const ym=ymNow(),arr=state.budgetPlans||[],idx=arr.findIndex(p=>p.effectiveMonth===ym),copy={effectiveMonth:ym,total:Number(plan.total||0),limits:Object.assign({},plan.limits||{})};
+  if(idx>=0)arr[idx]=copy;else arr.push(copy);
+  state.budgetPlans=arr.sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
+  state.budgets=Object.assign({},copy.limits);
+}
+function monthPaidExpenses(ym){
+  return state.history.filter(h=>h.type==='expense'&&h.month===ym);
+}
+function totalPaidExpenses(ym){return monthPaidExpenses(ym).reduce((s,x)=>s+Number(x.amount||0),0)}
+function renderBudget(){
+  $('budgetMonth').textContent=monthName(budgetMonth);
+  const current=budgetMonth===ymNow(),plan=budgetPlanFor(budgetMonth),spent=totalPaidExpenses(budgetMonth),spentMap=Object.fromEntries(categoryTotals('expense',budgetMonth).map(x=>[x.name,x.amount]));
+  const rows=[];
+  if(plan.total>0)rows.push({key:'__total__',name:'Budget totale mensile',spent,limit:plan.total,total:true});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name==='Senza categoria'||Number(limit)<=0)continue;rows.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),total:false})}
+  const el=$('budgetList');
+  if(!rows.length){el.innerHTML='<div class="card empty">Non hai ancora impostato budget per questo mese.</div>';return}
+  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=Math.min(Math.max(pct,0),100);return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName">'+esc(x.name)+'</span><span class="budgetNumbers">'+money(x.spent)+' / '+money(x.limit)+'</span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+pct+'% del budget</span>'+(current?'<button class="budgetEdit" data-budget="'+escAttr(x.key)+'">Modifica</button>':'<span>Storico</span>')+'</div></div>'}).join('');
+  if(current)el.querySelectorAll('.budgetEdit').forEach(b=>b.onclick=()=>openBudgetEditor(b.dataset.budget));
+}
+function budgetNotifyConfig(key){
+  if(key==='__total__')return state.budgetNotifications.total||(state.budgetNotifications.total={enabled:false,mode:'over',sent:{}});
+  if(!state.budgetNotifications.categories[key])state.budgetNotifications.categories[key]={enabled:false,mode:'over',sent:{}};
+  return state.budgetNotifications.categories[key];
+}
+function openBudgetChoice(){
+  budgetMonth=ymNow();
+  openModal('Aggiungi budget','<div class="guideTopics"><button id="budgetTotalChoice" class="guideTopic">Budget totale mensile</button><button id="budgetCategoryChoice" class="guideTopic">Budget per categoria</button></div>');
+  $('budgetTotalChoice').onclick=()=>openBudgetEditor('__total__');
+  $('budgetCategoryChoice').onclick=()=>openBudgetEditor(null);
+}
+function openBudgetEditor(category){
+  budgetMonth=ymNow();
+  const plan=budgetPlanFor(ymNow()),isTotal=category==='__total__';
+  const cats=allCategories('expense').filter(x=>x!=='Senza categoria');
+  const selected=category&&!isTotal?category:(cats[0]||'');
+  const options=cats.map(x=>'<option value="'+escAttr(x)+'" '+(x===selected?'selected':'')+'>'+esc(x)+'</option>').join('');
+  const limit=isTotal?plan.total:Number(plan.limits[selected]||0),cfg=budgetNotifyConfig(isTotal?'__total__':selected);
+  openModal(isTotal?'Budget totale mensile':(category?'Modifica budget':'Budget per categoria'),
+    (isTotal?'':'<div class="field"><label>Categoria</label><select id="budgetCategory">'+options+'</select></div>')+
+    '<div class="field"><label>Limite mensile</label><input id="budgetAmount" type="number" min="0" step="0.01" inputmode="decimal" value="'+(limit||'')+'" placeholder="0,00"></div>'+
+    '<div class="field"><label>Notifiche Budget</label><select id="budgetNotifyMode"><option value="off">Disattivate</option><option value="80">Avviso all’80% + al superamento</option><option value="over">Solo al superamento</option></select></div>'+
+    '<div class="hint">Le notifiche Budget sono separate dalle notifiche di Entrate e Pagamenti.</div>'+
+    '<div class="modalBtns"><button id="budgetCancel" class="btn secondary">Annulla</button><button id="budgetSave" class="btn">Salva</button></div>');
+  $('budgetNotifyMode').value=cfg.enabled?(cfg.mode||'over'):'off';
+  if(!isTotal&&$('budgetCategory'))$('budgetCategory').onchange=()=>{const key=$('budgetCategory').value,nc=budgetNotifyConfig(key);$('budgetAmount').value=plan.limits[key]||'';$('budgetNotifyMode').value=nc.enabled?(nc.mode||'over'):'off'};
+  $('budgetCancel').onclick=closeModal;
+  $('budgetSave').onclick=async()=>{
+    const key=isTotal?'__total__':$('budgetCategory').value,v=Number($('budgetAmount').value),mode=$('budgetNotifyMode').value;
+    if(!key||key==='Senza categoria'||!Number.isFinite(v)||v<0)return flashModal('Controlla categoria e importo.');
+    const p=budgetPlanFor(ymNow());
+    if(isTotal)p.total=v;else{if(v===0)delete p.limits[key];else p.limits[key]=v}
+    saveCurrentBudgetPlan(p);
+    const nc=budgetNotifyConfig(key);nc.enabled=mode!=='off';nc.mode=mode==='off'?'over':mode;nc.sent={};
+    save();closeModal();
+    if(nc.enabled)await requestNotificationPermission();
+    renderBudget();
+    const sum=Object.values(p.limits).reduce((s,x)=>s+Number(x||0),0);
+    if(p.total>0&&sum>p.total)openModal('Budget salvato','<div class="note">La somma dei budget per categoria supera il Budget totale mensile. È consentito: i due controlli restano indipendenti.</div>');
+    checkBudgetNotifications(true);
+  };
+}
+async function checkBudgetNotifications(force){
+  const ym=ymNow(),plan=budgetPlanFor(ym),alerts=[],spentTotal=totalPaidExpenses(ym),spentMap=Object.fromEntries(categoryTotals('expense',ym).map(x=>[x.name,x.amount]));
+  const items=[];
+  if(plan.total>0)items.push({key:'__total__',name:'Budget totale',spent:spentTotal,limit:plan.total,cfg:budgetNotifyConfig('__total__')});
+  for(const [name,limit] of Object.entries(plan.limits||{})){if(name!=='Senza categoria'&&Number(limit)>0)items.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),cfg:budgetNotifyConfig(name)})}
+  for(const x of items){
+    const cfg=x.cfg;if(!cfg||!cfg.enabled)continue;if(!cfg.sent)cfg.sent={};
+    const pct=x.limit?x.spent/x.limit*100:0,base=ym+'|'+x.key;
+    if(pct>=100){
+      const k=base+'|over';if(!cfg.sent[k]){alerts.push(x.name+' superato ('+Math.round(pct)+'%)');cfg.sent[k]=true;cfg.sent[base+'|80']=true}
+    }else if(cfg.mode==='80'&&pct>=80){
+      const k=base+'|80';if(!cfg.sent[k]){alerts.push(x.name+' all’'+Math.round(pct)+'%');cfg.sent[k]=true}
+    }
+  }
+  if(!alerts.length){save();return}
+  save();
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('Avviso Budget',{body:alerts.join('\n')})}catch(e){}
+  }else if(force){
+    openModal('Avviso Budget','<div class="note">'+alerts.map(esc).join('<br>')+'</div>');
+  }
+}
+function openBalanceEditor(){
+  openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  $('balCancel').onclick=closeModal;
+  $('balSave').onclick=()=>{
+    const v=Number($('newBalance').value);
+    if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
+    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim();
+    if(Math.abs(delta)>0.0001){
+      const date=todayISO();
+      state.history.push({id:'a'+Date.now(),entryId:null,type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason,category:''});
+    }
+    state.balance=v;save();closeModal();
+    if(!$('home').classList.contains('hidden'))renderHome();
+    if(!$('movements').classList.contains('hidden'))renderMovements();
+  };
+}
+function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
+function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('fullEditor');$('modalBody').innerHTML=''}
+function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
+function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
+$('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
+$('landingConti').onclick=openContiFromLanding;
+$('landingNickname').addEventListener('change',()=>{state.profile.fullName=$('landingNickname').value.trim();save()});
+$('landingTodo').onclick=()=>openModal('Cose da fare','<div class="note">Questa sezione verrà sviluppata dopo Conti economici.</div>');
+$('balanceBack').onclick=()=>show('landing');
+$('homeBackLanding').onclick=()=>show('landing');
+
+function hydrateFirstSetup(){if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
+$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('addIncomeSetup').onclick=()=>appendSetupRow($('incomeRows'),'income',null);
+$('addExpenseSetup').onclick=()=>appendSetupRow($('expenseRows'),'expense',null);
+$('skipIncomeSetup').onclick=()=>{state.setupDrafts.income=[];state.entries=state.entries.filter(e=>e.type!=='income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')};
+$('skipExpenseSetup').onclick=()=>{state.setupDrafts.expense=[];state.entries=state.entries.filter(e=>e.type!=='expense');state.setupDone=true;state.setupStage='done';save();show('home')};
+document.querySelectorAll('.flowTab').forEach(b=>b.onclick=()=>{flowFilter=b.dataset.flowFilter;renderFlow()});
+$('incomeSetupBack').onclick=()=>{if(quickEditMode==='income'){closeQuickEntry();return}persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
+$('expenseSetupBack').onclick=()=>{if(quickEditMode==='expense'){closeQuickEntry();return}persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
+$('saveIncomeSetup').onclick=()=>{try{const saved=commitSetupRows('incomeRows','income');if(quickEditMode==='income'){closeQuickEntry();return}state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');if(quickEditMode==='expense'){closeQuickEntry();return}state.setupDone=true;state.setupStage='done';notificationsOnboarding=false;save();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
+$('settingsTop').onclick=()=>show('settings');
+
+$('settingsSearch').addEventListener('input',()=>{
+  const q=$('settingsSearch').value.trim().toLowerCase();
+  document.querySelectorAll('.settingsRow').forEach(r=>{if(r.id==='resetPrototype'||r.closest('#settings'))r.classList.toggle('hidden',q&&!((r.dataset.search||'')+' '+r.textContent).toLowerCase().includes(q))});
+  document.querySelectorAll('[data-settings-group]').forEach(g=>g.classList.toggle('hidden',!Array.from(g.querySelectorAll('.settingsRow')).some(r=>!r.classList.contains('hidden'))));
+});
+$('settingsIncome').onclick=()=>openFlow('income');
+$('settingsExpense').onclick=()=>openFlow('expense');
+$('settingsMovements').onclick=()=>show('movements');
+$('settingsCategories').onclick=openCategoryHub;
+$('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
+$('settingsNotifications').onclick=()=>{notificationsOnboarding=false;show('notifications')};
+$('settingsProfile').onclick=openProfileSettings;
+$('settingsColor').onclick=openColorSettings;
+$('settingsGuide').onclick=openGuide;
+$('settingsBackup').onclick=openBackupSettings;
+$('settingsSecurity').onclick=openSecuritySettings;
+$('homeSettingsCard').onclick=()=>show('settings');
+$('notificationsBack').onclick=()=>show('home');
+$('notifyAll').onclick=openGlobalNotificationRules;
+$('notifyCustom').onclick=openCustomNotifications;
+$('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
+$('movementsBack').onclick=()=>show('home');
+$('summaryBack').onclick=()=>show('home');
+$('budgetBack').onclick=()=>show('summary');
+$('settingsBack').onclick=()=>show('home');
+$('homeIncome').onclick=()=>openFlow('income');
+$('homeExpense').onclick=()=>openFlow('expense');
+$('editBalance').onclick=openBalanceEditor;
+$('settingsEditBalance').onclick=openBalanceEditor;
+$('homeAllMovements').onclick=()=>show('movements');
+$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};
+$('movementsFilters').onclick=openMovementFilters;
+$('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
+$('flowBack').onclick=()=>show('home');
+$('flowAdd').onclick=()=>openAddEntry(currentFlow);
+$('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};
+$('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
+$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};
+$('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};
+$('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};
+$('budgetAdd').onclick=openBudgetChoice;
+$('resetPrototype').onclick=()=>{openModal('Cancella tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Nome e colore dell’app resteranno invariati.</div><div class="modalBtns"><button id="resetNo" class="btn secondary">Annulla</button><button id="resetYes" class="btn" style="background:var(--red)">Cancella</button></div>');$('resetNo').onclick=closeModal;$('resetYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value=state.profile.fullName||'';show('landing')}};
+document.addEventListener('pointerdown',touchSecurity,{passive:true});document.addEventListener('keydown',touchSecurity);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+show('landing');
+})();
+</script>
+<!-- e2e-trigger -->
+</body>
+</html>);if(rx.test(s))return{kind:'monthOnly',month:i+1};
+  }
+  return null;
+}
+function openDateChooser(initialSpec,onConfirm){
+  const base=initialSpec||{kind:'day',iso:todayISO()},deadline=specDeadline(base)||todayISO();
+  const defaultMonth=deadline.slice(0,7),defaultYear=Number(deadline.slice(0,4));
+  openPickerModal('Seleziona la data',
+    '<div class="field dateManual"><label>Oppure scrivi la data</label><input id="dateManualInput" placeholder="Scrivi la data"></div>'+
+    '<div class="dateTabs"><button id="dateTabDay" class="dateTab">Giorno</button><button id="dateTabMonth" class="dateTab">Mese</button><button id="dateTabYear" class="dateTab">Anno</button></div>'+
+    '<div id="datePickerPanel" class="datePanel"></div>'+
+    '<div class="modalBtns"><button id="datePickerCancel" class="btn secondary">Annulla</button><button id="datePickerConfirm" class="btn">Conferma data</button></div>');
+  let mode=base.kind==='monthYear'||base.kind==='monthOnly'?'month':base.kind==='year'?'year':'day';
+  const draw=()=>{document.querySelectorAll('#pickerModal .dateTab').forEach(b=>b.classList.remove('active'));p$('dateTab'+(mode==='day'?'Day':mode==='month'?'Month':'Year')).classList.add('active');if(mode==='day')p$('datePickerPanel').innerHTML='<div class="field"><label>Giorno</label><input id="datePickDay" type="date" value="'+deadline+'"></div>';if(mode==='month')p$('datePickerPanel').innerHTML='<div class="field"><label>Mese</label><input id="datePickMonth" type="month" value="'+defaultMonth+'"></div>';if(mode==='year')p$('datePickerPanel').innerHTML='<div class="field"><label>Anno</label><input id="datePickYear" type="number" min="1900" max="2200" value="'+defaultYear+'"></div>'};
+  p$('dateTabDay').onclick=()=>{mode='day';draw()};p$('dateTabMonth').onclick=()=>{mode='month';draw()};p$('dateTabYear').onclick=()=>{mode='year';draw()};draw();
+  p$('datePickerCancel').onclick=closePickerModal;
+  p$('datePickerConfirm').onclick=()=>{
+    const manual=parseFlexibleDate(p$('dateManualInput').value);let spec=manual;
+    if(!spec&&mode==='day'){const v=p$('datePickDay').value;if(v)spec={kind:'day',iso:v}}
+    if(!spec&&mode==='month'){const v=p$('datePickMonth').value;if(v)spec={kind:'monthYear',ym:v}}
+    if(!spec&&mode==='year'){const v=Number(p$('datePickYear').value);if(v>=1900&&v<=2200)spec={kind:'year',year:v}}
+    if(!spec){const n=document.createElement('div');n.className='note';n.textContent='Scrivi o seleziona una data valida.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1600);return}
+    closePickerModal();onConfirm(spec);
+  };
 }
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
