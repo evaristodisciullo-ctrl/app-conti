@@ -245,6 +245,7 @@ async function testSettingsSecurityBackup(browser){
   await page.click('#settingsBack');await page.click('#homeBackLanding');
 
   await page.evaluate(({key,hash})=>{const s=JSON.parse(localStorage.getItem(key));s.security={enabled:true,pinHash:hash,credentialId:'',lastActivity:0};localStorage.setItem(key,JSON.stringify(s))},{key:KEY,hash:pinHash('1234')});
+  await page.reload();await page.waitForSelector('#landing:not(.hidden)');
   await page.click('#landingConti');await page.waitForSelector('#modal:not(.hidden)');
   await page.fill('#unlockPin','1234');await page.click('#unlockPinBtn');await page.waitForSelector('#home:not(.hidden)');
 
