@@ -226,6 +226,7 @@ async function testCategoriesBudgetNotifications(browser){
   await page.click('#settingsBudget');await page.click('#budgetAdd');await page.click('#budgetCategoryChoice');
   await page.selectOption('#budgetCategory',{label:'Auto'});await page.fill('#budgetAmount','100');await page.selectOption('#budgetNotifyMode','80');await page.click('#budgetSave');
   s=await state(page);assert.equal(s.budgetPlans.find(p=>p.effectiveMonth===ym()).limits.Auto,100);
+  if(await page.locator('#modal:not(.hidden)').count())await page.click('#modalClose');
   await page.click('#budgetBack');await page.click('#summaryBack');await settings(page);await page.click('#settingsNotifications');
 
   await page.click('#notifyAll');await page.selectOption('#nIncomeTiming','before');await page.fill('#nIncomeTime','08:30');await page.selectOption('#nExpenseTiming','same');await page.fill('#nExpenseTime','10:15');await page.click('#nAllSave');
