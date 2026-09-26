@@ -1344,13 +1344,15 @@ function openEntryEditor(entry,type){
   const effectiveRule=rule||generalRule;
   const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
   const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
+  const editDueDate=entry?dateValue:'',editIsOverdue=!!(entry&&editDueDate&&editDueDate<todayISO());
+  const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(type==='income'?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(type==='income'?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(type==='income'?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
   openModal(title,
     '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
     '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
     '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn '+(dateValue?'':'empty')+'">'+esc(dateValue?displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}):'Scrivi la data')+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
     '<div class="field"><label>Frequenza</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
-    '<div id="editRecExtra"></div>'+
+    '<div id="editRecExtra"></div>'+stateField+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
     '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
     '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
@@ -1376,6 +1378,13 @@ function openEntryEditor(entry,type){
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
   paintRec();
+  let desiredDone=false;
+  if(entry&&$('editStateOpen')){
+    const paintState=()=>{$('editStateOpen').classList.toggle('active',!desiredDone&&!editIsOverdue);$('editStateDone').classList.toggle('active',desiredDone);$('editStateOverdue').classList.toggle('overdue',!desiredDone&&editIsOverdue)};
+    $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};
+    $('editStateDone').onclick=()=>{desiredDone=true;paintState()};
+    paintState();
+  }
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
   $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
   $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
@@ -1399,7 +1408,14 @@ function openEntryEditor(entry,type){
     else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,notify,notifyRule,note})}
     state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
     if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
-    save();closeModal();renderFlow();
+    if(entry&&desiredDone){
+      const e=state.entries.find(x=>x.id===id),start=entryStartMonth(e),occ=e&&e.recurrence&&e.recurrence.kind==='custom'?customOccurrenceObjects(e,start)[0]:effectiveOccurrence(e,start);
+      if(occ&&!historyFor(id,occ.occurrenceKey||occ.month)){
+        const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:id,type,name,amount,date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:occ.month,occurrenceKey:occ.occurrenceKey||occ.month,category,note};
+        state.history.push(h);state.balance=Number(state.balance||0)+(type==='income'?amount:-amount);
+      }
+    }
+    save();closeModal();renderFlow();if(!$('home').classList.contains('hidden'))renderHome();
   };
 }
 function confirmDeleteEntry(entry){
