@@ -22,6 +22,7 @@ jobs:
           rm -rf www
           mkdir -p www
           cp index.html manifest.webmanifest sw.js icon.svg www/
+          cp -r assets www/
           npx esbuild native-bridge-src.js --bundle --format=iife --platform=browser --outfile=www/native-bridge.js
       - name: Create Android project
         run: |
