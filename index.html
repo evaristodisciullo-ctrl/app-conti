@@ -1671,8 +1671,7 @@ function renderSummary(){
   renderCategoryBlock('expense',summaryMonth,'expenseCategories','expenseCategoryTotal');
 }
 function budgetPlanFor(ym){
-  const plans=[...(state.budgetPlans||[])].filter(p=>p&&p.effectiveMonth<=ym).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));
-  const p=plans.length?plans[plans.length-1]:null;
+  const p=(state.budgetPlans||[]).find(x=>x&&x.effectiveMonth===ym);
   return p?{total:Number(p.total||0),limits:Object.assign({},p.limits||{})}:{total:0,limits:{}};
 }
 function saveCurrentBudgetPlan(plan){
