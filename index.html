@@ -8,7 +8,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Conti economici</title>
+<title>In Ordine</title>
 <style>
 :root{--bg:#f4f8f5;--card:#fff;--text:#17324a;--muted:#718096;--line:#e1ebe5;--green:#159b62;--green2:#e9f8f0;--green3:#c9eedb;--red:#d83b45;--red2:#fff1f1;--blue:#2379d8;--yellow:#d49a00;--shadow:0 8px 24px rgba(17,55,40,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}.app{max-width:560px;margin:auto;min-height:100vh;padding:18px 14px 90px}.hidden{display:none!important}button,input,select{font:inherit}.screen{min-height:calc(100vh - 122px)}
@@ -436,14 +436,14 @@
   </div>
 </section>
 
-<section id="notifications"<section id="notifications" class="screen notificationsPage hidden">
+<section id="notifications" class="screen notificationsPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
   <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e i tuoi pagamenti.</p></div>
   <div class="notifyCard">
     <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e pagamento.</span></span></button>
     <button id="notifyCustom" class="notifyChoice"><span class="bell">🔔</span><span><strong>Scegli quali notifiche attivare</strong><span class="copy">Decidi tu per quali voci ricevere un promemoria.</span></span></button>
     <button id="notifySkip" class="notifySkip">Salta per ora</button>
-    <div class="notifyHelp">Puoi attivare le notifiche quando vuoi cliccando sul <span class="inlineBell">🔔</span> nella barra in basso.</div>
+    <div class="notifyHelp">Puoi modificare le notifiche quando vuoi da Impostazioni → Notifiche.</div>
   </div>
 </section>
 
@@ -522,7 +522,7 @@
   <div id="flowUnifiedList" class="flowUnified"></div>
 </section>
 
-<section id="movements"<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
+<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
 
 <section id="summary" class="screen summaryPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="summaryBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Riepilogo</h1></div></div>
@@ -551,7 +551,7 @@
     <div class="settingsMenu">
       <button class="settingsRow" id="settingsEditBalance" data-search="saldo modifica saldo"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Saldo / Modifica saldo</strong><small>Correggi il saldo attuale</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsIncome" data-search="entrate"><span class="settingsRowIcon iGreen">↓</span><span class="settingsRowText"><strong>Entrate</strong><small>Visualizza e gestisci le entrate</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsExpense" data-search="pagamenti uscite"><span class="settingsRowIcon iOrange">↑</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Visualizza e gestisci i pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsExpense" data-search="pagamenti"><span class="settingsRowIcon iOrange">↑</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Visualizza e gestisci i pagamenti</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Storico di ricevuti, pagati e correzioni</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
