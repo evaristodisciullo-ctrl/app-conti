@@ -1053,12 +1053,12 @@ function recurrenceSummary(c){
 }
 function recurrenceOccurs(r,ym){
   if(!r)return false;
-  if(r.kind==='monthly')return ym>=r.startMonth;
+  if(r.kind==='monthly')return ym>=r.startMonth&&(!r.stopBeforeMonth||ym<r.stopBeforeMonth);
   if(r.kind==='single')return ym===r.month;
   if(r.kind==='custom')return customOccurrencesFromRecurrence(r,lastDayISO(ym),ym+'-01').length>0;
-  if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count}
-  if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth;
-  if(r.kind==='selected')return Array.isArray(r.months)&&r.months.includes(ym);
+  if(r.kind==='count'){const d=monthDiff(r.startMonth,ym);return d>=0&&d<r.count&&(!r.stopBeforeMonth||ym<r.stopBeforeMonth)}
+  if(r.kind==='until')return ym>=r.startMonth&&ym<=r.endMonth&&(!r.stopBeforeMonth||ym<r.stopBeforeMonth);
+  if(r.kind==='selected')return Array.isArray(r.months)&&r.months.includes(ym)&&(!r.stopBeforeMonth||ym<r.stopBeforeMonth);
   return false;
 }
 function customOccurrencesFromRecurrence(r,endDate,fromDate){
@@ -1066,6 +1066,7 @@ function customOccurrencesFromRecurrence(r,endDate,fromDate){
   const out=[],limit=r.endMode==='count'?Math.min(Number(r.count)||0,600):600;
   for(let i=0;i<limit;i++){
     const date=addRecurrenceDate(r.startDate,i,r.unit,r.every);
+    if(r.stopBeforeDate&&date>=r.stopBeforeDate)break;
     if(r.endMode==='date'&&date>r.endDate)break;
     if(date>endDate)break;
     if(!fromDate||date>=fromDate)out.push(date);
@@ -1246,17 +1247,74 @@ function openSingleOccurrenceEditor(x){
   $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.occurrenceKey||x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
   $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
 }
+function occurrenceBaseDate(x){return x&&x.occurrenceKey&&x.occurrenceKey.startsWith('D')?x.occurrenceKey.slice(1):x.date}
+function terminateSeriesBefore(entry,x){
+  if(!entry||!entry.recurrence)return;
+  const r=Object.assign({},entry.recurrence);
+  if(r.kind==='custom')r.stopBeforeDate=occurrenceBaseDate(x);
+  else r.stopBeforeMonth=x.month;
+  entry.recurrence=r;
+}
+function recurrenceFromOccurrence(entry,x,startDate){
+  const r=Object.assign({},entry.recurrence||{}),date=startDate||x.date,month=date.slice(0,7);
+  delete r.stopBeforeMonth;delete r.stopBeforeDate;
+  if(r.kind==='monthly')return{kind:'monthly',startMonth:month};
+  if(r.kind==='single')return{kind:'single',month};
+  if(r.kind==='custom'){
+    const oldStart=r.startDate,base=occurrenceBaseDate(x);
+    r.startDate=date;
+    if(r.endMode==='count'){
+      let idx=0,cur=oldStart;
+      while(cur<base&&idx<600){idx++;cur=addRecurrenceDate(oldStart,idx,r.unit,r.every)}
+      r.count=Math.max(1,Number(r.count||1)-idx);
+    }
+    if(r.endMode==='date'&&r.endDate<date)r.endDate=date;
+    return r;
+  }
+  if(r.kind==='count'){const used=Math.max(0,monthDiff(r.startMonth,x.month));return{kind:'count',startMonth:month,count:Math.max(1,Number(r.count||1)-used)}}
+  if(r.kind==='until')return{kind:'until',startMonth:month,endMonth:r.endMonth<month?month:r.endMonth};
+  if(r.kind==='selected')return{kind:'selected',months:(r.months||[]).filter(m=>m>=month).map((m,i)=>i===0?month:m)};
+  return{kind:'monthly',startMonth:month};
+}
+function splitSeriesAt(entry,x,fields,newRecurrence,startDate){
+  terminateSeriesBefore(entry,x);
+  const id='e'+Date.now()+Math.random(),date=startDate||x.date;
+  const copy=Object.assign({},entry,fields||{},{
+    id,
+    day:Number(date.slice(8,10)),
+    dateSpec:{kind:'day',iso:date},
+    recurrence:newRecurrence||recurrenceFromOccurrence(entry,x,date)
+  });
+  state.entries.push(copy);
+  return copy;
+}
 function openFutureOccurrenceEditor(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
-  const eff=effectiveEntryForMonth(entry,x.month)||entry;
+  let futureDate=x.date,newRec=recurrenceFromOccurrence(entry,x,futureDate);
   openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
     '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
     '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
-    '<div class="field"><label>Giorno del mese</label><input id="futDay" type="number" min="1" max="31" value="'+Number((x.date||'').slice(8,10))+'"></div>'+
+    '<div class="field"><label>Data di questa scadenza</label><input id="futDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Frequenza</label><div id="futRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="futRecSummary" class="hint"></div></div>'+
     '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
-  $('futSave').onclick=()=>{const name=$('futName').value.trim(),amount=Number($('futAmount').value),day=Number($('futDay').value);if(!name||!Number.isFinite(amount)||amount<=0||day<1||day>31)return flashModal('Controlla nome, importo e giorno.');const fields={name,amount,day,category:$('futCategory').value==='__new__'?'':$('futCategory').value,note:$('futNote').value.trim(),recurrence:eff.recurrence};if(fields.recurrence&&fields.recurrence.kind==='monthly')fields.recurrence=Object.assign({},fields.recurrence,{startMonth:x.month});if(fields.recurrence&&fields.recurrence.kind==='single')fields.recurrence={kind:'single',month:x.month};const arr=Array.isArray(state.futureChanges[entry.id])?state.futureChanges[entry.id]:[];state.futureChanges[entry.id]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,fields}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth));save();closeModal();renderFlow()};
+  const paint=()=>{const kind=newRec&&newRec.kind;document.querySelectorAll('#futRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(kind)?kind:'custom')));$('futRecSummary').textContent=recurrenceSummary(newRec)};
+  document.querySelectorAll('#futRecChoices button').forEach(b=>b.onclick=()=>{
+    futureDate=$('futDate').value||x.date;
+    if(b.dataset.kind==='monthly'){newRec={kind:'monthly',startMonth:futureDate.slice(0,7)};paint();return}
+    if(b.dataset.kind==='single'){newRec={kind:'single',month:futureDate.slice(0,7)};paint();return}
+    openEditorAdvancedRecurrence(futureDate,newRec,cfg=>{newRec=cfg;paint()});
+  });
+  $('futDate').onchange=()=>{futureDate=$('futDate').value||x.date;newRec=recurrenceFromOccurrence(entry,x,futureDate);paint()};
+  paint();
+  $('futSave').onclick=()=>{
+    const name=$('futName').value.trim(),amount=Number($('futAmount').value),date=$('futDate').value;
+    if(!name||!Number.isFinite(amount)||amount<=0||!date||!validRecurrence(newRec))return flashModal('Controlla nome, importo, data e frequenza.');
+    const category=$('futCategory').value==='__new__'?'':$('futCategory').value,note=$('futNote').value.trim();
+    splitSeriesAt(entry,x,{name,amount,category,note},newRec,date);
+    save();closeModal();renderFlow();
+  };
   $('futDelete').onclick=()=>openDeleteOccurrenceChoice(x);
 }
 function openDeleteOccurrenceChoice(x){
@@ -1269,7 +1327,7 @@ function openDeleteOccurrenceChoice(x){
 function confirmOccurrenceDeletion(x,future){
   openModal('Vuoi davvero eliminare?','<div class="note">'+(future?'Questa scadenza e tutte le future non compariranno più. I movimenti già confermati restano nello storico.':'Verrà eliminata soltanto questa scadenza. I movimenti già confermati restano nello storico.')+'</div><div class="modalBtns"><button id="deleteOccNo" class="btn secondary">Annulla</button><button id="deleteOccYes" class="btn deleteBtn">Elimina</button></div>');
   $('deleteOccNo').onclick=()=>openDeleteOccurrenceChoice(x);
-  $('deleteOccYes').onclick=()=>{if(future){const arr=Array.isArray(state.futureChanges[x.entryId])?state.futureChanges[x.entryId]:[];state.futureChanges[x.entryId]=arr.filter(ch=>ch.effectiveMonth!==x.month).concat([{effectiveMonth:x.month,deleted:true}]).sort((a,b)=>a.effectiveMonth.localeCompare(b.effectiveMonth))}else state.occurrenceOverrides[occurrenceOverrideKey(x.entryId,x.occurrenceKey||x.month)]={deleted:true};save();closeModal();renderFlow()};
+  $('deleteOccYes').onclick=()=>{if(future){const entry=state.entries.find(e=>e.id===x.entryId);if(entry)terminateSeriesBefore(entry,x)}else state.occurrenceOverrides[occurrenceOverrideKey(x.entryId,x.occurrenceKey||x.month)]={deleted:true};save();closeModal();renderFlow()};
 }
 
 function openAddEntry(type){openEntryEditor(null,type)}
