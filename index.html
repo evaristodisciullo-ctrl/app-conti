@@ -675,7 +675,7 @@ const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
 const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
 let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
-let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;
+let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();let movementFilters={type:'all',name:'all',category:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
 function applyAppColor(name){const v=APP_COLORS[name]||APP_COLORS.Blu;document.documentElement.style.setProperty('--accent',v)}
@@ -942,7 +942,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -1838,7 +1838,10 @@ function confirmDeleteMovement(h){
   };
 }
 function movementNames(){
-  return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+  return Array.from(new Set(state.history.filter(x=>x.type!=='adjustment').map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+}
+function movementCategories(){
+  return Array.from(new Set(state.history.filter(x=>x.type!=='adjustment').map(x=>(x.category||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
 }
 function movementCutoff(period){
   if(period==='all')return null;
@@ -1850,8 +1853,10 @@ function movementCutoff(period){
 function filteredMovements(){
   const cutoff=movementCutoff(movementFilters.period);
   return [...state.history].filter(x=>{
+    if(x.type==='adjustment')return false;
     if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
     if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
+    if(movementFilters.category!=='all'&&((x.category||'').trim()||'Senza categoria')!==movementFilters.category)return false;
     if(cutoff&&x.date<cutoff)return false;
     return true;
   }).sort((a,b)=>b.date.localeCompare(a.date));
@@ -1859,34 +1864,40 @@ function filteredMovements(){
 function movementFilterText(){
   const parts=[];
   if(movementFilters.type==='income')parts.push('solo entrate');
-  if(movementFilters.type==='expense')parts.push('solo pagamenti');
-  if(movementFilters.type==='adjustment')parts.push('solo correzioni saldo');
+  if(movementFilters.type==='expense')parts.push('solo uscite');
   if(movementFilters.name!=='all')parts.push(movementFilters.name);
+  if(movementFilters.category!=='all')parts.push('categoria '+movementFilters.category);
   const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
   if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
-  return parts.length?parts.join(' · '):'Tutti i movimenti · tutto il periodo';
+  return parts.length?parts.join(' · '):'Tutti i movimenti';
 }
 function renderMovements(){
   const arr=filteredMovements();
+  document.querySelectorAll('[data-movement-type]').forEach(b=>b.classList.toggle('active',b.dataset.movementType===movementFilters.type));
+  const advancedActive=movementFilters.name!=='all'||movementFilters.category!=='all'||movementFilters.period!=='all';
+  $('movementsFilters').classList.toggle('filterActive',advancedActive);
   $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
   $('movementFilteredTotal').classList.add('hidden');
   $('movementFilteredTotal').innerHTML='';
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
-  const names=movementNames();
-  let nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
-  openModal('Filtri movimenti',
-    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutti</option><option value="income">Entrate</option><option value="expense">Pagamenti</option><option value="adjustment">Correzioni saldo</option></select></div>'+
+  const names=movementNames(),categories=movementCategories();
+  const nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  const categoryOptionsHtml='<option value="all">Tutte le categorie</option><option value="Senza categoria">Senza categoria</option>'+categories.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  openModal('Filtra movimenti',
+    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutte</option><option value="income">Entrate</option><option value="expense">Uscite</option></select></div>'+
+    '<div class="field"><label>Categoria</label><select id="mfCategory">'+categoryOptionsHtml+'</select></div>'+
     '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
     '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
     '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
   );
-  $('mfType').value=movementFilters.type;
+  $('mfType').value=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  $('mfCategory').value=[...categories,'Senza categoria'].includes(movementFilters.category)?movementFilters.category:'all';
   $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
   $('mfPeriod').value=movementFilters.period;
-  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',period:'all'};closeModal();show('movements')};
-  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
+  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all'};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,category:$('mfCategory').value,period:$('mfPeriod').value};closeModal();show('movements')};
 }
 function categoryTotals(type,ym){
   const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
@@ -2087,6 +2098,7 @@ $('editBalance').onclick=openBalanceEditor;
 $('settingsEditBalance').onclick=openBalanceEditor;
 $('homeAllMovements').onclick=()=>show('movements');
 $('homeFilters').onclick=()=>{show('movements');openMovementFilters()};
+document.querySelectorAll('[data-movement-type]').forEach(b=>b.onclick=()=>{movementFilters.type=b.dataset.movementType;renderMovements()});
 $('movementsFilters').onclick=openMovementFilters;
 $('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
 $('flowBack').onclick=()=>show('home');
