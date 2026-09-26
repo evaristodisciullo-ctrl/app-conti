@@ -447,9 +447,8 @@
     </div>
   </div>
   <div class="setupCard">
-    <div class="field nameField"><label>Nome / nickname <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><div class="textInput"><span class="personIcon">●</span><input id="fullName" type="text" autocomplete="name" placeholder="Es. Marco"></div></div>
     <h1>Inserisci il tuo saldo attuale</h1>
-    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
+    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div></div>
     <div id="setupError" class="setupError hidden"></div>
     <button id="startBtn" class="btn">Continua <span aria-hidden="true">→</span></button>
     <div class="safe">Potrai modificare il saldo in qualsiasi momento</div>
@@ -2096,7 +2095,7 @@ $('balanceBack').onclick=()=>show('landing');
 $('homeBackLanding').onclick=()=>show('landing');
 
 function hydrateFirstSetup(){if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
-$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=cleanAmount(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
 $('addIncomeSetup').onclick=()=>appendSetupRow($('incomeRows'),'income',null);
 $('addExpenseSetup').onclick=()=>appendSetupRow($('expenseRows'),'expense',null);
 $('skipIncomeSetup').onclick=()=>{state.setupDrafts.income=[];state.entries=state.entries.filter(e=>e.type!=='income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')};
