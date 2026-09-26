@@ -248,7 +248,8 @@
 .setupContinue{margin-top:7px}.setupSkip{width:100%;border:0;background:transparent;color:#72818d;font-weight:850;padding:12px}
 .flowPage .pageHeader{margin-bottom:14px}
 .flowBanner{background:linear-gradient(135deg,#eaf5ff,#f8fbff);border:1px solid #d5e8fa;border-radius:18px;padding:15px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.flowBanner strong{font-size:17px}.flowBanner small{display:block;color:var(--muted);margin-top:3px}
+.flowBannerAdd{border:0;background:linear-gradient(135deg,#1194f0,#086df5);color:#fff;border-radius:15px;padding:13px 16px;font-size:14px;font-weight:900;box-shadow:0 8px 18px rgba(18,116,218,.18);white-space:nowrap}
+.flowBannerAdd:before{content:'＋';display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--accent);margin-right:8px;font-size:18px;vertical-align:middle}
 .flowTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
 .flowTab{border:1px solid #d8e1e8;background:#fff;border-radius:12px;padding:10px 7px;font-weight:850;font-size:12px;color:#526575}
 .flowTab.active{background:#e8f3ff;border-color:#9ec9f0;color:#1d6fb8}
@@ -269,6 +270,16 @@
 .optionalNoteBtn{width:100%;border:0;background:transparent;text-align:left;color:var(--accent);font-weight:900;padding:9px 2px}
 .modal textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:13px;padding:11px;resize:vertical;font:inherit}
 .movementRow{cursor:pointer}.mIcon.adjustment{background:#e8ebff;color:#4d5cc5}.mAmount.adjustment{color:#4d5cc5}
+#allMovements.list{background:transparent;border:0;border-radius:0;box-shadow:none;display:flex;flex-direction:column;gap:9px;overflow:visible}
+#allMovements .movementRow{display:grid;grid-template-columns:42px minmax(0,1fr) auto 12px;align-items:center;gap:10px;padding:12px 13px;border:1px solid #dce8f2;border-radius:16px;background:#fff;box-shadow:0 5px 16px rgba(24,67,104,.04)}
+#allMovements .mIcon{width:40px;height:40px}
+#allMovements .mDate{font-size:11px;color:#60788e;margin-top:4px}
+#allMovements .mAmountWrap{text-align:right}
+#allMovements .mAmount.expense{color:#cf252d}
+#allMovements .mType{display:inline-block;border-radius:999px;padding:3px 9px;margin-top:5px;font-size:10px;font-weight:900}
+#allMovements .mType.income{background:#dcf7e8;color:#087b52}
+#allMovements .mType.expense{background:#ffe4e5;color:#bd2029}
+
 
 
 /* HOME DEFINITIVA */
@@ -349,12 +360,17 @@
 
 
 /* SELETTORE DATA */
-.rDateBtn,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rDateText,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;outline:none}
 .dateDisplayBtn{height:50px;border-radius:13px;padding:0 12px;font-size:14px}
-.dateDisplayBtn.empty,.rDateBtn.empty{color:#98a7b2}.rDateBtn.empty:before,.dateDisplayBtn.empty:before{content:'| ';color:var(--accent);font-weight:950;animation:blinkCaret 1s steps(1) infinite}
-.pickerModal{z-index:160}.dateTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.dateTab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px;font-weight:850;color:#5d7183}.dateTab.active{background:#e7f3ff;border-color:#9ec9f0;color:#1c73c3}
-.datePanel{margin-top:8px}.dateManual{position:relative}.dateManual:before{content:"|";position:absolute;left:12px;top:13px;color:var(--accent);font-weight:900;animation:blinkCaret 1s steps(1) infinite;z-index:1}.dateManual input{padding-left:20px!important}
-@keyframes blinkCaret{50%{opacity:0}}
+.rDateText:focus,.dateDisplayBtn:focus{border-color:#75afe8;box-shadow:0 0 0 3px rgba(36,121,216,.10)}
+.dateFieldError{font-size:11px;color:var(--red);font-weight:800;margin-top:6px}
+.manualDateHelp{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.35}
+.pickerModal{z-index:160}
+.movementQuickTabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:4px 0 12px}
+.movementQuickTab{border:1px solid #d8e1e8;background:#fff;border-radius:12px;padding:10px 6px;font-weight:850;font-size:12px;color:#526575}
+.movementQuickTab.active{background:#e8f3ff;border-color:#9ec9f0;color:#1d6fb8}
+.movementQuickTab.filterActive{box-shadow:0 0 0 2px rgba(36,121,216,.12);border-color:#75afe8}
+@media(max-width:410px){.movementQuickTab{font-size:10.5px;padding:9px 4px}}
 
 
 /* RIFINITURE VISIVE APPROVATE */
@@ -434,7 +450,7 @@
 
 <section id="setup" class="screen setup hidden"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button>
   <div class="setupTop">
-    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te.</div></div>
+    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, uscite.<br>Sempre con te.</div></div>
     <div class="setupPhoneArt" aria-hidden="true">
       <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
       <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
@@ -442,9 +458,8 @@
     </div>
   </div>
   <div class="setupCard">
-    <div class="field nameField"><label>Nome / nickname <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><div class="textInput"><span class="personIcon">●</span><input id="fullName" type="text" autocomplete="name" placeholder="Es. Marco"></div></div>
     <h1>Inserisci il tuo saldo attuale</h1>
-    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
+    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div></div>
     <div id="setupError" class="setupError hidden"></div>
     <button id="startBtn" class="btn">Continua <span aria-hidden="true">→</span></button>
     <div class="safe">Potrai modificare il saldo in qualsiasi momento</div>
@@ -454,8 +469,8 @@
 <section id="setupIncome" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupWalletArt" aria-hidden="true"><span class="walletBody"></span><span class="walletBill b1">€</span><span class="walletBill b2">€</span><span class="walletCoin">€</span></div></div>
-    <div class="onboardTitle">Conti economici</div>
-    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+    <div class="onboardTitle">ENTRATE</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
     <h2>Scrivi le tue entrate</h2>
@@ -471,8 +486,8 @@
 <section id="setupExpense" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupPiggyArt" aria-hidden="true"><span class="pigBody"></span><span class="pigEar"></span><span class="pigLeg l1"></span><span class="pigLeg l2"></span><span class="pigCrack">⌁</span><span class="pigCoin c1">€</span><span class="pigCoin c2">€</span></div></div>
-    <div class="onboardTitle">Conti economici</div>
-    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+    <div class="onboardTitle">PAGAMENTI</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
     <h2>Scrivi i tuoi pagamenti</h2>
@@ -556,10 +571,9 @@
 <section id="flow" class="screen flowPage hidden">
   <div class="pageHeader">
     <div class="pageTitleBlock"><button id="flowBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1 id="flowTitle">Entrate</h1></div>
-    <button id="flowAdd" class="addBtn">+ Aggiungi</button>
   </div>
   <div class="flowBanner">
-    <span><strong id="flowBannerTitle">Le tue entrate</strong><small id="flowBannerCopy">Tocca lo stato per confermare.</small></span>
+    <button id="flowAdd" class="flowBannerAdd">+ Aggiungi entrata</button>
     <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
   <div class="flowTabs">
@@ -570,7 +584,18 @@
   <div id="flowUnifiedList" class="flowUnified"></div>
 </section>
 
-<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
+<section id="movements" class="screen hidden">
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div></div>
+  <div class="movementQuickTabs">
+    <button class="movementQuickTab active" data-movement-type="all">Tutte</button>
+    <button class="movementQuickTab" data-movement-type="income">Entrate</button>
+    <button class="movementQuickTab" data-movement-type="expense">Uscite</button>
+    <button id="movementsFilters" class="movementQuickTab">Filtra</button>
+  </div>
+  <div id="movementFilterSummary" class="filterSummary"></div>
+  <div id="movementFilteredTotal" class="filteredTotal hidden"></div>
+  <div id="allMovements" class="list"></div>
+</section>
 
 <section id="summary" class="screen summaryPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="summaryBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Riepilogo</h1></div></div>
@@ -600,7 +625,7 @@
       <button class="settingsRow" id="settingsEditBalance" data-search="saldo modifica saldo"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Saldo / Modifica saldo</strong><small>Correggi il saldo attuale</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsIncome" data-search="entrate"><span class="settingsRowIcon iGreen">↓</span><span class="settingsRowText"><strong>Entrate</strong><small>Visualizza e gestisci le entrate</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsExpense" data-search="pagamenti"><span class="settingsRowIcon iOrange">↑</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Visualizza e gestisci i pagamenti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Storico di ricevuti, pagati e correzioni</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Entrate ricevute e pagamenti effettuati</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
@@ -617,10 +642,12 @@
     <div class="settingsGroupTitle">App</div>
     <div class="settingsMenu">
       <button class="settingsRow" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsColor" data-search="colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Colore dell’app</strong><small>Scegli il colore principale</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Come funziona l’app</strong><small>Guida breve per argomento</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e ripristino</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Protezione Conti economici</strong><small>PIN e biometria</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Aspetto e colore</strong><small>Personalizza il colore principale</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Sicurezza</strong><small>PIN e biometria per Conti economici</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e dati</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsOther" data-search="altre impostazioni lingua euro data preferenze"><span class="settingsRowIcon iTeal">⋯</span><span class="settingsRowText"><strong>Altre impostazioni</strong><small>Lingua, valuta e formato date</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Tutorial dell’app</strong><small>Scegli l’argomento che vuoi capire</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iIndigo">i</span><span class="settingsRowText"><strong>Informazioni</strong><small>Versione e gestione dei dati</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
@@ -657,9 +684,11 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
-let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();let movementFilters={type:'all',name:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();
+let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary';
+let movementFilters={type:'all',name:'all',category:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
 function applyAppColor(name){const v=APP_COLORS[name]||APP_COLORS.Blu;document.documentElement.style.setProperty('--accent',v)}
@@ -670,18 +699,53 @@ function openProfileSettings(){
 function openColorSettings(){
   let selected=state.appColor||'Blu';
   const buttons=Object.keys(APP_COLORS).map(n=>'<button class="colorChoice '+(n===selected?'active':'')+'" data-color="'+n+'">'+n+'</button>').join('');
-  openModal('Colore dell’app','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
+  openModal('Aspetto e colore','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
   $('colorGrid').querySelectorAll('.colorChoice').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);$('colorGrid').querySelectorAll('.colorChoice').forEach(x=>x.classList.toggle('active',x===b))});
   $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');closeModal()};
   $('colorSave').onclick=()=>{state.appColor=selected;save();applyAppColor(selected);closeModal()};
 }
+function openOtherSettings(){
+  openModal('Altre impostazioni',
+    '<div class="settingsMenu">'+
+      '<div class="settingsRow"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Valuta</strong><small>Euro (€)</small></span><span></span></div>'+
+      '<div class="settingsRow"><span class="settingsRowIcon iIndigo">IT</span><span class="settingsRowText"><strong>Lingua</strong><small>Italiano</small></span><span></span></div>'+
+      '<div class="settingsRow"><span class="settingsRowIcon iTeal">31</span><span class="settingsRowText"><strong>Date</strong><small>Si scrivono a mano: 10/10/2026 o 10 ottobre 2026</small></span><span></span></div>'+
+    '</div><div class="note">Nell’app non viene utilizzato il calendario per inserire le date.</div>');
+}
+function openAppInformation(){
+  openModal('Informazioni',
+    '<div class="card" style="padding:16px;margin-top:10px"><div class="settingsTitle">In Ordine</div><div class="hint">Conti e attività, tutto sotto controllo.</div>'+
+    '<div class="sumRow"><span>Sezione</span><strong>Conti economici</strong></div>'+
+    '<div class="sumRow"><span>Versione</span><strong>1.0</strong></div>'+
+    '<div class="sumRow"><span>Valuta</span><strong>Euro (€)</strong></div></div>'+
+    '<div class="note">I dati di Conti economici restano salvati nell’app sul dispositivo. Puoi creare un backup manuale da Impostazioni → Backup e dati.</div>');
+}
+function openEntrySettingsHub(type){
+  const isIncome=type==='income',noun=isIncome?'entrata':'pagamento',plural=isIncome?'Entrate':'Pagamenti';
+  openModal(plural,
+    '<div class="settingsMenu">'+
+      '<button id="entityHubAdd" class="settingsRow"><span class="settingsRowIcon '+(isIncome?'iGreen':'iOrange')+'">＋</span><span class="settingsRowText"><strong>Aggiungi '+noun+'</strong><small>Crea una nuova voce</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="entityHubManage" class="settingsRow"><span class="settingsRowIcon iBlue">✎</span><span class="settingsRowText"><strong>Modifica '+plural.toLowerCase()+' esistenti</strong><small>Visualizza, modifica o elimina</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="entityHubCategories" class="settingsRow"><span class="settingsRowIcon iPurple">◇</span><span class="settingsRowText"><strong>Categorie '+plural.toLowerCase()+'</strong><small>Gestisci le categorie</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="entityHubNotifications" class="settingsRow"><span class="settingsRowIcon iYellow">🔔</span><span class="settingsRowText"><strong>Promemoria e notifiche</strong><small>Gestisci gli avvisi</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="entityHubBackup" class="settingsRow"><span class="settingsRowIcon iTeal">⇅</span><span class="settingsRowText"><strong>Importa / Esporta</strong><small>Usa Backup e dati</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="field"><label>Ordina per</label><select id="entityHubSort"><option value="date">Data</option><option value="name">Nome</option><option value="amount">Importo</option></select></div>');
+  $('entityHubSort').value=state.flowSort[type]||'date';
+  $('entityHubSort').onchange=()=>{state.flowSort[type]=$('entityHubSort').value;save()};
+  $('entityHubAdd').onclick=()=>{closeModal();openFlow(type,'settings');openAddEntry(type)};
+  $('entityHubManage').onclick=()=>{closeModal();openFlow(type,'settings')};
+  $('entityHubCategories').onclick=()=>{closeModal();openCategoryHub()};
+  $('entityHubNotifications').onclick=()=>{closeModal();notificationReturn='settings';show('notifications')};
+  $('entityHubBackup').onclick=()=>openBackupSettings();
+}
 const GUIDE={
-  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo con Modifica saldo.',
-  'Entrate':'Aggiungi le entrate e segnala RICEVUTO solo quando i soldi sono realmente arrivati.',
-  'Pagamenti':'Aggiungi i pagamenti e segnala PAGATO solo quando il pagamento è stato realmente effettuato.',
-  'Date e frequenza':'Scegli la data e, se serve, imposta una ricorrenza. Le scadenze si generano automaticamente.',
+  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare un movimento.',
+  'Entrate':'Aggiungi le entrate. Il saldo cambia solo quando confermi RICEVUTO con l’importo realmente incassato.',
+  'Pagamenti':'Aggiungi i pagamenti. Il saldo cambia solo quando confermi PAGATO con l’importo realmente pagato.',
+  'Date e frequenza':'Le date si scrivono a mano, per esempio 10/10/2026 oppure 10 ottobre 2026. Non si usa il calendario. Dopo una data valida scegli Una volta, Ogni mese o Altro.',
   'Stati e scadenze':'Da ricevere/Da pagare restano aperti. Dal giorno successivo alla scadenza diventano scaduti.',
-  'Movimenti':'Qui trovi solo eventi reali: Ricevuto, Pagato e Correzione saldo.',
+  'Movimenti':'Qui trovi solo operazioni realmente confermate come RICEVUTE o PAGATE.',
   'Categorie':'Le categorie sono facoltative e servono a capire dove entrano o escono i soldi.',
   'Budget':'I budget sono facoltativi e riguardano solo i pagamenti realmente effettuati.',
   'Notifiche':'Puoi attivarle per tutte le entrate e i pagamenti o gestirle voce per voce.',
@@ -852,57 +916,72 @@ function specDeadline(spec){
   return '';
 }
 function parseFlexibleDate(raw){
-  const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
+  const original=String(raw||'').trim();
+  const s=original.toLowerCase().replace(/\s+/g,' ');
   if(!s)return null;
   let m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if(m)return{kind:'day',iso:s};
+  if(m){
+    const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]),dt=new Date(y,mo-1,d);
+    if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
+  }
   m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
   if(m){
     const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]),dt=new Date(y,mo-1,d);
     if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
   }
-  if(/^\d{4}$/.test(s)){const y=Number(s);if(y>=1900&&y<=2200)return{kind:'year',year:y}}
   for(let i=0;i<IT_MONTHS.length;i++){
     const name=IT_MONTHS[i],short=name.slice(0,3);
-    let rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})$');
+    let rx=new RegExp('^(\\d{1,2})\\s+(?:'+name+'|'+short+')(?:\\s+del)?\\s+(\\d{4})$','i');
     let mm=s.match(rx);
+    if(mm){
+      const d=Number(mm[1]),mo=i+1,y=Number(mm[2]),dt=new Date(y,mo-1,d);
+      if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
+    }
+    rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})$','i');
+    mm=s.match(rx);
     if(mm)return{kind:'monthYear',ym:mm[1]+'-'+String(i+1).padStart(2,'0')};
-    rx=new RegExp('^(?:'+name+'|'+short+')$');
+    rx=new RegExp('^(?:'+name+'|'+short+')$','i');
     if(rx.test(s))return{kind:'monthOnly',month:i+1};
   }
+  if(/^\d{4}$/.test(s)){const y=Number(s);if(y>=1900&&y<=2200)return{kind:'year',year:y}}
   return null;
 }
+function parseRequiredDay(raw){
+  const spec=parseFlexibleDate(raw);
+  return spec&&spec.kind==='day'?spec:null;
+}
+function manualDateText(value){
+  if(!value)return '';
+  const spec=typeof value==='string'?{kind:'day',iso:value}:value;
+  if(spec.kind==='day'&&spec.iso)return fmtMovementDate(spec.iso);
+  return displayDateSpec(spec);
+}
+function parseSetupDate(raw){
+  const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
+  let m=s.match(/^(\d{1,2})\s*(?:del\s+mese|ogni\s+mese)$/);
+  if(m){
+    const day=Number(m[1]);if(day<1||day>31)return null;
+    const date=isoFor(ymNow(),day);
+    return{spec:{kind:'day',iso:date},date,recurrence:{kind:'monthly',startMonth:date.slice(0,7)},label:day+' del mese'};
+  }
+  const spec=parseRequiredDay(raw);
+  if(!spec)return null;
+  return{spec,date:spec.iso,recurrence:{kind:'single',month:spec.iso.slice(0,7)},label:manualDateText(spec)};
+}
 function openDateChooser(initialSpec,onConfirm){
-  const base=initialSpec||{kind:'day',iso:todayISO()},deadline=specDeadline(base)||todayISO();
-  const defaultMonth=deadline.slice(0,7),defaultYear=Number(deadline.slice(0,4));
-  openPickerModal('Seleziona la data',
-    '<div class="field dateManual"><label>Oppure scrivi la data</label><input id="dateManualInput" placeholder="Scrivi la data"></div>'+
-    '<div class="dateTabs"><button id="dateTabDay" class="dateTab">Giorno</button><button id="dateTabMonth" class="dateTab">Mese</button><button id="dateTabYear" class="dateTab">Anno</button></div>'+
-    '<div id="datePickerPanel" class="datePanel"></div>'+
+  const initial=initialSpec&&initialSpec.kind==='day'?manualDateText(initialSpec):'';
+  openPickerModal('Inserisci la data',
+    '<div class="field"><label>Data</label><input id="dateManualInput" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(initial)+'"></div>'+
+    '<div class="manualDateHelp">Scrivi la data. Il calendario non viene utilizzato.</div>'+
     '<div class="modalBtns"><button id="datePickerCancel" class="btn secondary">Annulla</button><button id="datePickerConfirm" class="btn">Conferma data</button></div>');
-  let mode=base.kind==='monthYear'||base.kind==='monthOnly'?'month':base.kind==='year'?'year':'day';
-  const draw=()=>{
-    document.querySelectorAll('#pickerModal .dateTab').forEach(b=>b.classList.remove('active'));
-    p$('dateTab'+(mode==='day'?'Day':mode==='month'?'Month':'Year')).classList.add('active');
-    if(mode==='day')p$('datePickerPanel').innerHTML='<div class="field"><label>Giorno</label><input id="datePickDay" type="date" value="'+deadline+'"></div>';
-    if(mode==='month')p$('datePickerPanel').innerHTML='<div class="field"><label>Mese</label><input id="datePickMonth" type="month" value="'+defaultMonth+'"></div>';
-    if(mode==='year')p$('datePickerPanel').innerHTML='<div class="field"><label>Anno</label><input id="datePickYear" type="number" min="1900" max="2200" value="'+defaultYear+'"></div>';
-  };
-  p$('dateTabDay').onclick=()=>{mode='day';draw()};
-  p$('dateTabMonth').onclick=()=>{mode='month';draw()};
-  p$('dateTabYear').onclick=()=>{mode='year';draw()};
-  draw();
+  setTimeout(()=>p$('dateManualInput')&&p$('dateManualInput').focus(),0);
   p$('datePickerCancel').onclick=closePickerModal;
   p$('datePickerConfirm').onclick=()=>{
-    const manual=parseFlexibleDate(p$('dateManualInput').value);let spec=manual;
-    if(!spec&&mode==='day'){const v=p$('datePickDay').value;if(v)spec={kind:'day',iso:v}}
-    if(!spec&&mode==='month'){const v=p$('datePickMonth').value;if(v)spec={kind:'monthYear',ym:v}}
-    if(!spec&&mode==='year'){const v=Number(p$('datePickYear').value);if(v>=1900&&v<=2200)spec={kind:'year',year:v}}
-    if(!spec){const n=document.createElement('div');n.className='note';n.textContent='Scrivi o seleziona una data valida.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1600);return}
+    const spec=parseRequiredDay(p$('dateManualInput').value);
+    if(!spec){const n=document.createElement('div');n.className='note';n.textContent='Controlla la data inserita.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1600);return}
     closePickerModal();onConfirm(spec);
   };
 }
-
 function save(){localStorage.setItem(KEY,JSON.stringify(state));queueNativeNotificationSync()}
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
@@ -911,7 +990,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -938,30 +1017,41 @@ function appendSetupRow(el,type,draft){
   if(!dateValue&&draft&&draft.recurrence&&draft.day)dateValue=isoFor(entryStartMonth(draft),draft.day);
   if(!dateSpec&&dateValue)dateSpec={kind:'day',iso:dateValue};
   r.dataset.dateSpec=dateSpec?JSON.stringify(dateSpec):'';
-  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Stipendio':'Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
-    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'1.400 €':'387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
+  let dateText='';
+  if(draft&&draft.recurrence&&draft.recurrence.kind==='monthly'&&draft.day)dateText=String(draft.day)+' del mese';
+  else if(dateSpec&&dateSpec.kind==='day')dateText=manualDateText(dateSpec);
+  else if(dateValue)dateText=manualDateText(dateValue);
+  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Es. Stipendio':'Es. Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
+    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'Es. 1.400 €':'Es. 387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
     '<input class="rDate" type="hidden" value="'+escAttr(dateValue)+'">'+
-    '<button type="button" class="rDateBtn '+(dateSpec?'':'empty')+'">'+esc(dateSpec?displayDateSpec(dateSpec):'Scrivi la data')+'</button>'+
+    '<input class="rDateText" type="text" inputmode="text" autocomplete="off" placeholder="'+(type==='income'?'Es. 10 del mese':'Es. 1 del mese')+'" value="'+escAttr(dateText)+'">'+
     '<button class="rDelete" aria-label="Elimina riga">×</button><div class="rowMeta">'+(draft&&draft.recurrence?esc(recurrenceSummary(draft.recurrence)):'')+'</div>';
   el.appendChild(r);
+  const syncDate=()=>{
+    const raw=r.querySelector('.rDateText').value.trim();
+    const parsed=parseSetupDate(raw);
+    if(parsed){
+      r.dataset.dateSpec=JSON.stringify(parsed.spec);
+      r.dataset.recurrence=JSON.stringify(parsed.recurrence);
+      r.querySelector('.rDate').value=parsed.date;
+      r.querySelector('.rowMeta').textContent=recurrenceSummary(parsed.recurrence);
+      r.querySelector('.rDateText').removeAttribute('aria-invalid');
+    }else{
+      r.dataset.dateSpec='';
+      r.dataset.recurrence='';
+      r.querySelector('.rDate').value='';
+      r.querySelector('.rowMeta').textContent='';
+      if(raw)r.querySelector('.rDateText').setAttribute('aria-invalid','true');
+    }
+    persistSetupDraft(containerIdFor(type),type);
+  };
   r.querySelector('.rDelete').onclick=()=>{r.remove();if(!el.querySelector('.entryRow'))appendSetupRow(el,type,null);persistSetupDraft(containerIdFor(type),type)};
   r.querySelectorAll('.rName,.rAmount').forEach(inp=>inp.addEventListener('input',()=>persistSetupDraft(containerIdFor(type),type)));
-  r.querySelector('.rDateBtn').onclick=()=>{
-    let initial=null;try{initial=JSON.parse(r.dataset.dateSpec||'null')}catch(e){}
-    openDateChooser(initial,spec=>{
-      const date=specDeadline(spec);
-      r.dataset.dateSpec=JSON.stringify(spec);r.querySelector('.rDate').value=date;r.querySelector('.rDateBtn').textContent=displayDateSpec(spec);r.querySelector('.rDateBtn').classList.remove('empty');
-      let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
-      if(cfg){
-        const ym=date.slice(0,7);
-        if(cfg.kind==='monthly')cfg.startMonth=ym;if(cfg.kind==='single')cfg.month=ym;if(cfg.kind==='custom')cfg.startDate=date;if(cfg.kind==='count')cfg.startMonth=ym;if(cfg.kind==='until')cfg.startMonth=ym;
-        r.dataset.recurrence=JSON.stringify(cfg);r.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);
-      }else{persistSetupDraft(containerIdFor(type),type);openSetupRepeatChoice(r,type)}
-    });
-  };
+  r.querySelector('.rDateText').addEventListener('input',syncDate);
+  r.querySelector('.rDateText').addEventListener('blur',syncDate);
 }
 function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
-function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDate').value)}
+function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDateText').value.trim())}
 function cleanAmount(v){
   let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');
   if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');
@@ -1011,13 +1101,13 @@ function openSetupAdvanced(row,type,date){
     '<div id="setupEndExtra"></div>'+
     '<div class="modalBtns"><button id="setupOtherCancel" class="btn secondary">Annulla</button><button id="setupOtherSave" class="btn">Conferma</button></div>');
   $('setupUnit').value=current.unit||'month';$('setupEndMode').value=current.endMode||'never';
-  const draw=()=>{const m=$('setupEndMode').value;if(m==='count')$('setupEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="setupRepeatCount" type="number" min="1" value="'+Number(current.count||2)+'"></div>';else if(m==='date')$('setupEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="setupEndDate" type="date" value="'+escAttr(current.endDate||addDaysISO(date,30))+'"></div>';else $('setupEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
+  const draw=()=>{const m=$('setupEndMode').value;if(m==='count')$('setupEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="setupRepeatCount" type="number" min="1" value="'+Number(current.count||2)+'"></div>';else if(m==='date')$('setupEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="setupEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(current.endDate||addDaysISO(date,30)))+'"></div>';else $('setupEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
   draw();$('setupEndMode').onchange=draw;
   $('setupOtherCancel').onclick=()=>openSetupRepeatChoice(row,type);
   $('setupOtherSave').onclick=()=>{
     const endMode=$('setupEndMode').value,cfg={kind:'custom',startDate:date,every:Number($('setupEvery').value),unit:$('setupUnit').value,endMode};
     if(endMode==='count')cfg.count=Number($('setupRepeatCount').value);
-    if(endMode==='date')cfg.endDate=$('setupEndDate').value;
+    if(endMode==='date'){const spec=parseRequiredDay($('setupEndDate').value);if(!spec)return flashModal('Controlla la data finale.');cfg.endDate=spec.iso}
     if(!validRecurrence(cfg))return flashModal('Completa la ricorrenza.');
     row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal();
   };
@@ -1155,38 +1245,61 @@ function renderHome(){
 }
 function renderMovementList(el,arr){
   el.innerHTML='';
-  if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}
-  arr.forEach(x=>{
+  const clean=arr.filter(x=>x.type!=='adjustment');
+  if(!clean.length){el.innerHTML='<div class="empty">Nessun movimento.</div>';return}
+  clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isAdj=x.type==='adjustment';
-    const delta=isAdj?Number(x.delta||0):0;
-    const label=isAdj?'CORREZIONE SALDO':(x.type==='income'?'RICEVUTO':'PAGATO');
-    const sign=isAdj?(delta>=0?'+ ':'- '):(x.type==='income'?'+ ':'- ');
-    const amount=isAdj?Math.abs(delta):Number(x.amount||0);
-    const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
-    r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ';
+    const icon=isIncome?'€':'−';
+    r.innerHTML='<div class="mIcon '+x.type+'">'+icon+'</div>'+
+      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">'+fmtMovementDate(x.date)+'</div></div>'+
+      '<div class="mAmountWrap"><div class="mAmount '+x.type+'">'+sign+money(Number(x.amount||0))+'</div><div class="mType '+x.type+'">'+label+'</div></div>'+
+      '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
   });
 }
-function openFlow(type){currentFlow=type;flowFilter='all';show('flow')}
+function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
+function nextOpenOccurrenceForEntry(entry){
+  const today=todayISO(),endYm=addMonths(ymNow(),12);
+  if(entry.recurrence&&entry.recurrence.kind==='custom'){
+    return customOccurrenceObjects(entry,endYm).find(o=>o.date>=today&&!historyFor(entry.id,o.occurrenceKey))||null;
+  }
+  let cur=entryStartMonth(entry),guard=0;
+  if(cur<ymNow())cur=ymNow();
+  while(cur<=endYm&&guard++<24){
+    const occ=effectiveOccurrence(entry,cur);
+    if(occ){
+      const key=occ.occurrenceKey||cur;
+      if(occ.date>=today&&!historyFor(entry.id,key))return{entryId:entry.id,type:entry.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,dateLabel:occ.dateLabel||'',month:cur,occurrenceKey:key,category:occ.category||'',note:occ.note||''};
+    }
+    cur=addMonths(cur,1);
+  }
+  return null;
+}
 function buildFlowItems(type){
   const ym=ymNow(),today=todayISO();
+  const currentDone=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
   const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
-  const done=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
-  return [...open,...done].sort((a,b)=>{
+  const covered=new Set([...open,...currentDone].map(x=>x.entryId).filter(Boolean));
+  state.entries.filter(e=>e.type===type&&!covered.has(e.id)).forEach(e=>{
+    const next=nextOpenOccurrenceForEntry(e);
+    if(next)open.push(Object.assign({},next,{done:false,overdue:false}));
+  });
+  const pref=state.flowSort&&state.flowSort[type]||'date';
+  return [...open,...currentDone].sort((a,b)=>{
     const ra=a.done?2:(a.overdue?0:1),rb=b.done?2:(b.overdue?0:1);
     if(ra!==rb)return ra-rb;
+    if(pref==='name')return String(a.name||'').localeCompare(String(b.name||''),'it');
+    if(pref==='amount')return Number(b.amount||0)-Number(a.amount||0);
     return a.date.localeCompare(b.date);
   });
 }
 function renderFlow(){
   const isIn=currentFlow==='income';
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
-  $('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';
-  $('flowBannerTitle').textContent=isIn?'Le tue entrate':'I tuoi pagamenti';
-  $('flowBannerCopy').textContent='Tocca lo stato per '+(isIn?'segnare come ricevuto.':'segnare come pagato.');
+  $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='<span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">'+(isIn?'↑':'↓')+'</span><span class="'+(isIn?'sceneCoin':'sceneWallet')+'">€</span>';
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
@@ -1195,7 +1308,7 @@ function renderFlow(){
   if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
   if(flowFilter==='done')arr=arr.filter(x=>x.done);
   const el=$('flowUnifiedList');el.innerHTML='';
-  if(!arr.length){el.innerHTML='<div class="flowEmpty">Nessuna voce da mostrare.</div>';return}
+  if(!arr.length){const msg=flowFilter==='all'?(isIn?'Nessuna entrata inserita.':'Nessun pagamento inserito.'):'Nessuna voce da mostrare.';el.innerHTML='<div class="flowEmpty">'+msg+'</div>';return}
   arr.forEach(x=>{
     const row=document.createElement('div');row.className='flowUnifiedRow';
     const isOverdue=!x.done&&x.date<todayISO();
@@ -1210,8 +1323,21 @@ function renderFlow(){
 function completeOccurrenceImmediate(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   if(historyFor(x.entryId,x.occurrenceKey||x.month))return;
-  const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,occurrenceKey:x.occurrenceKey||x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
-  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+  const isIncome=x.type==='income';
+  openModal(isIncome?'Segna come ricevuta':'Segna come pagato',
+    '<div class="hint">'+(isIncome?'Inserisci l’importo realmente ricevuto.':'Conferma l’importo realmente pagato.')+'</div>'+
+    '<div class="field"><label>Importo</label><input id="completeActualAmount" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(x.amount||''))+'"></div>'+
+    '<div class="field"><label>Data</label><input id="completeActualDate" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(todayISO()))+'"><div class="manualDateHelp">Puoi correggere la data scrivendola.</div></div>'+
+    '<div class="modalBtns"><button id="completeCancel" class="btn secondary">Annulla</button><button id="completeConfirm" class="btn">'+(isIncome?'RICEVUTO':'PAGATO')+'</button></div>');
+  $('completeCancel').onclick=closeModal;
+  $('completeConfirm').onclick=()=>{
+    const amount=cleanAmount($('completeActualAmount').value),spec=parseRequiredDay($('completeActualDate').value);
+    if(!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla importo e data.');
+    const actualDate=spec.iso,h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount,date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,occurrenceKey:x.occurrenceKey||x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
+    state.history.push(h);
+    state.balance=Number(state.balance||0)+(isIncome?amount:-amount);
+    save();closeModal();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+  };
 }
 function openReopenMovement(h){
   openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
@@ -1239,12 +1365,18 @@ function openSingleOccurrenceEditor(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   openModal(entry.type==='income'?'Modifica questa entrata':'Modifica questo pagamento',
     '<div class="field"><label>Nome</label><input id="occName" value="'+escAttr(x.name)+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="occAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
-    '<div class="field"><label>Data</label><input id="occDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="occAmount" type="text" inputmode="decimal" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data</label><input id="occDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(x.date))+'"><div class="manualDateHelp">Scrivi la data direttamente.</div></div>'+
     '<div class="field"><label>Categoria</label><select id="occCategory">'+occurrenceCategoryOptions(entry.type,x.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="occNote">'+esc(x.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="occDelete" class="btn deleteBtn">Elimina</button><button id="occSave" class="btn">Salva</button></div>');
-  $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.occurrenceKey||x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
+  $('occSave').onclick=()=>{
+    const amount=cleanAmount($('occAmount').value),spec=parseRequiredDay($('occDateText').value),name=$('occName').value.trim();
+    if(!name||!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla nome, importo e data.');
+    const date=spec.iso;
+    state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.occurrenceKey||x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};
+    save();closeModal();renderFlow();
+  };
   $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
 }
 function occurrenceBaseDate(x){return x&&x.occurrenceKey&&x.occurrenceKey.startsWith('D')?x.occurrenceKey.slice(1):x.date}
@@ -1293,23 +1425,28 @@ function openFutureOccurrenceEditor(x){
   let futureDate=x.date,newRec=recurrenceFromOccurrence(entry,x,futureDate);
   openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
     '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
-    '<div class="field"><label>Data di questa scadenza</label><input id="futDate" type="date" value="'+x.date+'"></div>'+
-    '<div class="field"><label>Frequenza</label><div id="futRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="futRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo</label><input id="futAmount" type="text" inputmode="decimal" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data di questa scadenza</label><input id="futDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10 ottobre 2026" value="'+escAttr(manualDateText(x.date))+'"><div class="manualDateHelp">Scrivi la data direttamente.</div></div>'+
+    '<div class="field"><label>Ripetizione</label><div id="futRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="futRecSummary" class="hint"></div></div>'+
     '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
+  const getFutureDate=()=>{const spec=parseRequiredDay($('futDateText').value);return spec?spec.iso:''};
   const paint=()=>{const kind=newRec&&newRec.kind;document.querySelectorAll('#futRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(kind)?kind:'custom')));$('futRecSummary').textContent=recurrenceSummary(newRec)};
   document.querySelectorAll('#futRecChoices button').forEach(b=>b.onclick=()=>{
-    futureDate=$('futDate').value||x.date;
+    const parsed=getFutureDate();if(!parsed)return flashModal('Controlla la data inserita.');
+    futureDate=parsed;
     if(b.dataset.kind==='monthly'){newRec={kind:'monthly',startMonth:futureDate.slice(0,7)};paint();return}
     if(b.dataset.kind==='single'){newRec={kind:'single',month:futureDate.slice(0,7)};paint();return}
     openEditorAdvancedRecurrence(futureDate,newRec,cfg=>{newRec=cfg;paint()});
   });
-  $('futDate').onchange=()=>{futureDate=$('futDate').value||x.date;newRec=recurrenceFromOccurrence(entry,x,futureDate);paint()};
+  $('futDateText').onblur=()=>{
+    const parsed=getFutureDate();if(!parsed)return;
+    futureDate=parsed;$('futDateText').value=manualDateText(parsed);newRec=recurrenceFromOccurrence(entry,x,futureDate);paint();
+  };
   paint();
   $('futSave').onclick=()=>{
-    const name=$('futName').value.trim(),amount=Number($('futAmount').value),date=$('futDate').value;
+    const name=$('futName').value.trim(),amount=cleanAmount($('futAmount').value),date=getFutureDate();
     if(!name||!Number.isFinite(amount)||amount<=0||!date||!validRecurrence(newRec))return flashModal('Controlla nome, importo, data e frequenza.');
     const category=$('futCategory').value==='__new__'?'':$('futCategory').value,note=$('futNote').value.trim();
     splitSeriesAt(entry,x,{name,amount,category,note},newRec,date);
@@ -1405,9 +1542,9 @@ function openEntryEditor(entry,type){
   openModal(title,
     '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
-    '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
-    '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn '+(dateValue?'':'empty')+'">'+esc(dateValue?displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}):'Scrivi la data')+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
-    '<div class="field"><label>Frequenza</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo</label><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"></div>'+
+    '<div class="field"><label>Data</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div class="manualDateHelp">Scrivi la data direttamente. Non si apre nessun calendario.</div><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita.</div></div>'+
+    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
     '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
@@ -1422,15 +1559,44 @@ function openEntryEditor(entry,type){
   );
   $('modal').classList.add('fullEditor');
   if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
-  let editorDateSpec=entry&&entry.dateSpec||(dateValue?{kind:'day',iso:dateValue}:null);
-  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;const newDate=specDeadline(spec);$('editDate').value=newDate;$('editDateDisplay').textContent=displayDateSpec(spec);$('editDateDisplay').classList.remove('empty');if($('editRecKind').value==='custom'){try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=newDate;if(cfg.endMode==='date'&&cfg.endDate<newDate)cfg.endDate=newDate;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}}renderEditRecExtra(rec||null)});
-  $('editRecKind').value=rec?rec.kind:'';
+  let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
+  $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
   if(rec&&rec.kind==='custom')$('editRecKind').dataset.custom=JSON.stringify(rec);
   renderEditRecExtra(rec||null);
-  const paintRec=()=>{const k=$('editRecKind').value;document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));$('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{})};
+  const paintRec=()=>{
+    const k=$('editRecKind').value;
+    document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));
+    $('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{});
+  };
+  const syncDate=()=>{
+    const spec=parseRequiredDay($('editDateText').value);
+    const hasText=$('editDateText').value.trim()!=='';
+    $('editDateError').classList.toggle('hidden',!hasText||!!spec);
+    if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
+    editorDateSpec=spec;
+    $('editDate').value=spec.iso;
+    $('editRecurrenceBlock').classList.remove('hidden');
+    let k=$('editRecKind').value;
+    if(!k){k='single';$('editRecKind').value=k}
+    if(k==='single')$('editRecKind').value='single';
+    if(k==='monthly')$('editRecKind').value='monthly';
+    if(k==='custom'){
+      try{
+        const cfg=JSON.parse($('editRecKind').dataset.custom||'null');
+        if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}
+      }catch(e){}
+    }
+    renderEditRecExtra(rec||null);paintRec();return true;
+  };
+  $('editDateText').addEventListener('input',syncDate);
+  $('editDateText').addEventListener('change',syncDate);
+  $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
-    if(b.dataset.kind==='custom'){openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return}
+    if(b.dataset.kind==='custom'){
+      if(!syncDate())return flashModal('Scrivi prima una data valida.');
+      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return
+    }
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
   paintRec();
@@ -1447,7 +1613,8 @@ function openEntryEditor(entry,type){
   $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
   $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
   $('editSave').onclick=()=>{
-    const name=$('editName').value.trim(),amount=Number($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
+    const dateOk=syncDate();
+    const name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
     const day=date?Number(date.slice(8,10)):0;
     let category=$('editCategory').value;
     if(category==='__new__'){
@@ -1456,9 +1623,10 @@ function openEntryEditor(entry,type){
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
     const notify=$('editNotify').checked;
-    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
+    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
     const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
-    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
+    if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
     if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
     else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,notify,notifyRule,note})}
@@ -1492,7 +1660,7 @@ function confirmDeleteEntry(entry){
   };
 }
 function openEditorAdvancedRecurrence(date,current,onSave){
-  if(!date){flashModal('Scegli prima la data.');return}
+  if(!date){flashModal('Scrivi prima la data.');return}
   let cfg=current&&current.kind==='custom'?current:{kind:'custom',startDate:date,every:1,unit:'month',endMode:'never'};
   openPickerModal('Altro',
     '<div class="field"><label>Si ripete ogni quanto?</label><div class="recInterval"><input id="editorEvery" type="number" min="1" value="'+Number(cfg.every||1)+'"><select id="editorUnit"><option value="week">settimana/e</option><option value="month">mese/i</option><option value="year">anno/i</option></select></div></div>'+
@@ -1500,17 +1668,32 @@ function openEditorAdvancedRecurrence(date,current,onSave){
     '<div id="editorEndExtra"></div>'+
     '<div class="modalBtns"><button id="editorRecCancel" class="btn secondary">Annulla</button><button id="editorRecSave" class="btn">Conferma</button></div>');
   p$('editorUnit').value=cfg.unit||'month';p$('editorEndMode').value=cfg.endMode||'never';
-  const draw=()=>{const m=p$('editorEndMode').value;if(m==='count')p$('editorEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="editorRepeatCount" type="number" min="1" value="'+Number(cfg.count||2)+'"></div>';else if(m==='date')p$('editorEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="editorEndDate" type="date" value="'+escAttr(cfg.endDate||addDaysISO(date,30))+'"></div>';else p$('editorEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
+  const draw=()=>{
+    const m=p$('editorEndMode').value;
+    if(m==='count')p$('editorEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="editorRepeatCount" type="number" min="1" value="'+Number(cfg.count||2)+'"></div>';
+    else if(m==='date')p$('editorEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="editorEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(cfg.endDate||addDaysISO(date,30)))+'"></div>';
+    else p$('editorEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>';
+  };
   draw();p$('editorEndMode').onchange=draw;p$('editorRecCancel').onclick=closePickerModal;
-  p$('editorRecSave').onclick=()=>{const endMode=p$('editorEndMode').value,n={kind:'custom',startDate:date,every:Number(p$('editorEvery').value),unit:p$('editorUnit').value,endMode};if(endMode==='count')n.count=Number(p$('editorRepeatCount').value);if(endMode==='date')n.endDate=p$('editorEndDate').value;if(!validRecurrence(n))return;closePickerModal();onSave(n)};
+  p$('editorRecSave').onclick=()=>{
+    const endMode=p$('editorEndMode').value,n={kind:'custom',startDate:date,every:Number(p$('editorEvery').value),unit:p$('editorUnit').value,endMode};
+    if(endMode==='count')n.count=Number(p$('editorRepeatCount').value);
+    if(endMode==='date'){const spec=parseRequiredDay(p$('editorEndDate').value);if(!spec)return;n.endDate=spec.iso}
+    if(!validRecurrence(n))return;
+    closePickerModal();onSave(n);
+  };
 }
 function renderEditRecExtra(rec){
   const kind=$('editRecKind').value;
   const base=($('editDate')&&$('editDate').value?$('editDate').value.slice(0,7):ymNow());
   let h='';
   if(kind==='count')h='<div class="field"><label>Numero mesi</label><input id="erCount" type="number" min="1" value="'+(rec&&rec.count||2)+'"></div>';
-  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="month" value="'+(rec&&rec.endMonth||addMonths(base,2))+'"></div>';
-  if(kind==='selected'){let cc='';for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>'}
+  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="text" inputmode="text" autocomplete="off" placeholder="Es. ottobre 2026" value="'+escAttr(rec&&rec.endMonth?monthName(rec.endMonth):monthName(addMonths(base,2)))+'"></div>';
+  if(kind==='selected'){
+    let cc='';
+    for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}
+    h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>';
+  }
   $('editRecExtra').innerHTML=h;
 }
 function collectEditRecurrence(){
@@ -1519,7 +1702,11 @@ function collectEditRecurrence(){
   if(k==='single')return{kind:k,month:start};
   if(k==='custom'){try{return JSON.parse($('editRecKind').dataset.custom||'null')}catch(e){return null}}
   if(k==='count')return{kind:k,startMonth:start,count:Number($('erCount').value)};
-  if(k==='until')return{kind:k,startMonth:start,endMonth:$('erEnd').value};
+  if(k==='until'){
+    const spec=parseFlexibleDate($('erEnd').value);
+    const endMonth=spec?(spec.kind==='monthYear'?spec.ym:spec.kind==='day'?spec.iso.slice(0,7):''):'';
+    return{kind:k,startMonth:start,endMonth};
+  }
   if(k==='selected')return{kind:k,months:Array.from(document.querySelectorAll('#erMonths input:checked')).map(x=>x.value)};
   return null;
 }
@@ -1666,12 +1853,17 @@ function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
   if(h.type==='adjustment'){
     openModal('Correzione saldo',
-      '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="number" step="0.01" value="'+Number(h.delta||0)+'"></div>'+
-      '<div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+      '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="text" inputmode="decimal" value="'+Number(h.delta||0)+'"></div>'+
+      '<div class="field"><label>Data</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"></div>'+
       '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="moveReason" value="'+escAttr(h.reason||'')+'"></div>'+
+      '<div class="note">Questa è una correzione creata da una versione precedente dell’app.</div>'+
       '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
     $('modal').classList.add('fullEditor');
-    $('moveSave').onclick=()=>{const nd=Number($('moveDelta').value),date=$('moveDate').value;if(!Number.isFinite(nd)||!date)return flashModal('Controlla importo e data.');const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=date;h.month=date.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements()};
+    $('moveSave').onclick=()=>{
+      const nd=cleanAmount($('moveDelta').value),spec=parseRequiredDay($('moveDateText').value);
+      if(!Number.isFinite(nd)||!spec)return flashModal('Controlla importo e data.');
+      const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=spec.iso;h.month=spec.iso.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();
+    };
     $('moveDelete').onclick=()=>confirmDeleteMovement(h);
     return;
   }
@@ -1684,23 +1876,23 @@ function openMovementDetail(id){
   })():null;
   const dueDate=planned&&planned.date||h.date;
   const overdue=dueDate<todayISO();
-  openModal(isIncome?'Modifica entrata':'Modifica pagamento',
+  openModal(isIncome?'Dettaglio entrata':'Dettaglio pagamento',
     '<div class="field"><label>Nome</label><input id="moveName" value="'+escAttr(h.name||'')+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="moveAmount" type="number" min="0.01" step="0.01" value="'+Number(h.amount||0)+'"></div>'+
-    '<div class="field"><label>Data movimento</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="moveAmount" type="text" inputmode="decimal" value="'+Number(h.amount||0)+'"></div>'+
+    '<div class="field"><label>Data movimento</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"><div class="manualDateHelp">La data si modifica scrivendola.</div></div>'+
     '<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="moveOpenState">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" class="active">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" class="'+(overdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>'+
-    (entry?'<div class="field"><label>Frequenza</label><div class="readOnlyBox">'+esc(recurrenceSummary(entry.recurrence))+'</div></div>':'')+
+    (entry?'<div class="field"><label>Ripetizione</label><div class="readOnlyBox">'+esc(recurrenceSummary(entry.recurrence))+'</div></div>':'')+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="moveCategory">'+categoryOptions(type,h.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="moveNote">'+esc(h.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
   $('modal').classList.add('fullEditor');
   $('moveOpenState').onclick=()=>openReopenMovement(h);
   $('moveSave').onclick=()=>{
-    const name=$('moveName').value.trim(),a=Number($('moveAmount').value),date=$('moveDate').value;
-    if(!name||!Number.isFinite(a)||a<=0||!date)return flashModal('Controlla nome, importo e data.');
-    const old=Number(h.amount||0),diff=a-old;
+    const name=$('moveName').value.trim(),amount=cleanAmount($('moveAmount').value),spec=parseRequiredDay($('moveDateText').value);
+    if(!name||!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla nome, importo e data.');
+    const old=Number(h.amount||0),diff=amount-old;
     state.balance=Number(state.balance||0)+(type==='income'?diff:-diff);
-    h.name=name;h.amount=a;h.date=date;h.month=date.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();
+    h.name=name;h.amount=amount;h.date=spec.iso;h.month=spec.iso.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();
     save();closeModal();renderMovements();if(!$('flow').classList.contains('hidden'))renderFlow();if(type==='expense')checkBudgetNotifications(false);
   };
   $('moveDelete').onclick=()=>confirmDeleteMovement(h);
@@ -1718,7 +1910,10 @@ function confirmDeleteMovement(h){
   };
 }
 function movementNames(){
-  return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+  return Array.from(new Set(state.history.filter(x=>x.type!=='adjustment').map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
+}
+function movementCategories(){
+  return Array.from(new Set(state.history.filter(x=>x.type!=='adjustment').map(x=>(x.category||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
 }
 function movementCutoff(period){
   if(period==='all')return null;
@@ -1730,8 +1925,10 @@ function movementCutoff(period){
 function filteredMovements(){
   const cutoff=movementCutoff(movementFilters.period);
   return [...state.history].filter(x=>{
+    if(x.type==='adjustment')return false;
     if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
     if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
+    if(movementFilters.category!=='all'&&((x.category||'').trim()||'Senza categoria')!==movementFilters.category)return false;
     if(cutoff&&x.date<cutoff)return false;
     return true;
   }).sort((a,b)=>b.date.localeCompare(a.date));
@@ -1739,34 +1936,40 @@ function filteredMovements(){
 function movementFilterText(){
   const parts=[];
   if(movementFilters.type==='income')parts.push('solo entrate');
-  if(movementFilters.type==='expense')parts.push('solo pagamenti');
-  if(movementFilters.type==='adjustment')parts.push('solo correzioni saldo');
+  if(movementFilters.type==='expense')parts.push('solo uscite');
   if(movementFilters.name!=='all')parts.push(movementFilters.name);
+  if(movementFilters.category!=='all')parts.push('categoria '+movementFilters.category);
   const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
   if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
-  return parts.length?parts.join(' · '):'Tutti i movimenti · tutto il periodo';
+  return parts.length?parts.join(' · '):'Tutti i movimenti';
 }
 function renderMovements(){
   const arr=filteredMovements();
+  document.querySelectorAll('[data-movement-type]').forEach(b=>b.classList.toggle('active',b.dataset.movementType===movementFilters.type));
+  const advancedActive=movementFilters.name!=='all'||movementFilters.category!=='all'||movementFilters.period!=='all';
+  $('movementsFilters').classList.toggle('filterActive',advancedActive);
   $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
   $('movementFilteredTotal').classList.add('hidden');
   $('movementFilteredTotal').innerHTML='';
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
-  const names=movementNames();
-  let nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
-  openModal('Filtri movimenti',
-    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutti</option><option value="income">Entrate</option><option value="expense">Pagamenti</option><option value="adjustment">Correzioni saldo</option></select></div>'+
+  const names=movementNames(),categories=movementCategories();
+  const nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  const categoryOptionsHtml='<option value="all">Tutte le categorie</option><option value="Senza categoria">Senza categoria</option>'+categories.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  openModal('Filtra movimenti',
+    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutte</option><option value="income">Entrate</option><option value="expense">Uscite</option></select></div>'+
+    '<div class="field"><label>Categoria</label><select id="mfCategory">'+categoryOptionsHtml+'</select></div>'+
     '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
     '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
     '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
   );
-  $('mfType').value=movementFilters.type;
+  $('mfType').value=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  $('mfCategory').value=[...categories,'Senza categoria'].includes(movementFilters.category)?movementFilters.category:'all';
   $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
   $('mfPeriod').value=movementFilters.period;
-  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',period:'all'};closeModal();show('movements')};
-  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,period:$('mfPeriod').value};closeModal();show('movements')};
+  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all'};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,category:$('mfCategory').value,period:$('mfPeriod').value};closeModal();show('movements')};
 }
 function categoryTotals(type,ym){
   const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
@@ -1898,16 +2101,15 @@ async function checkBudgetNotifications(force){
   }
 }
 function openBalanceEditor(){
-  openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  openModal('Modifica saldo',
+    '<div class="field"><label>Saldo attuale</label><div class="readOnlyBox">'+money(state.balance)+'</div></div>'+
+    '<div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
+    '<div class="note">Questa è una correzione manuale del saldo. Non crea un’entrata, un pagamento o un movimento.</div>'+
+    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
   $('balCancel').onclick=closeModal;
   $('balSave').onclick=()=>{
-    const v=Number($('newBalance').value);
+    const v=cleanAmount($('newBalance').value);
     if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
-    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim();
-    if(Math.abs(delta)>0.0001){
-      const date=todayISO();
-      state.history.push({id:'a'+Date.now(),entryId:null,type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason,category:''});
-    }
     state.balance=v;save();closeModal();
     if(!$('home').classList.contains('hidden'))renderHome();
     if(!$('movements').classList.contains('hidden'))renderMovements();
@@ -1926,7 +2128,7 @@ $('balanceBack').onclick=()=>show('landing');
 $('homeBackLanding').onclick=()=>show('landing');
 
 function hydrateFirstSetup(){if($('startBalance')&&state.balance!==null)$('startBalance').value=state.balance;const e=$('setupError');if(e){e.textContent='';e.classList.add('hidden')}}
-$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=Number(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
+$('startBtn').onclick=()=>{const raw=$('startBalance').value.trim(),v=cleanAmount(raw),err=$('setupError');if(raw===''||!Number.isFinite(v)){err.textContent='Inserisci il saldo che hai adesso.';err.classList.remove('hidden');$('startBalance').focus();return}err.textContent='';err.classList.add('hidden');state.balance=v;state.setupStage='income';save();createRows('incomeRows','income');show('setupIncome')};
 $('addIncomeSetup').onclick=()=>appendSetupRow($('incomeRows'),'income',null);
 $('addExpenseSetup').onclick=()=>appendSetupRow($('expenseRows'),'expense',null);
 $('skipIncomeSetup').onclick=()=>{state.setupDrafts.income=[];state.entries=state.entries.filter(e=>e.type!=='income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')};
@@ -1942,39 +2144,42 @@ $('settingsSearch').addEventListener('input',()=>{
   document.querySelectorAll('.settingsRow').forEach(r=>{if(r.id==='resetPrototype'||r.closest('#settings'))r.classList.toggle('hidden',q&&!((r.dataset.search||'')+' '+r.textContent).toLowerCase().includes(q))});
   document.querySelectorAll('[data-settings-group]').forEach(g=>g.classList.toggle('hidden',!Array.from(g.querySelectorAll('.settingsRow')).some(r=>!r.classList.contains('hidden'))));
 });
-$('settingsIncome').onclick=()=>openFlow('income');
-$('settingsExpense').onclick=()=>openFlow('expense');
-$('settingsMovements').onclick=()=>show('movements');
+$('settingsIncome').onclick=()=>openEntrySettingsHub('income');
+$('settingsExpense').onclick=()=>openEntrySettingsHub('expense');
+$('settingsMovements').onclick=()=>{movementReturn='settings';show('movements')};
 $('settingsCategories').onclick=openCategoryHub;
-$('settingsBudget').onclick=()=>{budgetMonth=ymNow();show('budget')};
-$('settingsNotifications').onclick=()=>show('notifications');
+$('settingsBudget').onclick=()=>{budgetMonth=ymNow();budgetReturn='settings';show('budget')};
+$('settingsNotifications').onclick=()=>{notificationReturn='settings';show('notifications')};
 $('settingsProfile').onclick=openProfileSettings;
 $('settingsColor').onclick=openColorSettings;
 $('settingsGuide').onclick=openGuide;
 $('settingsBackup').onclick=openBackupSettings;
 $('settingsSecurity').onclick=openSecuritySettings;
+$('settingsOther').onclick=openOtherSettings;
+$('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
-$('notificationsBack').onclick=()=>show('home');
+$('notificationsBack').onclick=()=>show(notificationReturn);
 $('notifyAll').onclick=openGlobalNotificationRules;
 $('notifyCustom').onclick=openCustomNotifications;
 $('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
-$('movementsBack').onclick=()=>show('home');
+$('movementsBack').onclick=()=>show(movementReturn);
 $('summaryBack').onclick=()=>show('home');
-$('budgetBack').onclick=()=>show('summary');
+$('budgetBack').onclick=()=>show(budgetReturn);
 $('settingsBack').onclick=()=>show('home');
-$('homeIncome').onclick=()=>openFlow('income');
-$('homeExpense').onclick=()=>openFlow('expense');
+$('homeIncome').onclick=()=>openFlow('income','home');
+$('homeExpense').onclick=()=>openFlow('expense','home');
 $('editBalance').onclick=openBalanceEditor;
 $('settingsEditBalance').onclick=openBalanceEditor;
-$('homeAllMovements').onclick=()=>show('movements');
-$('homeFilters').onclick=()=>{show('movements');openMovementFilters()};
+$('homeAllMovements').onclick=()=>{movementReturn='home';show('movements')};
+$('homeFilters').onclick=()=>{movementReturn='home';show('movements');openMovementFilters()};
+document.querySelectorAll('[data-movement-type]').forEach(b=>b.onclick=()=>{movementFilters.type=b.dataset.movementType;renderMovements()});
 $('movementsFilters').onclick=openMovementFilters;
 $('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
-$('flowBack').onclick=()=>show('home');
+$('flowBack').onclick=()=>show(flowReturn);
 $('flowAdd').onclick=()=>openAddEntry(currentFlow);
 $('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};
 $('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
-$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;show('budget')};
+$('manageBudget').onclick=()=>{budgetMonth=summaryMonth;budgetReturn='summary';show('budget')};
 $('budgetPrev').onclick=()=>{budgetMonth=addMonths(budgetMonth,-1);renderBudget()};
 $('budgetNext').onclick=()=>{budgetMonth=addMonths(budgetMonth,1);renderBudget()};
 $('budgetAdd').onclick=openBudgetChoice;
