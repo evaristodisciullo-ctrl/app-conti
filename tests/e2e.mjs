@@ -40,6 +40,7 @@ async function openHome(page){
 }
 async function chooseDate(page,manual=slash(iso())){
   await page.fill('#editDateText',manual);
+  await page.dispatchEvent('#editDateText','input');
   await page.locator('#editDateText').blur();
   await page.waitForSelector('#editRecurrenceBlock:not(.hidden)');
 }
