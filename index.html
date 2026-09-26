@@ -969,30 +969,41 @@ function appendSetupRow(el,type,draft){
   if(!dateValue&&draft&&draft.recurrence&&draft.day)dateValue=isoFor(entryStartMonth(draft),draft.day);
   if(!dateSpec&&dateValue)dateSpec={kind:'day',iso:dateValue};
   r.dataset.dateSpec=dateSpec?JSON.stringify(dateSpec):'';
-  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Stipendio':'Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
-    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'1.400 €':'387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
+  let dateText='';
+  if(draft&&draft.recurrence&&draft.recurrence.kind==='monthly'&&draft.day)dateText=String(draft.day)+' del mese';
+  else if(dateSpec&&dateSpec.kind==='day')dateText=manualDateText(dateSpec);
+  else if(dateValue)dateText=manualDateText(dateValue);
+  r.innerHTML='<input class="rName" placeholder="'+(type==='income'?'Es. Stipendio':'Es. Mutuo')+'" value="'+escAttr(draft&&draft.name||'')+'">'+
+    '<input class="rAmount" inputmode="decimal" placeholder="'+(type==='income'?'Es. 1.400 €':'Es. 387,03 €')+'" value="'+escAttr(draft&&draft.amount||'')+'">'+
     '<input class="rDate" type="hidden" value="'+escAttr(dateValue)+'">'+
-    '<button type="button" class="rDateBtn '+(dateSpec?'':'empty')+'">'+esc(dateSpec?displayDateSpec(dateSpec):'Scrivi la data')+'</button>'+
+    '<input class="rDateText" type="text" inputmode="text" autocomplete="off" placeholder="'+(type==='income'?'Es. 10 del mese':'Es. 1 del mese')+'" value="'+escAttr(dateText)+'">'+
     '<button class="rDelete" aria-label="Elimina riga">×</button><div class="rowMeta">'+(draft&&draft.recurrence?esc(recurrenceSummary(draft.recurrence)):'')+'</div>';
   el.appendChild(r);
+  const syncDate=()=>{
+    const raw=r.querySelector('.rDateText').value.trim();
+    const parsed=parseSetupDate(raw);
+    if(parsed){
+      r.dataset.dateSpec=JSON.stringify(parsed.spec);
+      r.dataset.recurrence=JSON.stringify(parsed.recurrence);
+      r.querySelector('.rDate').value=parsed.date;
+      r.querySelector('.rowMeta').textContent=recurrenceSummary(parsed.recurrence);
+      r.querySelector('.rDateText').removeAttribute('aria-invalid');
+    }else{
+      r.dataset.dateSpec='';
+      r.dataset.recurrence='';
+      r.querySelector('.rDate').value='';
+      r.querySelector('.rowMeta').textContent='';
+      if(raw)r.querySelector('.rDateText').setAttribute('aria-invalid','true');
+    }
+    persistSetupDraft(containerIdFor(type),type);
+  };
   r.querySelector('.rDelete').onclick=()=>{r.remove();if(!el.querySelector('.entryRow'))appendSetupRow(el,type,null);persistSetupDraft(containerIdFor(type),type)};
   r.querySelectorAll('.rName,.rAmount').forEach(inp=>inp.addEventListener('input',()=>persistSetupDraft(containerIdFor(type),type)));
-  r.querySelector('.rDateBtn').onclick=()=>{
-    let initial=null;try{initial=JSON.parse(r.dataset.dateSpec||'null')}catch(e){}
-    openDateChooser(initial,spec=>{
-      const date=specDeadline(spec);
-      r.dataset.dateSpec=JSON.stringify(spec);r.querySelector('.rDate').value=date;r.querySelector('.rDateBtn').textContent=displayDateSpec(spec);r.querySelector('.rDateBtn').classList.remove('empty');
-      let cfg=null;try{cfg=JSON.parse(r.dataset.recurrence||'null')}catch(e){}
-      if(cfg){
-        const ym=date.slice(0,7);
-        if(cfg.kind==='monthly')cfg.startMonth=ym;if(cfg.kind==='single')cfg.month=ym;if(cfg.kind==='custom')cfg.startDate=date;if(cfg.kind==='count')cfg.startMonth=ym;if(cfg.kind==='until')cfg.startMonth=ym;
-        r.dataset.recurrence=JSON.stringify(cfg);r.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);
-      }else{persistSetupDraft(containerIdFor(type),type);openSetupRepeatChoice(r,type)}
-    });
-  };
+  r.querySelector('.rDateText').addEventListener('input',syncDate);
+  r.querySelector('.rDateText').addEventListener('blur',syncDate);
 }
 function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
-function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDate').value)}
+function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDateText').value.trim())}
 function cleanAmount(v){
   let s=String(v||'').replace(/€/g,'').replace(/\s/g,'');
   if(s.includes(',')&&s.includes('.'))s=s.lastIndexOf(',')>s.lastIndexOf('.')?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');
