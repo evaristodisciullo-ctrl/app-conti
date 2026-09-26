@@ -1447,9 +1447,9 @@ function openEntryEditor(entry,type){
   openModal(title,
     '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
-    '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
-    '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn '+(dateValue?'':'empty')+'">'+esc(dateValue?displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}):'Scrivi la data')+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
-    '<div class="field"><label>Frequenza</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo</label><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"></div>'+
+    '<div class="field"><label>Data</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div class="manualDateHelp">Scrivi la data direttamente. Non si apre nessun calendario.</div><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita.</div></div>'+
+    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
     '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
@@ -1464,15 +1464,43 @@ function openEntryEditor(entry,type){
   );
   $('modal').classList.add('fullEditor');
   if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
-  let editorDateSpec=entry&&entry.dateSpec||(dateValue?{kind:'day',iso:dateValue}:null);
-  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;const newDate=specDeadline(spec);$('editDate').value=newDate;$('editDateDisplay').textContent=displayDateSpec(spec);$('editDateDisplay').classList.remove('empty');if($('editRecKind').value==='custom'){try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=newDate;if(cfg.endMode==='date'&&cfg.endDate<newDate)cfg.endDate=newDate;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}}renderEditRecExtra(rec||null)});
-  $('editRecKind').value=rec?rec.kind:'';
+  let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
+  $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
   if(rec&&rec.kind==='custom')$('editRecKind').dataset.custom=JSON.stringify(rec);
   renderEditRecExtra(rec||null);
-  const paintRec=()=>{const k=$('editRecKind').value;document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));$('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{})};
+  const paintRec=()=>{
+    const k=$('editRecKind').value;
+    document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));
+    $('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{});
+  };
+  const syncDate=()=>{
+    const spec=parseRequiredDay($('editDateText').value);
+    const hasText=$('editDateText').value.trim()!=='';
+    $('editDateError').classList.toggle('hidden',!hasText||!!spec);
+    if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
+    editorDateSpec=spec;
+    $('editDate').value=spec.iso;
+    $('editRecurrenceBlock').classList.remove('hidden');
+    let k=$('editRecKind').value;
+    if(!k){k='single';$('editRecKind').value=k}
+    if(k==='single')$('editRecKind').value='single';
+    if(k==='monthly')$('editRecKind').value='monthly';
+    if(k==='custom'){
+      try{
+        const cfg=JSON.parse($('editRecKind').dataset.custom||'null');
+        if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}
+      }catch(e){}
+    }
+    renderEditRecExtra(rec||null);paintRec();return true;
+  };
+  $('editDateText').addEventListener('input',syncDate);
+  $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
-    if(b.dataset.kind==='custom'){openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return}
+    if(b.dataset.kind==='custom'){
+      if(!syncDate())return flashModal('Scrivi prima una data valida.');
+      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return
+    }
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
   paintRec();
@@ -1489,7 +1517,8 @@ function openEntryEditor(entry,type){
   $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
   $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
   $('editSave').onclick=()=>{
-    const name=$('editName').value.trim(),amount=Number($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
+    const dateOk=syncDate();
+    const name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
     const day=date?Number(date.slice(8,10)):0;
     let category=$('editCategory').value;
     if(category==='__new__'){
@@ -1498,9 +1527,10 @@ function openEntryEditor(entry,type){
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
     const notify=$('editNotify').checked;
-    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
+    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
     const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
-    if(!name||!Number.isFinite(amount)||amount<=0||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
+    if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
     if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
     else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,notify,notifyRule,note})}
