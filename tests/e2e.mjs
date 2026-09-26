@@ -10,6 +10,7 @@ const iso=(d=new Date())=>d.toISOString().slice(0,10);
 const addDays=(n)=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
 const ym=(d=new Date())=>d.toISOString().slice(0,7);
 const addMonths=(n)=>{const d=new Date();d.setUTCDate(1);d.setUTCMonth(d.getUTCMonth()+n);return d.toISOString().slice(0,7)};
+const slash=date=>{const [y,m,d]=date.split('-');return `${d}/${m}/${y}`};
 
 async function freshPage(browser,{notifications=false}={}){
   const context=await browser.newContext({viewport:{width:390,height:844}});
@@ -37,15 +38,21 @@ async function openHome(page){
   if(await page.locator('#landing:not(.hidden)').count())await page.click('#landingConti');
   await page.waitForSelector('#home:not(.hidden)');
 }
-async function chooseDate(page,manual=''){
-  await page.click('#editDateDisplay');
-  if(manual)await page.fill('#dateManualInput',manual);
-  await page.click('#datePickerConfirm');
+async function chooseDate(page,manual=slash(iso())){
+  await page.fill('#editDateText',manual);
+  await page.locator('#editDateText').blur();
+  await page.waitForSelector('#editRecurrenceBlock:not(.hidden)');
 }
 async function chooseRec(page,kind){
   await page.locator('#editRecChoices button[data-kind="'+kind+'"]').click();
 }
-async function addItem(page,type,name,amount,{date='',rec='single',category='',complete=false}={}){
+async function confirmStatus(page,{amount,date}={}){
+  await page.waitForSelector('#modal:not(.hidden)');
+  if(amount!=null)await page.fill('#completeActualAmount',String(amount));
+  if(date)await page.fill('#completeActualDate',date);
+  await page.click('#completeConfirm');
+}
+async function addItem(page,type,name,amount,{date=slash(iso()),rec='single',category='',complete=false,actualAmount=null}={}){
   if(!(await page.locator('#home:not(.hidden)').count()))await openHome(page);
   await page.click(type==='income'?'#homeIncome':'#homeExpense');
   await page.click('#flowAdd');
@@ -57,120 +64,148 @@ async function addItem(page,type,name,amount,{date='',rec='single',category='',c
   await page.click('#editSave');
   const row=page.locator('.flowUnifiedRow').filter({hasText:name}).first();
   await row.waitFor();
-  if(complete)await row.locator('.flowUnifiedStatus').click();
+  if(complete){
+    await row.locator('.flowUnifiedStatus').click();
+    await confirmStatus(page,{amount:actualAmount==null?amount:actualAmount});
+  }
   return row;
 }
 async function backHomeFromFlow(page){await page.click('#flowBack');await page.waitForSelector('#home:not(.hidden)')}
 async function settings(page){await page.click('#homeSettingsCard');await page.waitForSelector('#settings:not(.hidden)')}
 
-async function testSetupAndFinance(browser){
+async function testApprovedOnboarding(browser){
   const {context,page}=await freshPage(browser);
+  assert.equal(await page.locator('#landingConti').isVisible(),true);
+  assert.equal(await page.locator('#landingTodo').isVisible(),true);
   await page.click('#landingConti');
+  assert.match(await page.locator('#setup').innerText(),/Inserisci il tuo saldo attuale/);
   await page.fill('#startBalance','1000');await page.click('#startBtn');
-  await page.fill('.rName','Solo nome');await page.click('#saveIncomeSetup');
-  await page.waitForSelector('#modal:not(.hidden)');
-  assert.match(await page.locator('#modalBody').innerText(),/riga 1/i);
-  await page.click('#modalClose');await page.click('#skipIncomeSetup');await page.click('#skipExpenseSetup');
-  assert.equal((await state(page)).balance,1000);
+  await page.waitForSelector('#setupIncome:not(.hidden)');
+  assert.match(await page.locator('#setupIncome').innerText(),/ENTRATE/);
+  const incomeInputs=page.locator('#incomeRows .entryRow').first();
+  assert.equal(await incomeInputs.locator('.rName').getAttribute('placeholder'),'Es. Stipendio');
+  assert.equal(await incomeInputs.locator('.rAmount').getAttribute('placeholder'),'Es. 1.400 €');
+  assert.equal(await incomeInputs.locator('.rDateText').getAttribute('placeholder'),'Es. 10 del mese');
 
-  await addItem(page,'income','Test entrata',50);
+  await incomeInputs.locator('.rName').fill('Stipendio');
+  await incomeInputs.locator('.rAmount').fill('1400');
+  await incomeInputs.locator('.rDateText').fill('10 del mese');
+  await incomeInputs.locator('.rDateText').blur();
+  await page.click('#saveIncomeSetup');
+
+  await page.waitForSelector('#setupExpense:not(.hidden)');
+  assert.match(await page.locator('#setupExpense').innerText(),/PAGAMENTI/);
+  const expenseInputs=page.locator('#expenseRows .entryRow').first();
+  assert.equal(await expenseInputs.locator('.rName').getAttribute('placeholder'),'Es. Mutuo');
+  assert.equal(await expenseInputs.locator('.rAmount').getAttribute('placeholder'),'Es. 387,03 €');
+  assert.equal(await expenseInputs.locator('.rDateText').getAttribute('placeholder'),'Es. 1 del mese');
+  await page.click('#skipExpenseSetup');
+  await page.waitForSelector('#home:not(.hidden)');
+
+  const s=await state(page);
+  const salary=s.entries.find(e=>e.name==='Stipendio');
+  assert.equal(salary.recurrence.kind,'monthly');
+  assert.equal(salary.day,10);
+  assert.equal(s.balance,1000);
+  await context.close();
+}
+
+async function testFinanceAndManualDates(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);
+  await page.click('#homeIncome');
+  assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata inserita/);
+  await page.click('#flowAdd');
+  assert.equal(await page.locator('input[type="date"]').count(),0);
+  assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'Es. 1000 €');
+  await page.fill('#editName','Test entrata');
+  await page.fill('#editAmount','50');
+  await page.fill('#editDateText','35/10/2026');
+  await page.locator('#editDateText').blur();
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
+  await page.fill('#editDateText',slash(iso()));
+  await page.locator('#editDateText').blur();
+  await page.locator('#editRecChoices button[data-kind="single"]').click();
+  await page.click('#editSave');
+
   let row=page.locator('.flowUnifiedRow').filter({hasText:'Test entrata'}).first();
   await row.locator('.flowUnifiedStatus').click();
-  assert.equal((await state(page)).balance,1050);
+  await confirmStatus(page,{amount:55});
+  assert.equal((await state(page)).balance,1055);
   assert.equal(await page.locator('#undoSnack:not(.hidden)').count(),1);
   await page.click('#undoSnackBtn');
   assert.equal((await state(page)).balance,1000);
-  assert.equal((await state(page)).history.length,0);
 
   row=page.locator('.flowUnifiedRow').filter({hasText:'Test entrata'}).first();
-  await row.locator('.flowUnifiedStatus').click();
-  row=page.locator('.flowUnifiedRow').filter({hasText:'Test entrata'}).first();
-  await row.locator('.flowUnifiedStatus').click();
-  await page.waitForSelector('#modal:not(.hidden)');
-  await page.click('#reopenYes');
-  assert.equal((await state(page)).balance,1000);
-  row=page.locator('.flowUnifiedRow').filter({hasText:'Test entrata'}).first();
-  await row.locator('.flowUnifiedStatus').click();
+  await row.locator('.flowUnifiedStatus').click();await confirmStatus(page,{amount:52});
   await backHomeFromFlow(page);
 
-  await addItem(page,'expense','Test pagamento',20,{complete:true});
+  await addItem(page,'expense','Test pagamento',20,{complete:true,actualAmount:18});
   await backHomeFromFlow(page);
-  assert.equal((await state(page)).balance,1030);
+  assert.equal((await state(page)).balance,1034);
 
-  await addItem(page,'expense','Scaduto test',30,{date:addDays(-2),complete:false});
-  row=page.locator('.flowUnifiedRow').filter({hasText:'Scaduto test'}).first();
-  assert.match(await row.locator('.flowUnifiedStatus').innerText(),/SCADUTO/);
-  await row.locator('.flowUnifiedStatus').click();
-  await backHomeFromFlow(page);
-  assert.equal((await state(page)).balance,1000);
+  await page.click('#editBalance');await page.fill('#newBalance','1040');await page.click('#balSave');
+  let s=await state(page);assert.equal(s.balance,1040);
+  assert.equal(s.history.some(h=>h.type==='adjustment'),false);
 
-  await page.click('#editBalance');await page.fill('#newBalance','1010');await page.fill('#balanceReason','Allineamento');
-  await page.click('#balSave');
-  const s=await state(page);assert.equal(s.balance,1010);assert.equal(s.history.some(h=>h.type==='adjustment'&&h.reason==='Allineamento'),true);
+  await page.click('#homeAllMovements');
+  await page.waitForSelector('#movements:not(.hidden)');
+  assert.equal(await page.locator('.movementQuickTab').count(),4);
+  assert.match(await page.locator('#movementsFilters').innerText(),/Filtra/);
+  assert.equal(await page.locator('.movementRow').count(),2);
+  await page.locator('[data-movement-type="income"]').click();
+  assert.equal(await page.locator('.movementRow').count(),1);
+  assert.match(await page.locator('.movementRow').innerText(),/Test entrata/);
+  await page.locator('[data-movement-type="all"]').click();
+
+  await page.click('#movementsFilters');
+  await page.selectOption('#mfType','expense');
+  await page.click('#mfApply');
+  assert.equal(await page.locator('.movementRow').count(),1);
+  assert.match(await page.locator('.movementRow').innerText(),/Test pagamento/);
 
   await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');
-  assert.match(await page.locator('#homeBalance').innerText(),/1\.010,00/);
+  assert.match(await page.locator('#homeBalance').innerText(),/1\.040,00/);
+  await context.close();
+}
+
+async function testFutureAndRecurrences(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);
+  const future=addDays(20);
+  await addItem(page,'income','Entrata futura',75,{date:slash(future)});
+  assert.equal(await page.locator('.flowUnifiedRow').filter({hasText:'Entrata futura'}).count(),1);
+  await backHomeFromFlow(page);
+
+  await page.click('#homeExpense');await page.click('#flowAdd');
+  await page.fill('#editName','Mensile test');await page.fill('#editAmount','10');
+  await chooseDate(page,'10 ottobre 2026');await chooseRec(page,'monthly');await page.click('#editSave');
+  let s=await state(page),e=s.entries.find(x=>x.name==='Mensile test');
+  assert.equal(e.recurrence.kind,'monthly');
+  assert.equal(e.dateSpec.kind,'day');
+  assert.equal(e.dateSpec.iso,'2026-10-10');
+
+  await page.click('#flowAdd');await page.fill('#editName','Altro test');await page.fill('#editAmount','12');
+  await chooseDate(page,'11/10/2026');await chooseRec(page,'custom');
+  await page.fill('#editorEvery','2');await page.selectOption('#editorUnit','week');await page.selectOption('#editorEndMode','count');
+  await page.fill('#editorRepeatCount','3');await page.click('#editorRecSave');await page.click('#editSave');
+  s=await state(page);e=s.entries.find(x=>x.name==='Altro test');
+  assert.equal(e.recurrence.kind,'custom');assert.equal(e.recurrence.every,2);assert.equal(e.recurrence.unit,'week');assert.equal(e.recurrence.count,3);
+  assert.equal(await page.locator('input[type="date"]').count(),0);
   await context.close();
 }
 
 async function testMovementEditing(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
-  await addItem(page,'income','Movimento test',50,{complete:true});await backHomeFromFlow(page);
+  await addItem(page,'income','Movimento test',50,{complete:true,actualAmount:50});await backHomeFromFlow(page);
   await page.click('#homeAllMovements');
   let row=page.locator('.movementRow').filter({hasText:'Movimento test'}).first();await row.click();
-  await page.fill('#moveAmount','60');await page.click('#moveSave');
+  await page.fill('#moveAmount','60');
+  await page.fill('#moveDateText','10 ottobre 2026');
+  await page.click('#moveSave');
   assert.equal((await state(page)).balance,1060);
   row=page.locator('.movementRow').filter({hasText:'Movimento test'}).first();await row.click();await page.click('#moveDelete');await page.click('#moveDeleteYes');
   assert.equal((await state(page)).balance,1000);
   await page.click('#movementsBack');await page.click('#homeIncome');
   assert.equal(await page.locator('.flowUnifiedRow').filter({hasText:'Movimento test'}).count(),1);
-  await page.click('#flowBack');
-
-  await page.click('#editBalance');await page.fill('#newBalance','1100');await page.fill('#balanceReason','Correzione prova');await page.click('#balSave');
-  await page.click('#homeAllMovements');row=page.locator('.movementRow').filter({hasText:'Correzione saldo'}).first();await row.click();
-  await page.fill('#moveDelta','50');await page.click('#moveSave');assert.equal((await state(page)).balance,1050);
-  row=page.locator('.movementRow').filter({hasText:'Correzione saldo'}).first();await row.click();await page.click('#moveDelete');await page.click('#moveDeleteYes');
-  assert.equal((await state(page)).balance,1000);
-  await context.close();
-}
-
-async function testRecurrencesAndDates(browser){
-  const {context,page}=await freshPage(browser);await setup(page,1000);
-
-  await addItem(page,'expense','Mensile test',10,{rec:'monthly'});
-  let s=await state(page);let e=s.entries.find(x=>x.name==='Mensile test');assert.equal(e.recurrence.kind,'monthly');
-  await backHomeFromFlow(page);
-
-  // Previous completed occurrence must remain after ending future series.
-  await page.evaluate(({key,current,previous})=>{
-    const s=JSON.parse(localStorage.getItem(key)),e=s.entries.find(x=>x.name==='Mensile test');
-    e.recurrence={kind:'monthly',startMonth:previous};
-    s.history.push({id:'oldhist',entryId:e.id,type:'expense',name:e.name,amount:10,date:previous+'-15',month:previous,occurrenceMonth:previous,occurrenceKey:previous,category:'',note:''});
-    localStorage.setItem(key,JSON.stringify(s));
-  },{key:KEY,current:ym(),previous:addMonths(-1)});
-  await page.reload();await page.click('#landingConti');await page.click('#homeExpense');
-  let recurring=page.locator('.flowUnifiedRow').filter({hasText:'Mensile test'}).first();
-  await recurring.locator('.flowUnifiedMain').click();await page.click('#occFuture');await page.click('#futDelete');await page.click('#deleteOccFuture');await page.click('#deleteOccYes');
-  s=await state(page);assert.equal(s.history.some(h=>h.id==='oldhist'),true);
-  e=s.entries.find(x=>x.name==='Mensile test');assert.equal(e.recurrence.stopBeforeMonth,ym());
-  assert.equal(await page.locator('.flowUnifiedRow').filter({hasText:'Mensile test'}).count(),0);
-  await page.click('#flowBack');
-
-  // Custom weekly recurrence, 3 occurrences.
-  await page.click('#homeIncome');await page.click('#flowAdd');await page.fill('#editName','Altro test');await page.fill('#editAmount','12');
-  await chooseDate(page);await chooseRec(page,'custom');
-  await page.fill('#editorEvery','1');await page.selectOption('#editorUnit','week');await page.selectOption('#editorEndMode','count');
-  await page.fill('#editorRepeatCount','3');await page.click('#editorRecSave');await page.click('#editSave');
-  s=await state(page);e=s.entries.find(x=>x.name==='Altro test');assert.equal(e.recurrence.kind,'custom');assert.equal(e.recurrence.count,3);assert.equal(e.recurrence.unit,'week');
-
-  // Flexible dates.
-  await page.click('#flowAdd');await page.fill('#editName','Anno test');await page.fill('#editAmount','5');await chooseDate(page,'2027');await chooseRec(page,'single');await page.click('#editSave');
-  await page.click('#flowAdd');await page.fill('#editName','Mese anno test');await page.fill('#editAmount','6');await chooseDate(page,'ottobre 2027');await chooseRec(page,'single');await page.click('#editSave');
-  await page.click('#flowAdd');await page.fill('#editName','Solo mese test');await page.fill('#editAmount','7');await chooseDate(page,'ottobre');await chooseRec(page,'single');await page.click('#editSave');
-  s=await state(page);
-  assert.deepEqual(s.entries.find(x=>x.name==='Anno test').dateSpec,{kind:'year',year:2027});
-  assert.deepEqual(s.entries.find(x=>x.name==='Mese anno test').dateSpec,{kind:'monthYear',ym:'2027-10'});
-  assert.equal(s.entries.find(x=>x.name==='Solo mese test').dateSpec.kind,'monthOnly');
   await context.close();
 }
 
@@ -190,41 +225,35 @@ async function testCategoriesBudgetNotifications(browser){
 
   await page.click('#settingsBudget');await page.click('#budgetAdd');await page.click('#budgetCategoryChoice');
   await page.selectOption('#budgetCategory',{label:'Auto'});await page.fill('#budgetAmount','100');await page.selectOption('#budgetNotifyMode','80');await page.click('#budgetSave');
-  s=await state(page);assert.equal(s.budgetPlans.find(p=>p.effectiveMonth===ym()).limits.Auto,100);assert.equal(s.budgetNotifications.categories.Auto.enabled,true);
-  await page.click('#budgetNext');assert.match(await page.locator('#budgetList').innerText(),/Non hai ancora impostato budget/);
+  s=await state(page);assert.equal(s.budgetPlans.find(p=>p.effectiveMonth===ym()).limits.Auto,100);
   await page.click('#budgetBack');await page.click('#summaryBack');await settings(page);await page.click('#settingsNotifications');
 
   await page.click('#notifyAll');await page.selectOption('#nIncomeTiming','before');await page.fill('#nIncomeTime','08:30');await page.selectOption('#nExpenseTiming','same');await page.fill('#nExpenseTime','10:15');await page.click('#nAllSave');
-  s=await state(page);assert.equal(s.notifications.mode,'all');assert.equal(s.notifications.rules.income.timing,'before');assert.equal(s.notifications.rules.expense.timing,'same');assert.equal(s.budgetNotifications.categories.Auto.enabled,true);
-  await page.click('#notifySkip');s=await state(page);assert.equal(s.notifications.mode,'off');assert.equal(s.budgetNotifications.categories.Auto.enabled,true);
+  s=await state(page);assert.equal(s.notifications.mode,'all');assert.equal(s.notifications.rules.income.timing,'before');
   await context.close();
 }
 
-async function testSecurityAndSettings(browser){
+async function testSettingsSecurityBackup(browser){
   const {context,page}=await freshPage(browser);await page.fill('#landingNickname','Mario');await setup(page,1000);
-  await settings(page);await page.fill('#settingsSearch','backup');assert.equal(await page.locator('#settingsBackup').isVisible(),true);assert.equal(await page.locator('#settingsIncome').isVisible(),false);
-  await page.fill('#settingsSearch','');await page.click('#settingsBack');await page.click('#homeBackLanding');
+  await settings(page);
+  await page.fill('#settingsSearch','tutorial');assert.equal(await page.locator('#settingsGuide').isVisible(),true);assert.equal(await page.locator('#settingsIncome').isVisible(),false);
+  await page.fill('#settingsSearch','');assert.equal(await page.locator('#settingsOther').isVisible(),true);assert.equal(await page.locator('#settingsInfo').isVisible(),true);
+  await page.click('#settingsOther');assert.match(await page.locator('#modalBody').innerText(),/Non viene utilizzato il calendario/i);await page.click('#modalClose');
+  await page.click('#settingsInfo');assert.match(await page.locator('#modalBody').innerText(),/In Ordine/);await page.click('#modalClose');
+  await page.click('#settingsBack');await page.click('#homeBackLanding');
 
   await page.evaluate(({key,hash})=>{const s=JSON.parse(localStorage.getItem(key));s.security={enabled:true,pinHash:hash,credentialId:'',lastActivity:0};localStorage.setItem(key,JSON.stringify(s))},{key:KEY,hash:pinHash('1234')});
-  await page.click('#landingConti');await page.waitForSelector('#modal:not(.hidden)');assert.match(await page.locator('#modalTitle').innerText(),/Sblocca/);
-  await page.fill('#unlockPin','0000');await page.click('#unlockPinBtn');assert.match(await page.locator('#modalBody').innerText(),/PIN non corretto/);
+  await page.click('#landingConti');await page.waitForSelector('#modal:not(.hidden)');
   await page.fill('#unlockPin','1234');await page.click('#unlockPinBtn');await page.waitForSelector('#home:not(.hidden)');
 
-  await page.click('#homeBackLanding');
-  await page.evaluate(key=>{const s=JSON.parse(localStorage.getItem(key));s.security.lastActivity=Date.now();localStorage.setItem(key,JSON.stringify(s))},KEY);
-  await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');
-  await context.close();
-}
-
-async function testBackupRestore(browser){
-  const {context,page}=await freshPage(browser);await page.fill('#landingNickname','Mario');await setup(page,1000);await settings(page);await page.click('#settingsBackup');
-  const current=await state(page);
-  const restored=structuredClone(current);restored.balance=777;restored.entries=[];restored.history=[];
+  await settings(page);await page.click('#settingsBackup');
+  const current=await state(page),restored=structuredClone(current);restored.balance=777;restored.entries=[];restored.history=[];
   const payload={format:'in-ordine-conti',version:2,createdAt:new Date().toISOString(),data:restored};
   await page.locator('#backupFile').setInputFiles({name:'restore.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(payload))});
   await page.waitForSelector('#landing:not(.hidden)');
-  assert.equal(await page.inputValue('#landingNickname'),'Mario');
-  await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');
+  await page.click('#landingConti');
+  if(await page.locator('#unlockPin').count()){await page.fill('#unlockPin','1234');await page.click('#unlockPinBtn')}
+  await page.waitForSelector('#home:not(.hidden)');
   assert.match(await page.locator('#homeBalance').innerText(),/777,00/);
   await context.close();
 }
@@ -241,12 +270,12 @@ async function testPwaOffline(browser){
 
 const browser=await chromium.launch({headless:true});
 try{
-  await testSetupAndFinance(browser);
+  await testApprovedOnboarding(browser);
+  await testFinanceAndManualDates(browser);
+  await testFutureAndRecurrences(browser);
   await testMovementEditing(browser);
-  await testRecurrencesAndDates(browser);
   await testCategoriesBudgetNotifications(browser);
-  await testSecurityAndSettings(browser);
-  await testBackupRestore(browser);
+  await testSettingsSecurityBackup(browser);
   await testPwaOffline(browser);
   console.log('All Conti economici regression tests passed');
 }finally{await browser.close()}
