@@ -633,10 +633,12 @@
     <div class="settingsGroupTitle">App</div>
     <div class="settingsMenu">
       <button class="settingsRow" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsColor" data-search="colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Colore dell’app</strong><small>Scegli il colore principale</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Come funziona l’app</strong><small>Guida breve per argomento</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e ripristino</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Protezione Conti economici</strong><small>PIN e biometria</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Aspetto e colore</strong><small>Personalizza il colore principale</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Sicurezza</strong><small>PIN e biometria per Conti economici</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e dati</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsOther" data-search="altre impostazioni lingua euro data preferenze"><span class="settingsRowIcon iTeal">⋯</span><span class="settingsRowText"><strong>Altre impostazioni</strong><small>Lingua, valuta e formato date</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Tutorial dell’app</strong><small>Scegli l’argomento che vuoi capire</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iIndigo">i</span><span class="settingsRowText"><strong>Informazioni</strong><small>Versione e gestione dei dati</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
@@ -686,18 +688,34 @@ function openProfileSettings(){
 function openColorSettings(){
   let selected=state.appColor||'Blu';
   const buttons=Object.keys(APP_COLORS).map(n=>'<button class="colorChoice '+(n===selected?'active':'')+'" data-color="'+n+'">'+n+'</button>').join('');
-  openModal('Colore dell’app','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
+  openModal('Aspetto e colore','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
   $('colorGrid').querySelectorAll('.colorChoice').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);$('colorGrid').querySelectorAll('.colorChoice').forEach(x=>x.classList.toggle('active',x===b))});
   $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');closeModal()};
   $('colorSave').onclick=()=>{state.appColor=selected;save();applyAppColor(selected);closeModal()};
 }
+function openOtherSettings(){
+  openModal('Altre impostazioni',
+    '<div class="settingsMenu">'+
+      '<div class="settingsRow"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Valuta</strong><small>Euro (€)</small></span><span></span></div>'+
+      '<div class="settingsRow"><span class="settingsRowIcon iIndigo">IT</span><span class="settingsRowText"><strong>Lingua</strong><small>Italiano</small></span><span></span></div>'+
+      '<div class="settingsRow"><span class="settingsRowIcon iTeal">31</span><span class="settingsRowText"><strong>Date</strong><small>Si scrivono a mano: 10/10/2026 o 10 ottobre 2026</small></span><span></span></div>'+
+    '</div><div class="note">Nell’app non viene utilizzato il calendario per inserire le date.</div>');
+}
+function openAppInformation(){
+  openModal('Informazioni',
+    '<div class="card" style="padding:16px;margin-top:10px"><div class="settingsTitle">In Ordine</div><div class="hint">Conti e attività, tutto sotto controllo.</div>'+
+    '<div class="sumRow"><span>Sezione</span><strong>Conti economici</strong></div>'+
+    '<div class="sumRow"><span>Versione</span><strong>1.0</strong></div>'+
+    '<div class="sumRow"><span>Valuta</span><strong>Euro (€)</strong></div></div>'+
+    '<div class="note">I dati di Conti economici restano salvati nell’app sul dispositivo. Puoi creare un backup manuale da Impostazioni → Backup e dati.</div>');
+}
 const GUIDE={
-  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo con Modifica saldo.',
-  'Entrate':'Aggiungi le entrate e segnala RICEVUTO solo quando i soldi sono realmente arrivati.',
-  'Pagamenti':'Aggiungi i pagamenti e segnala PAGATO solo quando il pagamento è stato realmente effettuato.',
-  'Date e frequenza':'Scegli la data e, se serve, imposta una ricorrenza. Le scadenze si generano automaticamente.',
+  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare un movimento.',
+  'Entrate':'Aggiungi le entrate. Il saldo cambia solo quando confermi RICEVUTO con l’importo realmente incassato.',
+  'Pagamenti':'Aggiungi i pagamenti. Il saldo cambia solo quando confermi PAGATO con l’importo realmente pagato.',
+  'Date e frequenza':'Le date si scrivono a mano, per esempio 10/10/2026 oppure 10 ottobre 2026. Non si usa il calendario. Dopo una data valida scegli Una volta, Ogni mese o Altro.',
   'Stati e scadenze':'Da ricevere/Da pagare restano aperti. Dal giorno successivo alla scadenza diventano scaduti.',
-  'Movimenti':'Qui trovi solo eventi reali: Ricevuto, Pagato e Correzione saldo.',
+  'Movimenti':'Qui trovi solo operazioni realmente confermate come RICEVUTE o PAGATE.',
   'Categorie':'Le categorie sono facoltative e servono a capire dove entrano o escono i soldi.',
   'Budget':'I budget sono facoltativi e riguardano solo i pagamenti realmente effettuati.',
   'Notifiche':'Puoi attivarle per tutte le entrate e i pagamenti o gestirle voce per voce.',
@@ -2105,6 +2123,8 @@ $('settingsColor').onclick=openColorSettings;
 $('settingsGuide').onclick=openGuide;
 $('settingsBackup').onclick=openBackupSettings;
 $('settingsSecurity').onclick=openSecuritySettings;
+$('settingsOther').onclick=openOtherSettings;
+$('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>show('home');
 $('notifyAll').onclick=openGlobalNotificationRules;
