@@ -356,6 +356,40 @@
 .datePanel{margin-top:8px}.dateManual{position:relative}.dateManual:before{content:"|";position:absolute;left:12px;top:13px;color:var(--accent);font-weight:900;animation:blinkCaret 1s steps(1) infinite;z-index:1}.dateManual input{padding-left:20px!important}
 @keyframes blinkCaret{50%{opacity:0}}
 
+
+/* RIFINITURE VISIVE APPROVATE */
+.coupleScene,.flowBannerVisual{position:relative;display:block;overflow:hidden}
+.homeScene.coupleScene{height:92px}
+.miniPerson{position:absolute;width:48px;height:68px;bottom:4px}
+.miniPerson i{position:absolute;left:13px;top:0;width:25px;height:25px;border-radius:50%;background:#efb188;box-shadow:inset 0 6px 0 #294a62}
+.miniPerson b{position:absolute;left:4px;bottom:0;width:42px;height:45px;border-radius:22px 22px 9px 9px;background:#63aef0}
+.miniPerson.two i{background:#e8aa80;box-shadow:inset 0 6px 0 #6f4635}
+.miniPerson.two b{background:#8bc4f2}
+.incomeScene .miniPerson.one,.flowBannerVisual.income .miniPerson.one{left:12px}
+.incomeScene .miniPerson.two,.flowBannerVisual.income .miniPerson.two{left:48px}
+.expenseScene .miniPerson.one,.flowBannerVisual.expense .miniPerson.one{left:12px}
+.expenseScene .miniPerson.two,.flowBannerVisual.expense .miniPerson.two{left:48px}
+.homeScene .sceneMark,.flowBannerVisual .sceneMark{position:absolute;right:9px;top:9px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:950;background:#e3f3ff;color:#2479d8}
+.expenseScene .sceneMark,.flowBannerVisual.expense .sceneMark{background:#ffe7e9;color:#c03946}
+.sceneCoin,.sceneWallet{position:absolute;right:13px;bottom:5px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#ffd55a;color:#8e6800;font-size:13px;font-weight:950}
+.sceneWallet{width:32px;height:23px;border-radius:7px;background:#31597b;color:#fff;bottom:7px}
+.flowBannerVisual{width:112px;height:72px;flex:0 0 112px}
+.flowBannerVisual .miniPerson{transform:scale(.78);transform-origin:bottom left;bottom:2px}
+.flowBannerVisual .miniPerson.one{left:4px}
+.flowBannerVisual .miniPerson.two{left:34px}
+.flowBannerVisual .sceneMark{right:5px;top:6px}
+.flowBannerVisual .sceneCoin,.flowBannerVisual .sceneWallet{right:8px;bottom:5px}
+.flowUnifiedMain{grid-template-columns:minmax(64px,1.05fr) minmax(64px,.95fr) auto 14px!important;gap:7px!important}
+.flowUnifiedName,.flowUnifiedDate,.flowUnifiedAmount{font-size:12px!important;font-weight:850!important;color:var(--text)!important;line-height:1.2!important;margin:0!important}
+.flowUnifiedName,.flowUnifiedDate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flowUnifiedAmount{font-weight:950!important;white-space:nowrap!important;text-align:right}
+.flowUnifiedChevron{font-size:18px;color:#657b8d}
+.suggestionLabel{margin-top:0!important}
+@media(max-width:410px){
+  .flowUnifiedMain{grid-template-columns:minmax(54px,1fr) minmax(58px,.9fr) auto 12px!important;gap:5px!important;padding:10px 8px!important}
+  .flowUnifiedName,.flowUnifiedDate,.flowUnifiedAmount{font-size:10.5px!important}
+}
+
 </style>
 </head>
 <body>
@@ -453,14 +487,14 @@
 
   <div class="homeFeatureGrid">
     <button id="homeIncome" class="homeFeatureCard incomeFeature">
-      <span class="homeScene" aria-hidden="true">
-        <span class="person p1">●</span><span class="person p2">●</span><span class="sceneMark">↑</span>
+      <span class="homeScene coupleScene incomeScene" aria-hidden="true">
+        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↑</span><span class="sceneCoin">€</span>
       </span>
       <span class="homeFeatureText"><strong>Entrate</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
     <button id="homeExpense" class="homeFeatureCard expenseFeature">
-      <span class="homeScene" aria-hidden="true">
-        <span class="person p1">●</span><span class="person p2">●</span><span class="sceneMark">↓</span>
+      <span class="homeScene coupleScene expenseScene" aria-hidden="true">
+        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↓</span><span class="sceneWallet">€</span>
       </span>
       <span class="homeFeatureText"><strong>Pagamenti</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
@@ -512,7 +546,7 @@
   </div>
   <div class="flowBanner">
     <span><strong id="flowBannerTitle">Le tue entrate</strong><small id="flowBannerCopy">Tocca lo stato per confermare.</small></span>
-    <span style="font-size:28px" id="flowBannerIcon">↘</span>
+    <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
   <div class="flowTabs">
     <button class="flowTab active" data-flow-filter="all">Tutte</button>
@@ -1063,7 +1097,7 @@ function renderFlow(){
   $('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';
   $('flowBannerTitle').textContent=isIn?'Le tue entrate':'I tuoi pagamenti';
   $('flowBannerCopy').textContent='Tocca lo stato per '+(isIn?'segnare come ricevuto.':'segnare come pagato.');
-  $('flowBannerIcon').textContent=isIn?'↘':'↗';
+  $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='<span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">'+(isIn?'↑':'↓')+'</span><span class="'+(isIn?'sceneCoin':'sceneWallet')+'">€</span>';
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
@@ -1077,7 +1111,7 @@ function renderFlow(){
     const isOverdue=!x.done&&x.date<todayISO();
     const status=x.done?(isIn?'RICEVUTA':'PAGATO'):(isOverdue?(isIn?'SCADUTA':'SCADUTO'):(isIn?'DA RICEVERE':'DA PAGARE'));
     const cls=x.done?'done':(isOverdue?'overdue':'pending');
-    row.innerHTML='<button class="flowUnifiedMain"><span><span class="flowUnifiedName">'+esc(x.name)+'</span><span class="flowUnifiedDate">'+fmtMovementDate(x.date)+'</span></span><span class="flowUnifiedAmount">'+money(x.amount)+'</span><span>›</span></button><button class="flowUnifiedStatus '+cls+'">'+status+' ›</button>';
+    row.innerHTML='<button class="flowUnifiedMain"><span class="flowUnifiedName">'+esc(x.name)+'</span><span class="flowUnifiedDate">'+esc(x.dateLabel||fmtMovementDate(x.date))+'</span><span class="flowUnifiedAmount">'+money(x.amount)+'</span><span class="flowUnifiedChevron">›</span></button><button class="flowUnifiedStatus '+cls+'">'+status+' ›</button>';
     row.querySelector('.flowUnifiedMain').onclick=()=>x.done?openMovementDetail(x.id):openOccurrenceActions(x);
     row.querySelector('.flowUnifiedStatus').onclick=()=>x.done?openReopenMovement(x):completeOccurrenceImmediate(x);
     el.appendChild(row);
@@ -1220,8 +1254,8 @@ function openEntryEditor(entry,type){
   const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
   const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
   openModal(title,
-    suggestions+
     '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    suggestions+
     '<div class="field"><label>Importo</label><input id="editAmount" type="number" min="0.01" step="0.01" inputmode="decimal" value="'+(entry?entry.amount:'')+'"></div>'+
     '<div class="field"><label>Data</label><input id="editDate" type="hidden" value="'+dateValue+'"><button type="button" id="editDateDisplay" class="dateDisplayBtn '+(dateValue?'':'empty')+'">'+esc(dateValue?displayDateSpec(entry&&entry.dateSpec||{kind:'day',iso:dateValue}):'Scrivi la data')+'</button><div class="hint">Puoi scrivere una data completa, solo il mese o solo l’anno.</div></div>'+
     '<div class="field"><label>Frequenza</label><select id="editRecKind">'+recurrenceOptions()+'</select></div>'+
