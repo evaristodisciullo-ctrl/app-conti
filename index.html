@@ -1053,13 +1053,13 @@ function openSetupAdvanced(row,type,date){
     '<div id="setupEndExtra"></div>'+
     '<div class="modalBtns"><button id="setupOtherCancel" class="btn secondary">Annulla</button><button id="setupOtherSave" class="btn">Conferma</button></div>');
   $('setupUnit').value=current.unit||'month';$('setupEndMode').value=current.endMode||'never';
-  const draw=()=>{const m=$('setupEndMode').value;if(m==='count')$('setupEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="setupRepeatCount" type="number" min="1" value="'+Number(current.count||2)+'"></div>';else if(m==='date')$('setupEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="setupEndDate" type="date" value="'+escAttr(current.endDate||addDaysISO(date,30))+'"></div>';else $('setupEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
+  const draw=()=>{const m=$('setupEndMode').value;if(m==='count')$('setupEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="setupRepeatCount" type="number" min="1" value="'+Number(current.count||2)+'"></div>';else if(m==='date')$('setupEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="setupEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(current.endDate||addDaysISO(date,30)))+'"></div>';else $('setupEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
   draw();$('setupEndMode').onchange=draw;
   $('setupOtherCancel').onclick=()=>openSetupRepeatChoice(row,type);
   $('setupOtherSave').onclick=()=>{
     const endMode=$('setupEndMode').value,cfg={kind:'custom',startDate:date,every:Number($('setupEvery').value),unit:$('setupUnit').value,endMode};
     if(endMode==='count')cfg.count=Number($('setupRepeatCount').value);
-    if(endMode==='date')cfg.endDate=$('setupEndDate').value;
+    if(endMode==='date'){const spec=parseRequiredDay($('setupEndDate').value);if(!spec)return flashModal('Controlla la data finale.');cfg.endDate=spec.iso}
     if(!validRecurrence(cfg))return flashModal('Completa la ricorrenza.');
     row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal();
   };
