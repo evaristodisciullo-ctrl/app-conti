@@ -1,5 +1,10 @@
-const CACHE='in-ordine-v3';
-const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js'];
+const CACHE='in-ordine-v4';
+const CORE=[
+  './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
+  './assets/landing-bg.webp','./assets/saldo-bg.webp',
+  './assets/home-income-art.webp','./assets/home-payment-art.webp',
+  './assets/income-banner.webp','./assets/payment-banner.webp','./assets/wallet-art.webp'
+];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
