@@ -396,6 +396,15 @@
 .recChoiceGrid button.active{background:#e8f3ff;border-color:#91c4ef;color:#1e70b9;box-shadow:0 0 0 2px rgba(36,121,216,.06)}
 .recInterval{display:grid;grid-template-columns:90px 1fr;gap:8px}
 
+
+.stateChoiceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.stateChoiceGrid button{border:1px solid #d7e1e8;background:#fff;border-radius:11px;min-height:42px;padding:6px;font-size:10px;font-weight:900;color:#647586}
+.stateChoiceGrid button.active{background:#ddf5e8;border-color:#a9ddc1;color:#087b52}
+.stateChoiceGrid button.overdue{background:#ffe5e7;border-color:#efbec2;color:#b32632}
+.readOnlyBox{min-height:48px;border:1px solid var(--line);border-radius:13px;background:#f7fafc;padding:13px;color:#526575;font-weight:800}
+.flowUnifiedDate{overflow:visible!important;text-overflow:clip!important}
+@media(max-width:410px){.flowUnifiedName,.flowUnifiedDate,.flowUnifiedAmount{font-size:9.5px!important}.flowUnifiedMain{grid-template-columns:minmax(54px,.9fr) minmax(82px,1.2fr) auto 10px!important}}
+
 </style>
 </head>
 <body>
@@ -1580,6 +1589,61 @@ async function checkDueNotifications(){
   if(!alerts.length)return;
   const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
   try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+}
+function openMovementDetail(id){
+  const h=state.history.find(x=>x.id===id);if(!h)return;
+  if(h.type==='adjustment'){
+    openModal('Correzione saldo',
+      '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="number" step="0.01" value="'+Number(h.delta||0)+'"></div>'+
+      '<div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+      '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="moveReason" value="'+escAttr(h.reason||'')+'"></div>'+
+      '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
+    $('modal').classList.add('fullEditor');
+    $('moveSave').onclick=()=>{const nd=Number($('moveDelta').value),date=$('moveDate').value;if(!Number.isFinite(nd)||!date)return flashModal('Controlla importo e data.');const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=date;h.month=date.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements()};
+    $('moveDelete').onclick=()=>confirmDeleteMovement(h);
+    return;
+  }
+  const type=h.type,isIncome=type==='income',entry=h.entryId?state.entries.find(e=>e.id===h.entryId):null;
+  const planned=entry?(()=>{
+    if(entry.recurrence&&entry.recurrence.kind==='custom'){
+      const all=customOccurrenceObjects(entry,h.occurrenceMonth||h.month);return all.find(o=>o.occurrenceKey===(h.occurrenceKey||''))||null;
+    }
+    return effectiveOccurrence(entry,h.occurrenceMonth||h.month);
+  })():null;
+  const dueDate=planned&&planned.date||h.date;
+  const overdue=dueDate<todayISO();
+  openModal(isIncome?'Modifica entrata':'Modifica pagamento',
+    '<div class="field"><label>Nome</label><input id="moveName" value="'+escAttr(h.name||'')+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="moveAmount" type="number" min="0.01" step="0.01" value="'+Number(h.amount||0)+'"></div>'+
+    '<div class="field"><label>Data movimento</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+    '<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="moveOpenState">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" class="active">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" class="'+(overdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>'+
+    (entry?'<div class="field"><label>Frequenza</label><div class="readOnlyBox">'+esc(recurrenceSummary(entry.recurrence))+'</div></div>':'')+
+    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="moveCategory">'+categoryOptions(type,h.category||'')+'</select></div>'+
+    '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="moveNote">'+esc(h.note||'')+'</textarea></div>'+
+    '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
+  $('modal').classList.add('fullEditor');
+  $('moveOpenState').onclick=()=>openReopenMovement(h);
+  $('moveSave').onclick=()=>{
+    const name=$('moveName').value.trim(),a=Number($('moveAmount').value),date=$('moveDate').value;
+    if(!name||!Number.isFinite(a)||a<=0||!date)return flashModal('Controlla nome, importo e data.');
+    const old=Number(h.amount||0),diff=a-old;
+    state.balance=Number(state.balance||0)+(type==='income'?diff:-diff);
+    h.name=name;h.amount=a;h.date=date;h.month=date.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();
+    save();closeModal();renderMovements();if(!$('flow').classList.contains('hidden'))renderFlow();if(type==='expense')checkBudgetNotifications(false);
+  };
+  $('moveDelete').onclick=()=>confirmDeleteMovement(h);
+}
+function confirmDeleteMovement(h){
+  openModal('Elimina movimento','<div class="note">Il movimento verrà eliminato e il saldo verrà corretto. Se era collegato a una voce programmata, quella scadenza tornerà aperta.</div><div class="modalBtns"><button id="moveDeleteNo" class="btn secondary">Annulla</button><button id="moveDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+  $('moveDeleteNo').onclick=closeModal;
+  $('moveDeleteYes').onclick=()=>{
+    if(h.type==='adjustment')state.balance=Number(state.balance||0)-Number(h.delta||0);
+    else state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
+    state.history=state.history.filter(x=>x.id!==h.id);save();closeModal();
+    if(!$('movements').classList.contains('hidden'))renderMovements();
+    if(!$('flow').classList.contains('hidden'))renderFlow();
+    if(!$('home').classList.contains('hidden'))renderHome();
+  };
 }
 function movementNames(){
   return Array.from(new Set(state.history.map(x=>x.name).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
