@@ -228,7 +228,7 @@ async function testCategoriesBudgetNotifications(browser){
   await page.selectOption('#budgetCategory',{label:'Auto'});await page.fill('#budgetAmount','100');await page.selectOption('#budgetNotifyMode','80');await page.click('#budgetSave');
   s=await state(page);assert.equal(s.budgetPlans.find(p=>p.effectiveMonth===ym()).limits.Auto,100);
   if(await page.locator('#modal:not(.hidden)').count())await page.click('#modalClose');
-  await page.click('#budgetBack');await page.click('#summaryBack');await settings(page);await page.click('#settingsNotifications');
+  await page.click('#budgetBack');await page.waitForSelector('#settings:not(.hidden)');await page.click('#settingsNotifications');
 
   await page.click('#notifyAll');await page.selectOption('#nIncomeTiming','before');await page.fill('#nIncomeTime','08:30');await page.selectOption('#nExpenseTiming','same');await page.fill('#nExpenseTime','10:15');await page.click('#nAllSave');
   s=await state(page);assert.equal(s.notifications.mode,'all');assert.equal(s.notifications.rules.income.timing,'before');
@@ -240,6 +240,7 @@ async function testSettingsSecurityBackup(browser){
   await settings(page);
   await page.fill('#settingsSearch','tutorial');assert.equal(await page.locator('#settingsGuide').isVisible(),true);assert.equal(await page.locator('#settingsIncome').isVisible(),false);
   await page.fill('#settingsSearch','');assert.equal(await page.locator('#settingsOther').isVisible(),true);assert.equal(await page.locator('#settingsInfo').isVisible(),true);
+  await page.click('#settingsIncome');await page.click('#entityHubManage');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowBack');await page.waitForSelector('#settings:not(.hidden)');
   await page.click('#settingsOther');assert.match(await page.locator('#modalBody').innerText(),/Non viene utilizzato il calendario/i);await page.click('#modalClose');
   await page.click('#settingsInfo');assert.match(await page.locator('#modalBody').innerText(),/In Ordine/);await page.click('#modalClose');
   await page.click('#settingsBack');await page.click('#homeBackLanding');
