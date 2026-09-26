@@ -1252,8 +1252,21 @@ function renderFlow(){
 function completeOccurrenceImmediate(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   if(historyFor(x.entryId,x.occurrenceKey||x.month))return;
-  const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount:Number(x.amount),date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,occurrenceKey:x.occurrenceKey||x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
-  state.history.push(h);state.balance=Number(state.balance||0)+(x.type==='income'?h.amount:-h.amount);save();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+  const isIncome=x.type==='income';
+  openModal(isIncome?'Segna come ricevuta':'Segna come pagato',
+    '<div class="hint">'+(isIncome?'Inserisci l’importo realmente ricevuto.':'Conferma l’importo realmente pagato.')+'</div>'+
+    '<div class="field"><label>Importo</label><input id="completeActualAmount" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(x.amount||''))+'"></div>'+
+    '<div class="field"><label>Data</label><input id="completeActualDate" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(todayISO()))+'"><div class="manualDateHelp">Puoi correggere la data scrivendola.</div></div>'+
+    '<div class="modalBtns"><button id="completeCancel" class="btn secondary">Annulla</button><button id="completeConfirm" class="btn">'+(isIncome?'RICEVUTO':'PAGATO')+'</button></div>');
+  $('completeCancel').onclick=closeModal;
+  $('completeConfirm').onclick=()=>{
+    const amount=cleanAmount($('completeActualAmount').value),spec=parseRequiredDay($('completeActualDate').value);
+    if(!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla importo e data.');
+    const actualDate=spec.iso,h={id:'h'+Date.now()+Math.random(),entryId:x.entryId,type:x.type,name:x.name,amount,date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:x.month,occurrenceKey:x.occurrenceKey||x.month,category:x.category||entry.category||'',note:x.note||entry.note||''};
+    state.history.push(h);
+    state.balance=Number(state.balance||0)+(isIncome?amount:-amount);
+    save();closeModal();renderFlow();showUndoSnack(h);checkDueNotifications();if(x.type==='expense')checkBudgetNotifications(false);
+  };
 }
 function openReopenMovement(h){
   openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
@@ -1768,12 +1781,17 @@ function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
   if(h.type==='adjustment'){
     openModal('Correzione saldo',
-      '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="number" step="0.01" value="'+Number(h.delta||0)+'"></div>'+
-      '<div class="field"><label>Data</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+      '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="text" inputmode="decimal" value="'+Number(h.delta||0)+'"></div>'+
+      '<div class="field"><label>Data</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"></div>'+
       '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="moveReason" value="'+escAttr(h.reason||'')+'"></div>'+
+      '<div class="note">Questa è una correzione creata da una versione precedente dell’app.</div>'+
       '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
     $('modal').classList.add('fullEditor');
-    $('moveSave').onclick=()=>{const nd=Number($('moveDelta').value),date=$('moveDate').value;if(!Number.isFinite(nd)||!date)return flashModal('Controlla importo e data.');const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=date;h.month=date.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements()};
+    $('moveSave').onclick=()=>{
+      const nd=cleanAmount($('moveDelta').value),spec=parseRequiredDay($('moveDateText').value);
+      if(!Number.isFinite(nd)||!spec)return flashModal('Controlla importo e data.');
+      const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=spec.iso;h.month=spec.iso.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();
+    };
     $('moveDelete').onclick=()=>confirmDeleteMovement(h);
     return;
   }
@@ -1786,23 +1804,23 @@ function openMovementDetail(id){
   })():null;
   const dueDate=planned&&planned.date||h.date;
   const overdue=dueDate<todayISO();
-  openModal(isIncome?'Modifica entrata':'Modifica pagamento',
+  openModal(isIncome?'Dettaglio entrata':'Dettaglio pagamento',
     '<div class="field"><label>Nome</label><input id="moveName" value="'+escAttr(h.name||'')+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="moveAmount" type="number" min="0.01" step="0.01" value="'+Number(h.amount||0)+'"></div>'+
-    '<div class="field"><label>Data movimento</label><input id="moveDate" type="date" value="'+h.date+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="moveAmount" type="text" inputmode="decimal" value="'+Number(h.amount||0)+'"></div>'+
+    '<div class="field"><label>Data movimento</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"><div class="manualDateHelp">La data si modifica scrivendola.</div></div>'+
     '<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="moveOpenState">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" class="active">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" class="'+(overdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>'+
-    (entry?'<div class="field"><label>Frequenza</label><div class="readOnlyBox">'+esc(recurrenceSummary(entry.recurrence))+'</div></div>':'')+
+    (entry?'<div class="field"><label>Ripetizione</label><div class="readOnlyBox">'+esc(recurrenceSummary(entry.recurrence))+'</div></div>':'')+
     '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="moveCategory">'+categoryOptions(type,h.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="moveNote">'+esc(h.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="moveDelete" class="btn deleteBtn">Elimina movimento</button><button id="moveSave" class="btn">Salva modifiche</button></div>');
   $('modal').classList.add('fullEditor');
   $('moveOpenState').onclick=()=>openReopenMovement(h);
   $('moveSave').onclick=()=>{
-    const name=$('moveName').value.trim(),a=Number($('moveAmount').value),date=$('moveDate').value;
-    if(!name||!Number.isFinite(a)||a<=0||!date)return flashModal('Controlla nome, importo e data.');
-    const old=Number(h.amount||0),diff=a-old;
+    const name=$('moveName').value.trim(),amount=cleanAmount($('moveAmount').value),spec=parseRequiredDay($('moveDateText').value);
+    if(!name||!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla nome, importo e data.');
+    const old=Number(h.amount||0),diff=amount-old;
     state.balance=Number(state.balance||0)+(type==='income'?diff:-diff);
-    h.name=name;h.amount=a;h.date=date;h.month=date.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();
+    h.name=name;h.amount=amount;h.date=spec.iso;h.month=spec.iso.slice(0,7);h.category=$('moveCategory').value==='__new__'?'':$('moveCategory').value;h.note=$('moveNote').value.trim();
     save();closeModal();renderMovements();if(!$('flow').classList.contains('hidden'))renderFlow();if(type==='expense')checkBudgetNotifications(false);
   };
   $('moveDelete').onclick=()=>confirmDeleteMovement(h);
@@ -2000,16 +2018,15 @@ async function checkBudgetNotifications(force){
   }
 }
 function openBalanceEditor(){
-  openModal('Modifica saldo','<div class="field"><label>Saldo attuale</label><input value="'+state.balance+'" readonly></div><div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="number" step="0.01" inputmode="decimal" value="'+state.balance+'"></div><div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" placeholder="Es. pagamento dimenticato"></div><div class="note">La differenza verrà registrata nei Movimenti come Correzione saldo.</div><div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  openModal('Modifica saldo',
+    '<div class="field"><label>Saldo attuale</label><div class="readOnlyBox">'+money(state.balance)+'</div></div>'+
+    '<div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
+    '<div class="note">Questa è una correzione manuale del saldo. Non crea un’entrata, un pagamento o un movimento.</div>'+
+    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
   $('balCancel').onclick=closeModal;
   $('balSave').onclick=()=>{
-    const v=Number($('newBalance').value);
+    const v=cleanAmount($('newBalance').value);
     if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
-    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim();
-    if(Math.abs(delta)>0.0001){
-      const date=todayISO();
-      state.history.push({id:'a'+Date.now(),entryId:null,type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason,category:''});
-    }
     state.balance=v;save();closeModal();
     if(!$('home').classList.contains('hidden'))renderHome();
     if(!$('movements').classList.contains('hidden'))renderMovements();
