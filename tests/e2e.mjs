@@ -262,6 +262,23 @@ async function testSettingsSecurityBackup(browser){
   await context.close();
 }
 
+async function testEverySettingsEntryOpens(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);await settings(page);
+
+  for(const id of ['settingsEditBalance','settingsIncome','settingsExpense','settingsCategories','settingsProfile','settingsColor','settingsGuide','settingsBackup','settingsSecurity','settingsOther','settingsInfo']){
+    await page.click('#'+id);
+    await page.waitForSelector('#modal:not(.hidden)');
+    await page.click('#modalClose');
+    await page.waitForSelector('#settings:not(.hidden)');
+  }
+
+  await page.click('#settingsMovements');await page.waitForSelector('#movements:not(.hidden)');await page.click('#movementsBack');await page.waitForSelector('#settings:not(.hidden)');
+  await page.click('#settingsBudget');await page.waitForSelector('#budget:not(.hidden)');await page.click('#budgetBack');await page.waitForSelector('#settings:not(.hidden)');
+  await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
+
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);
@@ -280,6 +297,7 @@ try{
   await testMovementEditing(browser);
   await testCategoriesBudgetNotifications(browser);
   await testSettingsSecurityBackup(browser);
+  await testEverySettingsEntryOpens(browser);
   await testPwaOffline(browser);
   console.log('All Conti economici regression tests passed');
 }finally{await browser.close()}
