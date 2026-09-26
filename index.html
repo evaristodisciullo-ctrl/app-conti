@@ -1534,7 +1534,7 @@ function confirmDeleteEntry(entry){
   };
 }
 function openEditorAdvancedRecurrence(date,current,onSave){
-  if(!date){flashModal('Scegli prima la data.');return}
+  if(!date){flashModal('Scrivi prima la data.');return}
   let cfg=current&&current.kind==='custom'?current:{kind:'custom',startDate:date,every:1,unit:'month',endMode:'never'};
   openPickerModal('Altro',
     '<div class="field"><label>Si ripete ogni quanto?</label><div class="recInterval"><input id="editorEvery" type="number" min="1" value="'+Number(cfg.every||1)+'"><select id="editorUnit"><option value="week">settimana/e</option><option value="month">mese/i</option><option value="year">anno/i</option></select></div></div>'+
@@ -1542,17 +1542,32 @@ function openEditorAdvancedRecurrence(date,current,onSave){
     '<div id="editorEndExtra"></div>'+
     '<div class="modalBtns"><button id="editorRecCancel" class="btn secondary">Annulla</button><button id="editorRecSave" class="btn">Conferma</button></div>');
   p$('editorUnit').value=cfg.unit||'month';p$('editorEndMode').value=cfg.endMode||'never';
-  const draw=()=>{const m=p$('editorEndMode').value;if(m==='count')p$('editorEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="editorRepeatCount" type="number" min="1" value="'+Number(cfg.count||2)+'"></div>';else if(m==='date')p$('editorEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="editorEndDate" type="date" value="'+escAttr(cfg.endDate||addDaysISO(date,30))+'"></div>';else p$('editorEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
+  const draw=()=>{
+    const m=p$('editorEndMode').value;
+    if(m==='count')p$('editorEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="editorRepeatCount" type="number" min="1" value="'+Number(cfg.count||2)+'"></div>';
+    else if(m==='date')p$('editorEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="editorEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(cfg.endDate||addDaysISO(date,30)))+'"></div>';
+    else p$('editorEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>';
+  };
   draw();p$('editorEndMode').onchange=draw;p$('editorRecCancel').onclick=closePickerModal;
-  p$('editorRecSave').onclick=()=>{const endMode=p$('editorEndMode').value,n={kind:'custom',startDate:date,every:Number(p$('editorEvery').value),unit:p$('editorUnit').value,endMode};if(endMode==='count')n.count=Number(p$('editorRepeatCount').value);if(endMode==='date')n.endDate=p$('editorEndDate').value;if(!validRecurrence(n))return;closePickerModal();onSave(n)};
+  p$('editorRecSave').onclick=()=>{
+    const endMode=p$('editorEndMode').value,n={kind:'custom',startDate:date,every:Number(p$('editorEvery').value),unit:p$('editorUnit').value,endMode};
+    if(endMode==='count')n.count=Number(p$('editorRepeatCount').value);
+    if(endMode==='date'){const spec=parseRequiredDay(p$('editorEndDate').value);if(!spec)return;n.endDate=spec.iso}
+    if(!validRecurrence(n))return;
+    closePickerModal();onSave(n);
+  };
 }
 function renderEditRecExtra(rec){
   const kind=$('editRecKind').value;
   const base=($('editDate')&&$('editDate').value?$('editDate').value.slice(0,7):ymNow());
   let h='';
   if(kind==='count')h='<div class="field"><label>Numero mesi</label><input id="erCount" type="number" min="1" value="'+(rec&&rec.count||2)+'"></div>';
-  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="month" value="'+(rec&&rec.endMonth||addMonths(base,2))+'"></div>';
-  if(kind==='selected'){let cc='';for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>'}
+  if(kind==='until')h='<div class="field"><label>Fino a</label><input id="erEnd" type="text" inputmode="text" autocomplete="off" placeholder="Es. ottobre 2026" value="'+escAttr(rec&&rec.endMonth?monthName(rec.endMonth):monthName(addMonths(base,2)))+'"></div>';
+  if(kind==='selected'){
+    let cc='';
+    for(let i=0;i<12;i++){const ym=addMonths(base,i),checked=rec&&rec.months&&rec.months.includes(ym)?' checked':'';cc+='<label class="monthCheck"><input type="checkbox" value="'+ym+'"'+checked+'> '+monthName(ym)+'</label>'}
+    h='<div class="field"><label>Mesi</label><div id="erMonths" class="monthChecks">'+cc+'</div></div>';
+  }
   $('editRecExtra').innerHTML=h;
 }
 function collectEditRecurrence(){
@@ -1561,7 +1576,11 @@ function collectEditRecurrence(){
   if(k==='single')return{kind:k,month:start};
   if(k==='custom'){try{return JSON.parse($('editRecKind').dataset.custom||'null')}catch(e){return null}}
   if(k==='count')return{kind:k,startMonth:start,count:Number($('erCount').value)};
-  if(k==='until')return{kind:k,startMonth:start,endMonth:$('erEnd').value};
+  if(k==='until'){
+    const spec=parseFlexibleDate($('erEnd').value);
+    const endMonth=spec?(spec.kind==='monthYear'?spec.ym:spec.kind==='day'?spec.iso.slice(0,7):''):'';
+    return{kind:k,startMonth:start,endMonth};
+  }
   if(k==='selected')return{kind:k,months:Array.from(document.querySelectorAll('#erMonths input:checked')).map(x=>x.value)};
   return null;
 }
