@@ -270,6 +270,16 @@
 .optionalNoteBtn{width:100%;border:0;background:transparent;text-align:left;color:var(--accent);font-weight:900;padding:9px 2px}
 .modal textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:13px;padding:11px;resize:vertical;font:inherit}
 .movementRow{cursor:pointer}.mIcon.adjustment{background:#e8ebff;color:#4d5cc5}.mAmount.adjustment{color:#4d5cc5}
+#allMovements.list{background:transparent;border:0;border-radius:0;box-shadow:none;display:flex;flex-direction:column;gap:9px;overflow:visible}
+#allMovements .movementRow{display:grid;grid-template-columns:42px minmax(0,1fr) auto 12px;align-items:center;gap:10px;padding:12px 13px;border:1px solid #dce8f2;border-radius:16px;background:#fff;box-shadow:0 5px 16px rgba(24,67,104,.04)}
+#allMovements .mIcon{width:40px;height:40px}
+#allMovements .mDate{font-size:11px;color:#60788e;margin-top:4px}
+#allMovements .mAmountWrap{text-align:right}
+#allMovements .mAmount.expense{color:#cf252d}
+#allMovements .mType{display:inline-block;border-radius:999px;padding:3px 9px;margin-top:5px;font-size:10px;font-weight:900}
+#allMovements .mType.income{background:#dcf7e8;color:#087b52}
+#allMovements .mType.expense{background:#ffe4e5;color:#bd2029}
+
 
 
 /* HOME DEFINITIVA */
@@ -1214,17 +1224,17 @@ function renderHome(){
 }
 function renderMovementList(el,arr){
   el.innerHTML='';
-  if(!arr.length){el.innerHTML='<div class="empty">Nessun movimento confermato.</div>';return}
-  arr.forEach(x=>{
+  const clean=arr.filter(x=>x.type!=='adjustment');
+  if(!clean.length){el.innerHTML='<div class="empty">Nessun movimento.</div>';return}
+  clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isAdj=x.type==='adjustment';
-    const delta=isAdj?Number(x.delta||0):0;
-    const label=isAdj?'CORREZIONE SALDO':(x.type==='income'?'RICEVUTO':'PAGATO');
-    const sign=isAdj?(delta>=0?'+ ':'- '):(x.type==='income'?'+ ':'- ');
-    const amount=isAdj?Math.abs(delta):Number(x.amount||0);
-    const icon=isAdj?'±':(x.type==='income'?'↓':'↑');
-    r.innerHTML='<div class="mDate">'+fmtMovementDate(x.date)+'</div><div class="mIcon '+x.type+'">'+icon+'</div><div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mType">'+label+'</div>'+(isAdj&&x.reason?'<div class="mType">'+esc(x.reason)+'</div>':'')+'</div><div class="mAmount '+x.type+'">'+sign+money(amount)+'</div><div class="mChevron">›</div>';
+    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ';
+    const icon=isIncome?'€':'−';
+    r.innerHTML='<div class="mIcon '+x.type+'">'+icon+'</div>'+
+      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">'+fmtMovementDate(x.date)+'</div></div>'+
+      '<div class="mAmountWrap"><div class="mAmount '+x.type+'">'+sign+money(Number(x.amount||0))+'</div><div class="mType '+x.type+'">'+label+'</div></div>'+
+      '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
   });
