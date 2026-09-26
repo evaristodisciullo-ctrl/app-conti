@@ -1566,6 +1566,7 @@ function openEntryEditor(entry,type){
     renderEditRecExtra(rec||null);paintRec();return true;
   };
   $('editDateText').addEventListener('input',syncDate);
+  $('editDateText').addEventListener('change',syncDate);
   $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
     if(b.dataset.kind==='custom'){
