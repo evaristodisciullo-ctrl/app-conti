@@ -1213,11 +1213,33 @@ function renderMovementList(el,arr){
   });
 }
 function openFlow(type){currentFlow=type;flowFilter='all';show('flow')}
+function nextOpenOccurrenceForEntry(entry){
+  const today=todayISO(),endYm=addMonths(ymNow(),12);
+  if(entry.recurrence&&entry.recurrence.kind==='custom'){
+    return customOccurrenceObjects(entry,endYm).find(o=>o.date>=today&&!historyFor(entry.id,o.occurrenceKey))||null;
+  }
+  let cur=entryStartMonth(entry),guard=0;
+  if(cur<ymNow())cur=ymNow();
+  while(cur<=endYm&&guard++<24){
+    const occ=effectiveOccurrence(entry,cur);
+    if(occ){
+      const key=occ.occurrenceKey||cur;
+      if(occ.date>=today&&!historyFor(entry.id,key))return{entryId:entry.id,type:entry.type,name:occ.name,amount:Number(occ.amount||0),date:occ.date,dateLabel:occ.dateLabel||'',month:cur,occurrenceKey:key,category:occ.category||'',note:occ.note||''};
+    }
+    cur=addMonths(cur,1);
+  }
+  return null;
+}
 function buildFlowItems(type){
   const ym=ymNow(),today=todayISO();
+  const currentDone=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
   const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
-  const done=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
-  return [...open,...done].sort((a,b)=>{
+  const covered=new Set([...open,...currentDone].map(x=>x.entryId).filter(Boolean));
+  state.entries.filter(e=>e.type===type&&!covered.has(e.id)).forEach(e=>{
+    const next=nextOpenOccurrenceForEntry(e);
+    if(next)open.push(Object.assign({},next,{done:false,overdue:false}));
+  });
+  return [...open,...currentDone].sort((a,b)=>{
     const ra=a.done?2:(a.overdue?0:1),rb=b.done?2:(b.overdue?0:1);
     if(ra!==rb)return ra-rb;
     return a.date.localeCompare(b.date);
@@ -1237,7 +1259,7 @@ function renderFlow(){
   if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
   if(flowFilter==='done')arr=arr.filter(x=>x.done);
   const el=$('flowUnifiedList');el.innerHTML='';
-  if(!arr.length){el.innerHTML='<div class="flowEmpty">Nessuna voce da mostrare.</div>';return}
+  if(!arr.length){const msg=flowFilter==='all'?(isIn?'Nessuna entrata inserita.':'Nessun pagamento inserito.'):'Nessuna voce da mostrare.';el.innerHTML='<div class="flowEmpty">'+msg+'</div>';return}
   arr.forEach(x=>{
     const row=document.createElement('div');row.className='flowUnifiedRow';
     const isOverdue=!x.done&&x.date<todayISO();
