@@ -868,57 +868,72 @@ function specDeadline(spec){
   return '';
 }
 function parseFlexibleDate(raw){
-  const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
+  const original=String(raw||'').trim();
+  const s=original.toLowerCase().replace(/\s+/g,' ');
   if(!s)return null;
   let m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if(m)return{kind:'day',iso:s};
+  if(m){
+    const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]),dt=new Date(y,mo-1,d);
+    if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
+  }
   m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
   if(m){
     const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]),dt=new Date(y,mo-1,d);
     if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
   }
-  if(/^\d{4}$/.test(s)){const y=Number(s);if(y>=1900&&y<=2200)return{kind:'year',year:y}}
   for(let i=0;i<IT_MONTHS.length;i++){
     const name=IT_MONTHS[i],short=name.slice(0,3);
-    let rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})$');
+    let rx=new RegExp('^(\\d{1,2})\\s+(?:'+name+'|'+short+')(?:\\s+del)?\\s+(\\d{4})$','i');
     let mm=s.match(rx);
+    if(mm){
+      const d=Number(mm[1]),mo=i+1,y=Number(mm[2]),dt=new Date(y,mo-1,d);
+      if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
+    }
+    rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})$','i');
+    mm=s.match(rx);
     if(mm)return{kind:'monthYear',ym:mm[1]+'-'+String(i+1).padStart(2,'0')};
-    rx=new RegExp('^(?:'+name+'|'+short+')$');
+    rx=new RegExp('^(?:'+name+'|'+short+')$','i');
     if(rx.test(s))return{kind:'monthOnly',month:i+1};
   }
+  if(/^\d{4}$/.test(s)){const y=Number(s);if(y>=1900&&y<=2200)return{kind:'year',year:y}}
   return null;
 }
+function parseRequiredDay(raw){
+  const spec=parseFlexibleDate(raw);
+  return spec&&spec.kind==='day'?spec:null;
+}
+function manualDateText(value){
+  if(!value)return '';
+  const spec=typeof value==='string'?{kind:'day',iso:value}:value;
+  if(spec.kind==='day'&&spec.iso)return fmtMovementDate(spec.iso);
+  return displayDateSpec(spec);
+}
+function parseSetupDate(raw){
+  const s=String(raw||'').trim().toLowerCase().replace(/\s+/g,' ');
+  let m=s.match(/^(\d{1,2})\s*(?:del\s+mese|ogni\s+mese)$/);
+  if(m){
+    const day=Number(m[1]);if(day<1||day>31)return null;
+    const date=isoFor(ymNow(),day);
+    return{spec:{kind:'day',iso:date},date,recurrence:{kind:'monthly',startMonth:date.slice(0,7)},label:day+' del mese'};
+  }
+  const spec=parseRequiredDay(raw);
+  if(!spec)return null;
+  return{spec,date:spec.iso,recurrence:{kind:'single',month:spec.iso.slice(0,7)},label:manualDateText(spec)};
+}
 function openDateChooser(initialSpec,onConfirm){
-  const base=initialSpec||{kind:'day',iso:todayISO()},deadline=specDeadline(base)||todayISO();
-  const defaultMonth=deadline.slice(0,7),defaultYear=Number(deadline.slice(0,4));
-  openPickerModal('Seleziona la data',
-    '<div class="field dateManual"><label>Oppure scrivi la data</label><input id="dateManualInput" placeholder="Scrivi la data"></div>'+
-    '<div class="dateTabs"><button id="dateTabDay" class="dateTab">Giorno</button><button id="dateTabMonth" class="dateTab">Mese</button><button id="dateTabYear" class="dateTab">Anno</button></div>'+
-    '<div id="datePickerPanel" class="datePanel"></div>'+
+  const initial=initialSpec&&initialSpec.kind==='day'?manualDateText(initialSpec):'';
+  openPickerModal('Inserisci la data',
+    '<div class="field"><label>Data</label><input id="dateManualInput" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(initial)+'"></div>'+
+    '<div class="manualDateHelp">Scrivi la data. Il calendario non viene utilizzato.</div>'+
     '<div class="modalBtns"><button id="datePickerCancel" class="btn secondary">Annulla</button><button id="datePickerConfirm" class="btn">Conferma data</button></div>');
-  let mode=base.kind==='monthYear'||base.kind==='monthOnly'?'month':base.kind==='year'?'year':'day';
-  const draw=()=>{
-    document.querySelectorAll('#pickerModal .dateTab').forEach(b=>b.classList.remove('active'));
-    p$('dateTab'+(mode==='day'?'Day':mode==='month'?'Month':'Year')).classList.add('active');
-    if(mode==='day')p$('datePickerPanel').innerHTML='<div class="field"><label>Giorno</label><input id="datePickDay" type="date" value="'+deadline+'"></div>';
-    if(mode==='month')p$('datePickerPanel').innerHTML='<div class="field"><label>Mese</label><input id="datePickMonth" type="month" value="'+defaultMonth+'"></div>';
-    if(mode==='year')p$('datePickerPanel').innerHTML='<div class="field"><label>Anno</label><input id="datePickYear" type="number" min="1900" max="2200" value="'+defaultYear+'"></div>';
-  };
-  p$('dateTabDay').onclick=()=>{mode='day';draw()};
-  p$('dateTabMonth').onclick=()=>{mode='month';draw()};
-  p$('dateTabYear').onclick=()=>{mode='year';draw()};
-  draw();
+  setTimeout(()=>p$('dateManualInput')&&p$('dateManualInput').focus(),0);
   p$('datePickerCancel').onclick=closePickerModal;
   p$('datePickerConfirm').onclick=()=>{
-    const manual=parseFlexibleDate(p$('dateManualInput').value);let spec=manual;
-    if(!spec&&mode==='day'){const v=p$('datePickDay').value;if(v)spec={kind:'day',iso:v}}
-    if(!spec&&mode==='month'){const v=p$('datePickMonth').value;if(v)spec={kind:'monthYear',ym:v}}
-    if(!spec&&mode==='year'){const v=Number(p$('datePickYear').value);if(v>=1900&&v<=2200)spec={kind:'year',year:v}}
-    if(!spec){const n=document.createElement('div');n.className='note';n.textContent='Scrivi o seleziona una data valida.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1600);return}
+    const spec=parseRequiredDay(p$('dateManualInput').value);
+    if(!spec){const n=document.createElement('div');n.className='note';n.textContent='Controlla la data inserita.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1600);return}
     closePickerModal();onConfirm(spec);
   };
 }
-
 function save(){localStorage.setItem(KEY,JSON.stringify(state));queueNativeNotificationSync()}
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
