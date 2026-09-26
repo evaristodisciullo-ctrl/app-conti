@@ -1,0 +1,67 @@
+name: Visual review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: |
+          npm install playwright@1.55.0 --no-save
+          npx playwright install --with-deps chromium
+      - name: Start app
+        run: |
+          python3 -m http.server 4173 >/tmp/inordine-server.log 2>&1 &
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
+      - name: Capture screens
+        run: |
+          mkdir -p visual
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+            const shot=async(name)=>{await page.screenshot({path:'visual/'+name+'.png',fullPage:true})};
+            await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+            await page.evaluate(()=>localStorage.clear()); await page.reload();
+            await page.waitForSelector('#landing:not(.hidden)'); await shot('01-landing');
+            await page.click('#landingConti'); await page.waitForSelector('#setup:not(.hidden)'); await shot('02-saldo');
+            await page.fill('#startBalance','1000'); await page.click('#startBtn'); await page.waitForSelector('#setupIncome:not(.hidden)'); await shot('03-setup-entrate');
+            await page.click('#skipIncomeSetup'); await page.waitForSelector('#setupExpense:not(.hidden)'); await shot('04-setup-pagamenti');
+            await page.click('#skipExpenseSetup'); await page.waitForSelector('#home:not(.hidden)');
+            await page.evaluate(()=>{
+              const key='quantoPrototypeV1',s=JSON.parse(localStorage.getItem(key));
+              const ym=new Date().toISOString().slice(0,7),d=new Date().toISOString().slice(0,10);
+              const day=Number(d.slice(8,10));
+              s.entries=[
+                {id:'i1',type:'income',name:'Stipendio',amount:1400,day,dateSpec:{kind:'day',iso:d},recurrence:{kind:'monthly',startMonth:ym},category:'Lavoro',notify:false,note:'',notifyRule:null},
+                {id:'e1',type:'expense',name:'Mutuo',amount:387.03,day,dateSpec:{kind:'day',iso:d},recurrence:{kind:'monthly',startMonth:ym},category:'Casa',notify:false,note:'',notifyRule:null}
+              ];
+              s.history=[{id:'h1',entryId:null,type:'adjustment',name:'Correzione saldo',amount:50,delta:50,date:d,month:ym,reason:'Test',note:'Test',category:''}];
+              s.balance=1050;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
+            });
+            await page.reload(); await page.click('#landingConti'); await page.waitForSelector('#home:not(.hidden)'); await shot('05-home');
+            await page.click('#homeIncome'); await shot('06-entrate');
+            await page.click('#flowAdd'); await shot('07-aggiungi-entrata'); await page.click('#modalClose');
+            await page.click('#flowBack'); await page.click('#homeExpense'); await shot('08-pagamenti');
+            await page.click('#flowBack'); await page.click('#homeAllMovements'); await shot('09-movimenti');
+            await page.click('#movementsBack'); await page.click('#homeSettingsCard'); await shot('10-impostazioni');
+            await page.click('#settingsNotifications'); await shot('11-notifiche');
+            await page.click('#notificationsBack'); await page.click('#homeSettingsCard'); await page.click('#settingsCategories'); await shot('12-categorie-hub'); await page.click('#modalClose');
+            await page.click('#settingsBudget'); await shot('13-budget'); await page.click('#budgetBack'); await page.click('#summaryBack');
+            await page.click('#homeSettingsCard'); await page.click('#settingsSecurity'); await shot('14-sicurezza'); await page.click('#modalClose');
+            await page.click('#settingsBackup'); await shot('15-backup');
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: in-ordine-visual-review
+          path: visual/*.png
+          if-no-files-found: error
