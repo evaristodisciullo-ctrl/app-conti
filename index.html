@@ -349,12 +349,17 @@
 
 
 /* SELETTORE DATA */
-.rDateBtn,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rDateText,.dateDisplayBtn{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--text);padding:0 8px;font-size:11px;text-align:left;outline:none}
 .dateDisplayBtn{height:50px;border-radius:13px;padding:0 12px;font-size:14px}
-.dateDisplayBtn.empty,.rDateBtn.empty{color:#98a7b2}.rDateBtn.empty:before,.dateDisplayBtn.empty:before{content:'| ';color:var(--accent);font-weight:950;animation:blinkCaret 1s steps(1) infinite}
-.pickerModal{z-index:160}.dateTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.dateTab{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px;font-weight:850;color:#5d7183}.dateTab.active{background:#e7f3ff;border-color:#9ec9f0;color:#1c73c3}
-.datePanel{margin-top:8px}.dateManual{position:relative}.dateManual:before{content:"|";position:absolute;left:12px;top:13px;color:var(--accent);font-weight:900;animation:blinkCaret 1s steps(1) infinite;z-index:1}.dateManual input{padding-left:20px!important}
-@keyframes blinkCaret{50%{opacity:0}}
+.rDateText:focus,.dateDisplayBtn:focus{border-color:#75afe8;box-shadow:0 0 0 3px rgba(36,121,216,.10)}
+.dateFieldError{font-size:11px;color:var(--red);font-weight:800;margin-top:6px}
+.manualDateHelp{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.35}
+.pickerModal{z-index:160}
+.movementQuickTabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:4px 0 12px}
+.movementQuickTab{border:1px solid #d8e1e8;background:#fff;border-radius:12px;padding:10px 6px;font-weight:850;font-size:12px;color:#526575}
+.movementQuickTab.active{background:#e8f3ff;border-color:#9ec9f0;color:#1d6fb8}
+.movementQuickTab.filterActive{box-shadow:0 0 0 2px rgba(36,121,216,.12);border-color:#75afe8}
+@media(max-width:410px){.movementQuickTab{font-size:10.5px;padding:9px 4px}}
 
 
 /* RIFINITURE VISIVE APPROVATE */
@@ -434,7 +439,7 @@
 
 <section id="setup" class="screen setup hidden"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button>
   <div class="setupTop">
-    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, pagamenti.<br> Sempre con te.</div></div>
+    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, uscite.<br>Sempre con te.</div></div>
     <div class="setupPhoneArt" aria-hidden="true">
       <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
       <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
@@ -454,8 +459,8 @@
 <section id="setupIncome" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupWalletArt" aria-hidden="true"><span class="walletBody"></span><span class="walletBill b1">€</span><span class="walletBill b2">€</span><span class="walletCoin">€</span></div></div>
-    <div class="onboardTitle">Conti economici</div>
-    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+    <div class="onboardTitle">ENTRATE</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
     <h2>Scrivi le tue entrate</h2>
@@ -471,8 +476,8 @@
 <section id="setupExpense" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupPiggyArt" aria-hidden="true"><span class="pigBody"></span><span class="pigEar"></span><span class="pigLeg l1"></span><span class="pigLeg l2"></span><span class="pigCrack">⌁</span><span class="pigCoin c1">€</span><span class="pigCoin c2">€</span></div></div>
-    <div class="onboardTitle">Conti economici</div>
-    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, pagamenti. Sempre con te.</div>
+    <div class="onboardTitle">PAGAMENTI</div>
+    <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
     <h2>Scrivi i tuoi pagamenti</h2>
@@ -570,7 +575,18 @@
   <div id="flowUnifiedList" class="flowUnified"></div>
 </section>
 
-<section id="movements" class="screen hidden"><div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div><button id="movementsFilters" class="filterBtn">Filtri</button></div><div id="movementFilterSummary" class="filterSummary"></div><div id="movementFilteredTotal" class="filteredTotal hidden"></div><div id="allMovements" class="list"></div></section>
+<section id="movements" class="screen hidden">
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div></div>
+  <div class="movementQuickTabs">
+    <button class="movementQuickTab active" data-movement-type="all">Tutte</button>
+    <button class="movementQuickTab" data-movement-type="income">Entrate</button>
+    <button class="movementQuickTab" data-movement-type="expense">Uscite</button>
+    <button id="movementsFilters" class="movementQuickTab">Filtra</button>
+  </div>
+  <div id="movementFilterSummary" class="filterSummary"></div>
+  <div id="movementFilteredTotal" class="filteredTotal hidden"></div>
+  <div id="allMovements" class="list"></div>
+</section>
 
 <section id="summary" class="screen summaryPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="summaryBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Riepilogo</h1></div></div>
