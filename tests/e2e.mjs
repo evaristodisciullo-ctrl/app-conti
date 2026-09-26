@@ -144,7 +144,9 @@ async function testFinanceAndManualDates(browser){
   await backHomeFromFlow(page);
   assert.equal((await state(page)).balance,1034);
 
-  await page.click('#editBalance');await page.fill('#newBalance','1040');await page.click('#balSave');
+  await page.click('#homeSettingsCard');await page.waitForSelector('#settings:not(.hidden)');
+  await page.click('#settingsEditBalance');await page.fill('#newBalance','1040');await page.click('#balSave');
+  await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   let s=await state(page);assert.equal(s.balance,1040);
   assert.equal(s.history.some(h=>h.type==='adjustment'),false);
 
