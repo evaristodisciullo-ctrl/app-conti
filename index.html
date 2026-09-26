@@ -248,7 +248,8 @@
 .setupContinue{margin-top:7px}.setupSkip{width:100%;border:0;background:transparent;color:#72818d;font-weight:850;padding:12px}
 .flowPage .pageHeader{margin-bottom:14px}
 .flowBanner{background:linear-gradient(135deg,#eaf5ff,#f8fbff);border:1px solid #d5e8fa;border-radius:18px;padding:15px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.flowBanner strong{font-size:17px}.flowBanner small{display:block;color:var(--muted);margin-top:3px}
+.flowBannerAdd{border:0;background:linear-gradient(135deg,#1194f0,#086df5);color:#fff;border-radius:15px;padding:13px 16px;font-size:14px;font-weight:900;box-shadow:0 8px 18px rgba(18,116,218,.18);white-space:nowrap}
+.flowBannerAdd:before{content:'＋';display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:var(--accent);margin-right:8px;font-size:18px;vertical-align:middle}
 .flowTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}
 .flowTab{border:1px solid #d8e1e8;background:#fff;border-radius:12px;padding:10px 7px;font-weight:850;font-size:12px;color:#526575}
 .flowTab.active{background:#e8f3ff;border-color:#9ec9f0;color:#1d6fb8}
@@ -560,10 +561,9 @@
 <section id="flow" class="screen flowPage hidden">
   <div class="pageHeader">
     <div class="pageTitleBlock"><button id="flowBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1 id="flowTitle">Entrate</h1></div>
-    <button id="flowAdd" class="addBtn">+ Aggiungi</button>
   </div>
   <div class="flowBanner">
-    <span><strong id="flowBannerTitle">Le tue entrate</strong><small id="flowBannerCopy">Tocca lo stato per confermare.</small></span>
+    <button id="flowAdd" class="flowBannerAdd">+ Aggiungi entrata</button>
     <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
   <div class="flowTabs">
@@ -1265,9 +1265,7 @@ function buildFlowItems(type){
 function renderFlow(){
   const isIn=currentFlow==='income';
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
-  $('flowAdd').textContent=isIn?'+ Aggiungi entrata':'+ Aggiungi pagamento';
-  $('flowBannerTitle').textContent=isIn?'Le tue entrate':'I tuoi pagamenti';
-  $('flowBannerCopy').textContent='Tocca lo stato per '+(isIn?'segnare come ricevuto.':'segnare come pagato.');
+  $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='<span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">'+(isIn?'↑':'↓')+'</span><span class="'+(isIn?'sceneCoin':'sceneWallet')+'">€</span>';
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
