@@ -1281,12 +1281,18 @@ function openSingleOccurrenceEditor(x){
   const entry=state.entries.find(e=>e.id===x.entryId);if(!entry)return;
   openModal(entry.type==='income'?'Modifica questa entrata':'Modifica questo pagamento',
     '<div class="field"><label>Nome</label><input id="occName" value="'+escAttr(x.name)+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="occAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
-    '<div class="field"><label>Data</label><input id="occDate" type="date" value="'+x.date+'"></div>'+
+    '<div class="field"><label>Importo</label><input id="occAmount" type="text" inputmode="decimal" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data</label><input id="occDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(x.date))+'"><div class="manualDateHelp">Scrivi la data direttamente.</div></div>'+
     '<div class="field"><label>Categoria</label><select id="occCategory">'+occurrenceCategoryOptions(entry.type,x.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="occNote">'+esc(x.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="occDelete" class="btn deleteBtn">Elimina</button><button id="occSave" class="btn">Salva</button></div>');
-  $('occSave').onclick=()=>{const amount=Number($('occAmount').value),date=$('occDate').value,name=$('occName').value.trim();if(!name||!Number.isFinite(amount)||amount<=0||!date)return flashModal('Controlla nome, importo e data.');state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.occurrenceKey||x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};save();closeModal();renderFlow()};
+  $('occSave').onclick=()=>{
+    const amount=cleanAmount($('occAmount').value),spec=parseRequiredDay($('occDateText').value),name=$('occName').value.trim();
+    if(!name||!Number.isFinite(amount)||amount<=0||!spec)return flashModal('Controlla nome, importo e data.');
+    const date=spec.iso;
+    state.occurrenceOverrides[occurrenceOverrideKey(entry.id,x.occurrenceKey||x.month)]={fields:{name,amount,date,day:Number(date.slice(8,10)),category:$('occCategory').value==='__new__'?'':$('occCategory').value,note:$('occNote').value.trim()}};
+    save();closeModal();renderFlow();
+  };
   $('occDelete').onclick=()=>openDeleteOccurrenceChoice(x);
 }
 function occurrenceBaseDate(x){return x&&x.occurrenceKey&&x.occurrenceKey.startsWith('D')?x.occurrenceKey.slice(1):x.date}
@@ -1335,23 +1341,28 @@ function openFutureOccurrenceEditor(x){
   let futureDate=x.date,newRec=recurrenceFromOccurrence(entry,x,futureDate);
   openModal(entry.type==='income'?'Modifica questa e le future':'Modifica questo e i futuri',
     '<div class="field"><label>Nome</label><input id="futName" value="'+escAttr(x.name)+'"></div>'+
-    '<div class="field"><label>Importo</label><input id="futAmount" type="number" min="0.01" step="0.01" value="'+Number(x.amount||0)+'"></div>'+
-    '<div class="field"><label>Data di questa scadenza</label><input id="futDate" type="date" value="'+x.date+'"></div>'+
-    '<div class="field"><label>Frequenza</label><div id="futRecChoices" class="recChoiceGrid"><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="custom">Altro</button></div><div id="futRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo</label><input id="futAmount" type="text" inputmode="decimal" value="'+Number(x.amount||0)+'"></div>'+
+    '<div class="field"><label>Data di questa scadenza</label><input id="futDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10 ottobre 2026" value="'+escAttr(manualDateText(x.date))+'"><div class="manualDateHelp">Scrivi la data direttamente.</div></div>'+
+    '<div class="field"><label>Ripetizione</label><div id="futRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="futRecSummary" class="hint"></div></div>'+
     '<div class="field"><label>Categoria</label><select id="futCategory">'+categoryOptions(entry.type,x.category||'')+'</select></div>'+
     '<div class="field"><label>Nota <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><textarea id="futNote">'+esc(x.note||'')+'</textarea></div>'+
     '<div class="modalBtns"><button id="futDelete" class="btn deleteBtn">Elimina</button><button id="futSave" class="btn">Salva</button></div>');
+  const getFutureDate=()=>{const spec=parseRequiredDay($('futDateText').value);return spec?spec.iso:''};
   const paint=()=>{const kind=newRec&&newRec.kind;document.querySelectorAll('#futRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(kind)?kind:'custom')));$('futRecSummary').textContent=recurrenceSummary(newRec)};
   document.querySelectorAll('#futRecChoices button').forEach(b=>b.onclick=()=>{
-    futureDate=$('futDate').value||x.date;
+    const parsed=getFutureDate();if(!parsed)return flashModal('Controlla la data inserita.');
+    futureDate=parsed;
     if(b.dataset.kind==='monthly'){newRec={kind:'monthly',startMonth:futureDate.slice(0,7)};paint();return}
     if(b.dataset.kind==='single'){newRec={kind:'single',month:futureDate.slice(0,7)};paint();return}
     openEditorAdvancedRecurrence(futureDate,newRec,cfg=>{newRec=cfg;paint()});
   });
-  $('futDate').onchange=()=>{futureDate=$('futDate').value||x.date;newRec=recurrenceFromOccurrence(entry,x,futureDate);paint()};
+  $('futDateText').onblur=()=>{
+    const parsed=getFutureDate();if(!parsed)return;
+    futureDate=parsed;$('futDateText').value=manualDateText(parsed);newRec=recurrenceFromOccurrence(entry,x,futureDate);paint();
+  };
   paint();
   $('futSave').onclick=()=>{
-    const name=$('futName').value.trim(),amount=Number($('futAmount').value),date=$('futDate').value;
+    const name=$('futName').value.trim(),amount=cleanAmount($('futAmount').value),date=getFutureDate();
     if(!name||!Number.isFinite(amount)||amount<=0||!date||!validRecurrence(newRec))return flashModal('Controlla nome, importo, data e frequenza.');
     const category=$('futCategory').value==='__new__'?'':$('futCategory').value,note=$('futNote').value.trim();
     splitSeriesAt(entry,x,{name,amount,category,note},newRec,date);
