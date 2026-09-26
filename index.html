@@ -1043,9 +1043,9 @@ function recurrenceSummary(c){
   if(c.kind==='monthly')return 'Ogni mese';
   if(c.kind==='single')return 'Una volta';
   if(c.kind==='custom'){
-    const unit=c.unit==='week'?'settimana':c.unit==='year'?'anno':'mese',plural=Number(c.every)===1?'':'i';
+    const n=Number(c.every)||1,unit=c.unit==='week'?(n===1?'settimana':'settimane'):c.unit==='year'?(n===1?'anno':'anni'):(n===1?'mese':'mesi');
     let end='Mai';if(c.endMode==='count')end='Dopo '+c.count+' volte';if(c.endMode==='date')end='Fino al '+fmtMovementDate(c.endDate);
-    return 'Ogni '+c.every+' '+unit+plural+' · '+end;
+    return 'Ogni '+n+' '+unit+' · '+end;
   }
   if(c.kind==='count')return c.count+' mesi da '+monthName(c.startMonth);
   if(c.kind==='until')return 'Da '+monthName(c.startMonth)+' a '+monthName(c.endMonth);
@@ -1367,7 +1367,7 @@ function openEntryEditor(entry,type){
   $('modal').classList.add('fullEditor');
   if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
   let editorDateSpec=entry&&entry.dateSpec||(dateValue?{kind:'day',iso:dateValue}:null);
-  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;$('editDate').value=specDeadline(spec);$('editDateDisplay').textContent=displayDateSpec(spec);$('editDateDisplay').classList.remove('empty');renderEditRecExtra(rec||null)});
+  $('editDateDisplay').onclick=()=>openDateChooser(editorDateSpec,spec=>{editorDateSpec=spec;const newDate=specDeadline(spec);$('editDate').value=newDate;$('editDateDisplay').textContent=displayDateSpec(spec);$('editDateDisplay').classList.remove('empty');if($('editRecKind').value==='custom'){try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=newDate;if(cfg.endMode==='date'&&cfg.endDate<newDate)cfg.endDate=newDate;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}}renderEditRecExtra(rec||null)});
   $('editRecKind').value=rec?rec.kind:'';
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
   if(rec&&rec.kind==='custom')$('editRecKind').dataset.custom=JSON.stringify(rec);
