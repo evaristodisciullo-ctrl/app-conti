@@ -70,7 +70,7 @@ jobs:
             await page.click('#settingsBackup');await shot('22-backup-dati');await page.click('#modalClose');
             await page.click('#settingsOther');await shot('23-altre-impostazioni');await page.click('#modalClose');
             await page.click('#settingsGuide');await shot('24-tutorial');
-            await page.locator('#guideTopics button').filter({hasText:'Entrate'}).click();await shot('25-guida-entrate');await page.click('#modalClose');
+            await page.locator('#guideTopics button[data-topic="Entrate"]').click();await shot('25-guida-entrate');await page.click('#modalClose');
             await page.click('#settingsInfo');await shot('26-informazioni');await page.click('#modalClose');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
