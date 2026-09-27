@@ -1172,22 +1172,47 @@ function openAppInformation(){
 }
 function openEntrySettingsHub(type){
   const isIncome=type==='income',noun=isIncome?'entrata':'pagamento',plural=isIncome?'Entrate':'Pagamenti';
+  const activeOnly=state.flowOnlyActive&&state.flowOnlyActive[type]!==false;
+  const anyNotify=state.entries.filter(e=>e.type===type).some(e=>e.notify===true);
   openModal(plural,
-    '<div class="settingsMenu">'+
-      '<button id="entityHubAdd" class="settingsRow"><span class="settingsRowIcon '+(isIncome?'iGreen':'iOrange')+'">＋</span><span class="settingsRowText"><strong>Aggiungi '+noun+'</strong><small>Crea una nuova voce</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubManage" class="settingsRow"><span class="settingsRowIcon iBlue">✎</span><span class="settingsRowText"><strong>Modifica '+plural.toLowerCase()+' esistenti</strong><small>Visualizza, modifica o elimina</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubCategories" class="settingsRow"><span class="settingsRowIcon iPurple">◇</span><span class="settingsRowText"><strong>Categorie '+plural.toLowerCase()+'</strong><small>Gestisci le categorie</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubNotifications" class="settingsRow"><span class="settingsRowIcon iYellow">🔔</span><span class="settingsRowText"><strong>Promemoria e notifiche</strong><small>Gestisci gli avvisi</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubBackup" class="settingsRow"><span class="settingsRowIcon iTeal">⇅</span><span class="settingsRowText"><strong>Importa / Esporta</strong><small>Usa Backup e dati</small></span><span class="settingsRowArrow">›</span></button>'+
+    '<div class="settingsSubMenu">'+
+      '<button id="entityHubAdd" class="settingsSubRow"><span class="settingsRowIcon '+(isIncome?'iGreen':'iRed')+'">＋</span><span><strong>Aggiungi '+noun+'</strong><small>Crea una nuova '+noun+'</small></span><span class="settingsRowArrow">›</span></button>'+
     '</div>'+
-    '<div class="field"><label>Ordina per</label><select id="entityHubSort"><option value="date">Data</option><option value="name">Nome</option><option value="amount">Importo</option></select></div>');
+    '<div class="settingsSubTitle">IMPOSTAZIONI '+plural.toUpperCase()+'</div>'+
+    '<div class="settingsSubMenu">'+
+      '<button id="entityHubManage" class="settingsSubRow"><span class="settingsRowIcon iBlue">✎</span><span><strong>Modifica '+plural.toLowerCase()+' esistenti</strong><small>Visualizza, modifica o elimina</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">↕</span><span><strong>Ordine di visualizzazione</strong><small>Cambia l’ordine delle '+plural.toLowerCase()+'</small></span><select id="entityHubSort" style="width:118px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"><option value="date">Data</option><option value="name">Nome</option><option value="amount">Importo</option></select></label>'+
+      '<button id="entityHubCategories" class="settingsSubRow"><span class="settingsRowIcon iPurple">◆</span><span><strong>Categorie '+plural.toLowerCase()+'</strong><small>Gestisci le categorie delle '+plural.toLowerCase()+'</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="settingsSubTitle">OPZIONI DI VISUALIZZAZIONE</div>'+
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">◉</span><span><strong>Mostra solo attive</strong><small>Nascondi le voci disattivate</small></span><input id="entityHubActive" class="settingToggle" type="checkbox" '+(activeOnly?'checked':'')+'></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">≡</span><span><strong>Ordina per</strong><small id="entitySortLabel">'+(state.flowSort[type]==='name'?'Nome':state.flowSort[type]==='amount'?'Importo':'Data (più recente)')+'</small></span><span></span></label>'+
+    '</div>'+
+    '<div class="settingsSubTitle">PROMEMORIA E NOTIFICHE</div>'+
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iOrange">●</span><span><strong>Notifiche '+plural.toLowerCase()+'</strong><small>Attiva/disattiva promemoria</small></span><input id="entityHubNotify" class="settingToggle" type="checkbox" '+(anyNotify?'checked':'')+'></label>'+
+      '<button id="entityHubNotifications" class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria personalizzati</strong><small>Imposta avvisi per ogni '+noun+'</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="settingsSubTitle">ALTRE OPZIONI</div>'+
+    '<div class="settingsSubMenu"><button id="entityHubBackup" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇅</span><span><strong>Importa / Esporta</strong><small>Importa o esporta le '+plural.toLowerCase()+'</small></span><span class="settingsRowArrow">›</span></button></div>'
+  );
+  $('modal').classList.add('fullSettings');
   $('entityHubSort').value=state.flowSort[type]||'date';
-  $('entityHubSort').onchange=()=>{state.flowSort[type]=$('entityHubSort').value;save()};
+  $('entityHubSort').onchange=()=>{state.flowSort[type]=$('entityHubSort').value;save();$('entitySortLabel').textContent=$('entityHubSort').value==='name'?'Nome':$('entityHubSort').value==='amount'?'Importo':'Data (più recente)'};
+  $('entityHubActive').onchange=()=>{state.flowOnlyActive[type]=$('entityHubActive').checked;save()};
+  $('entityHubNotify').onchange=async()=>{
+    const on=$('entityHubNotify').checked;
+    state.entries.filter(e=>e.type===type).forEach(e=>{e.notify=on;e.notifyRule=null});
+    state.notifications.selected=state.entries.filter(e=>e.notify).map(e=>e.id);
+    state.notifications.mode=state.notifications.selected.length?'custom':'off';
+    save();if(on)await requestNotificationPermission();
+  };
   $('entityHubAdd').onclick=()=>{closeModal();openFlow(type,'settings');openAddEntry(type)};
   $('entityHubManage').onclick=()=>{closeModal();openFlow(type,'settings')};
-  $('entityHubCategories').onclick=()=>{closeModal();openCategoryHub()};
-  $('entityHubNotifications').onclick=()=>{closeModal();notificationReturn='settings';show('notifications')};
-  $('entityHubBackup').onclick=()=>openBackupSettings();
+  $('entityHubCategories').onclick=()=>openCategoryManagement(type);
+  $('entityHubNotifications').onclick=openCustomNotifications;
+  $('entityHubBackup').onclick=openBackupSettings;
 }
 const GUIDE={
   'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare un movimento.',
