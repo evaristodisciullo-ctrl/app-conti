@@ -902,6 +902,10 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 }
 @supports(height:100dvh){.modal.fullEditor .modalCard{height:100dvh!important}}
 
+
+.flowMonthBar{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center;margin:11px 0 8px}
+.flowMonthArrow{height:40px;border:1px solid #d5e5f1;border-radius:12px;background:#fff;color:#2379d8;font-size:28px;font-weight:850;line-height:1}
+.flowMonthLabel{height:40px;border:1px solid #d5e5f1;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:#17324a;font-weight:900;font-size:14px}
 </style>
 </head>
 <body>
@@ -1052,6 +1056,11 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <button id="flowAdd" class="flowBannerAdd">+ Aggiungi entrata</button>
     <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
+  <div class="flowMonthBar" aria-label="Seleziona mese">
+    <button id="flowPrevMonth" class="flowMonthArrow" aria-label="Mese precedente">‹</button>
+    <div id="flowMonthLabel" class="flowMonthLabel"></div>
+    <button id="flowNextMonth" class="flowMonthArrow" aria-label="Mese successivo">›</button>
+  </div>
   <div class="flowTabs">
     <button class="flowTab active" data-flow-filter="all">Tutte</button>
     <button class="flowTab" data-flow-filter="pending" id="flowPendingTab">Da ricevere</button>
@@ -1162,7 +1171,7 @@ const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);try{if(state&&state.preferences&&state.preferences.dateFormat==='numeric')return String(p[2]).padStart(2,'0')+'/'+String(p[1]).padStart(2,'0')+'/'+p[0]}catch(e){}return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
 const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}},ui:{incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},flowOnlyActive:{income:true,expense:true},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10},backup:{auto:false},preferences:{textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'},version:7});
 let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(typeof state.security.hideHomeAmounts!=='boolean')state.security.hideHomeAmounts=false;if(!Number.isFinite(Number(state.security.lockMinutes)))state.security.lockMinutes=10;if(!state.notifications.ui)state.notifications.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true};if(!state.flowOnlyActive)state.flowOnlyActive={income:true,expense:true};if(!state.backup)state.backup={auto:false};if(!state.preferences)state.preferences={textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'};if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
-let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();
+let currentFlow='income',flowFilter='all',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow();
 let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary';
 let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};let undoSnackTimer=null,undoSnackHistoryId=null;
 
@@ -1962,7 +1971,7 @@ function renderMovementList(el,arr){
     el.appendChild(r);
   });
 }
-function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
+function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;flowMonth=defaultFlowMonth(type);show('flow')}
 function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
 function nextOpenOccurrenceForEntry(entry){
   const today=todayISO(),endYm=addMonths(ymNow(),12);
@@ -1981,17 +1990,38 @@ function nextOpenOccurrenceForEntry(entry){
   }
   return null;
 }
-function buildFlowItems(type){
-  const ym=ymNow(),today=todayISO();
-  const currentDone=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
-  const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
-  const covered=new Set([...open,...currentDone].map(x=>x.entryId).filter(Boolean));
-  state.entries.filter(e=>e.type===type&&!covered.has(e.id)).forEach(e=>{
-    const next=nextOpenOccurrenceForEntry(e);
-    if(next)open.push(Object.assign({},next,{done:false,overdue:false}));
-  });
-  const pref=state.flowSort&&state.flowSort[type]||'date';
-  return [...open,...currentDone].sort((a,b)=>{
+function flowMonthHasItems(type,ym){
+  const d=monthData(type,ym);
+  return d.pending.length>0||d.done.length>0;
+}
+function defaultFlowMonth(type){
+  const now=ymNow();
+  if(flowMonthHasItems(type,now))return now;
+  for(let i=1;i<=24;i++){const m=addMonths(now,i);if(flowMonthHasItems(type,m))return m}
+  for(let i=1;i<=24;i++){const m=addMonths(now,-i);if(flowMonthHasItems(type,m))return m}
+  return now;
+}
+function buildFlowItems(type,selectedYm=null){
+  const today=todayISO(),pref=state.flowSort&&state.flowSort[type]||'date';
+  let arr=[];
+  if(selectedYm){
+    const d=monthData(type,selectedYm);
+    arr=[
+      ...d.pending.map(x=>Object.assign({},x,{done:false,overdue:x.date<today})),
+      ...d.done.map(x=>Object.assign({},x,{done:true,overdue:false}))
+    ];
+  }else{
+    const ym=ymNow();
+    const currentDone=monthData(type,ym).done.map(x=>Object.assign({},x,{done:true,overdue:false}));
+    const open=pendingThrough(type,ym).map(x=>Object.assign({},x,{done:false,overdue:x.date<today}));
+    const covered=new Set([...open,...currentDone].map(x=>x.entryId).filter(Boolean));
+    state.entries.filter(e=>e.type===type&&!covered.has(e.id)).forEach(e=>{
+      const next=nextOpenOccurrenceForEntry(e);
+      if(next)open.push(Object.assign({},next,{done:false,overdue:false}));
+    });
+    arr=[...open,...currentDone];
+  }
+  return arr.sort((a,b)=>{
     const ra=a.done?2:(a.overdue?0:1),rb=b.done?2:(b.overdue?0:1);
     if(ra!==rb)return ra-rb;
     if(pref==='name')return String(a.name||'').localeCompare(String(b.name||''),'it');
@@ -2011,11 +2041,12 @@ function renderFlow(){
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
-  let arr=buildFlowItems(currentFlow);
+  $('flowMonthLabel').textContent=monthName(flowMonth);
+  let arr=buildFlowItems(currentFlow,flowMonth);
   if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
   if(flowFilter==='done')arr=arr.filter(x=>x.done);
   const el=$('flowUnifiedList');el.innerHTML='';
-  if(!arr.length){const msg=flowFilter==='all'?(isIn?'Nessuna entrata inserita.':'Nessun pagamento inserito.'):'Nessuna voce da mostrare.';el.innerHTML='<div class="flowEmpty">'+msg+'</div>';return}
+  if(!arr.length){const msg=flowFilter==='all'?(isIn?'Nessuna entrata in ':'Nessun pagamento in ')+monthName(flowMonth)+'.':'Nessuna voce da mostrare in '+monthName(flowMonth)+'.';el.innerHTML='<div class="flowEmpty">'+msg+'</div>';return}
   arr.forEach(x=>{
     const row=document.createElement('div');row.className='flowUnifiedRow';
     const isOverdue=!x.done&&x.date<todayISO();
@@ -2976,6 +3007,8 @@ document.querySelectorAll('[data-movement-type]').forEach(b=>b.onclick=()=>{move
 $('movementsFilters').onclick=openMovementFilters;
 $('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
 $('flowBack').onclick=()=>show(flowReturn);
+$('flowPrevMonth').onclick=()=>{flowMonth=addMonths(flowMonth,-1);flowFilter='all';renderFlow()};
+$('flowNextMonth').onclick=()=>{flowMonth=addMonths(flowMonth,1);flowFilter='all';renderFlow()};
 $('flowAdd').onclick=()=>openAddEntry(currentFlow);
 $('sumPrev').onclick=()=>{summaryMonth=addMonths(summaryMonth,-1);renderSummary()};
 $('sumNext').onclick=()=>{summaryMonth=addMonths(summaryMonth,1);renderSummary()};
