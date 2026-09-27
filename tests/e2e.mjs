@@ -92,6 +92,24 @@ async function testApprovedOnboarding(browser){
   await context.close();
 }
 
+async function testSetupNaturalRecurrences(browser){
+  const {context,page}=await freshPage(browser);
+  await page.click('#landingConti');await page.fill('#startBalance','1000');await page.click('#startBtn');
+  await page.waitForSelector('#setupIncome:not(.hidden)');await page.click('#skipIncomeSetup');
+  await page.waitForSelector('#setupExpense:not(.hidden)');
+  const rows=page.locator('#expenseRows .entryRow');
+  const r1=rows.first();
+  await r1.locator('.rName').fill('Fratello');await r1.locator('.rAmount').fill('50');await r1.locator('.rDateText').fill('1 ottobre una volta');await r1.locator('.rDateText').blur();
+  await page.click('#addExpenseRow');
+  const r2=page.locator('#expenseRows .entryRow').nth(1);
+  await r2.locator('.rName').fill('730');await r2.locator('.rAmount').fill('700');await r2.locator('.rDateText').fill('11 ottobre per 3 mesi');await r2.locator('.rDateText').blur();
+  await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
+  const s=await state(page),one=s.entries.find(e=>e.name==='Fratello'),three=s.entries.find(e=>e.name==='730');
+  assert.equal(one.recurrence.kind,'single');
+  assert.equal(three.recurrence.kind,'count');assert.equal(three.recurrence.count,3);
+  await context.close();
+}
+
 async function testFinanceManualDatesAndMovements(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
   await page.click('#homeIncome');await page.waitForSelector('#flow:not(.hidden)');
@@ -206,6 +224,7 @@ async function testPwaOffline(browser){
 const browser=await chromium.launch({headless:true});
 try{
   await testApprovedOnboarding(browser);
+  await testSetupNaturalRecurrences(browser);
   await testFinanceManualDatesAndMovements(browser);
   await testRecurrencesAndHistory(browser);
   await testCategoriesAndNotifications(browser);
