@@ -1582,6 +1582,12 @@ function parseSetupDate(raw){
     return{spec:{kind:'day',iso:date},date,recurrence:{kind:'monthly',startMonth:date.slice(0,7)},label:day+' del mese'};
   }
 
+  m=s.match(/^(.+?)\s+ogni\s+mese$/);
+  if(m){
+    const date=parseDayMonth(m[1]);if(!date)return null;
+    return{spec:{kind:'day',iso:date},date,recurrence:{kind:'monthly',startMonth:date.slice(0,7)},label:manualDateText(date)+' · ogni mese'};
+  }
+
   m=s.match(/^(.+?)\s+(?:solo\s+una\s+volta|una\s+volta\s+sola|una\s+volta)$/);
   if(m){
     const date=parseDayMonth(m[1]);if(!date)return null;
