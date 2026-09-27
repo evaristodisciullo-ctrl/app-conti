@@ -2,7 +2,7 @@ name: Visual review
 on:
   workflow_dispatch:
   push:
-    branches: [main, rebuild-conti-economici]
+    branches: [main, rebuild-conti-economici, visual-allineamento-grafiche]
   pull_request:
     branches: [main]
 jobs:
