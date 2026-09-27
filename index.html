@@ -1268,23 +1268,46 @@ function openEntrySettingsHub(type){
   $('entityHubBackup').onclick=openBackupSettings;
 }
 const GUIDE={
-  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare un movimento.',
-  'Entrate':'Aggiungi le entrate. Il saldo cambia solo quando confermi RICEVUTO con l’importo realmente incassato.',
-  'Pagamenti':'Aggiungi i pagamenti. Il saldo cambia solo quando confermi PAGATO con l’importo realmente pagato.',
-  'Date e frequenza':'Le date si scrivono a mano, per esempio 10/10/2026 oppure 10 ottobre 2026. Non si usa il calendario. Dopo una data valida scegli Una volta, Ogni mese o Altro.',
-  'Stati e scadenze':'Da ricevere/Da pagare restano aperti. Dal giorno successivo alla scadenza diventano scaduti.',
-  'Movimenti':'Qui trovi solo operazioni realmente confermate come RICEVUTE o PAGATE.',
-  'Categorie':'Le categorie sono facoltative e servono a capire dove entrano o escono i soldi.',
-  'Budget':'I budget sono facoltativi e riguardano solo i pagamenti realmente effettuati.',
-  'Notifiche':'Puoi attivarle per tutte le entrate e i pagamenti o gestirle voce per voce.',
-  'Modifica ed elimina':'Puoi modificare o eliminare le voci. I movimenti già confermati restano nello storico salvo modifica del movimento stesso.',
-  'Fine mese':'Le voci completate restano nello storico; quelle scadute e ancora aperte continuano a comparire.',
-  'Colori':'Verde indica completato, giallo in attesa e rosso scaduto o errore.'
+  'Introduzione':'In Ordine raccoglie i tuoi conti e le tue attività in un unico posto semplice da consultare.',
+  'Primo utilizzo':'Inserisci il saldo reale che possiedi, poi aggiungi le entrate e i pagamenti che vuoi tenere sotto controllo.',
+  'Saldo attuale':'Il saldo contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare movimenti.',
+  'Entrate':'Le entrate programmate non aumentano il saldo. Il saldo cambia soltanto quando premi RICEVUTO e confermi l’importo realmente ricevuto.',
+  'Pagamenti':'I pagamenti programmati non riducono il saldo. Il saldo cambia soltanto quando premi PAGATO e confermi l’importo realmente pagato.',
+  'Movimenti':'Movimenti contiene solo entrate ricevute e pagamenti effettuati. Puoi filtrare, aprire e modificare ogni movimento.',
+  'Categorie':'Le categorie sono facoltative e aiutano a organizzare entrate e pagamenti.',
+  'Notifiche':'Puoi scegliere quali promemoria ricevere, quando riceverli e l’orario preferito.',
+  'Aspetto e colore':'Puoi cambiare il colore principale, la dimensione del testo e ridurre le animazioni.',
+  'Sicurezza':'Puoi proteggere Conti economici con PIN e, quando disponibile, con la sicurezza biometrica del telefono.',
+  'Backup e dati':'Puoi creare, esportare, importare e ripristinare copie dei dati di Conti economici.',
+  'Altre impostazioni':'Qui trovi valuta, formato data, suggerimenti, filtri e ripristino delle preferenze.'
 };
+const GUIDE_ICONS=['▶','●','€','↑','↓','≡','◆','●','◉','🔒','☁','⚙'];
 function openGuide(){
-  const topics=Object.keys(GUIDE).map((t,i)=>'<button class="guideTopic" data-topic="'+i+'">'+esc(t)+'</button>').join('');
-  openModal('Come funziona l’app','<div class="hint">Scegli solo l’argomento che ti serve.</div><div id="guideTopics" class="guideTopics">'+topics+'</div>');
-  $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
+  const names=Object.keys(GUIDE);
+  openModal('Tutorial dell’app',
+    '<div class="field" style="margin-top:2px"><input id="guideSearch" type="search" placeholder="Cerca un argomento..."></div>'+
+    '<div id="guideTopics" class="guideIndex">'+names.map((t,i)=>'<button data-topic="'+escAttr(t)+'"><span class="gNum">'+GUIDE_ICONS[i]+'</span><span><strong>'+(i+1)+'. '+esc(t)+'</strong><small>'+esc(GUIDE[t].split('.')[0])+'</small></span><span class="settingsRowArrow">›</span></button>').join('')+'</div>');
+  $('modal').classList.add('fullSettings');
+  const bind=()=>document.querySelectorAll('#guideTopics button').forEach(b=>b.onclick=()=>openGuideTopic(b.dataset.topic));
+  bind();
+  $('guideSearch').oninput=()=>{const q=$('guideSearch').value.trim().toLowerCase();document.querySelectorAll('#guideTopics button').forEach(b=>b.classList.toggle('hidden',q&&!b.dataset.topic.toLowerCase().includes(q)&&!GUIDE[b.dataset.topic].toLowerCase().includes(q)))};
+}
+function openGuideTopic(topic){
+  const t=topic&&GUIDE[topic]?topic:'Introduzione';
+  if(t==='Entrate'){
+    openModal('Guida Entrate',
+      '<div class="guideIndex">'+
+        '<div class="infoRow"><i>1</i><span><strong>Premi Aggiungi entrata</strong><small>Nella schermata Entrate tocca “Aggiungi entrata” per creare una nuova voce.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>2</i><span><strong>Scrivi nome, importo e data</strong><small>Inserisci i dati dell’entrata. La data va scritta a mano.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>3</i><span><strong>Scegli Una volta, Ogni mese o Altro</strong><small>Imposta la frequenza solo se l’entrata deve ripetersi.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>4</i><span><strong>Quando arriva davvero, premi Ricevuto</strong><small>Solo in quel momento l’importo viene aggiunto al saldo.</small></span><span></span></div>'+
+      '</div>'+
+      '<div class="note" style="background:#fff4c9;border-color:#f2dc8c">Ricorda: inserire un’entrata programmata non modifica il saldo. Il saldo cambia solo quando confermi che l’hai ricevuta.</div>'+
+      '<button id="guideUnderstood" class="btn" style="margin-top:14px">Ho capito</button>');
+  }else{
+    openModal(t,'<div class="note">'+esc(GUIDE[t])+'</div><button id="guideUnderstood" class="btn" style="margin-top:14px">Ho capito</button>');
+  }
+  $('modal').classList.add('fullSettings');$('guideUnderstood').onclick=openGuide;
 }
 function backupPayload(){
   return {format:'in-ordine-conti',version:2,createdAt:new Date().toISOString(),data:{
@@ -1320,21 +1343,35 @@ function normalizeRestoredState(data){
   return restored;
 }
 function openBackupSettings(){
-  openModal('Backup e ripristino','<div class="hint">Il backup contiene soltanto i dati di Conti economici.</div><div class="modalBtns" style="margin-top:16px"><button id="backupCreate" class="btn">Crea backup</button><button id="backupRestore" class="btn secondary">Ripristina backup</button></div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
-  $('backupCreate').onclick=async()=>{await downloadBackup()};
-  $('backupRestore').onclick=()=>$('backupFile').click();
+  openModal('Backup e dati',
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">☁</span><span><strong>Backup automatico</strong><small>Salva i dati automaticamente sul dispositivo</small></span><input id="backupAuto" class="settingToggle" type="checkbox" '+(state.backup&&state.backup.auto?'checked':'')+'></label>'+
+      '<button id="backupCreate" class="settingsSubRow"><span class="settingsRowIcon iBlue">↻</span><span><strong>Crea backup adesso</strong><small>Salva subito una copia dei tuoi dati</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupRestore" class="settingsSubRow"><span class="settingsRowIcon iGreen">↥</span><span><strong>Ripristina backup</strong><small>Ripristina da un backup precedente</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Esporta i dati in un file</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupImport" class="settingsSubRow"><span class="settingsRowIcon iOrange">⇩</span><span><strong>Importa dati</strong><small>Importa dati da un file</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupLocal" class="settingsSubRow"><span class="settingsRowIcon iYellow">▣</span><span><strong>Scarica copia locale</strong><small>Salva una copia sul tuo dispositivo</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupDeleteAll" class="settingsSubRow"><span class="settingsRowIcon iRed">×</span><span><strong>Elimina tutti i dati</strong><small>Cancella definitivamente tutti i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
+  $('modal').classList.add('fullSettings');
+  $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()))};
+  $('backupCreate').onclick=async()=>{await downloadBackup();flashModal('Backup creato.')};
+  $('backupExport').onclick=async()=>{await downloadBackup();};
+  $('backupLocal').onclick=()=>{localStorage.setItem(KEY+'_local_copy',JSON.stringify(backupPayload()));flashModal('Copia locale salvata sul dispositivo.')};
+  const choose=()=>$('backupFile').click();$('backupRestore').onclick=choose;$('backupImport').onclick=choose;
   $('backupFile').onchange=async e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     try{
       const obj=JSON.parse(await file.text());
       if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();
-      const current=backupPayload();
-      localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));
-      await downloadBackup(current);
-      state=normalizeRestoredState(obj.data);
-      localStorage.setItem(KEY,JSON.stringify(state));
-      closeModal();location.reload();
+      const current=backupPayload();localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));
+      state=normalizeRestoredState(obj.data);localStorage.setItem(KEY,JSON.stringify(state));closeModal();location.reload();
     }catch(err){flashModal('Il file selezionato non è un backup valido.')}
+  };
+  $('backupDeleteAll').onclick=()=>{
+    openModal('Elimina tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Questa operazione non può essere annullata.</div><div class="modalBtns"><button id="backupDeleteNo" class="btn secondary">Annulla</button><button id="backupDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+    $('modal').classList.add('fullSettings');$('backupDeleteNo').onclick=openBackupSettings;
+    $('backupDeleteYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security,preferences=state.preferences;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;state.preferences=preferences;save();closeModal();show('landing')};
   };
 }
 function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
