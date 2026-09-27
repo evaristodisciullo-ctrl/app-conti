@@ -2272,11 +2272,16 @@ function openEntryEditor(entry,type){
     $('editRecSummary').textContent=summary||(k==='single'?'L’entrata verrà registrata solo nella data indicata.':'');
     if(k==='single')$('editRecSummary').textContent=(isIncome?'L’entrata':'Il pagamento')+' verrà registrat'+(isIncome?'a':'o')+' solo nella data indicata.';
   };
+  const revealRecurrence=()=>{
+    $('editRecurrenceBlock').classList.remove('hidden');
+    if(!$('editRecKind').value)$('editRecKind').value='single';
+    paintRec();
+  };
   const syncDate=()=>{
     const raw=$('editDateText').value,hasText=raw.trim()!=='';
     const parsed=parseSetupDate(raw),spec=parsed&&parsed.spec;
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
-    if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
+    if(!spec){editorDateSpec=null;$('editDate').value='';return false}
     editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
 
     const rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
@@ -2297,6 +2302,8 @@ function openEntryEditor(entry,type){
     }
     paintRec();return true;
   };
+  $('editDateText').addEventListener('focus',revealRecurrence);
+  $('editDateText').addEventListener('click',revealRecurrence);
   $('editDateText').addEventListener('input',syncDate);$('editDateText').addEventListener('change',syncDate);
   $('editDateText').addEventListener('blur',()=>{
     const raw=$('editDateText').value,rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
