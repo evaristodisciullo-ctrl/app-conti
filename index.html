@@ -421,48 +421,497 @@
 .flowUnifiedDate{overflow:visible!important;text-overflow:clip!important}
 @media(max-width:410px){.flowUnifiedName,.flowUnifiedDate,.flowUnifiedAmount{font-size:9.5px!important}.flowUnifiedMain{grid-template-columns:minmax(54px,.9fr) minmax(82px,1.2fr) auto 10px!important}}
 
+
+/* =========================================================
+   ALLINEAMENTO GRAFICO CANONICO — 27/09/2026
+   Le schermate approvate sono la fonte grafica, non i vecchi CSS.
+   ========================================================= */
+:root{
+  --bg:#eff8ff;
+  --card:#ffffff;
+  --text:#092855;
+  --muted:#6f8194;
+  --line:#dcebf6;
+  --accent:#087bf5;
+  --blue:#087bf5;
+  --shadow:0 9px 24px rgba(39,91,135,.09);
+}
+html,body{background:#eff8ff}
+body{color:var(--text)}
+.app{max-width:560px;background:linear-gradient(180deg,#f7fbff 0%,#edf8ff 100%);padding:18px 14px 78px;overflow-x:hidden}
+.screen{position:relative}
+.srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* 1 — IN ORDINE: replica dell'immagine approvata, senza chrome del telefono */
+#landing.landingCanonical{
+  margin:-18px -14px -78px;
+  padding:0;
+  min-height:100dvh;
+  background:#edf8ff;
+  overflow:auto;
+}
+.canonicalCanvas{position:relative;width:100%;max-width:560px;margin:0 auto;overflow:hidden;background:#edf8ff}
+.canonicalImage{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.landingCanvas .canonicalImage{clip-path:inset(0 0 .75% 0);margin-bottom:-.75%}
+.landingCanonicalName{
+  position:absolute;
+  left:17.3%;
+  top:40.9%;
+  width:72.7%;
+  height:6.0%;
+  border:0!important;
+  outline:0!important;
+  border-radius:10px;
+  background:#eef8ff;
+  color:#17324a;
+  padding:0 10px;
+  font-size:clamp(15px,4.2vw,22px);
+  font-weight:500;
+  box-shadow:none!important;
+}
+.landingCanonicalName::placeholder{color:#77899d;opacity:1}
+.canonicalHotspot{position:absolute;border:0;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.landingHotspotConti{left:4.3%;top:48.6%;width:45.4%;height:36.0%}
+.landingHotspotTodo{left:51.2%;top:48.6%;width:44.5%;height:36.0%}
+
+/* 2 — SALDO INIZIALE: replica della schermata approvata */
+#setup.setupCanonical{
+  margin:-18px -14px -78px;
+  padding:0;
+  min-height:100dvh;
+  background:#edf8ff;
+  overflow:auto;
+}
+.saldoCanvas .saldoImage{clip-path:inset(0 0 .7% 0);margin-bottom:-.7%}
+.saldoBackHotspot{left:1%;top:1%;width:14%;height:10%}
+.saldoCanonicalInput{
+  position:absolute;
+  left:25.7%;
+  top:52.0%;
+  width:62%;
+  height:8.8%;
+  border:0!important;
+  outline:0!important;
+  background:#eef8ff;
+  color:#314865;
+  font-size:clamp(20px,6vw,32px);
+  font-weight:500;
+  padding:0 8px;
+  box-shadow:none!important;
+}
+.saldoCanonicalInput::placeholder{color:#5f7287;opacity:1}
+.saldoContinueHotspot{left:8.4%;top:64.4%;width:83.2%;height:9.6%;border-radius:999px}
+.saldoCanonicalError{
+  position:absolute;left:10%;right:10%;top:61.0%;
+  padding:4px 8px;text-align:center;color:#c8323b;font-size:12px;font-weight:800;
+  background:rgba(255,255,255,.92);border-radius:8px;z-index:4
+}
+
+/* 3-4 — SETUP ENTRATE / PAGAMENTI */
+.setupSimple{
+  margin:-18px -14px -78px;
+  padding:18px 16px 36px;
+  min-height:100dvh;
+  background:
+    radial-gradient(circle at 10% 7%,rgba(48,151,242,.09) 0 55px,transparent 56px),
+    radial-gradient(circle at 91% 16%,rgba(74,179,245,.09) 0 88px,transparent 89px),
+    linear-gradient(180deg,#f6fbff,#eaf7ff 100%);
+}
+.setupSimple:after{
+  content:"";position:fixed;left:0;right:0;bottom:0;height:105px;z-index:0;pointer-events:none;
+  background:linear-gradient(155deg,transparent 0 22%,rgba(88,180,243,.10) 23% 42%,transparent 43%),
+             linear-gradient(22deg,rgba(104,194,251,.10) 0 22%,transparent 23%);
+}
+.setupSimple .onboardHeader{
+  position:relative;z-index:1;
+  margin:0;
+  padding:0 2px 12px;
+  min-height:176px;
+  background:transparent!important;
+  color:#0b2855!important;
+  border-radius:0!important;
+}
+.setupSimple .onboardTop{min-height:92px;align-items:flex-start}
+.setupSimple .backText{color:#52728d!important;font-size:13px;padding:5px 0}
+.setupSimple .onboardTitle{
+  margin-top:4px;
+  font-size:34px!important;
+  letter-spacing:.4px;
+  color:#092855;
+  font-weight:950;
+}
+.setupSimple .sub{color:#4f6c84!important;font-size:14px!important;margin-top:6px}
+.setupWalletArt,.setupPiggyArt{position:absolute!important;right:0;top:3px;width:142px!important;height:105px!important;flex:none!important}
+.setupWalletArt{background:url('assets/wallet-art.webp') center top/142px auto no-repeat;border-radius:18px;overflow:hidden}
+.setupWalletArt>*{display:none!important}
+.setupPiggyArt{transform:scale(1.1);transform-origin:top right}
+.setupPiggyArt .pigBody{background:#f39aaa;box-shadow:inset -8px -5px 0 rgba(201,85,111,.10)}
+.setupPiggyArt .pigCrack{color:#b83857}
+.setupSimple .onboardCard{
+  position:relative;z-index:1;
+  margin-top:0!important;
+  background:#fff;
+  border:1px solid #deebf5;
+  border-radius:24px!important;
+  padding:20px 16px 17px!important;
+  box-shadow:0 12px 26px rgba(48,94,132,.09);
+}
+.setupSimple .onboardCard h2{font-size:25px;color:#0a2854}
+.setupSimple .onboardHint{font-size:13px;color:#77899a}
+.setupSimple .entryGridHead{font-size:11px;color:#425c74}
+.setupSimple .entryRow input{
+  background:#f6fbff!important;border-color:#d7e8f5!important;color:#17324a;
+  border-radius:11px!important;
+}
+.setupSimple .entryRow input:focus{border-color:#63aef1!important;box-shadow:0 0 0 3px rgba(9,123,245,.10)!important}
+.setupSimple .rowMeta{color:#287fc5!important}
+.setupSimple .setupAddRow{color:#087bf5!important;text-align:center!important;padding:13px 4px}
+.setupSimple .setupContinue{background:#087bf5!important;border-radius:999px!important;box-shadow:0 8px 18px rgba(8,123,245,.20)}
+.setupSimple .setupSkip{color:#226bae!important;text-decoration:none}
+
+/* 5 — HOME CONTI ECONOMICI */
+#home{
+  margin:-4px -2px 0;
+  padding:0 0 22px;
+  background:
+    radial-gradient(circle at 90% 4%,rgba(97,186,245,.11) 0 80px,transparent 81px),
+    linear-gradient(180deg,#f8fcff,#edf8ff);
+}
+#home .homeTopLine{margin:0 3px 15px;align-items:center}
+#home .homeLandingBack{font-size:26px;color:#2d84cb}
+#home .homeTopLine h1{font-size:25px;color:#102a50;letter-spacing:0}
+#home .homeFeatureGrid{gap:10px}
+#home .homeFeatureCard{
+  min-height:192px;
+  border:2px solid #50b9f0;
+  border-radius:17px;
+  padding:0 0 14px;
+  background:#fff;
+  box-shadow:0 8px 20px rgba(39,106,151,.07);
+  overflow:hidden;
+}
+#home .homeScene{height:118px!important;margin:0!important;background-color:#eafaff!important;background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important}
+#home .incomeFeature .homeScene{background-image:url('assets/home-income-art.webp')!important}
+#home .expenseFeature .homeScene{background-image:url('assets/home-payment-art.webp')!important}
+#home .homeScene>*{display:none!important}
+#home .homeFeatureText{display:block;padding:3px 14px 0}
+#home .homeFeatureText strong{font-size:18px;color:#092855}
+#home .homeFeatureText small{font-size:11px;color:#6f8194;margin-top:2px}
+#home .homeFeatureArrow{
+  right:13px;bottom:12px;
+  width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+  background:#087bf5;color:#fff;font-size:22px;box-shadow:0 5px 12px rgba(8,123,245,.22)
+}
+#home .expenseFeature .homeFeatureArrow{background:#087bf5}
+#home .homeSummaryTitle{font-size:12px;color:#385775;margin:18px 5px 7px}
+#home .homeSummaryCard{border-radius:16px;padding:2px 12px;border-color:#dfebf5}
+#home .homeSummaryRow{padding:11px 3px}
+#home .homeSummaryIcon{border-radius:50%;width:28px;height:28px;font-size:14px}
+#home .homeSummaryLabel{font-size:11px}
+#home .homeSummaryValue{font-size:16px}
+#home #editBalance{display:none!important}
+#home .totalRow{background:#eef7ff!important}
+#home .homeActionCard{
+  border-radius:14px;margin-top:10px;padding:12px 13px;border-color:#dbeaf5;
+  box-shadow:0 6px 15px rgba(48,94,132,.05)
+}
+#home .homeActionIcon{border-radius:50%}
+#home .homeActionCard strong{font-size:15px}
+
+/* 6-7 — ELENCHI ENTRATE / PAGAMENTI */
+.flowPage{
+  margin:-4px -2px 0;
+  padding:0 0 28px;
+  background:linear-gradient(180deg,#f8fcff,#edf8ff);
+}
+.flowPage .pageHeader{margin:0 2px 11px}
+.flowPage .pageHeader h1{font-size:26px;color:#102a50}
+.flowPage .pageBack{font-size:0;color:#2486cd;padding:3px 4px 0 0}
+.flowPage .pageBack .arrow{font-size:26px}
+.flowBanner{
+  position:relative;
+  min-height:102px;
+  padding:0!important;
+  border:0!important;
+  border-radius:16px!important;
+  background-color:transparent!important;
+  background-position:center!important;
+  background-size:100% 100%!important;
+  background-repeat:no-repeat!important;
+  box-shadow:0 7px 18px rgba(42,100,142,.06);
+  overflow:hidden;
+}
+.flowIncome .flowBanner{background-image:url('assets/income-banner.webp')!important}
+.flowExpense .flowBanner{background-image:none!important}
+.flowBannerVisual{display:none!important}
+.flowBannerAdd{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  opacity:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+}
+.flowBannerAdd:before{display:none!important}
+.flowTabs{gap:5px;margin:10px 0}
+.flowTab{
+  padding:8px 5px;border-radius:999px;border-color:#dbe8f2;color:#718497;background:#fff;font-size:11px
+}
+.flowTab.active{background:#cfeaff;border-color:#cfeaff;color:#216fb0}
+.flowUnified{gap:8px}
+.flowUnifiedRow{grid-template-columns:minmax(0,1fr) 105px;gap:6px}
+.flowUnifiedMain{
+  min-height:52px!important;padding:8px 10px!important;border-radius:12px!important;
+  background:#fff!important;border-color:#dbeaf5!important;box-shadow:0 4px 12px rgba(34,90,128,.035)
+}
+.flowUnifiedStatus{border-radius:12px!important;font-size:9px!important}
+.flowUnifiedStatus.pending{background:#fff1c6!important;color:#9b6b00!important}
+.flowUnifiedStatus.done{background:#dff8e9!important;color:#087b52!important}
+.flowUnifiedStatus.overdue{background:#ffe3e5!important;color:#c22735!important}
+.flowEmpty{background:#fff;border-color:#dceaf5;border-radius:14px;color:#77899a}
+
+/* 8-10 — AGGIUNGI / MODIFICA */
+.modal.fullEditor{background:#eff8ff!important}
+.modal.fullEditor .modalCard{
+  background:
+    radial-gradient(circle at 94% 2%,rgba(91,181,242,.10) 0 80px,transparent 81px),
+    linear-gradient(180deg,#f8fcff,#edf8ff)!important;
+  padding:13px 15px 28px!important;
+}
+.modal.fullEditor .modalHead{background:rgba(248,252,255,.97)!important;border-bottom:1px solid #e0ecf5}
+.modal.fullEditor .modalTitle{font-size:25px!important;color:#102a50}
+.modal.fullEditor .close{color:#287fc5}
+.modal.fullEditor .field label{color:#17324a}
+.modal.fullEditor .field input,.modal.fullEditor .field select,.modal.fullEditor textarea{
+  border:1px solid #d9e8f3!important;border-radius:13px!important;background:#fff!important;
+  min-height:49px!important;box-shadow:0 3px 9px rgba(50,93,125,.025)
+}
+.modal.fullEditor .suggestionChip{
+  background:#eaf5ff;border-color:#cae5fa;color:#236da9;padding:7px 11px
+}
+.modal.fullEditor .recChoiceGrid button,.modal.fullEditor .stateChoiceGrid button{border-radius:11px}
+.modal.fullEditor .btn:not(.deleteBtn){background:#087bf5!important;border-radius:13px}
+.modal.fullEditor .notifyField,.modal.fullEditor .notifyRuleBox{
+  background:#fff!important;border-color:#dce9f3!important;border-radius:14px!important
+}
+.modal.fullEditor .optionalNoteBtn{color:#087bf5}
+
+/* MOVIMENTI */
+#movements{
+  margin:-4px -2px 0;padding-bottom:28px;
+  background:linear-gradient(180deg,#f8fcff,#edf8ff)
+}
+#movements .pageHeader h1{font-size:27px;color:#102a50}
+#movements .pageBack{font-size:0;color:#287fc5}
+#movements .pageBack .arrow{font-size:26px}
+.movementQuickTabs{gap:5px}
+.movementQuickTab{border-radius:999px!important;padding:8px 5px!important;font-size:11px!important}
+#allMovements .movementRow{border-radius:14px!important;border-color:#dceaf5!important;box-shadow:0 4px 13px rgba(39,90,126,.04)!important}
+#allMovements .mIcon{border-radius:50%}
+#allMovements .mAmount.income{color:#128352!important}
+#allMovements .mAmount.expense{color:#c82d38!important}
+
+/* IMPOSTAZIONI */
+#settings{
+  margin:-4px -2px 0;padding-bottom:28px;
+  background:linear-gradient(180deg,#f8fcff,#edf8ff)
+}
+#settings .pageHeader h1{font-size:27px;color:#102a50}
+#settings .pageBack{font-size:0;color:#287fc5}
+#settings .pageBack .arrow{font-size:26px}
+.settingsSearch{
+  height:46px;border-color:#d9e8f3;background:#fff;border-radius:16px;
+  box-shadow:0 4px 13px rgba(42,93,130,.035)
+}
+.settingsGroupTitle{color:#657e93;margin-left:7px}
+.settingsMenu{
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+  display:flex;flex-direction:column;gap:8px;overflow:visible!important
+}
+.settingsRow{
+  border:1px solid #dfeaf3!important;
+  border-radius:15px!important;
+  background:#fff!important;
+  padding:11px 12px!important;
+  box-shadow:0 5px 15px rgba(40,91,128,.04)
+}
+.settingsRowIcon{border-radius:50%!important}
+.settingsRowText strong{color:#17324a;font-size:14px}
+.settingsRowText small{color:#76899b}
+.settingsRowArrow{color:#2a82c7}
+.settingsDanger .settingsRow{border-color:#f3dfe2!important}
+
+/* Modali secondari coerenti con la stessa famiglia visiva */
+.modal:not(.fullEditor) .modalCard{border-radius:24px;background:#fafdff;border:1px solid #dceaf5}
+.modal:not(.fullEditor) .modalTitle{color:#102a50}
+.modal:not(.fullEditor) input,.modal:not(.fullEditor) select,.modal:not(.fullEditor) textarea{border-color:#d8e8f3}
+.modal:not(.fullEditor) .btn:not(.deleteBtn){background:#087bf5}
+
+/* Nessuna barra / chrome simulato dentro l'app */
+.phoneStatus,.mockStatusBar,.deviceBar{display:none!important}
+
+@media(max-width:410px){
+  #home .homeFeatureCard{min-height:176px}
+  #home .homeScene{height:108px!important}
+  .flowBanner{min-height:92px}
+  .flowUnifiedRow{grid-template-columns:minmax(0,1fr) 92px}
+  .landingCanonicalName{font-size:16px}
+}
+
+
+/* ALLINEAMENTO FINALE MOCKUP APPROVATI — 27/09 */
+:root{--screen-blue:#f3f9ff;--navy:#102a50;--soft-blue:#e8f4ff;--row-blue:#eef7ff;--border-blue:#d9e9f6}
+body{background:#eef7ff}
+.app{background:linear-gradient(180deg,#f8fcff 0%,#eef8ff 100%);min-height:100vh}
+.screen{position:relative}
+
+/* elenchi */
+.flowPage{padding:0 2px 34px!important}
+.flowPage:after,#movements:after,#settings:after,.modal.fullSettings .modalCard:after,.modal.fullEditor .modalCard:after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:88px;pointer-events:none;opacity:.35;
+  background:radial-gradient(ellipse at 14% 110%,#72bff6 0 23%,transparent 24%),radial-gradient(ellipse at 42% 112%,#a8d9fb 0 28%,transparent 29%),radial-gradient(ellipse at 76% 115%,#6bb8f2 0 23%,transparent 24%);
+}
+.flowPage .pageHeader{padding:3px 2px 2px}
+.flowPage .pageTitleBlock{flex-direction:row;align-items:center;gap:9px}
+.flowPage .pageHeader h1{font-size:24px!important;margin:0}
+.flowBanner{min-height:92px!important;border:1.5px solid #61d7d3!important;box-shadow:0 5px 15px rgba(59,138,177,.07)!important}
+.flowTabs{margin:12px 0 10px!important}
+.flowTab{height:38px;font-size:12px!important}
+.flowTab.active{background:linear-gradient(135deg,#48a9f5,#198df0)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 10px rgba(24,136,234,.14)}
+.flowUnified{gap:9px!important}
+.flowUnifiedRow{background:#fff;border:1px solid #e2edf5;border-radius:15px;padding:6px;box-shadow:0 4px 14px rgba(36,86,121,.035);grid-template-columns:minmax(0,1fr) 103px!important}
+.flowUnifiedMain{background:#eef7ff!important;border:0!important;box-shadow:none!important;border-radius:11px!important;min-height:52px!important}
+.flowUnifiedStatus{min-height:52px;border-radius:11px!important}
+.flowUnifiedName{color:#142f55!important;font-size:12px!important}
+.flowUnifiedDate{color:#566d82!important;font-size:10.5px!important}
+.flowUnifiedAmount{color:#142f55!important;font-size:12px!important}
+
+/* editor entrate/pagamenti */
+.modal.fullEditor{z-index:150;background:#eff8ff!important;padding:0!important;align-items:stretch!important}
+.modal.fullEditor .modalCard{position:relative;width:min(560px,100%)!important;max-height:none!important;height:100vh!important;border-radius:0!important;padding:10px 14px 102px!important;background:linear-gradient(180deg,#f7fcff,#eaf6ff)!important}
+.modal.fullEditor .modalHead{top:-10px!important;padding:12px 0 11px!important;margin:0 0 6px!important;border:0!important;display:grid!important;grid-template-columns:34px 1fr;justify-content:start!important}
+.modal.fullEditor .modalTitle{grid-column:2;font-size:24px!important}
+.modal.fullEditor .modalHead .close{grid-column:1;grid-row:1;font-size:0!important;width:34px;height:34px;border-radius:50%;background:#e8f5ff!important;color:#2479d8!important}
+.modal.fullEditor .modalHead .close:before{content:"←";font-size:24px;font-weight:700}
+.modal.fullEditor #modalBody{position:relative;z-index:1}
+.modal.fullEditor .field{margin:12px 0!important}
+.modal.fullEditor .field label{font-size:13px!important;color:#142f55!important}
+.modal.fullEditor .field input,.modal.fullEditor .field select,.modal.fullEditor textarea{border-radius:11px!important;min-height:46px!important}
+.modal.fullEditor .suggestionLabel{font-size:11px!important;margin:3px 0 7px!important}
+.modal.fullEditor .suggestionChips{gap:6px!important}
+.modal.fullEditor .suggestionChip{padding:7px 10px!important;background:#e9f4ff!important;border:0!important;color:#274764!important}
+.modal.fullEditor .recChoiceGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.modal.fullEditor .recChoiceGrid button{min-height:45px;border:1px solid #cfdde8;background:#fff;color:#273d57;font-weight:850}
+.modal.fullEditor .recChoiceGrid button.active{border:2px solid #168cf0;background:#eef7ff;color:#126fbd}
+.editorInfo{background:#dff0ff;border-radius:10px;padding:10px 12px;color:#285777;font-size:11px;margin-top:8px}
+.editorMore{margin:13px 0 0;background:#e7f3ff;border-radius:12px;overflow:hidden}
+.editorMore summary{padding:12px 13px;font-size:13px;font-weight:900;color:#173b62;cursor:pointer;list-style:none}
+.editorMore summary:before{content:"⌃";margin-right:8px;color:#2479d8}
+.editorMore:not([open]) summary:before{content:"⌄"}
+.editorMoreBody{background:#fff;padding:2px 12px 12px}
+.editorSaveOnly{display:block!important;margin-top:14px!important}
+.editorSaveOnly .btn{width:100%!important;min-height:50px!important}
+.editorSaveOnly .btn.secondary{display:none!important}
+
+/* Movimenti */
+#movements{padding:0 2px 100px!important}
+#movements .pageTitleBlock{flex-direction:row;align-items:center;gap:9px}
+#movements .pageHeader{margin:0 2px 12px}
+#movements .pageHeader h1{font-size:25px!important}
+.movementQuickTabs{margin:0 0 13px!important}
+.movementQuickTab{height:38px}
+.movementQuickTab.active{background:linear-gradient(135deg,#248cf4,#087bf5)!important;color:#fff!important;border-color:transparent!important}
+#allMovements{gap:9px!important}
+#allMovements .movementRow{grid-template-columns:48px minmax(0,1fr) auto 14px!important;min-height:68px;padding:9px 11px!important;background:#fff!important}
+#allMovements .mIcon{width:44px!important;height:44px!important;font-size:21px!important}
+#allMovements .mName{color:#102a50;font-size:14px}
+#allMovements .mDate{font-size:10.5px!important}
+#allMovements .mAmount{font-size:15px}
+#allMovements .mType{font-size:9.5px!important;padding:3px 8px!important}
+.movementEmpty{padding:70px 22px 40px;text-align:center;color:#425b74}
+.movementEmptyArt{width:88px;height:105px;border-radius:16px;background:#fff;margin:0 auto 18px;box-shadow:0 7px 20px rgba(57,113,151,.08);position:relative}
+.movementEmptyArt:before,.movementEmptyArt:after{content:"";position:absolute;left:23px;right:23px;height:7px;border-radius:5px;background:#91c8ee}
+.movementEmptyArt:before{top:37px}.movementEmptyArt:after{top:58px}
+.movementEmpty h3{font-size:20px;margin:0 0 6px;color:#102a50}.movementEmpty p{font-size:12px;line-height:1.4;margin:0}
+
+/* detail visual */
+.movementHero{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:center;margin:7px 0 15px}
+.movementHeroIcon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:24px;font-weight:900;background:#dcf8e8;color:#0c8b55}
+.movementHeroIcon.expense{background:#ffe7ec;color:#ca2e45}
+.movementHeroName{font-weight:950;font-size:17px;color:#102a50}.movementHeroAmount{font-size:18px;font-weight:950;text-align:right}.movementHeroAmount.income{color:#13945a}.movementHeroAmount.expense{color:#cc2738}
+.movementMetaCard{background:#fff;border:1px solid #dfeaf4;border-radius:15px;padding:4px 14px;box-shadow:0 5px 15px rgba(45,93,128,.04)}
+.movementMetaRow{display:grid;grid-template-columns:32px 1fr;gap:9px;padding:12px 0;border-bottom:1px solid #e7eef5}.movementMetaRow:last-child{border-bottom:0}
+.movementMetaRow .metaIcon{width:28px;height:28px;border-radius:9px;background:#eef6ff;display:grid;place-items:center;color:#257dc7}.movementMetaRow strong{display:block;font-size:12px}.movementMetaRow span{display:block;color:#5f7181;font-size:11px;margin-top:2px}
+.movementDetailActions{display:flex;flex-direction:column;gap:9px;margin-top:13px}.movementDetailActions button{width:100%;min-height:49px;border:1px solid #dce8f3;background:#fff;border-radius:13px;text-align:left;padding:0 14px;color:#17324a;font-weight:900}.movementDetailActions .dangerLine{color:#c92f3d}
+
+/* Settings main */
+#settings{padding:0 2px 100px!important}
+#settings .pageTitleBlock{flex-direction:row;align-items:center;gap:9px}
+#settings .pageHeader{margin-bottom:12px}
+#settings .settingsSearch,#settings .settingsGroupTitle{display:none!important}
+#settings .settingsGroup{margin-bottom:7px!important}
+#settings .settingsMenu{gap:7px!important}
+#settings .settingsRow{min-height:57px!important;padding:9px 11px!important}
+#settings .settingsRowIcon{width:38px!important;height:38px!important}
+#settings .settingsRowText strong{font-size:13px!important}
+#settings .settingsRowText small{font-size:10.5px!important}
+
+/* Full-screen settings subpages */
+.modal.fullSettings{z-index:155;background:#eff8ff!important;padding:0!important;align-items:stretch!important}
+.modal.fullSettings .modalCard{position:relative;width:min(560px,100%)!important;height:100vh!important;max-height:none!important;border-radius:0!important;box-shadow:none!important;background:linear-gradient(180deg,#f8fcff,#eaf6ff)!important;padding:10px 14px 100px!important}
+.modal.fullSettings .modalHead{display:grid!important;grid-template-columns:34px 1fr;align-items:center!important;padding:12px 0 10px!important;margin:0!important}
+.modal.fullSettings .modalTitle{grid-column:2;font-size:23px!important;color:#102a50!important}
+.modal.fullSettings .close{grid-column:1;grid-row:1;font-size:0!important;width:34px;height:34px;border-radius:50%;background:#e8f5ff!important;color:#2479d8!important}
+.modal.fullSettings .close:before{content:"←";font-size:24px;font-weight:700}
+.modal.fullSettings #modalBody{position:relative;z-index:1}
+.settingsSubTitle{font-size:11px;font-weight:950;color:#526c84;margin:14px 4px 7px}
+.settingsSubMenu{display:flex;flex-direction:column;gap:7px}
+.settingsSubRow{width:100%;min-height:56px;border:1px solid #e0ebf4;background:#fff;border-radius:13px;padding:9px 11px;display:grid;grid-template-columns:37px minmax(0,1fr) auto;gap:10px;align-items:center;text-align:left;color:#17324a}
+.settingsSubRow .settingsRowIcon{width:36px;height:36px;border-radius:50%}
+.settingsSubRow strong{font-size:12.5px}.settingsSubRow small{display:block;color:#788b9d;font-size:10px;margin-top:2px}.settingsSubRow .settingsRowArrow{font-size:21px}
+.settingToggle{width:42px!important;height:24px!important;min-height:0!important;accent-color:#087bf5}
+.settingsTabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#fff;border-radius:12px;padding:3px;margin-bottom:10px}
+.settingsTabs button{height:38px;border:0;border-radius:10px;background:transparent;color:#5b7084;font-weight:850}.settingsTabs button.active{background:#087bf5;color:#fff}
+.appearancePreview{background:#dff0ff;border-radius:16px;padding:13px;margin-bottom:14px}.appearancePhone{width:180px;margin:auto;background:#fff;border-radius:18px;padding:12px;box-shadow:0 7px 18px rgba(40,92,129,.09)}.appearanceBalance{background:#fff;border:1px solid #e1ebf4;border-radius:10px;padding:10px;font-size:11px}.appearanceBalance strong{font-size:18px;color:#102a50}.appearanceMini{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.appearanceMini div{border-radius:9px;padding:8px;font-size:9px;background:#ebf9ef}.appearanceMini div:last-child{background:#fff0f1}
+.settingsColorDots{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.settingsColorDot{border:0;background:transparent;font-size:10px;color:#4c6071}.settingsColorDot i{display:block;width:32px;height:32px;border-radius:50%;margin:0 auto 4px;border:3px solid transparent}.settingsColorDot.active i{border-color:#17324a}
+.guideIndex{display:flex;flex-direction:column;gap:6px}.guideIndex button{min-height:51px;border:1px solid #e0eaf3;background:#fff;border-radius:12px;padding:7px 10px;display:grid;grid-template-columns:31px 1fr auto;gap:9px;align-items:center;text-align:left;color:#17324a}.guideIndex .gNum{width:29px;height:29px;border-radius:50%;background:#e5f2ff;display:grid;place-items:center;color:#2479d8;font-size:11px;font-weight:900}.guideIndex strong{font-size:12px}.guideIndex small{display:block;font-size:9.5px;color:#7a8b9a;margin-top:2px}
+.infoRows{display:flex;flex-direction:column;gap:7px}.infoRow{min-height:55px;border:1px solid #e0ebf4;background:#fff;border-radius:12px;padding:9px 11px;display:grid;grid-template-columns:34px 1fr auto;gap:9px;align-items:center}.infoRow i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#eaf4ff;color:#2479d8;font-style:normal}.infoRow strong{font-size:12px}.infoRow small{display:block;font-size:9.5px;color:#75899a;margin-top:2px}
+
+@media(max-width:390px){
+  .flowUnifiedRow{grid-template-columns:minmax(0,1fr) 92px!important}
+  #allMovements .movementRow{grid-template-columns:43px minmax(0,1fr) auto 12px!important;padding:8px 9px!important}
+  #allMovements .mIcon{width:40px!important;height:40px!important}
+  .modal.fullSettings .modalCard,.modal.fullEditor .modalCard{padding-left:12px!important;padding-right:12px!important}
+}
+
+.dangerEditorRow{width:100%;min-height:46px;border:1px solid #f2d5d9;background:#fff5f6;color:#c52b3a;border-radius:11px;font-weight:900;margin-top:9px}
+.modal.fullEditor #editAmount{padding-right:38px}
+body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+#notifications{padding:0 2px 100px;background:linear-gradient(180deg,#f8fcff,#eaf6ff)}
+#notifications .pageTitleBlock{flex-direction:row;align-items:center;gap:9px}
+#notifications .pageHeader h1{font-size:25px;color:#102a50}
+#notifications .pageBack{font-size:0;color:#287fc5}#notifications .pageBack .arrow{font-size:26px}
+#notifications input[type="radio"]{width:20px;height:20px;accent-color:#087bf5}
+.disabledRow{opacity:.5;pointer-events:none}
 </style>
 </head>
 <body>
 <div class="app">
-<section id="landing" class="screen landing hidden">
-  <div class="landingTitle">In Ordine</div>
-  <div class="landingLead">Conti e attività, tutto sotto controllo.</div>
-  <div class="landingScript">Più tempo per ciò che conta</div><div class="landingPeopleArt" aria-hidden="true"><span class="lpGlow"></span><span class="lpPerson lpA"><i class="lpHead"></i><i class="lpBody"></i></span><span class="lpPerson lpB"><i class="lpHead"></i><i class="lpBody"></i></span><span class="lpPhone">€</span></div>
-  <div class="landingName">
-    <label>Come vuoi essere chiamato?</label>
-    <input id="landingNickname" type="text" autocomplete="name" placeholder="Es. Marco">
+<section id="landing" class="screen landing landingCanonical hidden">
+  <div class="canonicalCanvas landingCanvas">
+    <img id="landingCanonicalImage" class="canonicalImage" alt="" style="visibility:hidden">
+    <label class="srOnly" for="landingNickname">Come vuoi essere chiamato?</label>
+    <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
+    <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
+    <button id="landingTodo" class="canonicalHotspot landingHotspotTodo" aria-label="Cose da fare"></button>
   </div>
-  <div class="landingCards">
-    <button id="landingConti" class="landingCard">
-      <span class="landingCardIcon blue">€</span>
-      <span><strong>Conti economici</strong><small>Monitora entrate, pagamenti e saldo.</small></span>
-      <span class="arrow">›</span>
-    </button>
-    <button id="landingTodo" class="landingCard future">
-      <span class="landingCardIcon green">✓</span>
-      <span><strong>Cose da fare</strong><small>Organizza impegni, scadenze e promemoria.</small></span>
-      <span class="arrow">›</span>
-    </button>
-  </div>
-  <div class="landingBottom">Scegli da dove iniziare.</div>
 </section>
 
-<section id="setup" class="screen setup hidden"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button>
-  <div class="setupTop">
-    <div class="setupBrand"><div class="brand"><span>Conti</span> <b>economici</b></div><div class="sub">Saldo, entrate, uscite.<br>Sempre con te.</div></div>
-    <div class="setupPhoneArt" aria-hidden="true">
-      <span class="ray r1"></span><span class="ray r2"></span><span class="ray r3"></span>
-      <div class="phone"><div class="phoneScreen"><span class="bar b1"></span><span class="bar b2"></span><span class="bar b3"></span><span class="chartLine"></span><span class="chartDot"></span></div></div>
-      <div class="handPalm"></div><div class="handWrist"></div>
-    </div>
-  </div>
-  <div class="setupCard">
-    <h1>Inserisci il tuo saldo attuale</h1>
-    <div class="field"><label>Importo</label><div class="moneyInput"><span>€</span><input id="startBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00"></div></div>
-    <div id="setupError" class="setupError hidden"></div>
-    <button id="startBtn" class="btn">Continua <span aria-hidden="true">→</span></button>
-    <div class="safe">Potrai modificare il saldo in qualsiasi momento</div>
+<section id="setup" class="screen setup setupCanonical hidden">
+  <div class="canonicalCanvas saldoCanvas">
+    <img class="canonicalImage saldoImage" src="assets/saldo-bg.webp" alt="">
+    <span class="srOnly">Conti economici. Inserisci il tuo saldo attuale</span>
+    <button id="balanceBack" class="canonicalHotspot saldoBackHotspot" aria-label="Indietro"></button>
+    <label class="srOnly" for="startBalance">Importo</label>
+    <input id="startBalance" class="saldoCanonicalInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Importo">
+    <div id="setupError" class="setupError saldoCanonicalError hidden"></div>
+    <button id="startBtn" class="canonicalHotspot saldoContinueHotspot" aria-label="Continua"></button>
   </div>
 </section>
 
@@ -501,13 +950,27 @@
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
-  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e i tuoi pagamenti.</p></div>
-  <div class="notifyCard">
-    <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e pagamento.</span></span></button>
-    <button id="notifyCustom" class="notifyChoice"><span class="bell">🔔</span><span><strong>Scegli quali notifiche attivare</strong><span class="copy">Decidi tu per quali voci ricevere un promemoria.</span></span></button>
-    <button id="notifySkip" class="notifySkip">Salta per ora</button>
-    <div class="notifyHelp">Puoi modificare le notifiche quando vuoi da Impostazioni → Notifiche.</div>
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
+  <div class="settingsSubTitle">ENTRATE</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iGreen">●</span><span><strong>Entrate da ricevere</strong><small>Avvisa quando ci sono entrate previste</small></span><input id="notifyIncomeDue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria entrate</strong><small>Promemoria per le entrate pianificate</small></span><input id="notifyIncomeReminder" class="settingToggle" type="checkbox"></label>
+  </div>
+  <div class="settingsSubTitle">PAGAMENTI</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iRed">●</span><span><strong>Pagamenti da pagare</strong><small>Avvisa quando ci sono pagamenti in scadenza</small></span><input id="notifyExpenseDue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iOrange">!</span><span><strong>Pagamenti scaduti</strong><small>Avvisa per i pagamenti scaduti</small></span><input id="notifyExpenseOverdue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria pagamenti</strong><small>Promemoria per i pagamenti pianificati</small></span><input id="notifyExpenseReminder" class="settingToggle" type="checkbox"></label>
+  </div>
+  <div class="settingsSubTitle">QUANDO AVVISARE</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>1 giorno prima</strong><small>Ricevi una notifica il giorno prima</small></span><input id="notifyBefore" type="radio" name="notifyWhen" value="before"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Il giorno stesso</strong><small>Ricevi una notifica il giorno della scadenza</small></span><input id="notifySame" type="radio" name="notifyWhen" value="same"></label>
+  </div>
+  <div class="settingsSubTitle">ORARIO PREFERITO</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Orario preferito</strong><small>Scegli l’orario per le notifiche</small></span><input id="notifyTime" type="time" style="width:88px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">♫</span><span><strong>Suono notifiche</strong><small>Riproduci un suono per le notifiche</small></span><input id="notifySound" class="settingToggle" type="checkbox"></label>
   </div>
 </section>
 
@@ -622,36 +1085,36 @@
   <div class="settingsGroup" data-settings-group>
     <div class="settingsGroupTitle">Conti</div>
     <div class="settingsMenu">
-      <button class="settingsRow" id="settingsEditBalance" data-search="saldo modifica saldo"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Saldo / Modifica saldo</strong><small>Correggi il saldo attuale</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsIncome" data-search="entrate"><span class="settingsRowIcon iGreen">↓</span><span class="settingsRowText"><strong>Entrate</strong><small>Visualizza e gestisci le entrate</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsExpense" data-search="pagamenti"><span class="settingsRowIcon iOrange">↑</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Visualizza e gestisci i pagamenti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Entrate ricevute e pagamenti effettuati</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsEditBalance" data-search="saldo modifica saldo"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Saldo attuale</strong><small>Visualizza e modifica il saldo</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsIncome" data-search="entrate"><span class="settingsRowIcon iGreen">↑</span><span class="settingsRowText"><strong>Entrate</strong><small>Gestisci le tue entrate</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsExpense" data-search="pagamenti"><span class="settingsRowIcon iRed">↓</span><span class="settingsRowText"><strong>Pagamenti</strong><small>Gestisci i tuoi pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow hidden" id="settingsMovements" data-search="movimenti storico"><span class="settingsRowIcon iPurple">↕</span><span class="settingsRowText"><strong>Movimenti</strong><small>Entrate ricevute e pagamenti effettuati</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
   <div class="settingsGroup" data-settings-group>
     <div class="settingsGroupTitle">Organizzazione</div>
     <div class="settingsMenu">
-      <button class="settingsRow" id="settingsCategories" data-search="categorie riepilogo categorie"><span class="settingsRowIcon iPink">▦</span><span class="settingsRowText"><strong>Categorie</strong><small>Organizza entrate e pagamenti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsBudget" data-search="budget limite spesa"><span class="settingsRowIcon iTeal">◔</span><span class="settingsRowText"><strong>Budget</strong><small>Limiti mensili di spesa</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsNotifications" data-search="notifiche promemoria avvisi"><span class="settingsRowIcon iYellow">🔔</span><span class="settingsRowText"><strong>Notifiche</strong><small>Gestisci entrate e pagamenti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsCategories" data-search="categorie riepilogo categorie"><span class="settingsRowIcon iPurple">◆</span><span class="settingsRowText"><strong>Categorie</strong><small>Gestisci le categorie</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow hidden" id="settingsBudget" data-search="budget limite spesa"><span class="settingsRowIcon iTeal">◔</span><span class="settingsRowText"><strong>Budget</strong><small>Limiti mensili di spesa</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsNotifications" data-search="notifiche promemoria avvisi"><span class="settingsRowIcon iOrange">●</span><span class="settingsRowText"><strong>Notifiche</strong><small>Promemoria e avvisi</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
   <div class="settingsGroup" data-settings-group>
     <div class="settingsGroupTitle">App</div>
     <div class="settingsMenu">
-      <button class="settingsRow" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iPink">◉</span><span class="settingsRowText"><strong>Aspetto e colore</strong><small>Personalizza il colore principale</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">⌾</span><span class="settingsRowText"><strong>Sicurezza</strong><small>PIN e biometria per Conti economici</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iBlue">⇩</span><span class="settingsRowText"><strong>Backup e dati</strong><small>Salva o recupera i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsOther" data-search="altre impostazioni lingua euro data preferenze"><span class="settingsRowIcon iTeal">⋯</span><span class="settingsRowText"><strong>Altre impostazioni</strong><small>Lingua, valuta e formato date</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie budget notifiche modifica elimina fine mese"><span class="settingsRowIcon iGreen">?</span><span class="settingsRowText"><strong>Tutorial dell’app</strong><small>Scegli l’argomento che vuoi capire</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iIndigo">i</span><span class="settingsRowText"><strong>Informazioni</strong><small>Versione e gestione dei dati</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow hidden" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iBlue">●</span><span class="settingsRowText"><strong>Aspetto e colore</strong><small>Scegli il colore dell’app</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">🔒</span><span class="settingsRowText"><strong>Sicurezza</strong><small>PIN, Face ID e privacy</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iPurple">☁</span><span class="settingsRowText"><strong>Backup e dati</strong><small>Salva, ripristina e gestisci i dati</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsOther" data-search="altre impostazioni lingua euro data preferenze"><span class="settingsRowIcon iGray">⚙</span><span class="settingsRowText"><strong>Altre impostazioni</strong><small>Impostazioni generali</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie notifiche"><span class="settingsRowIcon iYellow">▣</span><span class="settingsRowText"><strong>Tutorial dell’app</strong><small>Impara a usare Conti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iGray">i</span><span class="settingsRowText"><strong>Informazioni</strong><small>Versione app e contatti</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
-  <div class="settingsGroup settingsDanger" data-settings-group>
+  <div class="settingsGroup settingsDanger hidden" data-settings-group>
     <div class="settingsMenu">
       <button class="settingsRow" id="resetPrototype" data-search="cancella tutti dati reset"><span class="settingsRowIcon iRed">×</span><span class="settingsRowText"><strong>Cancella tutti i dati dei conti</strong><small>Profilo e colore dell’app restano invariati</small></span><span class="settingsRowArrow">›</span></button>
     </div>
@@ -683,80 +1146,168 @@ const monthName=ym=>{const p=ym.split('-').map(Number);const s=new Intl.DateTime
 const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-1+n,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
-const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0},version:6});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);try{if(state&&state.preferences&&state.preferences.dateFormat==='numeric')return String(p[2]).padStart(2,'0')+'/'+String(p[1]).padStart(2,'0')+'/'+p[0]}catch(e){}return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}},ui:{incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},flowOnlyActive:{income:true,expense:true},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10},backup:{auto:false},preferences:{textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'},version:7});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(typeof state.security.hideHomeAmounts!=='boolean')state.security.hideHomeAmounts=false;if(!Number.isFinite(Number(state.security.lockMinutes)))state.security.lockMinutes=10;if(!state.notifications.ui)state.notifications.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true};if(!state.flowOnlyActive)state.flowOnlyActive={income:true,expense:true};if(!state.backup)state.backup={auto:false};if(!state.preferences)state.preferences={textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'};if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',summaryMonth=ymNow(),budgetMonth=ymNow();
 let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary';
-let movementFilters={type:'all',name:'all',category:'all',period:'all'};let undoSnackTimer=null,undoSnackHistoryId=null;
+let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};let undoSnackTimer=null,undoSnackHistoryId=null;
 
-const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62'};
+const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62',Arancione:'#e58a2c'};
 function applyAppColor(name){const v=APP_COLORS[name]||APP_COLORS.Blu;document.documentElement.style.setProperty('--accent',v)}
+function applyPreferences(){
+  const p=state.preferences||{};
+  document.documentElement.style.fontSize=p.textSize==='large'?'18px':p.textSize==='small'?'14px':'16px';
+  document.body.classList.toggle('reduceMotion',!!p.reduceAnimations);
+  document.body.classList.toggle('themeLight',p.lightTheme!==false);
+}
+
 function openProfileSettings(){
-  openModal('Profilo / Nome','<div class="field"><label>Nome / nickname <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="profileNickname" value="'+escAttr(state.profile.fullName||'')+'" placeholder="Es. Marco"></div><div class="modalBtns"><button id="profileCancel" class="btn secondary">Annulla</button><button id="profileSave" class="btn">Salva</button></div>');
-  $('profileCancel').onclick=closeModal;$('profileSave').onclick=()=>{state.profile.fullName=$('profileNickname').value.trim();save();if($('landingNickname'))$('landingNickname').value=state.profile.fullName;closeModal()};
+  openModal('Profilo / Nome',
+    '<div class="settingsSubMenu"><div class="settingsSubRow"><span class="settingsRowIcon iIndigo">●</span><span><strong>Come vuoi essere chiamato?</strong><small>Questo nome viene usato nell’app</small></span><span></span></div></div>'+
+    '<div class="field"><label>Nome / nickname</label><input id="profileNickname" value="'+escAttr(state.profile.fullName||'')+'" placeholder="Es. Marco"></div>'+
+    '<div class="modalBtns"><button id="profileCancel" class="btn secondary">Annulla</button><button id="profileSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings');
+  $('profileCancel').onclick=closeModal;
+  $('profileSave').onclick=()=>{state.profile.fullName=$('profileNickname').value.trim();save();if($('landingNickname'))$('landingNickname').value=state.profile.fullName;closeModal()};
 }
 function openColorSettings(){
   let selected=state.appColor||'Blu';
-  const buttons=Object.keys(APP_COLORS).map(n=>'<button class="colorChoice '+(n===selected?'active':'')+'" data-color="'+n+'">'+n+'</button>').join('');
-  openModal('Aspetto e colore','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
-  $('colorGrid').querySelectorAll('.colorChoice').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);$('colorGrid').querySelectorAll('.colorChoice').forEach(x=>x.classList.toggle('active',x===b))});
-  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');closeModal()};
-  $('colorSave').onclick=()=>{state.appColor=selected;save();applyAppColor(selected);closeModal()};
+  const p=state.preferences||{};
+  const palette=[['Blu','#2479d8'],['Verde','#1a8c62'],['Viola','#7856c8'],['Rosa','#d85f91'],['Arancione','#e58a2c']];
+  openModal('Aspetto e colore',
+    '<div class="appearancePreview"><div class="appearancePhone"><div style="text-align:center;font-size:11px;font-weight:900;margin-bottom:8px">In Ordine</div><div class="appearanceBalance">Saldo attuale<br><strong>1.400 €</strong></div><div class="appearanceMini"><div>Entrate<br><strong>2.300 €</strong></div><div>Pagamenti<br><strong>900 €</strong></div></div></div></div>'+
+    '<div class="settingsSubTitle">COLORE DELL’APP</div><div id="settingsColorDots" class="settingsColorDots">'+palette.map(x=>'<button class="settingsColorDot '+(x[0]===selected?'active':'')+'" data-color="'+x[0]+'"><i style="background:'+x[1]+'"></i>'+x[0]+'</button>').join('')+'</div>'+
+    '<div class="settingsSubMenu" style="margin-top:14px">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">AA</span><span><strong>Dimensione testo</strong><small>Scegli la dimensione del testo nell’app</small></span><select id="prefTextSize" style="width:92px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px"><option value="small">Piccola</option><option value="medium">Media</option><option value="large">Grande</option></select></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">✣</span><span><strong>Riduci animazioni</strong><small>Disattiva le animazioni per una maggiore fluidità</small></span><input id="prefReduceMotion" class="settingToggle" type="checkbox"></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">☀</span><span><strong>Tema chiaro</strong><small>Usa sempre il tema chiaro</small></span><input id="prefLightTheme" class="settingToggle" type="checkbox"></label>'+
+    '</div>'+
+    '<div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings');
+  $('prefTextSize').value=p.textSize||'medium';$('prefReduceMotion').checked=!!p.reduceAnimations;$('prefLightTheme').checked=p.lightTheme!==false;
+  document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(x=>x.classList.toggle('active',x===b))});
+  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');applyPreferences();closeModal()};
+  $('colorSave').onclick=()=>{state.appColor=selected;state.preferences.textSize=$('prefTextSize').value;state.preferences.reduceAnimations=$('prefReduceMotion').checked;state.preferences.lightTheme=$('prefLightTheme').checked;save();applyAppColor(selected);applyPreferences();closeModal()};
 }
 function openOtherSettings(){
+  const p=state.preferences||{};
   openModal('Altre impostazioni',
-    '<div class="settingsMenu">'+
-      '<div class="settingsRow"><span class="settingsRowIcon iBlue">€</span><span class="settingsRowText"><strong>Valuta</strong><small>Euro (€)</small></span><span></span></div>'+
-      '<div class="settingsRow"><span class="settingsRowIcon iIndigo">IT</span><span class="settingsRowText"><strong>Lingua</strong><small>Italiano</small></span><span></span></div>'+
-      '<div class="settingsRow"><span class="settingsRowIcon iTeal">31</span><span class="settingsRowText"><strong>Date</strong><small>Si scrivono a mano: 10/10/2026 o 10 ottobre 2026</small></span><span></span></div>'+
-    '</div><div class="note">Nell’app non viene utilizzato il calendario per inserire le date.</div>');
+    '<div class="settingsSubMenu">'+
+      '<div class="settingsSubRow"><span class="settingsRowIcon iBlue">€</span><span><strong>Valuta</strong><small>Valuta principale per i conti</small></span><strong>Euro (€)</strong></div>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Formato data</strong><small>Scegli come visualizzare le date</small></span><select id="prefDateFormat" style="width:126px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"><option value="long">10 ottobre 2026</option><option value="numeric">10/10/2026</option></select></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iOrange">●</span><span><strong>Mostra suggerimenti</strong><small>Suggerimenti e consigli nell’app</small></span><input id="prefSuggestions" class="settingToggle" type="checkbox"></label>'+
+      '<button id="resetMovementFilters" class="settingsSubRow"><span class="settingsRowIcon iBlue">≡</span><span><strong>Azzera filtri Movimenti</strong><small>Rimuovi tutti i filtri applicati</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="resetPreferences" class="settingsSubRow"><span class="settingsRowIcon iRed">↻</span><span><strong>Reimposta preferenze</strong><small>Ripristina le impostazioni predefinite</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="restoreTutorial" class="settingsSubRow"><span class="settingsRowIcon iGreen">▣</span><span><strong>Ripristina tutorial</strong><small>Mostra di nuovo il tutorial dell’app</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="note" style="margin-top:13px">Le date continuano sempre a essere inserite scrivendole manualmente. Non viene utilizzato alcun calendario.</div>');
+  $('modal').classList.add('fullSettings');$('prefDateFormat').value=p.dateFormat||'long';$('prefSuggestions').checked=p.showSuggestions!==false;
+  $('prefDateFormat').onchange=()=>{state.preferences.dateFormat=$('prefDateFormat').value;save()};
+  $('prefSuggestions').onchange=()=>{state.preferences.showSuggestions=$('prefSuggestions').checked;save()};
+  $('resetMovementFilters').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};save();flashModal('Filtri Movimenti azzerati.')};
+  $('resetPreferences').onclick=()=>{state.preferences={textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'long'};state.appColor='Blu';save();applyAppColor('Blu');applyPreferences();openOtherSettings()};
+  $('restoreTutorial').onclick=openGuide;
 }
 function openAppInformation(){
   openModal('Informazioni',
-    '<div class="card" style="padding:16px;margin-top:10px"><div class="settingsTitle">In Ordine</div><div class="hint">Conti e attività, tutto sotto controllo.</div>'+
-    '<div class="sumRow"><span>Sezione</span><strong>Conti economici</strong></div>'+
-    '<div class="sumRow"><span>Versione</span><strong>1.0</strong></div>'+
-    '<div class="sumRow"><span>Valuta</span><strong>Euro (€)</strong></div></div>'+
-    '<div class="note">I dati di Conti economici restano salvati nell’app sul dispositivo. Puoi creare un backup manuale da Impostazioni → Backup e dati.</div>');
+    '<div class="infoRows">'+
+      '<div class="infoRow"><i>▣</i><span><strong>Nome app</strong><small>In Ordine</small></span><span></span></div>'+
+      '<div class="infoRow"><i>≡</i><span><strong>Sezione</strong><small>Conti economici</small></span><span></span></div>'+
+      '<div class="infoRow"><i>i</i><span><strong>Versione app</strong><small>1.0</small></span><span></span></div>'+
+      '<div class="infoRow"><i>✉</i><span><strong>Contatti e assistenza</strong><small>Da configurare</small></span><span></span></div>'+
+      '<div class="infoRow"><i>◆</i><span><strong>Privacy policy</strong><small>I dati dei conti restano sul dispositivo</small></span><span></span></div>'+
+      '<div class="infoRow"><i>▣</i><span><strong>Termini e condizioni</strong><small>Informazioni sull’utilizzo dell’app</small></span><span></span></div>'+
+      '<div class="infoRow"><i>▣</i><span><strong>Licenze</strong><small>Componenti dell’app</small></span><span></span></div>'+
+    '</div>'+
+    '<div class="note" style="margin-top:13px">Grazie per usare In Ordine.</div>');
+  $('modal').classList.add('fullSettings');
 }
 function openEntrySettingsHub(type){
   const isIncome=type==='income',noun=isIncome?'entrata':'pagamento',plural=isIncome?'Entrate':'Pagamenti';
+  const activeOnly=state.flowOnlyActive&&state.flowOnlyActive[type]!==false;
+  const anyNotify=state.entries.filter(e=>e.type===type).some(e=>e.notify===true);
   openModal(plural,
-    '<div class="settingsMenu">'+
-      '<button id="entityHubAdd" class="settingsRow"><span class="settingsRowIcon '+(isIncome?'iGreen':'iOrange')+'">＋</span><span class="settingsRowText"><strong>Aggiungi '+noun+'</strong><small>Crea una nuova voce</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubManage" class="settingsRow"><span class="settingsRowIcon iBlue">✎</span><span class="settingsRowText"><strong>Modifica '+plural.toLowerCase()+' esistenti</strong><small>Visualizza, modifica o elimina</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubCategories" class="settingsRow"><span class="settingsRowIcon iPurple">◇</span><span class="settingsRowText"><strong>Categorie '+plural.toLowerCase()+'</strong><small>Gestisci le categorie</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubNotifications" class="settingsRow"><span class="settingsRowIcon iYellow">🔔</span><span class="settingsRowText"><strong>Promemoria e notifiche</strong><small>Gestisci gli avvisi</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="entityHubBackup" class="settingsRow"><span class="settingsRowIcon iTeal">⇅</span><span class="settingsRowText"><strong>Importa / Esporta</strong><small>Usa Backup e dati</small></span><span class="settingsRowArrow">›</span></button>'+
+    '<div class="settingsSubMenu">'+
+      '<button id="entityHubAdd" class="settingsSubRow"><span class="settingsRowIcon '+(isIncome?'iGreen':'iRed')+'">＋</span><span><strong>Aggiungi '+noun+'</strong><small>Crea una nuova '+noun+'</small></span><span class="settingsRowArrow">›</span></button>'+
     '</div>'+
-    '<div class="field"><label>Ordina per</label><select id="entityHubSort"><option value="date">Data</option><option value="name">Nome</option><option value="amount">Importo</option></select></div>');
+    '<div class="settingsSubTitle">IMPOSTAZIONI '+plural.toUpperCase()+'</div>'+
+    '<div class="settingsSubMenu">'+
+      '<button id="entityHubManage" class="settingsSubRow"><span class="settingsRowIcon iBlue">✎</span><span><strong>Modifica '+plural.toLowerCase()+' esistenti</strong><small>Visualizza, modifica o elimina</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">↕</span><span><strong>Ordine di visualizzazione</strong><small>Cambia l’ordine delle '+plural.toLowerCase()+'</small></span><select id="entityHubSort" style="width:118px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"><option value="date">Data</option><option value="name">Nome</option><option value="amount">Importo</option></select></label>'+
+      '<button id="entityHubCategories" class="settingsSubRow"><span class="settingsRowIcon iPurple">◆</span><span><strong>Categorie '+plural.toLowerCase()+'</strong><small>Gestisci le categorie delle '+plural.toLowerCase()+'</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="settingsSubTitle">OPZIONI DI VISUALIZZAZIONE</div>'+
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">◉</span><span><strong>Mostra solo attive</strong><small>Nascondi le voci disattivate</small></span><input id="entityHubActive" class="settingToggle" type="checkbox" '+(activeOnly?'checked':'')+'></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">≡</span><span><strong>Ordina per</strong><small id="entitySortLabel">'+(state.flowSort[type]==='name'?'Nome':state.flowSort[type]==='amount'?'Importo':'Data (più recente)')+'</small></span><span></span></label>'+
+    '</div>'+
+    '<div class="settingsSubTitle">PROMEMORIA E NOTIFICHE</div>'+
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iOrange">●</span><span><strong>Notifiche '+plural.toLowerCase()+'</strong><small>Attiva/disattiva promemoria</small></span><input id="entityHubNotify" class="settingToggle" type="checkbox" '+(anyNotify?'checked':'')+'></label>'+
+      '<button id="entityHubNotifications" class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria personalizzati</strong><small>Imposta avvisi per ogni '+noun+'</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div>'+
+    '<div class="settingsSubTitle">ALTRE OPZIONI</div>'+
+    '<div class="settingsSubMenu"><button id="entityHubBackup" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇅</span><span><strong>Importa / Esporta</strong><small>Importa o esporta le '+plural.toLowerCase()+'</small></span><span class="settingsRowArrow">›</span></button></div>'
+  );
+  $('modal').classList.add('fullSettings');
   $('entityHubSort').value=state.flowSort[type]||'date';
-  $('entityHubSort').onchange=()=>{state.flowSort[type]=$('entityHubSort').value;save()};
+  $('entityHubSort').onchange=()=>{state.flowSort[type]=$('entityHubSort').value;save();$('entitySortLabel').textContent=$('entityHubSort').value==='name'?'Nome':$('entityHubSort').value==='amount'?'Importo':'Data (più recente)'};
+  $('entityHubActive').onchange=()=>{state.flowOnlyActive[type]=$('entityHubActive').checked;save()};
+  $('entityHubNotify').onchange=async()=>{
+    const on=$('entityHubNotify').checked;
+    state.entries.filter(e=>e.type===type).forEach(e=>{e.notify=on;e.notifyRule=null});
+    state.notifications.selected=state.entries.filter(e=>e.notify).map(e=>e.id);
+    state.notifications.mode=state.notifications.selected.length?'custom':'off';
+    save();if(on)await requestNotificationPermission();
+  };
   $('entityHubAdd').onclick=()=>{closeModal();openFlow(type,'settings');openAddEntry(type)};
   $('entityHubManage').onclick=()=>{closeModal();openFlow(type,'settings')};
-  $('entityHubCategories').onclick=()=>{closeModal();openCategoryHub()};
-  $('entityHubNotifications').onclick=()=>{closeModal();notificationReturn='settings';show('notifications')};
-  $('entityHubBackup').onclick=()=>openBackupSettings();
+  $('entityHubCategories').onclick=()=>openCategoryManagement(type);
+  $('entityHubNotifications').onclick=openCustomNotifications;
+  $('entityHubBackup').onclick=openBackupSettings;
 }
 const GUIDE={
-  'Saldo':'Il saldo attuale contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare un movimento.',
-  'Entrate':'Aggiungi le entrate. Il saldo cambia solo quando confermi RICEVUTO con l’importo realmente incassato.',
-  'Pagamenti':'Aggiungi i pagamenti. Il saldo cambia solo quando confermi PAGATO con l’importo realmente pagato.',
-  'Date e frequenza':'Le date si scrivono a mano, per esempio 10/10/2026 oppure 10 ottobre 2026. Non si usa il calendario. Dopo una data valida scegli Una volta, Ogni mese o Altro.',
-  'Stati e scadenze':'Da ricevere/Da pagare restano aperti. Dal giorno successivo alla scadenza diventano scaduti.',
-  'Movimenti':'Qui trovi solo operazioni realmente confermate come RICEVUTE o PAGATE.',
-  'Categorie':'Le categorie sono facoltative e servono a capire dove entrano o escono i soldi.',
-  'Budget':'I budget sono facoltativi e riguardano solo i pagamenti realmente effettuati.',
-  'Notifiche':'Puoi attivarle per tutte le entrate e i pagamenti o gestirle voce per voce.',
-  'Modifica ed elimina':'Puoi modificare o eliminare le voci. I movimenti già confermati restano nello storico salvo modifica del movimento stesso.',
-  'Fine mese':'Le voci completate restano nello storico; quelle scadute e ancora aperte continuano a comparire.',
-  'Colori':'Verde indica completato, giallo in attesa e rosso scaduto o errore.'
+  'Introduzione':'In Ordine raccoglie i tuoi conti e le tue attività in un unico posto semplice da consultare.',
+  'Primo utilizzo':'Inserisci il saldo reale che possiedi, poi aggiungi le entrate e i pagamenti che vuoi tenere sotto controllo.',
+  'Saldo attuale':'Il saldo contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare movimenti.',
+  'Entrate':'Le entrate programmate non aumentano il saldo. Il saldo cambia soltanto quando premi RICEVUTO e confermi l’importo realmente ricevuto.',
+  'Pagamenti':'I pagamenti programmati non riducono il saldo. Il saldo cambia soltanto quando premi PAGATO e confermi l’importo realmente pagato.',
+  'Movimenti':'Movimenti contiene solo entrate ricevute e pagamenti effettuati. Puoi filtrare, aprire e modificare ogni movimento.',
+  'Categorie':'Le categorie sono facoltative e aiutano a organizzare entrate e pagamenti.',
+  'Notifiche':'Puoi scegliere quali promemoria ricevere, quando riceverli e l’orario preferito.',
+  'Aspetto e colore':'Puoi cambiare il colore principale, la dimensione del testo e ridurre le animazioni.',
+  'Sicurezza':'Puoi proteggere Conti economici con PIN e, quando disponibile, con la sicurezza biometrica del telefono.',
+  'Backup e dati':'Puoi creare, esportare, importare e ripristinare copie dei dati di Conti economici.',
+  'Altre impostazioni':'Qui trovi valuta, formato data, suggerimenti, filtri e ripristino delle preferenze.'
 };
+const GUIDE_ICONS=['▶','●','€','↑','↓','≡','◆','●','◉','🔒','☁','⚙'];
 function openGuide(){
-  const topics=Object.keys(GUIDE).map((t,i)=>'<button class="guideTopic" data-topic="'+i+'">'+esc(t)+'</button>').join('');
-  openModal('Come funziona l’app','<div class="hint">Scegli solo l’argomento che ti serve.</div><div id="guideTopics" class="guideTopics">'+topics+'</div>');
-  $('guideTopics').querySelectorAll('.guideTopic').forEach((b,i)=>b.onclick=()=>openModal(Object.keys(GUIDE)[i],'<div class="note">'+esc(GUIDE[Object.keys(GUIDE)[i]])+'</div><div class="modalBtns"><button id="guideBack" class="btn secondary">Torna agli argomenti</button></div>')||($('guideBack').onclick=openGuide));
+  const names=Object.keys(GUIDE);
+  openModal('Tutorial dell’app',
+    '<div class="field" style="margin-top:2px"><input id="guideSearch" type="search" placeholder="Cerca un argomento..."></div>'+
+    '<div id="guideTopics" class="guideIndex">'+names.map((t,i)=>'<button data-topic="'+escAttr(t)+'"><span class="gNum">'+GUIDE_ICONS[i]+'</span><span><strong>'+(i+1)+'. '+esc(t)+'</strong><small>'+esc(GUIDE[t].split('.')[0])+'</small></span><span class="settingsRowArrow">›</span></button>').join('')+'</div>');
+  $('modal').classList.add('fullSettings');
+  const bind=()=>document.querySelectorAll('#guideTopics button').forEach(b=>b.onclick=()=>openGuideTopic(b.dataset.topic));
+  bind();
+  $('guideSearch').oninput=()=>{const q=$('guideSearch').value.trim().toLowerCase();document.querySelectorAll('#guideTopics button').forEach(b=>b.classList.toggle('hidden',q&&!b.dataset.topic.toLowerCase().includes(q)&&!GUIDE[b.dataset.topic].toLowerCase().includes(q)))};
+}
+function openGuideTopic(topic){
+  const t=topic&&GUIDE[topic]?topic:'Introduzione';
+  if(t==='Entrate'){
+    openModal('Guida Entrate',
+      '<div class="guideIndex">'+
+        '<div class="infoRow"><i>1</i><span><strong>Premi Aggiungi entrata</strong><small>Nella schermata Entrate tocca “Aggiungi entrata” per creare una nuova voce.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>2</i><span><strong>Scrivi nome, importo e data</strong><small>Inserisci i dati dell’entrata. La data va scritta a mano.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>3</i><span><strong>Scegli Una volta, Ogni mese o Altro</strong><small>Imposta la frequenza solo se l’entrata deve ripetersi.</small></span><span></span></div>'+
+        '<div class="infoRow"><i>4</i><span><strong>Quando arriva davvero, premi Ricevuto</strong><small>Solo in quel momento l’importo viene aggiunto al saldo.</small></span><span></span></div>'+
+      '</div>'+
+      '<div class="note" style="background:#fff4c9;border-color:#f2dc8c">Ricorda: inserire un’entrata programmata non modifica il saldo. Il saldo cambia solo quando confermi che l’hai ricevuta.</div>'+
+      '<button id="guideUnderstood" class="btn" style="margin-top:14px">Ho capito</button>');
+  }else{
+    openModal(t,'<div class="note">'+esc(GUIDE[t])+'</div><button id="guideUnderstood" class="btn" style="margin-top:14px">Ho capito</button>');
+  }
+  $('modal').classList.add('fullSettings');$('guideUnderstood').onclick=openGuide;
 }
 function backupPayload(){
   return {format:'in-ordine-conti',version:2,createdAt:new Date().toISOString(),data:{
@@ -792,28 +1343,42 @@ function normalizeRestoredState(data){
   return restored;
 }
 function openBackupSettings(){
-  openModal('Backup e ripristino','<div class="hint">Il backup contiene soltanto i dati di Conti economici.</div><div class="modalBtns" style="margin-top:16px"><button id="backupCreate" class="btn">Crea backup</button><button id="backupRestore" class="btn secondary">Ripristina backup</button></div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
-  $('backupCreate').onclick=async()=>{await downloadBackup()};
-  $('backupRestore').onclick=()=>$('backupFile').click();
+  openModal('Backup e dati',
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">☁</span><span><strong>Backup automatico</strong><small>Salva i dati automaticamente sul dispositivo</small></span><input id="backupAuto" class="settingToggle" type="checkbox" '+(state.backup&&state.backup.auto?'checked':'')+'></label>'+
+      '<button id="backupCreate" class="settingsSubRow"><span class="settingsRowIcon iBlue">↻</span><span><strong>Crea backup adesso</strong><small>Salva subito una copia dei tuoi dati</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupRestore" class="settingsSubRow"><span class="settingsRowIcon iGreen">↥</span><span><strong>Ripristina backup</strong><small>Ripristina da un backup precedente</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Esporta i dati in un file</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupImport" class="settingsSubRow"><span class="settingsRowIcon iOrange">⇩</span><span><strong>Importa dati</strong><small>Importa dati da un file</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupLocal" class="settingsSubRow"><span class="settingsRowIcon iYellow">▣</span><span><strong>Scarica copia locale</strong><small>Salva una copia sul tuo dispositivo</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupDeleteAll" class="settingsSubRow"><span class="settingsRowIcon iRed">×</span><span><strong>Elimina tutti i dati</strong><small>Cancella definitivamente tutti i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>'+
+    '</div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
+  $('modal').classList.add('fullSettings');
+  $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()))};
+  $('backupCreate').onclick=async()=>{await downloadBackup();flashModal('Backup creato.')};
+  $('backupExport').onclick=async()=>{await downloadBackup();};
+  $('backupLocal').onclick=()=>{localStorage.setItem(KEY+'_local_copy',JSON.stringify(backupPayload()));flashModal('Copia locale salvata sul dispositivo.')};
+  const choose=()=>$('backupFile').click();$('backupRestore').onclick=choose;$('backupImport').onclick=choose;
   $('backupFile').onchange=async e=>{
     const file=e.target.files&&e.target.files[0];if(!file)return;
     try{
       const obj=JSON.parse(await file.text());
       if(!obj||obj.format!=='in-ordine-conti'||!obj.data)throw new Error();
-      const current=backupPayload();
-      localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));
-      await downloadBackup(current);
-      state=normalizeRestoredState(obj.data);
-      localStorage.setItem(KEY,JSON.stringify(state));
-      closeModal();location.reload();
+      const current=backupPayload();localStorage.setItem(KEY+'_auto_before_restore',JSON.stringify(current));
+      state=normalizeRestoredState(obj.data);localStorage.setItem(KEY,JSON.stringify(state));closeModal();location.reload();
     }catch(err){flashModal('Il file selezionato non è un backup valido.')}
+  };
+  $('backupDeleteAll').onclick=()=>{
+    openModal('Elimina tutti i dati','<div class="note">Vuoi cancellare saldo, entrate, pagamenti, movimenti, categorie e budget? Questa operazione non può essere annullata.</div><div class="modalBtns"><button id="backupDeleteNo" class="btn secondary">Annulla</button><button id="backupDeleteYes" class="btn deleteBtn">Elimina</button></div>');
+    $('modal').classList.add('fullSettings');$('backupDeleteNo').onclick=openBackupSettings;
+    $('backupDeleteYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security,preferences=state.preferences;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;state.preferences=preferences;save();closeModal();show('landing')};
   };
 }
 function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64urlToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
 async function hashPin(pin){const data=new TextEncoder().encode('in-ordine|'+pin);return bytesToB64url(await crypto.subtle.digest('SHA-256',data))}
 let securityLockTimer=null;
-function securityFresh(){return !!(state.security&&state.security.enabled&&Date.now()-Number(state.security.lastActivity||0)<10*60*1000)}
+function securityFresh(){const mins=Math.max(0,Number(state.security&&state.security.lockMinutes||10));return !!(state.security&&state.security.enabled&&Date.now()-Number(state.security.lastActivity||0)<Math.max(1,mins)*60*1000)}
 function scheduleSecurityLock(){
   if(securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}
   if(!state.security||!state.security.enabled||!document.querySelector('#landing.hidden'))return;
@@ -868,19 +1433,42 @@ function openResetPinAfterDevice(){
   $('recoverSave').onclick=async()=>{const p1=$('recoverPin1').value,p2=$('recoverPin2').value;if(!/^\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();enterContiAfterUnlock()};
 }
 function openSecuritySettings(){
-  if(!state.security.enabled){
-    openModal('Protezione Conti economici','<div class="hint">Proteggi solo Conti economici. Dopo 10 minuti senza utilizzo sarà richiesto un nuovo sblocco.</div><div class="field"><label>Crea PIN</label><input id="securityPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti PIN</label><input id="securityPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="securityCancel" class="btn secondary">Annulla</button><button id="securityEnable" class="btn">Attiva</button></div>');
-    $('securityCancel').onclick=closeModal;
-    $('securityEnable').onclick=async()=>{const p1=$('securityPin1').value,p2=$('securityPin2').value;if(!/^\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.enabled=true;state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();const ok=await registerDeviceSecurity();openModal('Protezione attivata','<div class="note">PIN attivato.'+(ok?' Anche la sicurezza del telefono è stata collegata.':' Puoi collegare impronta/viso in seguito da questa schermata.')+'</div>')};
-    return;
-  }
-  openModal('Protezione Conti economici','<div class="note">Protezione attiva. Conti economici si blocca dopo 10 minuti senza utilizzo.</div><div class="guideTopics"><button id="securityDevice" class="guideTopic">'+(state.security.credentialId?'Ricollega':'Collega')+' sicurezza del telefono</button><button id="securityChangePin" class="guideTopic">Cambia PIN</button><button id="securityDisable" class="guideTopic">Disattiva protezione</button></div>');
-  $('securityDevice').onclick=async()=>{const ok=await registerDeviceSecurity();if(ok)openSecuritySettings();else flashModal('Il dispositivo o il browser non ha completato la configurazione.')};
-  $('securityChangePin').onclick=()=>openChangePin();
-  $('securityDisable').onclick=()=>{openModal('Disattiva protezione','<div class="field"><label>PIN attuale</label><input id="disablePin" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="disableNo" class="btn secondary">Annulla</button><button id="disableYes" class="btn">Disattiva</button></div>');$('disableNo').onclick=openSecuritySettings;$('disableYes').onclick=async()=>{if(await hashPin($('disablePin').value)!==state.security.pinHash)return flashModal('PIN non corretto.');state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};save();closeModal()}};
+  const sec=state.security||(state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10});
+  openModal('Sicurezza',
+    '<div class="settingsSubMenu">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">🔒</span><span><strong>PIN dell’app</strong><small>Proteggi l’accesso ai tuoi dati</small></span><input id="securityPinToggle" class="settingToggle" type="checkbox" '+(sec.enabled?'checked':'')+'></label>'+
+      '<button id="securityChangePin" class="settingsSubRow '+(!sec.enabled?'disabledRow':'')+'"><span class="settingsRowIcon iBlue">✎</span><span><strong>Modifica PIN</strong><small>Cambia il tuo PIN di accesso</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iGreen">◉</span><span><strong>Face ID / Impronta</strong><small>Usa il riconoscimento biometrico</small></span><input id="securityDeviceToggle" class="settingToggle" type="checkbox" '+(sec.credentialId?'checked':'')+'></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">◉</span><span><strong>Nascondi importi in Home</strong><small>Non mostrare gli importi nella Home</small></span><input id="securityHideAmounts" class="settingToggle" type="checkbox" '+(sec.hideHomeAmounts?'checked':'')+'></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iOrange">◷</span><span><strong>Blocco automatico</strong><small>Blocca l’app dopo un periodo di inattività</small></span><select id="securityLockMinutes" style="width:92px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"><option value="1">Subito</option><option value="5">5 min</option><option value="10">10 min</option><option value="30">30 min</option></select></label>'+
+    '</div>'+
+    '<div class="note" style="margin-top:13px">ⓘ &nbsp; La sicurezza protegge l’accesso alla sezione Conti economici e ai dati salvati sul dispositivo.</div>');
+  $('modal').classList.add('fullSettings');$('securityLockMinutes').value=String(sec.lockMinutes||10);
+  $('securityHideAmounts').onchange=()=>{sec.hideHomeAmounts=$('securityHideAmounts').checked;save();renderHome()};
+  $('securityLockMinutes').onchange=()=>{sec.lockMinutes=Number($('securityLockMinutes').value)||10;save();scheduleSecurityLock()};
+  $('securityDeviceToggle').onchange=async()=>{
+    if($('securityDeviceToggle').checked){
+      const ok=await registerDeviceSecurity();if(!ok){$('securityDeviceToggle').checked=false;flashModal('Il dispositivo o il browser non ha completato la configurazione.')}
+    }else{sec.credentialId='';save()}
+  };
+  $('securityChangePin').onclick=()=>{if(sec.enabled)openChangePin()};
+  $('securityPinToggle').onchange=async()=>{
+    if($('securityPinToggle').checked){
+      openModal('Attiva PIN','<div class="field"><label>Crea PIN</label><input id="securityPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti PIN</label><input id="securityPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="securityCancel" class="btn secondary">Annulla</button><button id="securityEnable" class="btn">Attiva</button></div>');
+      $('modal').classList.add('fullSettings');
+      $('securityCancel').onclick=openSecuritySettings;
+      $('securityEnable').onclick=async()=>{const p1=$('securityPin1').value,p2=$('securityPin2').value;if(!/^\\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');sec.enabled=true;sec.pinHash=await hashPin(p1);sec.lastActivity=Date.now();save();openSecuritySettings()};
+    }else{
+      openModal('Disattiva PIN','<div class="field"><label>PIN attuale</label><input id="disablePin" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="disableNo" class="btn secondary">Annulla</button><button id="disableYes" class="btn">Disattiva</button></div>');
+      $('modal').classList.add('fullSettings');
+      $('disableNo').onclick=openSecuritySettings;
+      $('disableYes').onclick=async()=>{if(await hashPin($('disablePin').value)!==sec.pinHash)return flashModal('PIN non corretto.');sec.enabled=false;sec.pinHash='';sec.lastActivity=0;save();openSecuritySettings()};
+    }
+  };
 }
 function openChangePin(){
   openModal('Cambia PIN','<div class="field"><label>PIN attuale</label><input id="oldPin" type="password" inputmode="numeric"></div><div class="field"><label>Nuovo PIN</label><input id="newPin1" type="password" inputmode="numeric"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="newPin2" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="changePinNo" class="btn secondary">Annulla</button><button id="changePinYes" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings');
   $('changePinNo').onclick=openSecuritySettings;
   $('changePinYes').onclick=async()=>{if(await hashPin($('oldPin').value)!==state.security.pinHash)return flashModal('PIN attuale non corretto.');const p1=$('newPin1').value,p2=$('newPin2').value;if(!/^\d{4,8}$/.test(p1)||p1!==p2)return flashModal('Controlla il nuovo PIN.');state.security.pinHash=await hashPin(p1);save();openSecuritySettings()};
 }
@@ -982,7 +1570,31 @@ function openDateChooser(initialSpec,onConfirm){
     closePickerModal();onConfirm(spec);
   };
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(state));queueNativeNotificationSync()}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));if(state.backup&&state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));queueNativeNotificationSync()}
+let landingImagePromise=null,paymentBannerPromise=null;
+function loadChunkedDataUrl(paths,mime){
+  return Promise.all(paths.map(p=>fetch(p,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Asset '+p);return r.text()})))
+    .then(parts=>'data:'+mime+';base64,'+parts.join('').replace(/\s+/g,''));
+}
+function ensureLandingGraphic(){
+  const img=$('landingCanonicalImage');if(!img)return Promise.resolve();
+  if(img.dataset.loaded==='1')return Promise.resolve();
+  if(!landingImagePromise)landingImagePromise=loadChunkedDataUrl([1,2,3,4,5,6].map(i=>'assets/landing-bg-'+i+'.txt'),'image/webp');
+  return landingImagePromise.then(src=>new Promise((resolve,reject)=>{
+    if(img.dataset.loaded==='1')return resolve();
+    img.onload=()=>{img.dataset.loaded='1';img.style.visibility='visible';resolve()};
+    img.onerror=reject;img.src=src;
+  })).catch(()=>{img.style.visibility='visible'});
+}
+function ensurePaymentBanner(){
+  const banner=document.querySelector('.flowExpense .flowBanner');if(!banner)return Promise.resolve();
+  if(banner.dataset.assetLoaded==='1')return Promise.resolve();
+  if(!paymentBannerPromise)paymentBannerPromise=loadChunkedDataUrl(['assets/payment-banner.txt'],'image/webp');
+  return paymentBannerPromise.then(src=>new Promise((resolve,reject)=>{
+    const im=new Image();im.onload=()=>{banner.style.setProperty('background-image','url("'+src+'")','important');banner.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src;
+  })).catch(()=>{});
+}
+
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
   state.profile.fullName=nick;save();
@@ -990,7 +1602,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -1237,29 +1849,44 @@ function openTotalsThrough(ym){
 }
 function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
 function renderHome(){
-  const bal=$('homeBalance');bal.textContent=money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
+  const hidden=!!(state.security&&state.security.hideHomeAmounts),mask='•••• €';
+  const bal=$('homeBalance');bal.textContent=hidden?mask:money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
   const month=ymNow(),open=openTotalsThrough(month);
-  $('homeIncomeTotal').textContent=money(open.toReceive);
-  $('homeExpenseTotal').textContent=money(open.toPay);
-  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
+  $('homeIncomeTotal').textContent=hidden?mask:money(open.toReceive);
+  $('homeExpenseTotal').textContent=hidden?mask:money(open.toPay);
+  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=hidden?mask:money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
+}
+function movementVisual(h){
+  const text=((h.name||'')+' '+(h.category||'')).toLowerCase();
+  if(/stipend|lavor|pension|inps|bonus|rimbor/.test(text))return{g:'€',cls:'income'};
+  if(/sky|stream|tv/.test(text))return{g:'▣',cls:'pink'};
+  if(/affitt|mutuo|casa/.test(text))return{g:'⌂',cls:'purple'};
+  if(/benz|carbur|auto/.test(text))return{g:'⛽',cls:'orange'};
+  if(/fastweb|internet|wifi|telefono/.test(text))return{g:'⌁',cls:'blue'};
+  if(/dent|salute|medic/.test(text))return{g:'✚',cls:'violet'};
+  if(/regal/.test(text))return{g:'◆',cls:'green'};
+  return{g:h.type==='income'?'€':'−',cls:h.type==='income'?'income':'expense'};
 }
 function renderMovementList(el,arr){
   el.innerHTML='';
   const clean=arr.filter(x=>x.type!=='adjustment');
-  if(!clean.length){el.innerHTML='<div class="empty">Nessun movimento.</div>';return}
+  if(!clean.length){
+    el.innerHTML='<div class="movementEmpty"><div class="movementEmptyArt" aria-hidden="true"></div><h3>Nessun movimento</h3><p>Qui troverai tutte le entrate ricevute<br>e i pagamenti effettuati.</p></div>';
+    return;
+  }
   clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ';
-    const icon=isIncome?'€':'−';
-    r.innerHTML='<div class="mIcon '+x.type+'">'+icon+'</div>'+
-      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">'+fmtMovementDate(x.date)+'</div></div>'+
+    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ',v=movementVisual(x);
+    r.innerHTML='<div class="mIcon '+v.cls+'">'+v.g+'</div>'+
+      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">▣ &nbsp;'+fmtMovementDate(x.date)+'</div></div>'+
       '<div class="mAmountWrap"><div class="mAmount '+x.type+'">'+sign+money(Number(x.amount||0))+'</div><div class="mType '+x.type+'">'+label+'</div></div>'+
       '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
   });
 }
+function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
 function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
 function nextOpenOccurrenceForEntry(entry){
   const today=todayISO(),endYm=addMonths(ymNow(),12);
@@ -1298,9 +1925,13 @@ function buildFlowItems(type){
 }
 function renderFlow(){
   const isIn=currentFlow==='income';
+  $('flow').classList.toggle('flowIncome',isIn);
+  $('flow').classList.toggle('flowExpense',!isIn);
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
   $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
-  $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='<span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">'+(isIn?'↑':'↓')+'</span><span class="'+(isIn?'sceneCoin':'sceneWallet')+'">€</span>';
+  $('flowAdd').setAttribute('aria-label',isIn?'Aggiungi entrata':'Aggiungi pagamento');
+  $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='';
+  if(!isIn)ensurePaymentBanner();
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
@@ -1469,7 +2100,7 @@ function confirmOccurrenceDeletion(x,future){
 
 function openAddEntry(type){openEntryEditor(null,type)}
 function openEditEntry(id){const e=state.entries.find(x=>x.id===id);if(e)openEntryEditor(e,e.type)}
-const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Benzina','Luce','Gas','Altro']};
+const ENTRY_SUGGESTIONS={income:['Stipendio','Pensione','Affitto','Rimborso','Altro'],expense:['Mutuo','Affitto','Internet','Telefono','Streaming','Altro']};
 const DEFAULT_CATEGORIES={
   income:['Lavoro','Pensioni/Prestazioni','Affitti','Rimborsi','Altro'],
   expense:['Casa','Auto','Bollette','Salute','Altro']
@@ -1477,25 +2108,39 @@ const DEFAULT_CATEGORIES={
 function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
 function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
 
-function openCategoryHub(){
-  openModal('Categorie','<div class="hint">Riepilogo e gestione delle categorie.</div><div class="guideTopics"><button id="categorySummaryOpen" class="guideTopic">Riepilogo categorie</button><button id="categoryManageOpen" class="guideTopic">Gestisci categorie</button></div>');
-  $('categorySummaryOpen').onclick=()=>{closeModal();summaryMonth=ymNow();show('summary')};
-  $('categoryManageOpen').onclick=openCategoryManagement;
-}
-function openCategoryManagement(){
-  const renderSection=type=>{
-    const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
-    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+((DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata')+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
-    return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
+function openCategoryHub(){openCategoryManagement('income')}
+function categoryDescription(type,name){
+  const m={
+    'Lavoro':'Stipendi, compensi, freelance','Pensioni/Prestazioni':'Pensioni e prestazioni','Affitti':'Affitti ricevuti','Rimborsi':'Rimborsi e restituzioni','Casa':'Mutuo, affitto e spese casa','Auto':'Carburante, manutenzione, assicurazione','Bollette':'Utenze e abbonamenti','Salute':'Visite mediche, farmaci, benessere','Altro':'Altre entrate o uscite'
   };
-  openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
-  document.querySelectorAll('.catAdd').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,''));
-  document.querySelectorAll('.catRename').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,b.dataset.cat));
-  document.querySelectorAll('.catDelete').forEach(b=>b.onclick=()=>confirmDeleteCategory(b.dataset.type,b.dataset.cat));
+  return m[name]||((DEFAULT_CATEGORIES[type]||[]).includes(name)?'Categoria predefinita':'Categoria personalizzata');
+}
+function openCategoryManagement(focusType='income'){
+  let type=focusType==='expense'?'expense':'income';
+  const draw=()=>{
+    const cats=allCategories(type);
+    const rows=cats.map((x,i)=>'<button class="settingsSubRow categoryEditRow" data-cat="'+escAttr(x)+'"><span class="settingsRowIcon '+(['iGreen','iBlue','iPurple','iPink','iOrange'][i%5])+'">'+(type==='income'?'↑':'↓')+'</span><span><strong>'+esc(x)+'</strong><small>'+esc(categoryDescription(type,x))+'</small></span><span class="settingsRowArrow">›</span></button>').join('');
+    $('modalBody').innerHTML=
+      '<div class="settingsTabs"><button id="catTabIncome" class="'+(type==='income'?'active':'')+'">Entrate</button><button id="catTabExpense" class="'+(type==='expense'?'active':'')+'">Pagamenti</button></div>'+
+      '<div class="settingsSubMenu"><button id="categoryAdd" class="settingsSubRow"><span class="settingsRowIcon iBlue">＋</span><span><strong>Aggiungi categoria</strong><small>Crea una nuova categoria</small></span><span class="settingsRowArrow">›</span></button></div>'+
+      '<div class="settingsSubTitle">CATEGORIE '+(type==='income'?'ENTRATE':'PAGAMENTI')+'</div>'+
+      '<div class="settingsSubMenu">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div>';
+    $('catTabIncome').onclick=()=>{type='income';draw()};
+    $('catTabExpense').onclick=()=>{type='expense';draw()};
+    $('categoryAdd').onclick=()=>openCategoryNameEditor(type,'');
+    document.querySelectorAll('.categoryEditRow').forEach(r=>r.onclick=()=>{
+      const name=r.dataset.cat;
+      openModal('Categoria', '<div class="field"><label>Nome categoria</label><div class="readOnlyBox">'+esc(name)+'</div></div><div class="modalBtns"><button id="catRenameOpen" class="btn secondary">Rinomina</button><button id="catDeleteOpen" class="btn deleteBtn">Elimina</button></div>');
+      $('modal').classList.add('fullSettings');
+      $('catRenameOpen').onclick=()=>openCategoryNameEditor(type,name);
+      $('catDeleteOpen').onclick=()=>confirmDeleteCategory(type,name);
+    });
+  };
+  openModal('Categorie','');$('modal').classList.add('fullSettings');draw();
 }
 function openCategoryNameEditor(type,oldName){
   openModal(oldName?'Rinomina categoria':'Nuova categoria','<div class="field"><label>Nome</label><input id="categoryNameEdit" placeholder="Scrivi qua" value="'+escAttr(oldName||'')+'"></div><div class="modalBtns"><button id="categoryNameCancel" class="btn secondary">Annulla</button><button id="categoryNameSave" class="btn">Salva</button></div>');
-  $('categoryNameCancel').onclick=openCategoryManagement;
+  $('categoryNameCancel').onclick=()=>openCategoryManagement(type);
   $('categoryNameSave').onclick=()=>{
     const name=$('categoryNameEdit').value.trim();if(!name)return flashModal('Scrivi il nome della categoria.');
     const existing=new Set(allCategories(type));if(name!==oldName&&existing.has(name))return flashModal('Questa categoria esiste già.');
@@ -1506,12 +2151,12 @@ function openCategoryNameEditor(type,oldName){
       state.customCategories[type]=state.customCategories[type].filter(x=>x!==oldName);
       if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
     }else if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
-    save();openCategoryManagement();
+    save();openCategoryManagement(type);
   };
 }
 function confirmDeleteCategory(type,name){
   openModal('Elimina categoria','<div class="note">Eliminare “'+esc(name)+'”? Le entrate o i pagamenti collegati resteranno, ma passeranno a “Senza categoria”.</div><div class="modalBtns"><button id="categoryDeleteNo" class="btn secondary">Annulla</button><button id="categoryDeleteYes" class="btn deleteBtn">Elimina</button></div>');
-  $('categoryDeleteNo').onclick=openCategoryManagement;
+  $('categoryDeleteNo').onclick=()=>openCategoryManagement(type);
   $('categoryDeleteYes').onclick=()=>{
     state.entries.filter(e=>e.type===type&&e.category===name).forEach(e=>e.category='');
     state.history.filter(h=>h.type===type&&h.category===name).forEach(h=>h.category='');
@@ -1519,14 +2164,14 @@ function confirmDeleteCategory(type,name){
     if((DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.hiddenCategories[type].includes(name))state.hiddenCategories[type].push(name);
     if(state.budgetPlans)state.budgetPlans.forEach(p=>{if(p.limits&&Object.prototype.hasOwnProperty.call(p.limits,name))delete p.limits[name]});
     if(state.budgetNotifications&&state.budgetNotifications.categories)delete state.budgetNotifications.categories[name];
-    save();openCategoryManagement();
+    save();openCategoryManagement(type);
   };
 }
 
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(entry&&entry.dateSpec&&entry.dateSpec.kind==='year'&&r&&r.kind==='single')return String(entry.dateSpec.year)+'-01';if(!r)return ymNow();if(r.kind==='custom'&&r.startDate)return r.startDate.slice(0,7);return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
-  const isNew=!entry;
-  const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
+  const isNew=!entry,isIncome=type==='income';
+  const title=entry?(isIncome?'Modifica entrata':'Modifica pagamento'):(isIncome?'Aggiungi entrata':'Aggiungi pagamento');
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
   const noteValue=entry&&entry.note?entry.note:'';
@@ -1535,30 +2180,32 @@ function openEntryEditor(entry,type){
   const rule=entry&&entry.notifyRule||null;
   const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
   const effectiveRule=rule||generalRule;
-  const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
-  const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
+  const suggestions='<div class="suggestionLabel">Suggerimenti:</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(x=>'<button type="button" class="suggestionChip" data-name="'+escAttr(x)+'">'+esc(x)+'</button>').join('')+'</div>';
   const editDueDate=entry?dateValue:'',editIsOverdue=!!(entry&&editDueDate&&editDueDate<todayISO());
-  const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(type==='income'?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(type==='income'?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(type==='income'?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
+  const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
+  const deleteLine=entry?'<button id="editDelete" class="dangerEditorRow">Elimina '+(isIncome?'entrata':'pagamento')+'</button>':'<button id="editDelete" class="hidden"></button>';
   openModal(title,
-    '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Nome *</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
-    '<div class="field"><label>Importo</label><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"></div>'+
-    '<div class="field"><label>Data</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div class="manualDateHelp">Scrivi la data direttamente. Non si apre nessun calendario.</div><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita.</div></div>'+
-    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
+    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
+    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione *</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">◉ &nbsp; Una volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
-    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
-    '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
-    '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
-      '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
-      '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
-      '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
-    '</div>'+
-    '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
-    '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
-    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
+    '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
+      '<div class="field"><label>Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+      '<div class="field"><label>Nota</label><textarea id="editNote" placeholder="Scrivi una nota (facoltativo)">'+esc(noteValue)+'</textarea></div>'+
+      '<div class="field"><label>Notifica</label><select id="editNotifyMode"><option value="off">Nessuna</option><option value="general">Usa impostazioni generali</option><option value="custom">Personalizzata</option></select><input id="editNotify" type="checkbox" class="hidden"></div>'+
+      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+
+        '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+        '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
+        '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
+      '</div>'+deleteLine+
+    '</div></details>'+
+    '<div class="modalBtns editorSaveOnly"><button id="editCancel" class="btn secondary">Annulla</button><button id="editSave" class="btn">Salva</button></div>'
   );
   $('modal').classList.add('fullEditor');
-  if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
+  if(isNew)setTimeout(()=>$('editName')&&$('editName').focus(),0);
+  $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()});
   let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
   $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
@@ -1567,35 +2214,31 @@ function openEntryEditor(entry,type){
   const paintRec=()=>{
     const k=$('editRecKind').value;
     document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));
-    $('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{});
+    document.querySelectorAll('#editRecChoices button').forEach(b=>{
+      const base=b.dataset.kind===(['monthly','single'].includes(k)?k:'custom');
+      b.innerHTML=(base?'◉':'○')+' &nbsp; '+(b.dataset.kind==='single'?'Una volta':b.dataset.kind==='monthly'?'Ogni mese':'Altro');
+    });
+    const summary=recurrenceSummary(collectEditRecurrence()||{});
+    $('editRecSummary').textContent=summary||(k==='single'?'L’entrata verrà registrata solo nella data indicata.':'');
+    if(k==='single')$('editRecSummary').textContent=(isIncome?'L’entrata':'Il pagamento')+' verrà registrat'+(isIncome?'a':'o')+' solo nella data indicata.';
   };
   const syncDate=()=>{
-    const spec=parseRequiredDay($('editDateText').value);
-    const hasText=$('editDateText').value.trim()!=='';
+    const spec=parseRequiredDay($('editDateText').value),hasText=$('editDateText').value.trim()!=='';
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
     if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
-    editorDateSpec=spec;
-    $('editDate').value=spec.iso;
-    $('editRecurrenceBlock').classList.remove('hidden');
-    let k=$('editRecKind').value;
-    if(!k){k='single';$('editRecKind').value=k}
-    if(k==='single')$('editRecKind').value='single';
-    if(k==='monthly')$('editRecKind').value='monthly';
+    editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
+    let k=$('editRecKind').value;if(!k){k='single';$('editRecKind').value=k}
     if(k==='custom'){
-      try{
-        const cfg=JSON.parse($('editRecKind').dataset.custom||'null');
-        if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}
-      }catch(e){}
+      try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}
     }
     renderEditRecExtra(rec||null);paintRec();return true;
   };
-  $('editDateText').addEventListener('input',syncDate);
-  $('editDateText').addEventListener('change',syncDate);
+  $('editDateText').addEventListener('input',syncDate);$('editDateText').addEventListener('change',syncDate);
   $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
     if(b.dataset.kind==='custom'){
       if(!syncDate())return flashModal('Scrivi prima una data valida.');
-      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return
+      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return;
     }
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
@@ -1603,29 +2246,25 @@ function openEntryEditor(entry,type){
   let desiredDone=false;
   if(entry&&$('editStateOpen')){
     const paintState=()=>{$('editStateOpen').classList.toggle('active',!desiredDone&&!editIsOverdue);$('editStateDone').classList.toggle('active',desiredDone);$('editStateOverdue').classList.toggle('overdue',!desiredDone&&editIsOverdue)};
-    $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};
-    $('editStateDone').onclick=()=>{desiredDone=true;paintState()};
-    paintState();
+    $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};$('editStateDone').onclick=()=>{desiredDone=true;paintState()};paintState();
   }
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
-  $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
-  $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
   $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
-  $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
+  const initialNotifyMode=notifyDefault?(rule?'custom':'general'):'off';
+  $('editNotifyMode').value=initialNotifyMode;$('editNotify').checked=notifyDefault;$('entryNotifyRules').classList.toggle('hidden',initialNotifyMode!=='custom');
+  $('editNotifyMode').onchange=()=>{const m=$('editNotifyMode').value;$('editNotify').checked=m!=='off';$('entryNotifyRules').classList.toggle('hidden',m!=='custom')};
+  if($('editDelete'))$('editDelete').onclick=()=>{if(entry)confirmDeleteEntry(entry)};
+  $('editCancel').onclick=closeModal;
   $('editSave').onclick=()=>{
-    const dateOk=syncDate();
-    const name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
-    const day=date?Number(date.slice(8,10)):0;
+    const dateOk=syncDate(),name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence(),day=date?Number(date.slice(8,10)):0;
     let category=$('editCategory').value;
     if(category==='__new__'){
-      category=$('newCategory').value.trim();
-      if(!category)return flashModal('Scrivi il nome della nuova categoria.');
+      category=$('newCategory').value.trim();if(!category)return flashModal('Scrivi il nome della nuova categoria.');
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
-    const notify=$('editNotify').checked;
-    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
-    if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
-    const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
+    const nm=$('editNotifyMode').value,notify=nm!=='off';
+    let notifyRule=nm==='custom'?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    const note=$('editNote').value.trim();
     if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
     if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
@@ -1711,12 +2350,26 @@ function collectEditRecurrence(){
   return null;
 }
 function renderNotifications(){
-  const mode=state.notifications.mode||'off';
-  $('notifyAll').classList.toggle('active',mode==='all');
-  $('notifyCustom').classList.toggle('active',mode==='custom');
-  $('notifySkip').textContent=mode==='off'?'Notifiche disattivate':'Disattiva tutte le notifiche';
-  const help=$('notifications').querySelector('.notifyHelp');
-  if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
+  const n=state.notifications||{},ui=n.ui||(n.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true});
+  const set=(id,v)=>{const el=$(id);if(el)el.checked=!!v};
+  set('notifyIncomeDue',ui.incomeDue);set('notifyIncomeReminder',ui.incomeReminder);
+  set('notifyExpenseDue',ui.expenseDue);set('notifyExpenseOverdue',ui.expenseOverdue);set('notifyExpenseReminder',ui.expenseReminder);set('notifySound',ui.sound);
+  const timing=(n.rules&&n.rules.income&&n.rules.income.timing)||'before';
+  if($('notifyBefore'))$('notifyBefore').checked=timing==='before'||timing==='both';
+  if($('notifySame'))$('notifySame').checked=timing==='same';
+  if($('notifyTime'))$('notifyTime').value=(n.rules&&n.rules.income&&n.rules.income.time)||'09:00';
+}
+function syncNotificationSettings(){
+  const n=state.notifications,ui=n.ui||(n.ui={});
+  ui.incomeDue=$('notifyIncomeDue').checked;ui.incomeReminder=$('notifyIncomeReminder').checked;
+  ui.expenseDue=$('notifyExpenseDue').checked;ui.expenseOverdue=$('notifyExpenseOverdue').checked;ui.expenseReminder=$('notifyExpenseReminder').checked;ui.sound=$('notifySound').checked;
+  const timing=$('notifyBefore').checked?'before':'same',time=$('notifyTime').value||'09:00';
+  n.rules.income={timing,time,overdue:'none'};
+  n.rules.expense={timing,time,overdue:ui.expenseOverdue?'daily':'none'};
+  const incomeOn=ui.incomeDue||ui.incomeReminder,expenseOn=ui.expenseDue||ui.expenseOverdue||ui.expenseReminder;
+  state.entries.forEach(e=>{e.notify=e.type==='income'?incomeOn:expenseOn;e.notifyRule=null});
+  n.selected=state.entries.filter(e=>e.notify).map(e=>e.id);n.mode=(incomeOn||expenseOn)?'custom':'off';
+  save();if(n.mode!=='off')requestNotificationPermission();
 }
 function nativeBridge(){return window.InOrdineNative&&window.InOrdineNative.isNative?window.InOrdineNative:null}
 function notificationIdFromKey(key){
@@ -1847,10 +2500,35 @@ async function checkDueNotifications(){
   }
   if(!alerts.length)return;
   const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
-  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body,silent:!(n.ui&&n.ui.sound)});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
 }
 function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
+  if(h.type==='adjustment')return openMovementEdit(h);
+  const isIncome=h.type==='income',v=movementVisual(h);
+  openModal('Dettaglio movimento',
+    '<div class="movementHero">'+
+      '<div class="movementHeroIcon '+(isIncome?'':'expense')+'">'+v.g+'</div>'+
+      '<div><div class="movementHeroName">'+esc(h.name||'Movimento')+'</div><div class="mType '+h.type+'" style="display:inline-block;margin-top:5px">'+(isIncome?'Entrata':'Uscita')+'</div></div>'+
+      '<div class="movementHeroAmount '+h.type+'">'+(isIncome?'+ ':'- ')+money(Number(h.amount||0))+'</div>'+
+    '</div>'+
+    '<div class="movementMetaCard">'+
+      '<div class="movementMetaRow"><div class="metaIcon">▣</div><div><strong>Data</strong><span>'+fmtMovementDate(h.date)+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">▤</div><div><strong>Tipo</strong><span>'+(isIncome?'Entrata':'Uscita')+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">◇</div><div><strong>Categoria</strong><span>'+esc(h.category||'Senza categoria')+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">▧</div><div><strong>Nota</strong><span>'+esc(h.note||'Nessuna nota')+'</span></div></div>'+
+    '</div>'+
+    '<div class="movementDetailActions">'+
+      '<button id="moveEdit">✎ &nbsp; Modifica <span style="float:right">›</span></button>'+
+      '<button id="moveDeleteDetail" class="dangerLine">Elimina movimento <span style="float:right">›</span></button>'+
+    '</div>'
+  );
+  $('modal').classList.add('fullSettings');
+  $('moveEdit').onclick=()=>openMovementEdit(h);
+  $('moveDeleteDetail').onclick=()=>confirmDeleteMovement(h);
+}
+function openMovementEdit(h){
+  if(!h)return;
   if(h.type==='adjustment'){
     openModal('Correzione saldo',
       '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="text" inputmode="decimal" value="'+Number(h.delta||0)+'"></div>'+
@@ -1864,8 +2542,7 @@ function openMovementDetail(id){
       if(!Number.isFinite(nd)||!spec)return flashModal('Controlla importo e data.');
       const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=spec.iso;h.month=spec.iso.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();
     };
-    $('moveDelete').onclick=()=>confirmDeleteMovement(h);
-    return;
+    $('moveDelete').onclick=()=>confirmDeleteMovement(h);return;
   }
   const type=h.type,isIncome=type==='income',entry=h.entryId?state.entries.find(e=>e.id===h.entryId):null;
   const planned=entry?(()=>{
@@ -1874,9 +2551,8 @@ function openMovementDetail(id){
     }
     return effectiveOccurrence(entry,h.occurrenceMonth||h.month);
   })():null;
-  const dueDate=planned&&planned.date||h.date;
-  const overdue=dueDate<todayISO();
-  openModal(isIncome?'Dettaglio entrata':'Dettaglio pagamento',
+  const dueDate=planned&&planned.date||h.date,overdue=dueDate<todayISO();
+  openModal('Modifica movimento',
     '<div class="field"><label>Nome</label><input id="moveName" value="'+escAttr(h.name||'')+'"></div>'+
     '<div class="field"><label>Importo</label><input id="moveAmount" type="text" inputmode="decimal" value="'+Number(h.amount||0)+'"></div>'+
     '<div class="field"><label>Data movimento</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"><div class="manualDateHelp">La data si modifica scrivendola.</div></div>'+
@@ -1915,21 +2591,26 @@ function movementNames(){
 function movementCategories(){
   return Array.from(new Set(state.history.filter(x=>x.type!=='adjustment').map(x=>(x.category||'').trim()).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'it'));
 }
-function movementCutoff(period){
-  if(period==='all')return null;
-  const months=Number(period);
-  if(!months)return null;
-  const start=addMonths(ymNow(),-(months-1));
-  return start+'-01';
+function movementPeriodBounds(period){
+  const now=ymNow(),year=now.slice(0,4);
+  if(period==='all')return{from:'',to:''};
+  if(period==='this-month')return{from:now+'-01',to:lastDayISO(now)};
+  if(period==='3')return{from:addMonths(now,-2)+'-01',to:lastDayISO(now)};
+  if(period==='6')return{from:addMonths(now,-5)+'-01',to:lastDayISO(now)};
+  if(period==='this-year')return{from:year+'-01-01',to:year+'-12-31'};
+  if(period==='prev-year'){const y=String(Number(year)-1);return{from:y+'-01-01',to:y+'-12-31'}}
+  if(period==='custom')return{from:movementFilters.customFrom||'',to:movementFilters.customTo||''};
+  return{from:'',to:''};
 }
 function filteredMovements(){
-  const cutoff=movementCutoff(movementFilters.period);
+  const bounds=movementPeriodBounds(movementFilters.period);
   return [...state.history].filter(x=>{
     if(x.type==='adjustment')return false;
     if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
     if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
     if(movementFilters.category!=='all'&&((x.category||'').trim()||'Senza categoria')!==movementFilters.category)return false;
-    if(cutoff&&x.date<cutoff)return false;
+    if(bounds.from&&x.date<bounds.from)return false;
+    if(bounds.to&&x.date>bounds.to)return false;
     return true;
   }).sort((a,b)=>b.date.localeCompare(a.date));
 }
@@ -1937,16 +2618,15 @@ function movementFilterText(){
   const parts=[];
   if(movementFilters.type==='income')parts.push('solo entrate');
   if(movementFilters.type==='expense')parts.push('solo uscite');
-  if(movementFilters.name!=='all')parts.push(movementFilters.name);
   if(movementFilters.category!=='all')parts.push('categoria '+movementFilters.category);
-  const labels={1:'mese corrente',2:'ultimi 2 mesi',3:'ultimi 3 mesi',6:'ultimi 6 mesi',12:'ultimi 12 mesi'};
+  const labels={'this-month':'questo mese','3':'ultimi 3 mesi','6':'ultimi 6 mesi','this-year':'quest’anno','prev-year':'anno precedente','custom':'periodo personalizzato'};
   if(movementFilters.period!=='all')parts.push(labels[movementFilters.period]||'periodo scelto');
   return parts.length?parts.join(' · '):'Tutti i movimenti';
 }
 function renderMovements(){
   const arr=filteredMovements();
   document.querySelectorAll('[data-movement-type]').forEach(b=>b.classList.toggle('active',b.dataset.movementType===movementFilters.type));
-  const advancedActive=movementFilters.name!=='all'||movementFilters.category!=='all'||movementFilters.period!=='all';
+  const advancedActive=movementFilters.category!=='all'||movementFilters.period!=='all';
   $('movementsFilters').classList.toggle('filterActive',advancedActive);
   $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
   $('movementFilteredTotal').classList.add('hidden');
@@ -1954,23 +2634,36 @@ function renderMovements(){
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
-  const names=movementNames(),categories=movementCategories();
-  const nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
+  const categories=movementCategories();
   const categoryOptionsHtml='<option value="all">Tutte le categorie</option><option value="Senza categoria">Senza categoria</option>'+categories.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
   openModal('Filtra movimenti',
-    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutte</option><option value="income">Entrate</option><option value="expense">Uscite</option></select></div>'+
+    '<div class="settingsSubTitle">TIPO</div><div class="recChoiceGrid" id="mfTypeChoices"><button data-v="all">Tutte</button><button data-v="income">Solo entrate</button><button data-v="expense">Solo uscite</button></div>'+
+    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutti i movimenti</option><option value="this-month">Questo mese</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="this-year">Quest’anno</option><option value="prev-year">Anno precedente</option><option value="custom">Personalizzato</option></select></div>'+
+    '<div id="mfCustomDates" class="hidden"><div class="field"><label>Da</label><input id="mfFrom" type="text" inputmode="text" autocomplete="off" placeholder="es. 01/09/2026" value="'+escAttr(movementFilters.customFrom?manualDateText(movementFilters.customFrom):'')+'"></div><div class="field"><label>A</label><input id="mfTo" type="text" inputmode="text" autocomplete="off" placeholder="es. 30/09/2026" value="'+escAttr(movementFilters.customTo?manualDateText(movementFilters.customTo):'')+'"></div><div class="manualDateHelp">Scrivi le date manualmente. Non si apre alcun calendario.</div></div>'+
     '<div class="field"><label>Categoria</label><select id="mfCategory">'+categoryOptionsHtml+'</select></div>'+
-    '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
-    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
-    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
+    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Cancella filtri</button><button id="mfApply" class="btn">Applica filtri</button></div>'
   );
-  $('mfType').value=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  $('modal').classList.add('fullSettings');
+  let picked=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  const paint=()=>document.querySelectorAll('#mfTypeChoices button').forEach(b=>b.classList.toggle('active',b.dataset.v===picked));
+  document.querySelectorAll('#mfTypeChoices button').forEach(b=>b.onclick=()=>{picked=b.dataset.v;paint()});paint();
   $('mfCategory').value=[...categories,'Senza categoria'].includes(movementFilters.category)?movementFilters.category:'all';
-  $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
-  $('mfPeriod').value=movementFilters.period;
-  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all'};closeModal();show('movements')};
-  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,category:$('mfCategory').value,period:$('mfPeriod').value};closeModal();show('movements')};
+  $('mfPeriod').value=movementFilters.period||'all';
+  const drawCustom=()=>$('mfCustomDates').classList.toggle('hidden',$('mfPeriod').value!=='custom');
+  $('mfPeriod').onchange=drawCustom;drawCustom();
+  $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{
+    let from='',to='';
+    if($('mfPeriod').value==='custom'){
+      const fs=parseRequiredDay($('mfFrom').value),ts=parseRequiredDay($('mfTo').value);
+      if(!fs||!ts||fs.iso>ts.iso)return flashModal('Controlla le date del periodo.');
+      from=fs.iso;to=ts.iso;
+    }
+    movementFilters={type:picked,name:'all',category:$('mfCategory').value,period:$('mfPeriod').value,customFrom:from,customTo:to};
+    closeModal();show('movements');
+  };
 }
+
 function categoryTotals(type,ym){
   const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
   for(const x of all){const cat=(x.category||'').trim()||'Senza categoria';m[cat]=(m[cat]||0)+Number(x.amount||0)}
@@ -2101,11 +2794,15 @@ async function checkBudgetNotifications(force){
   }
 }
 function openBalanceEditor(){
-  openModal('Modifica saldo',
-    '<div class="field"><label>Saldo attuale</label><div class="readOnlyBox">'+money(state.balance)+'</div></div>'+
-    '<div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
-    '<div class="note">Questa è una correzione manuale del saldo. Non crea un’entrata, un pagamento o un movimento.</div>'+
-    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  openModal('Saldo attuale',
+    '<div class="appearancePreview" style="padding:14px;margin-top:3px"><div style="font-size:11px;color:#5d7487;font-weight:850">Saldo attuale</div><div style="font-size:28px;font-weight:950;color:#102a50;margin-top:4px">'+money(state.balance)+'</div></div>'+
+    '<div class="note" style="margin:9px 0 14px">Qui puoi correggere manualmente il saldo senza creare un’entrata, un pagamento o un movimento.</div>'+
+    '<div class="settingsSubTitle">MODIFICA SALDO</div>'+
+    '<div class="field"><label>Nuovo saldo</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1.250 €" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
+    '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" type="text" placeholder="Es. Correzione manuale"></div>'+
+    '<div class="note">ⓘ &nbsp; La modifica riguarda solo il saldo attuale. Non crea un movimento nello storico.</div>'+
+    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Aggiorna saldo</button></div>');
+  $('modal').classList.add('fullSettings');
   $('balCancel').onclick=closeModal;
   $('balSave').onclick=()=>{
     const v=cleanAmount($('newBalance').value);
@@ -2116,7 +2813,7 @@ function openBalanceEditor(){
   };
 }
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
-function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('fullEditor');$('modalBody').innerHTML=''}
+function closeModal(){$('modal').classList.add('hidden');$('modal').classList.remove('fullEditor','fullSettings');$('modalBody').innerHTML=''}
 function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
@@ -2159,9 +2856,7 @@ $('settingsOther').onclick=openOtherSettings;
 $('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>show(notificationReturn);
-$('notifyAll').onclick=openGlobalNotificationRules;
-$('notifyCustom').onclick=openCustomNotifications;
-$('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
+['notifyIncomeDue','notifyIncomeReminder','notifyExpenseDue','notifyExpenseOverdue','notifyExpenseReminder','notifyBefore','notifySame','notifyTime','notifySound'].forEach(id=>{const el=$(id);if(el)el.onchange=syncNotificationSettings});
 $('movementsBack').onclick=()=>show(movementReturn);
 $('summaryBack').onclick=()=>show('home');
 $('budgetBack').onclick=()=>show(budgetReturn);
@@ -2195,6 +2890,7 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+applyAppColor(state.appColor||'Blu');applyPreferences();
 setTimeout(queueNativeNotificationSync,500);
 show('landing');
 })();
