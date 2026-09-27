@@ -248,15 +248,23 @@ async function testFlowMonthNavigation(browser){
   await addItem(page,'expense','Mensile futuro',20,{date:'10 ottobre 2026',rec:'monthly'});
   assert.match(await page.locator('#flowMonthLabel').innerText(),/Ottobre 2026/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
+  assert.match(await page.locator('#flowTotal').innerText(),/Totale pagamenti/);
+  assert.match(await page.locator('#flowTotal').innerText(),/20,00/);
 
   await page.click('#flowPrevMonth');
   assert.match(await page.locator('#flowMonthLabel').innerText(),/Settembre 2026/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Pagamento passato/);
+  assert.match(await page.locator('#flowTotal').innerText(),/15,00/);
+  await page.click('.flowTab[data-flow-filter="done"]');
+  assert.match(await page.locator('#flowTotal').innerText(),/Totale pagati/);
+  assert.match(await page.locator('#flowTotal').innerText(),/15,00/);
 
   await page.click('#flowNextMonth');
   await page.click('#flowNextMonth');
   assert.match(await page.locator('#flowMonthLabel').innerText(),/Novembre 2026/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
+  assert.match(await page.locator('#flowTotal').innerText(),/Totale pagamenti/);
+  assert.match(await page.locator('#flowTotal').innerText(),/20,00/);
 
   await context.close();
 }
