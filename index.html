@@ -1683,23 +1683,37 @@ function renderHome(){
   $('homeExpenseTotal').textContent=money(open.toPay);
   const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
 }
+function movementVisual(h){
+  const text=((h.name||'')+' '+(h.category||'')).toLowerCase();
+  if(/stipend|lavor|pension|inps|bonus|rimbor/.test(text))return{g:'€',cls:'income'};
+  if(/sky|stream|tv/.test(text))return{g:'▣',cls:'pink'};
+  if(/affitt|mutuo|casa/.test(text))return{g:'⌂',cls:'purple'};
+  if(/benz|carbur|auto/.test(text))return{g:'⛽',cls:'orange'};
+  if(/fastweb|internet|wifi|telefono/.test(text))return{g:'⌁',cls:'blue'};
+  if(/dent|salute|medic/.test(text))return{g:'✚',cls:'violet'};
+  if(/regal/.test(text))return{g:'◆',cls:'green'};
+  return{g:h.type==='income'?'€':'−',cls:h.type==='income'?'income':'expense'};
+}
 function renderMovementList(el,arr){
   el.innerHTML='';
   const clean=arr.filter(x=>x.type!=='adjustment');
-  if(!clean.length){el.innerHTML='<div class="empty">Nessun movimento.</div>';return}
+  if(!clean.length){
+    el.innerHTML='<div class="movementEmpty"><div class="movementEmptyArt" aria-hidden="true"></div><h3>Nessun movimento</h3><p>Qui troverai tutte le entrate ricevute<br>e i pagamenti effettuati.</p></div>';
+    return;
+  }
   clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ';
-    const icon=isIncome?'€':'−';
-    r.innerHTML='<div class="mIcon '+x.type+'">'+icon+'</div>'+
-      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">'+fmtMovementDate(x.date)+'</div></div>'+
+    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ',v=movementVisual(x);
+    r.innerHTML='<div class="mIcon '+v.cls+'">'+v.g+'</div>'+
+      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">▣ &nbsp;'+fmtMovementDate(x.date)+'</div></div>'+
       '<div class="mAmountWrap"><div class="mAmount '+x.type+'">'+sign+money(Number(x.amount||0))+'</div><div class="mType '+x.type+'">'+label+'</div></div>'+
       '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
   });
 }
+function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
 function openFlow(type,returnTo='home'){currentFlow=type;flowFilter='all';flowReturn=returnTo;show('flow')}
 function nextOpenOccurrenceForEntry(entry){
   const today=todayISO(),endYm=addMonths(ymNow(),12);
@@ -2294,6 +2308,31 @@ async function checkDueNotifications(){
 }
 function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
+  if(h.type==='adjustment')return openMovementEdit(h);
+  const isIncome=h.type==='income',v=movementVisual(h);
+  openModal('Dettaglio movimento',
+    '<div class="movementHero">'+
+      '<div class="movementHeroIcon '+(isIncome?'':'expense')+'">'+v.g+'</div>'+
+      '<div><div class="movementHeroName">'+esc(h.name||'Movimento')+'</div><div class="mType '+h.type+'" style="display:inline-block;margin-top:5px">'+(isIncome?'Entrata':'Uscita')+'</div></div>'+
+      '<div class="movementHeroAmount '+h.type+'">'+(isIncome?'+ ':'- ')+money(Number(h.amount||0))+'</div>'+
+    '</div>'+
+    '<div class="movementMetaCard">'+
+      '<div class="movementMetaRow"><div class="metaIcon">▣</div><div><strong>Data</strong><span>'+fmtMovementDate(h.date)+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">▤</div><div><strong>Tipo</strong><span>'+(isIncome?'Entrata':'Uscita')+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">◇</div><div><strong>Categoria</strong><span>'+esc(h.category||'Senza categoria')+'</span></div></div>'+
+      '<div class="movementMetaRow"><div class="metaIcon">▧</div><div><strong>Nota</strong><span>'+esc(h.note||'Nessuna nota')+'</span></div></div>'+
+    '</div>'+
+    '<div class="movementDetailActions">'+
+      '<button id="moveEdit">✎ &nbsp; Modifica <span style="float:right">›</span></button>'+
+      '<button id="moveDeleteDetail" class="dangerLine">Elimina movimento <span style="float:right">›</span></button>'+
+    '</div>'
+  );
+  $('modal').classList.add('fullSettings');
+  $('moveEdit').onclick=()=>openMovementEdit(h);
+  $('moveDeleteDetail').onclick=()=>confirmDeleteMovement(h);
+}
+function openMovementEdit(h){
+  if(!h)return;
   if(h.type==='adjustment'){
     openModal('Correzione saldo',
       '<div class="field"><label>Importo della correzione</label><input id="moveDelta" type="text" inputmode="decimal" value="'+Number(h.delta||0)+'"></div>'+
@@ -2307,8 +2346,7 @@ function openMovementDetail(id){
       if(!Number.isFinite(nd)||!spec)return flashModal('Controlla importo e data.');
       const old=Number(h.delta||0);state.balance=Number(state.balance||0)+(nd-old);h.delta=nd;h.amount=Math.abs(nd);h.date=spec.iso;h.month=spec.iso.slice(0,7);h.reason=$('moveReason').value.trim();h.note=h.reason;save();closeModal();renderMovements();
     };
-    $('moveDelete').onclick=()=>confirmDeleteMovement(h);
-    return;
+    $('moveDelete').onclick=()=>confirmDeleteMovement(h);return;
   }
   const type=h.type,isIncome=type==='income',entry=h.entryId?state.entries.find(e=>e.id===h.entryId):null;
   const planned=entry?(()=>{
@@ -2317,9 +2355,8 @@ function openMovementDetail(id){
     }
     return effectiveOccurrence(entry,h.occurrenceMonth||h.month);
   })():null;
-  const dueDate=planned&&planned.date||h.date;
-  const overdue=dueDate<todayISO();
-  openModal(isIncome?'Dettaglio entrata':'Dettaglio pagamento',
+  const dueDate=planned&&planned.date||h.date,overdue=dueDate<todayISO();
+  openModal('Modifica movimento',
     '<div class="field"><label>Nome</label><input id="moveName" value="'+escAttr(h.name||'')+'"></div>'+
     '<div class="field"><label>Importo</label><input id="moveAmount" type="text" inputmode="decimal" value="'+Number(h.amount||0)+'"></div>'+
     '<div class="field"><label>Data movimento</label><input id="moveDateText" type="text" inputmode="text" autocomplete="off" value="'+escAttr(manualDateText(h.date))+'"><div class="manualDateHelp">La data si modifica scrivendola.</div></div>'+
@@ -2401,18 +2438,21 @@ function openMovementFilters(){
   const nameOptions='<option value="all">Tutte le voci</option>'+names.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
   const categoryOptionsHtml='<option value="all">Tutte le categorie</option><option value="Senza categoria">Senza categoria</option>'+categories.map(n=>'<option value="'+escAttr(n)+'">'+esc(n)+'</option>').join('');
   openModal('Filtra movimenti',
-    '<div class="field"><label>Tipo</label><select id="mfType"><option value="all">Tutte</option><option value="income">Entrate</option><option value="expense">Uscite</option></select></div>'+
+    '<div class="settingsSubTitle">TIPO</div><div class="recChoiceGrid" id="mfTypeChoices"><button data-v="all">Tutte</button><button data-v="income">Solo entrate</button><button data-v="expense">Solo uscite</button></div>'+
+    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutti i movimenti</option><option value="1">Questo mese</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Quest’anno / ultimi 12 mesi</option></select></div>'+
     '<div class="field"><label>Categoria</label><select id="mfCategory">'+categoryOptionsHtml+'</select></div>'+
     '<div class="field"><label>Voce</label><select id="mfName">'+nameOptions+'</select></div>'+
-    '<div class="field"><label>Periodo</label><select id="mfPeriod"><option value="all">Tutto il periodo</option><option value="1">Mese corrente</option><option value="2">Ultimi 2 mesi</option><option value="3">Ultimi 3 mesi</option><option value="6">Ultimi 6 mesi</option><option value="12">Ultimi 12 mesi</option></select></div>'+
-    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Azzera filtri</button><button id="mfApply" class="btn">Applica</button></div>'
+    '<div class="modalBtns"><button id="mfReset" class="btn secondary">Cancella filtri</button><button id="mfApply" class="btn">Applica filtri</button></div>'
   );
-  $('mfType').value=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  $('modal').classList.add('fullSettings');
+  let picked=['income','expense'].includes(movementFilters.type)?movementFilters.type:'all';
+  const paint=()=>document.querySelectorAll('#mfTypeChoices button').forEach(b=>b.classList.toggle('active',b.dataset.v===picked));
+  document.querySelectorAll('#mfTypeChoices button').forEach(b=>b.onclick=()=>{picked=b.dataset.v;paint()});paint();
   $('mfCategory').value=[...categories,'Senza categoria'].includes(movementFilters.category)?movementFilters.category:'all';
   $('mfName').value=names.includes(movementFilters.name)?movementFilters.name:'all';
   $('mfPeriod').value=movementFilters.period;
   $('mfReset').onclick=()=>{movementFilters={type:'all',name:'all',category:'all',period:'all'};closeModal();show('movements')};
-  $('mfApply').onclick=()=>{movementFilters={type:$('mfType').value,name:$('mfName').value,category:$('mfCategory').value,period:$('mfPeriod').value};closeModal();show('movements')};
+  $('mfApply').onclick=()=>{movementFilters={type:picked,name:$('mfName').value,category:$('mfCategory').value,period:$('mfPeriod').value};closeModal();show('movements')};
 }
 function categoryTotals(type,ym){
   const all=state.history.filter(h=>h.type===type&&h.month===ym),m={};
