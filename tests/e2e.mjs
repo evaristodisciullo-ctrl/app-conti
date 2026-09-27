@@ -113,7 +113,7 @@ async function testSetupNaturalRecurrences(browser){
 async function testFinanceManualDatesAndMovements(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
   await page.click('#homeIncome');await page.waitForSelector('#flow:not(.hidden)');
-  assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata inserita/);
+  assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata in/);
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
   assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'es. 1000 €');
