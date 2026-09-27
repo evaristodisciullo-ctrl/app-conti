@@ -117,6 +117,12 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
   assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'es. 1000 €');
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  await page.click('#editDateText');
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
+  assert.match(await page.locator('#editRecChoices').innerText(),/Una volta/);
+  assert.match(await page.locator('#editRecChoices').innerText(),/Ogni mese/);
+  assert.match(await page.locator('#editRecChoices').innerText(),/Altro/);
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
