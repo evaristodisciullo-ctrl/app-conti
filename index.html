@@ -1970,25 +1970,39 @@ const DEFAULT_CATEGORIES={
 function allCategories(type){const hidden=new Set(state.hiddenCategories[type]||[]);return Array.from(new Set([...(DEFAULT_CATEGORIES[type]||[]),...(state.customCategories[type]||[])])).filter(x=>!hidden.has(x)).sort((a,b)=>a.localeCompare(b,'it'))}
 function categoryOptions(type,current){let h='<option value="">Senza categoria</option>';for(const x of allCategories(type))h+='<option value="'+escAttr(x)+'" '+(x===current?'selected':'')+'>'+esc(x)+'</option>';h+='<option value="__new__">+ Crea nuova categoria</option>';return h}
 
-function openCategoryHub(){
-  openModal('Categorie','<div class="hint">Riepilogo e gestione delle categorie.</div><div class="guideTopics"><button id="categorySummaryOpen" class="guideTopic">Riepilogo categorie</button><button id="categoryManageOpen" class="guideTopic">Gestisci categorie</button></div>');
-  $('categorySummaryOpen').onclick=()=>{closeModal();summaryMonth=ymNow();show('summary')};
-  $('categoryManageOpen').onclick=openCategoryManagement;
-}
-function openCategoryManagement(){
-  const renderSection=type=>{
-    const title=type==='income'?'Entrate':'Pagamenti',cats=allCategories(type);
-    const rows=cats.map(x=>'<div class="notifyToggle"><span><b>'+esc(x)+'</b><small>'+((DEFAULT_CATEGORIES[type]||[]).includes(x)?'Predefinita':'Personalizzata')+'</small></span><span style="display:flex;gap:6px"><button class="filterBtn catRename" data-type="'+type+'" data-cat="'+escAttr(x)+'">Rinomina</button><button class="filterBtn catDelete" data-type="'+type+'" data-cat="'+escAttr(x)+'">Elimina</button></span></div>').join('');
-    return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div><div class="notifyList" style="max-height:none">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div><button class="setupAddRow catAdd" data-type="'+type+'">+ Aggiungi categoria</button></div>';
+function openCategoryHub(){openCategoryManagement('income')}
+function categoryDescription(type,name){
+  const m={
+    'Lavoro':'Stipendi, compensi, freelance','Pensioni/Prestazioni':'Pensioni e prestazioni','Affitti':'Affitti ricevuti','Rimborsi':'Rimborsi e restituzioni','Casa':'Mutuo, affitto e spese casa','Auto':'Carburante, manutenzione, assicurazione','Bollette':'Utenze e abbonamenti','Salute':'Visite mediche, farmaci, benessere','Altro':'Altre entrate o uscite'
   };
-  openModal('Categorie','<div class="hint">Crea, rinomina o elimina le categorie. Se elimini una categoria, le voci restano e diventano “Senza categoria”.</div>'+renderSection('income')+renderSection('expense'));
-  document.querySelectorAll('.catAdd').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,''));
-  document.querySelectorAll('.catRename').forEach(b=>b.onclick=()=>openCategoryNameEditor(b.dataset.type,b.dataset.cat));
-  document.querySelectorAll('.catDelete').forEach(b=>b.onclick=()=>confirmDeleteCategory(b.dataset.type,b.dataset.cat));
+  return m[name]||((DEFAULT_CATEGORIES[type]||[]).includes(name)?'Categoria predefinita':'Categoria personalizzata');
+}
+function openCategoryManagement(focusType='income'){
+  let type=focusType==='expense'?'expense':'income';
+  const draw=()=>{
+    const cats=allCategories(type);
+    const rows=cats.map((x,i)=>'<button class="settingsSubRow categoryEditRow" data-cat="'+escAttr(x)+'"><span class="settingsRowIcon '+(['iGreen','iBlue','iPurple','iPink','iOrange'][i%5])+'">'+(type==='income'?'↑':'↓')+'</span><span><strong>'+esc(x)+'</strong><small>'+esc(categoryDescription(type,x))+'</small></span><span class="settingsRowArrow">›</span></button>').join('');
+    $('modalBody').innerHTML=
+      '<div class="settingsTabs"><button id="catTabIncome" class="'+(type==='income'?'active':'')+'">Entrate</button><button id="catTabExpense" class="'+(type==='expense'?'active':'')+'">Pagamenti</button></div>'+
+      '<div class="settingsSubMenu"><button id="categoryAdd" class="settingsSubRow"><span class="settingsRowIcon iBlue">＋</span><span><strong>Aggiungi categoria</strong><small>Crea una nuova categoria</small></span><span class="settingsRowArrow">›</span></button></div>'+
+      '<div class="settingsSubTitle">CATEGORIE '+(type==='income'?'ENTRATE':'PAGAMENTI')+'</div>'+
+      '<div class="settingsSubMenu">'+(rows||'<div class="empty">Nessuna categoria.</div>')+'</div>';
+    $('catTabIncome').onclick=()=>{type='income';draw()};
+    $('catTabExpense').onclick=()=>{type='expense';draw()};
+    $('categoryAdd').onclick=()=>openCategoryNameEditor(type,'');
+    document.querySelectorAll('.categoryEditRow').forEach(r=>r.onclick=()=>{
+      const name=r.dataset.cat;
+      openModal('Categoria', '<div class="field"><label>Nome categoria</label><div class="readOnlyBox">'+esc(name)+'</div></div><div class="modalBtns"><button id="catRenameOpen" class="btn secondary">Rinomina</button><button id="catDeleteOpen" class="btn deleteBtn">Elimina</button></div>');
+      $('modal').classList.add('fullSettings');
+      $('catRenameOpen').onclick=()=>openCategoryNameEditor(type,name);
+      $('catDeleteOpen').onclick=()=>confirmDeleteCategory(type,name);
+    });
+  };
+  openModal('Categorie','');$('modal').classList.add('fullSettings');draw();
 }
 function openCategoryNameEditor(type,oldName){
   openModal(oldName?'Rinomina categoria':'Nuova categoria','<div class="field"><label>Nome</label><input id="categoryNameEdit" placeholder="Scrivi qua" value="'+escAttr(oldName||'')+'"></div><div class="modalBtns"><button id="categoryNameCancel" class="btn secondary">Annulla</button><button id="categoryNameSave" class="btn">Salva</button></div>');
-  $('categoryNameCancel').onclick=openCategoryManagement;
+  $('categoryNameCancel').onclick=()=>openCategoryManagement(type);
   $('categoryNameSave').onclick=()=>{
     const name=$('categoryNameEdit').value.trim();if(!name)return flashModal('Scrivi il nome della categoria.');
     const existing=new Set(allCategories(type));if(name!==oldName&&existing.has(name))return flashModal('Questa categoria esiste già.');
@@ -1999,12 +2013,12 @@ function openCategoryNameEditor(type,oldName){
       state.customCategories[type]=state.customCategories[type].filter(x=>x!==oldName);
       if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
     }else if(!(DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.customCategories[type].includes(name))state.customCategories[type].push(name);
-    save();openCategoryManagement();
+    save();openCategoryManagement(type);
   };
 }
 function confirmDeleteCategory(type,name){
   openModal('Elimina categoria','<div class="note">Eliminare “'+esc(name)+'”? Le entrate o i pagamenti collegati resteranno, ma passeranno a “Senza categoria”.</div><div class="modalBtns"><button id="categoryDeleteNo" class="btn secondary">Annulla</button><button id="categoryDeleteYes" class="btn deleteBtn">Elimina</button></div>');
-  $('categoryDeleteNo').onclick=openCategoryManagement;
+  $('categoryDeleteNo').onclick=()=>openCategoryManagement(type);
   $('categoryDeleteYes').onclick=()=>{
     state.entries.filter(e=>e.type===type&&e.category===name).forEach(e=>e.category='');
     state.history.filter(h=>h.type===type&&h.category===name).forEach(h=>h.category='');
@@ -2012,7 +2026,7 @@ function confirmDeleteCategory(type,name){
     if((DEFAULT_CATEGORIES[type]||[]).includes(name)&&!state.hiddenCategories[type].includes(name))state.hiddenCategories[type].push(name);
     if(state.budgetPlans)state.budgetPlans.forEach(p=>{if(p.limits&&Object.prototype.hasOwnProperty.call(p.limits,name))delete p.limits[name]});
     if(state.budgetNotifications&&state.budgetNotifications.categories)delete state.budgetNotifications.categories[name];
-    save();openCategoryManagement();
+    save();openCategoryManagement(type);
   };
 }
 
