@@ -2414,6 +2414,7 @@ function openEntryEditor(entry,type){
         state.history.push(h);state.balance=Number(state.balance||0)+(type==='income'?amount:-amount);
       }
     }
+    flowMonth=date.slice(0,7);
     save();closeModal();renderFlow();if(!$('home').classList.contains('hidden'))renderHome();
   };
 }
