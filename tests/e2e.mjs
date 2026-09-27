@@ -100,7 +100,7 @@ async function testSetupNaturalRecurrences(browser){
   const rows=page.locator('#expenseRows .entryRow');
   const r1=rows.first();
   await r1.locator('.rName').fill('Fratello');await r1.locator('.rAmount').fill('50');await r1.locator('.rDateText').fill('1 ottobre una volta');await r1.locator('.rDateText').blur();
-  await page.click('#addExpenseRow');
+  await page.click('#addExpenseSetup');
   const r2=page.locator('#expenseRows .entryRow').nth(1);
   await r2.locator('.rName').fill('730');await r2.locator('.rAmount').fill('700');await r2.locator('.rDateText').fill('11 ottobre per 3 mesi');await r2.locator('.rDateText').blur();
   await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
