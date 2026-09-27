@@ -1601,6 +1601,11 @@ function parseSetupDate(raw){
     return{spec:{kind:'day',iso:date},date,recurrence:{kind:'count',startMonth:date.slice(0,7),count},label:manualDateText(date)+' · per '+count+' mesi'};
   }
 
+  const shortDate=parseDayMonth(text);
+  if(shortDate){
+    return{spec:{kind:'day',iso:shortDate},date:shortDate,recurrence:{kind:'single',month:shortDate.slice(0,7)},label:manualDateText(shortDate)};
+  }
+
   const spec=parseRequiredDay(text);
   if(!spec)return null;
   return{spec,date:spec.iso,recurrence:{kind:'single',month:spec.iso.slice(0,7)},label:manualDateText(spec)};
