@@ -883,6 +883,11 @@ body{background:#eef7ff}
 .dangerEditorRow{width:100%;min-height:46px;border:1px solid #f2d5d9;background:#fff5f6;color:#c52b3a;border-radius:11px;font-weight:900;margin-top:9px}
 .modal.fullEditor #editAmount{padding-right:38px}
 body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+#notifications{padding:0 2px 100px;background:linear-gradient(180deg,#f8fcff,#eaf6ff)}
+#notifications .pageTitleBlock{flex-direction:row;align-items:center;gap:9px}
+#notifications .pageHeader h1{font-size:25px;color:#102a50}
+#notifications .pageBack{font-size:0;color:#287fc5}#notifications .pageBack .arrow{font-size:26px}
+#notifications input[type="radio"]{width:20px;height:20px;accent-color:#087bf5}
 </style>
 </head>
 <body>
@@ -944,13 +949,27 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button></div></div>
-  <div class="notifyHero"><div class="notifyBell">🔔</div><h1>Notifiche</h1><p>Scegli come vuoi ricevere i promemoria per le tue entrate e i tuoi pagamenti.</p></div>
-  <div class="notifyCard">
-    <button id="notifyAll" class="notifyChoice"><span class="bell">🔔</span><span><strong>Attiva tutte le notifiche</strong><span class="copy">Ricevi un promemoria per ogni entrata e pagamento.</span></span></button>
-    <button id="notifyCustom" class="notifyChoice"><span class="bell">🔔</span><span><strong>Scegli quali notifiche attivare</strong><span class="copy">Decidi tu per quali voci ricevere un promemoria.</span></span></button>
-    <button id="notifySkip" class="notifySkip">Salta per ora</button>
-    <div class="notifyHelp">Puoi modificare le notifiche quando vuoi da Impostazioni → Notifiche.</div>
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
+  <div class="settingsSubTitle">ENTRATE</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iGreen">●</span><span><strong>Entrate da ricevere</strong><small>Avvisa quando ci sono entrate previste</small></span><input id="notifyIncomeDue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria entrate</strong><small>Promemoria per le entrate pianificate</small></span><input id="notifyIncomeReminder" class="settingToggle" type="checkbox"></label>
+  </div>
+  <div class="settingsSubTitle">PAGAMENTI</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iRed">●</span><span><strong>Pagamenti da pagare</strong><small>Avvisa quando ci sono pagamenti in scadenza</small></span><input id="notifyExpenseDue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iOrange">!</span><span><strong>Pagamenti scaduti</strong><small>Avvisa per i pagamenti scaduti</small></span><input id="notifyExpenseOverdue" class="settingToggle" type="checkbox"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria pagamenti</strong><small>Promemoria per i pagamenti pianificati</small></span><input id="notifyExpenseReminder" class="settingToggle" type="checkbox"></label>
+  </div>
+  <div class="settingsSubTitle">QUANDO AVVISARE</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>1 giorno prima</strong><small>Ricevi una notifica il giorno prima</small></span><input id="notifyBefore" type="radio" name="notifyWhen" value="before"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Il giorno stesso</strong><small>Ricevi una notifica il giorno della scadenza</small></span><input id="notifySame" type="radio" name="notifyWhen" value="same"></label>
+  </div>
+  <div class="settingsSubTitle">ORARIO PREFERITO</div>
+  <div class="settingsSubMenu">
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Orario preferito</strong><small>Scegli l’orario per le notifiche</small></span><input id="notifyTime" type="time" style="width:88px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"></label>
+    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">♫</span><span><strong>Suono notifiche</strong><small>Riproduci un suono per le notifiche</small></span><input id="notifySound" class="settingToggle" type="checkbox"></label>
   </div>
 </section>
 
@@ -2212,12 +2231,26 @@ function collectEditRecurrence(){
   return null;
 }
 function renderNotifications(){
-  const mode=state.notifications.mode||'off';
-  $('notifyAll').classList.toggle('active',mode==='all');
-  $('notifyCustom').classList.toggle('active',mode==='custom');
-  $('notifySkip').textContent=mode==='off'?'Notifiche disattivate':'Disattiva tutte le notifiche';
-  const help=$('notifications').querySelector('.notifyHelp');
-  if(help)help.textContent='Puoi modificare queste impostazioni quando vuoi da Impostazioni → Notifiche.';
+  const n=state.notifications||{},ui=n.ui||(n.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true});
+  const set=(id,v)=>{const el=$(id);if(el)el.checked=!!v};
+  set('notifyIncomeDue',ui.incomeDue);set('notifyIncomeReminder',ui.incomeReminder);
+  set('notifyExpenseDue',ui.expenseDue);set('notifyExpenseOverdue',ui.expenseOverdue);set('notifyExpenseReminder',ui.expenseReminder);set('notifySound',ui.sound);
+  const timing=(n.rules&&n.rules.income&&n.rules.income.timing)||'before';
+  if($('notifyBefore'))$('notifyBefore').checked=timing==='before'||timing==='both';
+  if($('notifySame'))$('notifySame').checked=timing==='same';
+  if($('notifyTime'))$('notifyTime').value=(n.rules&&n.rules.income&&n.rules.income.time)||'09:00';
+}
+function syncNotificationSettings(){
+  const n=state.notifications,ui=n.ui||(n.ui={});
+  ui.incomeDue=$('notifyIncomeDue').checked;ui.incomeReminder=$('notifyIncomeReminder').checked;
+  ui.expenseDue=$('notifyExpenseDue').checked;ui.expenseOverdue=$('notifyExpenseOverdue').checked;ui.expenseReminder=$('notifyExpenseReminder').checked;ui.sound=$('notifySound').checked;
+  const timing=$('notifyBefore').checked?'before':'same',time=$('notifyTime').value||'09:00';
+  n.rules.income={timing,time,overdue:'none'};
+  n.rules.expense={timing,time,overdue:ui.expenseOverdue?'daily':'none'};
+  const incomeOn=ui.incomeDue||ui.incomeReminder,expenseOn=ui.expenseDue||ui.expenseOverdue||ui.expenseReminder;
+  state.entries.forEach(e=>{e.notify=e.type==='income'?incomeOn:expenseOn;e.notifyRule=null});
+  n.selected=state.entries.filter(e=>e.notify).map(e=>e.id);n.mode=(incomeOn||expenseOn)?'custom':'off';
+  save();if(n.mode!=='off')requestNotificationPermission();
 }
 function nativeBridge(){return window.InOrdineNative&&window.InOrdineNative.isNative?window.InOrdineNative:null}
 function notificationIdFromKey(key){
@@ -2348,7 +2381,7 @@ async function checkDueNotifications(){
   }
   if(!alerts.length)return;
   const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
-  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body,silent:!(n.ui&&n.ui.sound)});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
 }
 function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
@@ -2690,9 +2723,7 @@ $('settingsOther').onclick=openOtherSettings;
 $('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>show(notificationReturn);
-$('notifyAll').onclick=openGlobalNotificationRules;
-$('notifyCustom').onclick=openCustomNotifications;
-$('notifySkip').onclick=async()=>{if(state.notifications.mode==='off')return;await finishNotificationChoice('off',[])};
+['notifyIncomeDue','notifyIncomeReminder','notifyExpenseDue','notifyExpenseOverdue','notifyExpenseReminder','notifyBefore','notifySame','notifyTime','notifySound'].forEach(id=>{const el=$(id);if(el)el.onchange=syncNotificationSettings});
 $('movementsBack').onclick=()=>show(movementReturn);
 $('summaryBack').onclick=()=>show('home');
 $('budgetBack').onclick=()=>show(budgetReturn);
