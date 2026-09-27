@@ -880,6 +880,8 @@ body{background:#eef7ff}
   .modal.fullSettings .modalCard,.modal.fullEditor .modalCard{padding-left:12px!important;padding-right:12px!important}
 }
 
+.dangerEditorRow{width:100%;min-height:46px;border:1px solid #f2d5d9;background:#fff5f6;color:#c52b3a;border-radius:11px;font-weight:900;margin-top:9px}
+.modal.fullEditor #editAmount{padding-right:38px}
 </style>
 </head>
 <body>
@@ -1982,8 +1984,8 @@ function confirmDeleteCategory(type,name){
 
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(entry&&entry.dateSpec&&entry.dateSpec.kind==='year'&&r&&r.kind==='single')return String(entry.dateSpec.year)+'-01';if(!r)return ymNow();if(r.kind==='custom'&&r.startDate)return r.startDate.slice(0,7);return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
-  const isNew=!entry;
-  const title=entry?(type==='income'?'Modifica entrata':'Modifica pagamento'):(type==='income'?'Aggiungi entrata':'Aggiungi pagamento');
+  const isNew=!entry,isIncome=type==='income';
+  const title=entry?(isIncome?'Modifica entrata':'Modifica pagamento'):(isIncome?'Aggiungi entrata':'Aggiungi pagamento');
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
   const noteValue=entry&&entry.note?entry.note:'';
@@ -1992,30 +1994,32 @@ function openEntryEditor(entry,type){
   const rule=entry&&entry.notifyRule||null;
   const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
   const effectiveRule=rule||generalRule;
-  const suggestions=isNew?'<div class="suggestionLabel">Suggerimenti</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(s=>'<button type="button" class="suggestionChip" data-name="'+escAttr(s)+'">'+esc(s)+'</button>').join('')+'</div>':'';
-  const notifyTitle=globalAll&&isNew?'Notifica attiva secondo le impostazioni generali':'Vuoi attivare una notifica?';
+  const suggestions='<div class="suggestionLabel">Suggerimenti:</div><div id="entrySuggestions" class="suggestionChips">'+ENTRY_SUGGESTIONS[type].map(x=>'<button type="button" class="suggestionChip" data-name="'+escAttr(x)+'">'+esc(x)+'</button>').join('')+'</div>';
   const editDueDate=entry?dateValue:'',editIsOverdue=!!(entry&&editDueDate&&editDueDate<todayISO());
-  const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(type==='income'?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(type==='income'?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(type==='income'?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
+  const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
+  const deleteLine=entry?'<button id="editDelete" class="dangerEditorRow">Elimina '+(isIncome?'entrata':'pagamento')+'</button>':'<button id="editDelete" class="hidden"></button>';
   openModal(title,
-    '<div class="field"><label>Nome</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Nome *</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
-    '<div class="field"><label>Importo</label><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"></div>'+
-    '<div class="field"><label>Data</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026 oppure 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div class="manualDateHelp">Scrivi la data direttamente. Non si apre nessun calendario.</div><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita.</div></div>'+
-    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="hint"></div></div>'+
+    '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
+    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
+    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione *</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">◉ &nbsp; Una volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
-    '<div class="field"><label>Categoria <span style="font-weight:500;color:var(--muted)">(facoltativa)</span></label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
-    '<div class="notifyField"><label for="editNotify"><strong>'+notifyTitle+'</strong><span style="display:block;font-size:11px;color:var(--muted);margin-top:3px">Puoi sempre attivarla o modificarla in seguito da Impostazioni → Notifiche.</span></label><input id="editNotify" type="checkbox" '+(notifyDefault?'checked':'')+'></div>'+
-    '<div id="entryNotifyRules" class="notifyRuleBox '+(notifyDefault?'':'hidden')+'">'+
-      '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
-      '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
-      '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
-    '</div>'+
-    '<button id="toggleNote" class="optionalNoteBtn">'+(noteValue?'− Nascondi nota':'+ Aggiungi nota (facoltativa)')+'</button>'+
-    '<div id="noteWrap" class="'+(noteValue?'':'hidden')+'"><div class="field"><textarea id="editNote" placeholder="Scrivi una nota...">'+esc(noteValue)+'</textarea></div></div>'+
-    '<div class="modalBtns"><button id="editDelete" class="btn '+(entry?'deleteBtn':'secondary')+'">'+(entry?(type==='income'?'Elimina entrata':'Elimina pagamento'):'Annulla')+'</button><button id="editSave" class="btn">'+(type==='income'?'Salva entrata':'Salva pagamento')+'</button></div>'
+    '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
+      '<div class="field"><label>Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+      '<div class="field"><label>Nota</label><textarea id="editNote" placeholder="Scrivi una nota (facoltativo)">'+esc(noteValue)+'</textarea></div>'+
+      '<div class="field"><label>Notifica</label><select id="editNotifyMode"><option value="off">Nessuna</option><option value="general">Usa impostazioni generali</option><option value="custom">Personalizzata</option></select><input id="editNotify" type="checkbox" class="hidden"></div>'+
+      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+
+        '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
+        '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
+        '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
+      '</div>'+deleteLine+
+    '</div></details>'+
+    '<div class="modalBtns editorSaveOnly"><button id="editCancel" class="btn secondary">Annulla</button><button id="editSave" class="btn">Salva</button></div>'
   );
   $('modal').classList.add('fullEditor');
-  if(isNew){setTimeout(()=>$('editName')&&$('editName').focus(),0);$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()})}
+  if(isNew)setTimeout(()=>$('editName')&&$('editName').focus(),0);
+  $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()});
   let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
   $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
@@ -2024,35 +2028,31 @@ function openEntryEditor(entry,type){
   const paintRec=()=>{
     const k=$('editRecKind').value;
     document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));
-    $('editRecSummary').textContent=recurrenceSummary(collectEditRecurrence()||{});
+    document.querySelectorAll('#editRecChoices button').forEach(b=>{
+      const base=b.dataset.kind===(['monthly','single'].includes(k)?k:'custom');
+      b.innerHTML=(base?'◉':'○')+' &nbsp; '+(b.dataset.kind==='single'?'Una volta':b.dataset.kind==='monthly'?'Ogni mese':'Altro');
+    });
+    const summary=recurrenceSummary(collectEditRecurrence()||{});
+    $('editRecSummary').textContent=summary||(k==='single'?'L’entrata verrà registrata solo nella data indicata.':'');
+    if(k==='single')$('editRecSummary').textContent=(isIncome?'L’entrata':'Il pagamento')+' verrà registrat'+(isIncome?'a':'o')+' solo nella data indicata.';
   };
   const syncDate=()=>{
-    const spec=parseRequiredDay($('editDateText').value);
-    const hasText=$('editDateText').value.trim()!=='';
+    const spec=parseRequiredDay($('editDateText').value),hasText=$('editDateText').value.trim()!=='';
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
     if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
-    editorDateSpec=spec;
-    $('editDate').value=spec.iso;
-    $('editRecurrenceBlock').classList.remove('hidden');
-    let k=$('editRecKind').value;
-    if(!k){k='single';$('editRecKind').value=k}
-    if(k==='single')$('editRecKind').value='single';
-    if(k==='monthly')$('editRecKind').value='monthly';
+    editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
+    let k=$('editRecKind').value;if(!k){k='single';$('editRecKind').value=k}
     if(k==='custom'){
-      try{
-        const cfg=JSON.parse($('editRecKind').dataset.custom||'null');
-        if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}
-      }catch(e){}
+      try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}
     }
     renderEditRecExtra(rec||null);paintRec();return true;
   };
-  $('editDateText').addEventListener('input',syncDate);
-  $('editDateText').addEventListener('change',syncDate);
+  $('editDateText').addEventListener('input',syncDate);$('editDateText').addEventListener('change',syncDate);
   $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
     if(b.dataset.kind==='custom'){
       if(!syncDate())return flashModal('Scrivi prima una data valida.');
-      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return
+      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return;
     }
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
@@ -2060,29 +2060,25 @@ function openEntryEditor(entry,type){
   let desiredDone=false;
   if(entry&&$('editStateOpen')){
     const paintState=()=>{$('editStateOpen').classList.toggle('active',!desiredDone&&!editIsOverdue);$('editStateDone').classList.toggle('active',desiredDone);$('editStateOverdue').classList.toggle('overdue',!desiredDone&&editIsOverdue)};
-    $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};
-    $('editStateDone').onclick=()=>{desiredDone=true;paintState()};
-    paintState();
+    $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};$('editStateDone').onclick=()=>{desiredDone=true;paintState()};paintState();
   }
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
-  $('toggleNote').onclick=()=>{const w=$('noteWrap');w.classList.toggle('hidden');$('toggleNote').textContent=w.classList.contains('hidden')?'+ Aggiungi nota (facoltativa)':'− Nascondi nota'};
-  $('editNotify').onchange=()=>{$('entryNotifyRules').classList.toggle('hidden',!$('editNotify').checked)};
   $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
-  $('editDelete').onclick=()=>{if(!entry)return closeModal();confirmDeleteEntry(entry)};
+  const initialNotifyMode=notifyDefault?(rule?'custom':'general'):'off';
+  $('editNotifyMode').value=initialNotifyMode;$('editNotify').checked=notifyDefault;$('entryNotifyRules').classList.toggle('hidden',initialNotifyMode!=='custom');
+  $('editNotifyMode').onchange=()=>{const m=$('editNotifyMode').value;$('editNotify').checked=m!=='off';$('entryNotifyRules').classList.toggle('hidden',m!=='custom')};
+  if($('editDelete'))$('editDelete').onclick=()=>{if(entry)confirmDeleteEntry(entry)};
+  $('editCancel').onclick=closeModal;
   $('editSave').onclick=()=>{
-    const dateOk=syncDate();
-    const name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence();
-    const day=date?Number(date.slice(8,10)):0;
+    const dateOk=syncDate(),name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence(),day=date?Number(date.slice(8,10)):0;
     let category=$('editCategory').value;
     if(category==='__new__'){
-      category=$('newCategory').value.trim();
-      if(!category)return flashModal('Scrivi il nome della nuova categoria.');
+      category=$('newCategory').value.trim();if(!category)return flashModal('Scrivi il nome della nuova categoria.');
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
-    const notify=$('editNotify').checked;
-    let notifyRule=notify?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
-    if(notify&&state.notifications.mode==='all'){const g=state.notifications.rules&&state.notifications.rules[type];if(g&&notifyRule.timing===g.timing&&notifyRule.time===g.time&&notifyRule.overdue===g.overdue)notifyRule=null}
-    const note=$('noteWrap').classList.contains('hidden')?'':$('editNote').value.trim();
+    const nm=$('editNotifyMode').value,notify=nm!=='off';
+    let notifyRule=nm==='custom'?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    const note=$('editNote').value.trim();
     if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
     if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
