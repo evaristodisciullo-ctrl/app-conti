@@ -909,6 +909,22 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .flowMonthBar{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center;margin:11px 0 8px}
 .flowMonthArrow{height:40px;border:1px solid #d5e5f1;border-radius:12px;background:#fff;color:#2379d8;font-size:28px;font-weight:850;line-height:1}
 .flowMonthLabel{height:40px;border:1px solid #d5e5f1;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;color:#17324a;font-weight:900;font-size:14px}
+
+/* FIX 27/09/2026 — impedisce a date con mesi lunghi di sovrapporsi all'importo */
+.flowUnifiedName,
+.flowUnifiedDate{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.flowUnifiedAmount{
+  min-width:max-content!important;
+  white-space:nowrap!important;
+}
+@media(max-width:410px){
+  .flowUnifiedDate{font-size:10px!important}
+}
 </style>
 </head>
 <body>
