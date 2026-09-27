@@ -2589,11 +2589,15 @@ async function checkBudgetNotifications(force){
   }
 }
 function openBalanceEditor(){
-  openModal('Modifica saldo',
-    '<div class="field"><label>Saldo attuale</label><div class="readOnlyBox">'+money(state.balance)+'</div></div>'+
-    '<div class="field"><label>Nuovo saldo reale</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
-    '<div class="note">Questa è una correzione manuale del saldo. Non crea un’entrata, un pagamento o un movimento.</div>'+
-    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Salva</button></div>');
+  openModal('Saldo attuale',
+    '<div class="appearancePreview" style="padding:14px;margin-top:3px"><div style="font-size:11px;color:#5d7487;font-weight:850">Saldo attuale</div><div style="font-size:28px;font-weight:950;color:#102a50;margin-top:4px">'+money(state.balance)+'</div></div>'+
+    '<div class="note" style="margin:9px 0 14px">Qui puoi correggere manualmente il saldo senza creare un’entrata, un pagamento o un movimento.</div>'+
+    '<div class="settingsSubTitle">MODIFICA SALDO</div>'+
+    '<div class="field"><label>Nuovo saldo</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1.250 €" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
+    '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" type="text" placeholder="Es. Correzione manuale"></div>'+
+    '<div class="note">ⓘ &nbsp; La modifica riguarda solo il saldo attuale. Non crea un movimento nello storico.</div>'+
+    '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Aggiorna saldo</button></div>');
+  $('modal').classList.add('fullSettings');
   $('balCancel').onclick=closeModal;
   $('balSave').onclick=()=>{
     const v=cleanAmount($('newBalance').value);
