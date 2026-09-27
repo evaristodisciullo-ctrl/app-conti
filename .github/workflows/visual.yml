@@ -57,9 +57,21 @@ jobs:
             await page.click('#flowBack');await page.click('#homeExpense');await page.waitForSelector('.flowExpense .flowBanner[data-asset-loaded="1"]',{timeout:15000});await shot('09-elenco-pagamenti');
             await page.click('#flowAdd');await shot('10-aggiungi-pagamento');await page.click('#modalClose');
             await page.click('#flowBack');await page.click('#homeAllMovements');await shot('11-movimenti');
-            await page.click('#movementsFilters');await shot('12-filtra-movimenti');await page.click('#modalClose');
-            await page.click('#movementsBack');await page.click('#homeSettingsCard');await shot('13-impostazioni');
-            await page.click('#settingsGuide');await shot('14-tutorial');
+            await page.locator('.movementRow').first().click();await shot('12-dettaglio-movimento');await page.click('#modalClose');
+            await page.click('#movementsFilters');await shot('13-filtra-movimenti');await page.click('#modalClose');
+            await page.click('#movementsBack');await page.click('#homeSettingsCard');await shot('14-impostazioni');
+            await page.click('#settingsIncome');await shot('15-impostazioni-entrate');await page.click('#modalClose');
+            await page.click('#settingsExpense');await shot('16-impostazioni-pagamenti');await page.click('#modalClose');
+            await page.click('#settingsEditBalance');await shot('17-saldo-attuale');await page.click('#modalClose');
+            await page.click('#settingsCategories');await shot('18-categorie');await page.click('#modalClose');
+            await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');await shot('19-notifiche');await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
+            await page.click('#settingsColor');await shot('20-aspetto-colore');await page.click('#modalClose');
+            await page.click('#settingsSecurity');await shot('21-sicurezza');await page.click('#modalClose');
+            await page.click('#settingsBackup');await shot('22-backup-dati');await page.click('#modalClose');
+            await page.click('#settingsOther');await shot('23-altre-impostazioni');await page.click('#modalClose');
+            await page.click('#settingsGuide');await shot('24-tutorial');
+            await page.locator('#guideTopics button').filter({hasText:'Entrate'}).click();await shot('25-guida-entrate');await page.click('#modalClose');
+            await page.click('#settingsInfo');await shot('26-informazioni');await page.click('#modalClose');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
