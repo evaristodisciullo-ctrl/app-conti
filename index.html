@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#2479d8">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -889,6 +889,19 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 #notifications .pageBack{font-size:0;color:#287fc5}#notifications .pageBack .arrow{font-size:26px}
 #notifications input[type="radio"]{width:20px;height:20px;accent-color:#087bf5}
 .disabledRow{opacity:.5;pointer-events:none}
+
+/* Tastiera mobile: mantiene il form utilizzabile e Salva sempre raggiungibile */
+.modal.fullEditor .modalCard{height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain}
+.modal.fullEditor #modalBody{min-height:calc(100dvh - 70px)}
+.modal.fullEditor .editorSaveOnly{
+  position:sticky!important;bottom:0!important;z-index:12!important;
+  margin:14px -14px -102px!important;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
+  background:linear-gradient(180deg,rgba(234,246,255,.15),#eaf6ff 24%,#eaf6ff 100%)!important;
+  box-shadow:0 -8px 18px rgba(33,87,124,.06)
+}
+@supports(height:100dvh){.modal.fullEditor .modalCard{height:100dvh!important}}
+
 </style>
 </head>
 <body>
@@ -2240,10 +2253,10 @@ function openEntryEditor(entry,type){
   const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
   const deleteLine=entry?'<button id="editDelete" class="dangerEditorRow">Elimina '+(isIncome?'entrata':'pagamento')+'</button>':'<button id="editDelete" class="hidden"></button>';
   openModal(title,
-    '<div class="field"><label>Nome *</label><input id="editName" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
+    '<div class="field"><label>Nome *</label><input id="editName" enterkeyhint="next" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
-    '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
-    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
+    '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
+    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
     '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione *</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">◉ &nbsp; Una volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
     '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
@@ -2259,8 +2272,11 @@ function openEntryEditor(entry,type){
     '<div class="modalBtns editorSaveOnly"><button id="editCancel" class="btn secondary">Annulla</button><button id="editSave" class="btn">Salva</button></div>'
   );
   $('modal').classList.add('fullEditor');
-  if(isNew)setTimeout(()=>$('editName')&&$('editName').focus(),0);
-  $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;$('editName').focus()});
+  const hideEditorKeyboard=()=>{const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))a.blur()};
+  $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;hideEditorKeyboard()});
+  $('editName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editAmount').focus()}});
+  $('editAmount').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editDateText').focus()}});
+  $('editDateText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();syncDate();hideEditorKeyboard()}});
   let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
   $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
@@ -2316,6 +2332,7 @@ function openEntryEditor(entry,type){
     if(syncDate()&&raw.trim()&&!explicitInline)$('editDateText').value=manualDateText(editorDateSpec);
   });
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
+    hideEditorKeyboard();
     if(b.dataset.kind==='custom'){
       if(!syncDate())return flashModal('Scrivi prima una data valida.');
       openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return;
