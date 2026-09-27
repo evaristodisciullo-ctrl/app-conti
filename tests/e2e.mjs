@@ -162,6 +162,11 @@ async function testRecurrencesAndHistory(browser){
   s=await state(page);e=s.entries.find(x=>x.name==='Tre mesi test');assert.equal(e.recurrence.kind,'count');assert.equal(e.recurrence.count,3);
 
   await page.click('#flowAdd');
+  await page.fill('#editName','Mensile scritto test');await page.fill('#editAmount','23');await page.fill('#editDateText','23 ottobre ogni mese');await page.dispatchEvent('#editDateText','input');await page.locator('#editDateText').blur();
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);await page.click('#editSave');
+  s=await state(page);e=s.entries.find(x=>x.name==='Mensile scritto test');assert.equal(e.recurrence.kind,'monthly');assert.equal(e.day,23);
+
+  await page.click('#flowAdd');
   await page.fill('#editName','Mensile test');await page.fill('#editAmount','10');await chooseDate(page,'10 ottobre 2026');await chooseRec(page,'monthly');await page.click('#editSave');
   s=await state(page);e=s.entries.find(x=>x.name==='Mensile test');
   assert.equal(e.recurrence.kind,'monthly');assert.equal(e.dateSpec.iso,'2026-10-10');
