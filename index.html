@@ -642,7 +642,7 @@ body{color:var(--text)}
   overflow:hidden;
 }
 .flowIncome .flowBanner{background-image:url('assets/income-banner.webp')!important}
-.flowExpense .flowBanner{background-image:url('assets/payment-banner.webp')!important}
+.flowExpense .flowBanner{background-image:none!important}
 .flowBannerVisual{display:none!important}
 .flowBannerAdd{
   position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
@@ -895,7 +895,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <div class="app">
 <section id="landing" class="screen landing landingCanonical hidden">
   <div class="canonicalCanvas landingCanvas">
-    <img class="canonicalImage" src="assets/landing-bg.webp" alt="">
+    <img id="landingCanonicalImage" class="canonicalImage" alt="" style="visibility:hidden">
     <label class="srOnly" for="landingNickname">Come vuoi essere chiamato?</label>
     <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
     <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
@@ -1571,6 +1571,30 @@ function openDateChooser(initialSpec,onConfirm){
   };
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(state));if(state.backup&&state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));queueNativeNotificationSync()}
+let landingImagePromise=null,paymentBannerPromise=null;
+function loadChunkedDataUrl(paths,mime){
+  return Promise.all(paths.map(p=>fetch(p,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Asset '+p);return r.text()})))
+    .then(parts=>'data:'+mime+';base64,'+parts.join('').replace(/\s+/g,''));
+}
+function ensureLandingGraphic(){
+  const img=$('landingCanonicalImage');if(!img)return Promise.resolve();
+  if(img.dataset.loaded==='1')return Promise.resolve();
+  if(!landingImagePromise)landingImagePromise=loadChunkedDataUrl([1,2,3,4,5,6].map(i=>'assets/landing-bg-'+i+'.txt'),'image/webp');
+  return landingImagePromise.then(src=>new Promise((resolve,reject)=>{
+    if(img.dataset.loaded==='1')return resolve();
+    img.onload=()=>{img.dataset.loaded='1';img.style.visibility='visible';resolve()};
+    img.onerror=reject;img.src=src;
+  })).catch(()=>{img.style.visibility='visible'});
+}
+function ensurePaymentBanner(){
+  const banner=document.querySelector('.flowExpense .flowBanner');if(!banner)return Promise.resolve();
+  if(banner.dataset.assetLoaded==='1')return Promise.resolve();
+  if(!paymentBannerPromise)paymentBannerPromise=loadChunkedDataUrl(['assets/payment-banner.txt'],'image/webp');
+  return paymentBannerPromise.then(src=>new Promise((resolve,reject)=>{
+    const im=new Image();im.onload=()=>{banner.style.setProperty('background-image','url("'+src+'")','important');banner.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src;
+  })).catch(()=>{});
+}
+
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
   state.profile.fullName=nick;save();
@@ -1578,7 +1602,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'&&$('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all'};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -1907,6 +1931,7 @@ function renderFlow(){
   $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowAdd').setAttribute('aria-label',isIn?'Aggiungi entrata':'Aggiungi pagamento');
   $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='';
+  if(!isIn)ensurePaymentBanner();
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
