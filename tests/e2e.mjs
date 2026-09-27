@@ -302,6 +302,30 @@ async function testHomeTotalsMatchOpenLists(browser){
   await context.close();
 }
 
+async function testFlowLongMonthDoesNotOverlapAmount(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);
+  await addItem(page,'expense','Abbonamento con nome molto lungo',400,{date:'1 novembre 2026'});
+  const row=page.locator('.flowUnifiedRow').filter({hasText:'Abbonamento con nome molto lungo'}).first();
+  await row.waitFor();
+  const layout=await row.evaluate(el=>{
+    const date=el.querySelector('.flowUnifiedDate');
+    const amount=el.querySelector('.flowUnifiedAmount');
+    const ds=getComputedStyle(date);
+    const dr=date.getBoundingClientRect();
+    const ar=amount.getBoundingClientRect();
+    return {
+      overflowX:ds.overflowX,
+      textOverflow:ds.textOverflow,
+      dateBoxRight:dr.right,
+      amountLeft:ar.left
+    };
+  });
+  assert.equal(layout.overflowX,'hidden');
+  assert.equal(layout.textOverflow,'ellipsis');
+  assert.ok(layout.dateBoxRight<=layout.amountLeft,'La data non deve occupare lo spazio dell’importo');
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -320,6 +344,7 @@ try{
   await testSettingsAppearanceSecurityBackup(browser);
   await testFlowMonthNavigation(browser);
   await testHomeTotalsMatchOpenLists(browser);
+  await testFlowLongMonthDoesNotOverlapAmount(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
