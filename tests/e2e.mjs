@@ -151,9 +151,19 @@ async function testFinanceManualDatesAndMovements(browser){
 
 async function testRecurrencesAndHistory(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
-  await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
+  await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');
+
+  await page.click('#flowAdd');await page.fill('#editName','Una volta test');await page.fill('#editAmount','5');await page.fill('#editDateText','1 ottobre 2026 una volta');await page.dispatchEvent('#editDateText','input');await page.locator('#editDateText').blur();
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);await page.click('#editSave');
+  let s=await state(page),e=s.entries.find(x=>x.name==='Una volta test');assert.equal(e.recurrence.kind,'single');assert.equal(e.dateSpec.iso,'2026-10-01');
+
+  await page.click('#flowAdd');await page.fill('#editName','Tre mesi test');await page.fill('#editAmount','7');await page.fill('#editDateText','11 ottobre 2026 per 3 mesi');await page.dispatchEvent('#editDateText','input');await page.locator('#editDateText').blur();
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);await page.click('#editSave');
+  s=await state(page);e=s.entries.find(x=>x.name==='Tre mesi test');assert.equal(e.recurrence.kind,'count');assert.equal(e.recurrence.count,3);
+
+  await page.click('#flowAdd');
   await page.fill('#editName','Mensile test');await page.fill('#editAmount','10');await chooseDate(page,'10 ottobre 2026');await chooseRec(page,'monthly');await page.click('#editSave');
-  let s=await state(page),e=s.entries.find(x=>x.name==='Mensile test');
+  s=await state(page);e=s.entries.find(x=>x.name==='Mensile test');
   assert.equal(e.recurrence.kind,'monthly');assert.equal(e.dateSpec.iso,'2026-10-10');
 
   await page.click('#flowAdd');await page.fill('#editName','Altro test');await page.fill('#editAmount','12');await chooseDate(page,'11/10/2026');await chooseRec(page,'custom');
