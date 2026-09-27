@@ -1167,11 +1167,22 @@ function openProfileSettings(){
 }
 function openColorSettings(){
   let selected=state.appColor||'Blu';
-  const buttons=Object.keys(APP_COLORS).map(n=>'<button class="colorChoice '+(n===selected?'active':'')+'" data-color="'+n+'">'+n+'</button>').join('');
-  openModal('Aspetto e colore','<div class="hint">Anteprima: tocca un colore. Premi Salva per confermare.</div><div id="colorGrid" class="colorGrid">'+buttons+'</div><div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
-  $('colorGrid').querySelectorAll('.colorChoice').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);$('colorGrid').querySelectorAll('.colorChoice').forEach(x=>x.classList.toggle('active',x===b))});
-  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');closeModal()};
-  $('colorSave').onclick=()=>{state.appColor=selected;save();applyAppColor(selected);closeModal()};
+  const p=state.preferences||{};
+  const palette=[['Blu','#2479d8'],['Verde','#1a8c62'],['Viola','#7856c8'],['Rosa','#d85f91'],['Arancione','#e58a2c']];
+  openModal('Aspetto e colore',
+    '<div class="appearancePreview"><div class="appearancePhone"><div style="text-align:center;font-size:11px;font-weight:900;margin-bottom:8px">In Ordine</div><div class="appearanceBalance">Saldo attuale<br><strong>1.400 €</strong></div><div class="appearanceMini"><div>Entrate<br><strong>2.300 €</strong></div><div>Pagamenti<br><strong>900 €</strong></div></div></div></div>'+
+    '<div class="settingsSubTitle">COLORE DELL’APP</div><div id="settingsColorDots" class="settingsColorDots">'+palette.map(x=>'<button class="settingsColorDot '+(x[0]===selected?'active':'')+'" data-color="'+x[0]+'"><i style="background:'+x[1]+'"></i>'+x[0]+'</button>').join('')+'</div>'+
+    '<div class="settingsSubMenu" style="margin-top:14px">'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">AA</span><span><strong>Dimensione testo</strong><small>Scegli la dimensione del testo nell’app</small></span><select id="prefTextSize" style="width:92px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px"><option value="small">Piccola</option><option value="medium">Media</option><option value="large">Grande</option></select></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">✣</span><span><strong>Riduci animazioni</strong><small>Disattiva le animazioni per una maggiore fluidità</small></span><input id="prefReduceMotion" class="settingToggle" type="checkbox"></label>'+
+      '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">☀</span><span><strong>Tema chiaro</strong><small>Usa sempre il tema chiaro</small></span><input id="prefLightTheme" class="settingToggle" type="checkbox"></label>'+
+    '</div>'+
+    '<div class="modalBtns"><button id="colorCancel" class="btn secondary">Annulla</button><button id="colorSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings');
+  $('prefTextSize').value=p.textSize||'medium';$('prefReduceMotion').checked=!!p.reduceAnimations;$('prefLightTheme').checked=p.lightTheme!==false;
+  document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(x=>x.classList.toggle('active',x===b))});
+  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');applyPreferences();closeModal()};
+  $('colorSave').onclick=()=>{state.appColor=selected;state.preferences.textSize=$('prefTextSize').value;state.preferences.reduceAnimations=$('prefReduceMotion').checked;state.preferences.lightTheme=$('prefLightTheme').checked;save();applyAppColor(selected);applyPreferences();closeModal()};
 }
 function openOtherSettings(){
   openModal('Altre impostazioni',
