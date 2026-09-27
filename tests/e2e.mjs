@@ -239,6 +239,28 @@ async function testSettingsAppearanceSecurityBackup(browser){
   await context.close();
 }
 
+async function testFlowMonthNavigation(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);
+
+  await addItem(page,'expense','Pagamento passato',15,{date:'25 settembre 2026',complete:true});
+  await backHome(page);
+
+  await addItem(page,'expense','Mensile futuro',20,{date:'10 ottobre 2026',rec:'monthly'});
+  assert.match(await page.locator('#flowMonthLabel').innerText(),/Ottobre 2026/);
+  assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
+
+  await page.click('#flowPrevMonth');
+  assert.match(await page.locator('#flowMonthLabel').innerText(),/Settembre 2026/);
+  assert.match(await page.locator('#flowUnifiedList').innerText(),/Pagamento passato/);
+
+  await page.click('#flowNextMonth');
+  await page.click('#flowNextMonth');
+  assert.match(await page.locator('#flowMonthLabel').innerText(),/Novembre 2026/);
+  assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
+
+  await context.close();
+}
+
 async function testHomeTotalsMatchOpenLists(browser){
   const {context,page}=await freshPage(browser);await setup(page,-1999);
 
@@ -288,6 +310,7 @@ try{
   await testRecurrencesAndHistory(browser);
   await testCategoriesAndNotifications(browser);
   await testSettingsAppearanceSecurityBackup(browser);
+  await testFlowMonthNavigation(browser);
   await testHomeTotalsMatchOpenLists(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
