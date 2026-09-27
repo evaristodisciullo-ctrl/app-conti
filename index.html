@@ -1916,13 +1916,21 @@ function openTotalsThrough(ym){
   };
 }
 function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
+function homeOpenTotals(){
+  const income=buildFlowItems('income').filter(x=>!x.done);
+  const expense=buildFlowItems('expense').filter(x=>!x.done);
+  return{
+    toReceive:income.reduce((sum,x)=>sum+Number(x.amount||0),0),
+    toPay:expense.reduce((sum,x)=>sum+Number(x.amount||0),0)
+  };
+}
 function renderHome(){
   const hidden=!!(state.security&&state.security.hideHomeAmounts),mask='•••• €';
   const bal=$('homeBalance');bal.textContent=hidden?mask:money(state.balance);bal.className='homeSummaryValue'+(state.balance<0?' neg':'');
-  const month=ymNow(),open=openTotalsThrough(month);
+  const open=homeOpenTotals();
   $('homeIncomeTotal').textContent=hidden?mask:money(open.toReceive);
   $('homeExpenseTotal').textContent=hidden?mask:money(open.toPay);
-  const p=projectedEnd(month),pe=$('homeProjectionValue');pe.textContent=hidden?mask:money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
+  const p=Number(state.balance||0)+open.toReceive-open.toPay,pe=$('homeProjectionValue');pe.textContent=hidden?mask:money(p);pe.className='homeSummaryValue'+(p<0?' neg':'');
 }
 function movementVisual(h){
   const text=((h.name||'')+' '+(h.category||'')).toLowerCase();
