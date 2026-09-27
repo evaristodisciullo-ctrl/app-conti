@@ -117,6 +117,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
   assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'es. 1000 €');
+  assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editName');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
   await page.click('#editDateText');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
@@ -126,8 +127,10 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
-  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');await page.locator('#editDateText').blur();
-  await chooseRec(page,'single');await page.click('#editSave');
+  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');
+  await page.locator('#editRecChoices button[data-kind="single"]').click();
+  assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editDateText');
+  await page.click('#editSave');
   let row=page.locator('.flowUnifiedRow').filter({hasText:'Test entrata'}).first();
   await row.locator('.flowUnifiedStatus').click();await confirmStatus(page,{amount:55});
   assert.equal((await state(page)).balance,1055);
