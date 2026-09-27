@@ -2267,15 +2267,27 @@ function openEntryEditor(entry,type){
     if(k==='single')$('editRecSummary').textContent=(isIncome?'L’entrata':'Il pagamento')+' verrà registrat'+(isIncome?'a':'o')+' solo nella data indicata.';
   };
   const syncDate=()=>{
-    const spec=parseRequiredDay($('editDateText').value),hasText=$('editDateText').value.trim()!=='';
+    const raw=$('editDateText').value,hasText=raw.trim()!=='';
+    const parsed=parseSetupDate(raw),spec=parsed&&parsed.spec;
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
     if(!spec){editorDateSpec=null;$('editDate').value='';$('editRecurrenceBlock').classList.add('hidden');return false}
     editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
-    let k=$('editRecKind').value;if(!k){k='single';$('editRecKind').value=k}
-    if(k==='custom'){
-      try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}
+
+    const inlineRec=parsed&&parsed.recurrence||null;
+    if(inlineRec){
+      if(inlineRec.kind==='single'||inlineRec.kind==='monthly'){
+        $('editRecKind').value=inlineRec.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);
+      }else if(inlineRec.kind==='count'){
+        $('editRecKind').value='count';delete $('editRecKind').dataset.custom;renderEditRecExtra(inlineRec);
+      }
+    }else{
+      let k=$('editRecKind').value;if(!k){k='single';$('editRecKind').value=k}
+      if(k==='custom'){
+        try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}
+      }
+      renderEditRecExtra(rec||null);
     }
-    renderEditRecExtra(rec||null);paintRec();return true;
+    paintRec();return true;
   };
   $('editDateText').addEventListener('input',syncDate);$('editDateText').addEventListener('change',syncDate);
   $('editDateText').addEventListener('blur',()=>{if(syncDate()&&$('editDateText').value.trim())$('editDateText').value=manualDateText(editorDateSpec)});
