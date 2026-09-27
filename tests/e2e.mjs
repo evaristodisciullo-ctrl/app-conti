@@ -239,6 +239,39 @@ async function testSettingsAppearanceSecurityBackup(browser){
   await context.close();
 }
 
+async function testHomeTotalsMatchOpenLists(browser){
+  const {context,page}=await freshPage(browser);await setup(page,-1999);
+
+  await addItem(page,'income','INPS',720,{date:'1 ottobre 2026'});await backHome(page);
+  await addItem(page,'income','Stipendio',1100,{date:'10 ottobre 2026'});await backHome(page);
+  await addItem(page,'income','Affitto',250,{date:'20 ottobre 2026'});await backHome(page);
+
+  const expenses=[
+    ['Mutuo',400,'1 ottobre 2026'],
+    ['Fratello',50,'1 ottobre 2026'],
+    ['Iliad',10,'4 ottobre 2026'],
+    ['Genitori',200,'10 ottobre 2026'],
+    ['Esame',100,'10 ottobre 2026'],
+    ['730',695,'11 ottobre 2026'],
+    ['Liquido',35,'15 ottobre 2026'],
+    ['Benzina',150,'15 ottobre 2026'],
+    ['Timvision',30,'22 ottobre 2026'],
+    ['Chat gpt',23,'23 ottobre 2026'],
+    ['Fastweb',30,'25 ottobre 2026'],
+    ['Sky',53,'25 ottobre 2026']
+  ];
+  for(const [name,amount,date] of expenses){await addItem(page,'expense',name,amount,{date});await backHome(page)}
+
+  assert.match(await page.locator('#homeIncomeTotal').innerText(),/2\.070,00/);
+  assert.match(await page.locator('#homeExpenseTotal').innerText(),/1\.776,00/);
+  assert.match(await page.locator('#homeProjectionValue').innerText(),/-1\.705,00/);
+
+  await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');
+  const pendingTexts=await page.locator('.flowUnifiedRow .flowUnifiedStatus').allInnerTexts();
+  assert.equal(pendingTexts.filter(x=>/DA PAGARE|SCADUTO/.test(x)).length,12);
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -255,6 +288,7 @@ try{
   await testRecurrencesAndHistory(browser);
   await testCategoriesAndNotifications(browser);
   await testSettingsAppearanceSecurityBackup(browser);
+  await testHomeTotalsMatchOpenLists(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
