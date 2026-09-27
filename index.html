@@ -260,6 +260,9 @@
 .flowUnifiedStatus{border:0;border-radius:15px;padding:9px 7px;font-size:10px;font-weight:950;display:flex;align-items:center;justify-content:center;text-align:center}
 .flowUnifiedStatus.pending{background:#fff2bf;color:#896600}.flowUnifiedStatus.done{background:#dff5e9;color:#087b52}.flowUnifiedStatus.overdue{background:#ffe0e2;color:#b32632}
 .flowEmpty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:22px;text-align:center;color:var(--muted)}
+.flowTotal{margin-top:12px;padding:15px 16px;border:1px solid #d8e8f5;border-radius:15px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#17324a}
+.flowTotal span{font-size:13px;font-weight:850;color:#526575}
+.flowTotal strong{font-size:18px;font-weight:950;white-space:nowrap}
 @media(max-width:410px){.setupSimple .entryGridHead,.setupSimple .entryRow{grid-template-columns:1.15fr .82fr 1fr 28px;gap:5px}.flowUnifiedRow{grid-template-columns:minmax(0,1fr) 94px}.flowUnifiedMain{padding:10px}.flowUnifiedStatus{font-size:9px}}
 
 
@@ -1067,6 +1070,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <button class="flowTab" data-flow-filter="done" id="flowDoneTab">Ricevute</button>
   </div>
   <div id="flowUnifiedList" class="flowUnified"></div>
+  <div id="flowTotal" class="flowTotal"><span>Totale</span><strong>€ 0,00</strong></div>
 </section>
 
 <section id="movements" class="screen hidden">
@@ -2045,6 +2049,9 @@ function renderFlow(){
   let arr=buildFlowItems(currentFlow,flowMonth);
   if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
   if(flowFilter==='done')arr=arr.filter(x=>x.done);
+  const total=arr.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const totalLabel=flowFilter==='pending'?(isIn?'Totale da ricevere':'Totale da pagare'):flowFilter==='done'?(isIn?'Totale ricevute':'Totale pagati'):(isIn?'Totale entrate':'Totale pagamenti');
+  $('flowTotal').innerHTML='<span>'+totalLabel+'</span><strong>'+money(total)+'</strong>';
   const el=$('flowUnifiedList');el.innerHTML='';
   if(!arr.length){const msg=flowFilter==='all'?(isIn?'Nessuna entrata in ':'Nessun pagamento in ')+monthName(flowMonth)+'.':'Nessuna voce da mostrare in '+monthName(flowMonth)+'.';el.innerHTML='<div class="flowEmpty">'+msg+'</div>';return}
   arr.forEach(x=>{
