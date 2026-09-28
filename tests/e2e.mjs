@@ -72,7 +72,7 @@ async function testApprovedOnboarding(browser){
   assert.match(await page.locator('#setup').innerText(),/Inserisci il tuo saldo attuale/);
   await page.fill('#startBalance','1.000,50');await page.click('#startBtn');
   await page.waitForSelector('#setupIncome:not(.hidden)');
-  assert.match(await page.locator('#setupIncome').innerText(),/ENTRATE/);
+  assert.match(await page.locator('#setupIncome').innerText(),/Scrivi le tue entrate/);
   const inc=page.locator('#incomeRows .entryRow').first();
   assert.equal(await inc.locator('.rName').getAttribute('placeholder'),'Es. Stipendio');
   assert.equal(await inc.locator('.rAmount').getAttribute('placeholder'),'Es. 1.400 €');
@@ -80,7 +80,7 @@ async function testApprovedOnboarding(browser){
   await inc.locator('.rName').fill('Stipendio');await inc.locator('.rAmount').fill('1400');await inc.locator('.rDateText').fill('10 del mese');await inc.locator('.rDateText').blur();
   await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
-  assert.match(await page.locator('#setupExpense').innerText(),/PAGAMENTI/);
+  assert.match(await page.locator('#setupExpense').innerText(),/Scrivi i tuoi pagamenti/);
   const exp=page.locator('#expenseRows .entryRow').first();
   assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Es. Mutuo');
   assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'Es. 387,03 €');
