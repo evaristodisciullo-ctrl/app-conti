@@ -37,7 +37,7 @@ async function settings(page){await page.click('#homeSettingsCard');await page.w
 async function chooseDate(page,manual=slash(iso())){
   await page.fill('#editDateText',manual);
   await page.dispatchEvent('#editDateText','input');
-  await page.locator('#editDateText').blur();
+  await page.click('#editDateConfirm');
   await page.waitForSelector('#editRecurrenceBlock:not(.hidden)');
 }
 async function chooseRec(page,kind){await page.locator('#editRecChoices button[data-kind="'+kind+'"]').click()}
@@ -120,14 +120,17 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editName');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
   await page.click('#editDateText');
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  await page.fill('#editDateText','4/10');
+  await page.click('#editDateConfirm');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
-  assert.match(await page.locator('#editRecChoices').innerText(),/Una volta/);
+  assert.match(await page.locator('#editRecChoices').innerText(),/Una sola volta/);
   assert.match(await page.locator('#editRecChoices').innerText(),/Ogni mese/);
   assert.match(await page.locator('#editRecChoices').innerText(),/Altro/);
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
-  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');
+  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');await page.click('#editDateConfirm');
   await page.locator('#editRecChoices button[data-kind="single"]').click();
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editDateText');
   await page.click('#editSave');
@@ -171,7 +174,7 @@ async function testRecurrencesAndHistory(browser){
   s=await state(page);e=s.entries.find(x=>x.name==='Tre mesi test');assert.equal(e.recurrence.kind,'count');assert.equal(e.recurrence.count,3);
 
   await page.click('#flowAdd');
-  await page.fill('#editName','Mensile scritto test');await page.fill('#editAmount','23');await page.fill('#editDateText','23 ottobre');await page.dispatchEvent('#editDateText','input');await page.locator('#editDateText').blur();
+  await page.fill('#editName','Mensile scritto test');await page.fill('#editAmount','23');await page.fill('#editDateText','23 ottobre');await page.dispatchEvent('#editDateText','input');await page.click('#editDateConfirm');
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);
   await page.locator('#editRecChoices button[data-kind="monthly"]').click();
   await page.click('#editSave');
@@ -183,7 +186,7 @@ async function testRecurrencesAndHistory(browser){
   assert.equal(e.recurrence.kind,'monthly');assert.equal(e.dateSpec.iso,'2026-10-10');
 
   await page.click('#flowAdd');await page.fill('#editName','Altro test');await page.fill('#editAmount','12');await chooseDate(page,'11/10/2026');await chooseRec(page,'custom');
-  await page.fill('#editorEvery','2');await page.selectOption('#editorUnit','week');await page.selectOption('#editorEndMode','count');await page.fill('#editorRepeatCount','3');await page.click('#editorRecSave');await page.click('#editSave');
+  await page.fill('#editorRecText','ogni 2 settimane per 3 volte');await page.click('#editorRecSave');await page.click('#editSave');
   s=await state(page);e=s.entries.find(x=>x.name==='Altro test');
   assert.equal(e.recurrence.kind,'custom');assert.equal(e.recurrence.every,2);assert.equal(e.recurrence.unit,'week');assert.equal(e.recurrence.count,3);
   assert.equal(await page.locator('input[type="date"]').count(),0);
@@ -202,8 +205,12 @@ async function testCategoriesAndNotifications(browser){
   await page.click('#modalClose');
 
   await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');
-  await page.check('#notifyIncomeDue');await page.check('#notifyExpenseDue');await page.check('#notifyBefore');await page.fill('#notifyTime','08:30');await page.locator('#notifyTime').dispatchEvent('change');
-  s=await state(page);assert.equal(s.notifications.rules.income.timing,'before');assert.equal(s.notifications.rules.income.time,'08:30');
+  await page.locator('#notifyScopeChoices [data-scope="all"]').click();await page.click('#notificationsConfirm');
+  await page.selectOption('#nIncomeTiming','custom');await page.fill('#nIncomeBeforeDays','5');await page.fill('#nIncomeTime','08:30');
+  await page.selectOption('#nIncomeOverdue','custom');await page.fill('#nIncomeOverdueDays','4');
+  await page.selectOption('#nExpenseTiming','both');await page.selectOption('#nExpenseOverdue','7');
+  await page.click('#nAllSave');
+  s=await state(page);assert.equal(s.notifications.mode,'all');assert.equal(s.notifications.rules.income.timing,'custom');assert.equal(s.notifications.rules.income.beforeDays,5);assert.equal(s.notifications.rules.income.overdueDays,4);assert.equal(s.notifications.rules.expense.timing,'both');
   await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
   await context.close();
 }
@@ -221,9 +228,9 @@ async function testSettingsAppearanceSecurityBackup(browser){
   await page.click('#settingsColor');await page.locator('[data-color="Verde"]').click();await page.selectOption('#prefTextSize','large');await page.check('#prefReduceMotion');await page.click('#colorSave');
   let s=await state(page);assert.equal(s.appColor,'Verde');assert.equal(s.preferences.textSize,'large');assert.equal(s.preferences.reduceAnimations,true);
 
-  await page.click('#settingsSecurity');await page.check('#securityHideAmounts');await page.selectOption('#securityLockMinutes','5');await page.click('#modalClose');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
+  await page.click('#settingsSecurity');await page.check('#securityHideAmounts');await page.click('#modalClose');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   assert.match(await page.locator('#homeBalance').innerText(),/••••/);
-  s=await state(page);assert.equal(s.security.hideHomeAmounts,true);assert.equal(s.security.lockMinutes,5);
+  s=await state(page);assert.equal(s.security.hideHomeAmounts,true);assert.equal(s.security.lockMinutes,10);
 
   await settings(page);await page.click('#settingsBackup');
   const current=await state(page),restored=structuredClone(current);restored.balance=777;restored.security.hideHomeAmounts=false;restored.entries=[];restored.history=[];
