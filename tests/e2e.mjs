@@ -211,6 +211,7 @@ async function testCategoriesAndNotifications(browser){
   await page.selectOption('#nExpenseTiming','both');await page.selectOption('#nExpenseOverdue','7');
   await page.click('#nAllSave');
   s=await state(page);assert.equal(s.notifications.mode,'all');assert.equal(s.notifications.rules.income.timing,'custom');assert.equal(s.notifications.rules.income.beforeDays,5);assert.equal(s.notifications.rules.income.overdueDays,4);assert.equal(s.notifications.rules.expense.timing,'both');
+  if(await page.locator('#modal:not(.hidden)').count())await page.click('#modalClose');
   await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
   await context.close();
 }
