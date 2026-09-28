@@ -1491,16 +1491,16 @@ function enterContiAfterUnlock(){
 }
 function openUnlock(){
   const device=state.security.credentialId?'<button id="unlockDevice" class="btn secondary" style="margin-top:8px">Usa sicurezza del telefono</button><button id="forgotPin" class="optionalNoteBtn" style="text-align:center">Hai dimenticato il PIN?</button>':'';
-  openModal('Sblocca Conti economici','<div class="field"><label>PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="8" autocomplete="off"></div>'+device+'<div class="hint" style="margin-top:10px">La sicurezza del telefono può usare impronta, viso o codice dispositivo, in base alle impostazioni del telefono.</div><div class="modalBtns"><button id="unlockCancel" class="btn secondary">Annulla</button><button id="unlockPinBtn" class="btn">Sblocca</button></div>');
+  openModal('Sblocca Conti economici','<div class="field"><label>PIN</label><input id="unlockPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></div>'+device+'<div class="hint" style="margin-top:10px">La sicurezza del telefono può usare impronta, viso o codice dispositivo, in base alle impostazioni del telefono.</div><div class="modalBtns"><button id="unlockCancel" class="btn secondary">Annulla</button><button id="unlockPinBtn" class="btn">Sblocca</button></div>');
   $('unlockCancel').onclick=closeModal;
   $('unlockPinBtn').onclick=async()=>{const h=await hashPin($('unlockPin').value);if(h!==state.security.pinHash)return flashModal('PIN non corretto.');closeModal();enterContiAfterUnlock()};
   if($('unlockDevice'))$('unlockDevice').onclick=async()=>{if(await authenticateDeviceSecurity()){closeModal();enterContiAfterUnlock()}else flashModal('Autenticazione del telefono non riuscita.')};
   if($('forgotPin'))$('forgotPin').onclick=async()=>{if(await authenticateDeviceSecurity())openResetPinAfterDevice();else flashModal('Non è stato possibile verificare la sicurezza del telefono.')};
 }
 function openResetPinAfterDevice(){
-  openModal('Crea un nuovo PIN','<div class="note">Identità verificata con la sicurezza del telefono. I tuoi dati restano invariati.</div><div class="field"><label>Nuovo PIN</label><input id="recoverPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="recoverPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="recoverCancel" class="btn secondary">Annulla</button><button id="recoverSave" class="btn">Salva nuovo PIN</button></div>');
+  openModal('Crea un nuovo PIN','<div class="note">Identità verificata con la sicurezza del telefono. I tuoi dati restano invariati.</div><div class="field"><label>Nuovo PIN</label><input id="recoverPin1" type="password" inputmode="numeric" maxlength="4"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="recoverPin2" type="password" inputmode="numeric" maxlength="4"></div><div class="modalBtns"><button id="recoverCancel" class="btn secondary">Annulla</button><button id="recoverSave" class="btn">Salva nuovo PIN</button></div>');
   $('recoverCancel').onclick=openUnlock;
-  $('recoverSave').onclick=async()=>{const p1=$('recoverPin1').value,p2=$('recoverPin2').value;if(!/^\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();enterContiAfterUnlock()};
+  $('recoverSave').onclick=async()=>{const p1=$('recoverPin1').value,p2=$('recoverPin2').value;if(!/^\d{4}$/.test(p1))return flashModal('Usa un PIN di 4 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');state.security.pinHash=await hashPin(p1);state.security.lastActivity=Date.now();save();closeModal();enterContiAfterUnlock()};
 }
 function openSecuritySettings(){
   const sec=state.security||(state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10});
@@ -1510,12 +1510,11 @@ function openSecuritySettings(){
       '<button id="securityChangePin" class="settingsSubRow '+(!sec.enabled?'disabledRow':'')+'"><span class="settingsRowIcon iBlue">✎</span><span><strong>Modifica PIN</strong><small>Cambia il tuo PIN di accesso</small></span><span class="settingsRowArrow">›</span></button>'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iGreen">◉</span><span><strong>Face ID / Impronta</strong><small>Usa il riconoscimento biometrico</small></span><input id="securityDeviceToggle" class="settingToggle" type="checkbox" '+(sec.credentialId?'checked':'')+'></label>'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">◉</span><span><strong>Nascondi importi in Home</strong><small>Non mostrare gli importi nella Home</small></span><input id="securityHideAmounts" class="settingToggle" type="checkbox" '+(sec.hideHomeAmounts?'checked':'')+'></label>'+
-      '<label class="settingsSubRow"><span class="settingsRowIcon iOrange">◷</span><span><strong>Blocco automatico</strong><small>Blocca l’app dopo un periodo di inattività</small></span><select id="securityLockMinutes" style="width:92px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"><option value="1">Subito</option><option value="5">5 min</option><option value="10">10 min</option><option value="30">30 min</option></select></label>'+
+      '<div class="settingsSubRow"><span class="settingsRowIcon iOrange">◷</span><span><strong>Blocco automatico</strong><small>Dopo 10 minuti dall’ultimo sblocco</small></span><strong style="font-size:12px;color:#61778b">10 min</strong></div>'+
     '</div>'+
     '<div class="note" style="margin-top:13px">ⓘ &nbsp; La sicurezza protegge l’accesso alla sezione Conti economici e ai dati salvati sul dispositivo.</div>');
-  $('modal').classList.add('fullSettings');$('securityLockMinutes').value=String(sec.lockMinutes||10);
+  $('modal').classList.add('fullSettings');sec.lockMinutes=10;save();
   $('securityHideAmounts').onchange=()=>{sec.hideHomeAmounts=$('securityHideAmounts').checked;save();renderHome()};
-  $('securityLockMinutes').onchange=()=>{sec.lockMinutes=Number($('securityLockMinutes').value)||10;save();scheduleSecurityLock()};
   $('securityDeviceToggle').onchange=async()=>{
     if($('securityDeviceToggle').checked){
       const ok=await registerDeviceSecurity();if(!ok){$('securityDeviceToggle').checked=false;flashModal('Il dispositivo o il browser non ha completato la configurazione.')}
@@ -1524,10 +1523,10 @@ function openSecuritySettings(){
   $('securityChangePin').onclick=()=>{if(sec.enabled)openChangePin()};
   $('securityPinToggle').onchange=async()=>{
     if($('securityPinToggle').checked){
-      openModal('Attiva PIN','<div class="field"><label>Crea PIN</label><input id="securityPin1" type="password" inputmode="numeric" maxlength="8"></div><div class="field"><label>Ripeti PIN</label><input id="securityPin2" type="password" inputmode="numeric" maxlength="8"></div><div class="modalBtns"><button id="securityCancel" class="btn secondary">Annulla</button><button id="securityEnable" class="btn">Attiva</button></div>');
+      openModal('Attiva PIN','<div class="field"><label>Crea PIN</label><input id="securityPin1" type="password" inputmode="numeric" maxlength="4"></div><div class="field"><label>Ripeti PIN</label><input id="securityPin2" type="password" inputmode="numeric" maxlength="4"></div><div class="modalBtns"><button id="securityCancel" class="btn secondary">Annulla</button><button id="securityEnable" class="btn">Attiva</button></div>');
       $('modal').classList.add('fullSettings');
       $('securityCancel').onclick=openSecuritySettings;
-      $('securityEnable').onclick=async()=>{const p1=$('securityPin1').value,p2=$('securityPin2').value;if(!/^\\d{4,8}$/.test(p1))return flashModal('Usa un PIN da 4 a 8 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');sec.enabled=true;sec.pinHash=await hashPin(p1);sec.lastActivity=Date.now();save();openSecuritySettings()};
+      $('securityEnable').onclick=async()=>{const p1=$('securityPin1').value,p2=$('securityPin2').value;if(!/^\\d{4,8}$/.test(p1))return flashModal('Usa un PIN di 4 cifre.');if(p1!==p2)return flashModal('I due PIN non coincidono.');sec.enabled=true;sec.pinHash=await hashPin(p1);sec.lastActivity=Date.now();save();openSecuritySettings()};
     }else{
       openModal('Disattiva PIN','<div class="field"><label>PIN attuale</label><input id="disablePin" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="disableNo" class="btn secondary">Annulla</button><button id="disableYes" class="btn">Disattiva</button></div>');
       $('modal').classList.add('fullSettings');
@@ -1537,10 +1536,10 @@ function openSecuritySettings(){
   };
 }
 function openChangePin(){
-  openModal('Cambia PIN','<div class="field"><label>PIN attuale</label><input id="oldPin" type="password" inputmode="numeric"></div><div class="field"><label>Nuovo PIN</label><input id="newPin1" type="password" inputmode="numeric"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="newPin2" type="password" inputmode="numeric"></div><div class="modalBtns"><button id="changePinNo" class="btn secondary">Annulla</button><button id="changePinYes" class="btn">Salva</button></div>');
+  openModal('Cambia PIN','<div class="field"><label>PIN attuale</label><input id="oldPin" type="password" inputmode="numeric" maxlength="4"></div><div class="field"><label>Nuovo PIN</label><input id="newPin1" type="password" inputmode="numeric" maxlength="4"></div><div class="field"><label>Ripeti nuovo PIN</label><input id="newPin2" type="password" inputmode="numeric" maxlength="4"></div><div class="modalBtns"><button id="changePinNo" class="btn secondary">Annulla</button><button id="changePinYes" class="btn">Salva</button></div>');
   $('modal').classList.add('fullSettings');
   $('changePinNo').onclick=openSecuritySettings;
-  $('changePinYes').onclick=async()=>{if(await hashPin($('oldPin').value)!==state.security.pinHash)return flashModal('PIN attuale non corretto.');const p1=$('newPin1').value,p2=$('newPin2').value;if(!/^\d{4,8}$/.test(p1)||p1!==p2)return flashModal('Controlla il nuovo PIN.');state.security.pinHash=await hashPin(p1);save();openSecuritySettings()};
+  $('changePinYes').onclick=async()=>{if(await hashPin($('oldPin').value)!==state.security.pinHash)return flashModal('PIN attuale non corretto.');const p1=$('newPin1').value,p2=$('newPin2').value;if(!/^\d{4}$/.test(p1)||p1!==p2)return flashModal('Controlla il nuovo PIN.');state.security.pinHash=await hashPin(p1);save();openSecuritySettings()};
 }
 
 
