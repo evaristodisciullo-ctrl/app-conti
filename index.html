@@ -584,6 +584,9 @@ body{color:var(--text)}
 }
 .setupSimple .entryRow input:focus{border-color:#63aef1!important;box-shadow:0 0 0 3px rgba(9,123,245,.10)!important}
 .setupSimple .rowMeta{color:#287fc5!important}
+.setupRecChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:4px}
+.setupRecChoices button{min-height:34px;border:1px solid #cfe0ec;background:#fff;border-radius:10px;color:#244761;font-size:10px;font-weight:850;padding:5px 3px}
+.setupRecChoices button:active{background:#eef7ff;border-color:#168cf0}
 .setupSimple .setupAddRow{color:#087bf5!important;text-align:center!important;padding:13px 4px}
 .setupSimple .setupContinue{background:#087bf5!important;border-radius:999px!important;box-shadow:0 8px 18px rgba(8,123,245,.20)}
 .setupSimple .setupSkip{color:#226bae!important;text-decoration:none}
@@ -1787,21 +1790,42 @@ function appendSetupRow(el,type,draft){
     '<input class="rDateText" type="text" inputmode="text" autocomplete="off" placeholder="'+(type==='income'?'Es. 10 del mese':'Es. 1 del mese')+'" value="'+escAttr(dateText)+'">'+
     '<button class="rDelete" aria-label="Elimina riga">×</button><div class="rowMeta">'+(draft&&draft.recurrence?esc(recurrenceSummary(draft.recurrence)):'')+'</div>';
   el.appendChild(r);
+  const chooseSetupRecurrence=(kind,date)=>{
+    const meta=r.querySelector('.rowMeta');
+    if(kind==='single'){
+      const cfg={kind:'single',month:date.slice(0,7)};r.dataset.recurrence=JSON.stringify(cfg);meta.textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);return;
+    }
+    if(kind==='monthly'){
+      const cfg={kind:'monthly',startMonth:date.slice(0,7)};r.dataset.recurrence=JSON.stringify(cfg);meta.textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);return;
+    }
+    openSetupFreeRecurrence(r,type,date);
+  };
+  const showSetupRecurrenceChoices=(date)=>{
+    const meta=r.querySelector('.rowMeta');
+    meta.innerHTML='<div class="setupRecChoices"><button type="button" data-setup-rec="single">Una sola volta</button><button type="button" data-setup-rec="monthly">Ogni mese</button><button type="button" data-setup-rec="custom">Altro</button></div>';
+    meta.querySelectorAll('[data-setup-rec]').forEach(b=>b.onclick=()=>chooseSetupRecurrence(b.dataset.setupRec,date));
+  };
   const syncDate=()=>{
-    const raw=r.querySelector('.rDateText').value.trim();
+    const raw=r.querySelector('.rDateText').value.trim(),lower=raw.toLowerCase().replace(/\s+/g,' ');
     const parsed=parseSetupDate(raw);
     if(parsed){
       r.dataset.dateSpec=JSON.stringify(parsed.spec);
-      r.dataset.recurrence=JSON.stringify(parsed.recurrence);
       r.querySelector('.rDate').value=parsed.date;
-      r.querySelector('.rowMeta').textContent=recurrenceSummary(parsed.recurrence);
       r.querySelector('.rDateText').removeAttribute('aria-invalid');
+      const explicit=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(lower);
+      if(explicit){
+        r.dataset.recurrence=JSON.stringify(parsed.recurrence);
+        r.querySelector('.rowMeta').textContent=recurrenceSummary(parsed.recurrence);
+      }else{
+        r.dataset.recurrence='';
+        showSetupRecurrenceChoices(parsed.date);
+      }
     }else{
       r.dataset.dateSpec='';
       r.dataset.recurrence='';
       r.querySelector('.rDate').value='';
       r.querySelector('.rowMeta').textContent='';
-      if(raw)r.querySelector('.rDateText').setAttribute('aria-invalid','true');
+      if(raw)r.querySelector('.rDateText').setAttribute('aria-invalid','true');else r.querySelector('.rDateText').removeAttribute('aria-invalid');
     }
     persistSetupDraft(containerIdFor(type),type);
   };
@@ -1850,26 +1874,17 @@ function openSetupRepeatChoice(row,type){
   openModal('Come si ripete?','<div class="guideTopics"><button id="repMonthly" class="guideTopic">Ogni mese</button><button id="repOnce" class="guideTopic">Una volta</button><button id="repOther" class="guideTopic">Altro ›</button></div>');
   $('repMonthly').onclick=()=>{const cfg={kind:'monthly',startMonth:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
   $('repOnce').onclick=()=>{const cfg={kind:'single',month:date.slice(0,7)};row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal()};
-  $('repOther').onclick=()=>openSetupAdvanced(row,type,date);
+  $('repOther').onclick=()=>openSetupFreeRecurrence(row,type,date);
 }
-function openSetupAdvanced(row,type,date){
-  let current=null;try{current=JSON.parse(row.dataset.recurrence||'null')}catch(e){}
-  if(!current||current.kind!=='custom')current={kind:'custom',startDate:date,every:1,unit:'month',endMode:'never'};
-  openModal('Altro',
-    '<div class="field"><label>Si ripete ogni quanto?</label><div class="recInterval"><input id="setupEvery" type="number" min="1" value="'+Number(current.every||1)+'"><select id="setupUnit"><option value="week">settimana/e</option><option value="month">mese/i</option><option value="year">anno/i</option></select></div></div>'+
-    '<div class="field"><label>Quando finisce?</label><select id="setupEndMode"><option value="never">Mai</option><option value="count">Dopo un numero di volte</option><option value="date">Il giorno...</option></select></div>'+
-    '<div id="setupEndExtra"></div>'+
-    '<div class="modalBtns"><button id="setupOtherCancel" class="btn secondary">Annulla</button><button id="setupOtherSave" class="btn">Conferma</button></div>');
-  $('setupUnit').value=current.unit||'month';$('setupEndMode').value=current.endMode||'never';
-  const draw=()=>{const m=$('setupEndMode').value;if(m==='count')$('setupEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="setupRepeatCount" type="number" min="1" value="'+Number(current.count||2)+'"></div>';else if(m==='date')$('setupEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="setupEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(current.endDate||addDaysISO(date,30)))+'"></div>';else $('setupEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>'};
-  draw();$('setupEndMode').onchange=draw;
-  $('setupOtherCancel').onclick=()=>openSetupRepeatChoice(row,type);
-  $('setupOtherSave').onclick=()=>{
-    const endMode=$('setupEndMode').value,cfg={kind:'custom',startDate:date,every:Number($('setupEvery').value),unit:$('setupUnit').value,endMode};
-    if(endMode==='count')cfg.count=Number($('setupRepeatCount').value);
-    if(endMode==='date'){const spec=parseRequiredDay($('setupEndDate').value);if(!spec)return flashModal('Controlla la data finale.');cfg.endDate=spec.iso}
-    if(!validRecurrence(cfg))return flashModal('Completa la ricorrenza.');
-    row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal();
+function openSetupFreeRecurrence(row,type,date){
+  openPickerModal('Come vuoi registrarla?',
+    '<div class="field"><label>Come vuoi registrarla?</label><input id="setupRecText" type="text" inputmode="text" autocomplete="off" placeholder="Scrivi come vuoi…"></div>'+
+    '<div class="modalBtns"><button id="setupRecCancel" class="btn secondary">Annulla</button><button id="setupRecSave" class="btn">Conferma</button></div>');
+  p$('setupRecCancel').onclick=closePickerModal;
+  p$('setupRecSave').onclick=()=>{
+    const cfg=parseCustomRecurrenceText(p$('setupRecText').value,date);
+    if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
+    row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closePickerModal();
   };
 }
 function validRecurrence(c){
