@@ -476,6 +476,20 @@ body{color:var(--text)}
 .canonicalHotspot{position:absolute;border:0;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .landingHotspotConti{left:4.3%;top:48.6%;width:45.4%;height:36.0%}
 .landingHotspotTodo{left:51.2%;top:48.6%;width:44.5%;height:36.0%}
+.landingNotifyGrid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px 28px;
+  background:linear-gradient(180deg,#edf8ff 0%,#e8f6ff 100%);
+}
+.landingNotifyCard{
+  border:1.5px solid #cce6f7;background:rgba(255,255,255,.94);border-radius:18px;
+  min-height:82px;padding:12px 10px;display:grid;grid-template-columns:32px minmax(0,1fr) 16px;
+  gap:8px;align-items:center;text-align:left;color:#092855;box-shadow:0 7px 18px rgba(39,91,135,.08)
+}
+.landingNotifyCard.green{border-color:#c9efdf}
+.landingNotifyBell{font-size:24px;filter:saturate(1.2)}
+.landingNotifyCard strong{display:block;font-size:14px;line-height:1.15}
+.landingNotifyCard small{display:block;color:#71839a;font-size:10.5px;line-height:1.3;margin-top:4px}
+.landingNotifyArrow{font-size:24px;color:#1a82d8}.landingNotifyCard.green .landingNotifyArrow{color:#16966d}
 
 /* 2 — SALDO INIZIALE: replica della schermata approvata */
 #setup.setupCanonical{
@@ -891,6 +905,17 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 #notifications .pageHeader h1{font-size:25px;color:#102a50}
 #notifications .pageBack{font-size:0;color:#287fc5}#notifications .pageBack .arrow{font-size:26px}
 #notifications input[type="radio"]{width:20px;height:20px;accent-color:#087bf5}
+.notifyHero h2{font-size:16px;color:#657b91;margin:9px 0 0;font-weight:700}
+.notifyBell{background:#fff4bf!important;color:#f2b600!important;font-size:34px!important}
+.notifyScopeChoices{display:flex;flex-direction:column;gap:12px;margin:4px 0 18px}
+.notifyScopeOption{width:100%;border:1px solid #dce9f4;background:#fff;border-radius:18px;padding:16px;display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:center;text-align:left;color:#102a50;box-shadow:0 5px 16px rgba(39,90,126,.05)}
+.notifyScopeOption.active{background:#eef7ff;border-color:#8ec8f4;box-shadow:0 0 0 2px rgba(8,123,245,.08)}
+.notifyScopeOption strong{display:block;font-size:17px}.notifyScopeOption small{display:block;color:#74879a;font-size:12px;margin-top:3px;line-height:1.3}
+.notifyRadio{width:22px;height:22px;border:2px solid #9eb1c5;border-radius:50%;display:block;position:relative}
+.notifyScopeOption.active .notifyRadio{border-color:#087bf5}.notifyScopeOption.active .notifyRadio:after{content:"";position:absolute;inset:4px;border-radius:50%;background:#087bf5}
+.notifyConfirm{width:100%;margin-top:4px}
+.notifyRuleExtra{margin-top:7px}
+.notifyRuleExtra input{width:100%;height:44px;border:1px solid #dbe8f2;border-radius:10px;padding:0 12px;background:#fff}
 .disabledRow{opacity:.5;pointer-events:none}
 
 /* Tastiera mobile: mantiene il form utilizzabile e Salva sempre raggiungibile */
@@ -936,6 +961,18 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
     <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
     <button id="landingTodo" class="canonicalHotspot landingHotspotTodo" aria-label="Cose da fare"></button>
+  </div>
+  <div class="landingNotifyGrid">
+    <button id="landingNotifyConti" class="landingNotifyCard blue" aria-label="Attiva notifiche Conti economici">
+      <span class="landingNotifyBell">🔔</span>
+      <span><strong>Attiva notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingNotifyArrow">›</span>
+    </button>
+    <button id="landingNotifyTodo" class="landingNotifyCard green" aria-label="Attiva notifiche Cose da fare">
+      <span class="landingNotifyBell">🔔</span>
+      <span><strong>Attiva notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingNotifyArrow">›</span>
+    </button>
   </div>
 </section>
 
@@ -986,28 +1023,18 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
-  <div class="settingsSubTitle">ENTRATE</div>
-  <div class="settingsSubMenu">
-    <label class="settingsSubRow"><span class="settingsRowIcon iGreen">●</span><span><strong>Entrate da ricevere</strong><small>Avvisa quando ci sono entrate previste</small></span><input id="notifyIncomeDue" class="settingToggle" type="checkbox"></label>
-    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria entrate</strong><small>Promemoria per le entrate pianificate</small></span><input id="notifyIncomeReminder" class="settingToggle" type="checkbox"></label>
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche Conti economici</h1></div></div>
+  <div class="notifyHero">
+    <div class="notifyBell" aria-hidden="true">🔔</div>
+    <h2>Scegli cosa vuoi che l’app ti ricordi.</h2>
   </div>
-  <div class="settingsSubTitle">PAGAMENTI</div>
-  <div class="settingsSubMenu">
-    <label class="settingsSubRow"><span class="settingsRowIcon iRed">●</span><span><strong>Pagamenti da pagare</strong><small>Avvisa quando ci sono pagamenti in scadenza</small></span><input id="notifyExpenseDue" class="settingToggle" type="checkbox"></label>
-    <label class="settingsSubRow"><span class="settingsRowIcon iOrange">!</span><span><strong>Pagamenti scaduti</strong><small>Avvisa per i pagamenti scaduti</small></span><input id="notifyExpenseOverdue" class="settingToggle" type="checkbox"></label>
-    <label class="settingsSubRow"><span class="settingsRowIcon iPurple">▣</span><span><strong>Promemoria pagamenti</strong><small>Promemoria per i pagamenti pianificati</small></span><input id="notifyExpenseReminder" class="settingToggle" type="checkbox"></label>
+  <div id="notifyScopeChoices" class="notifyScopeChoices">
+    <button type="button" class="notifyScopeOption" data-scope="all"><span class="notifyRadio"></span><span><strong>Tutto</strong><small>Entrate e pagamenti</small></span></button>
+    <button type="button" class="notifyScopeOption" data-scope="income"><span class="notifyRadio"></span><span><strong>Solo Entrate</strong><small>Solo le tue entrate ricorrenti e occasionali</small></span></button>
+    <button type="button" class="notifyScopeOption" data-scope="expense"><span class="notifyRadio"></span><span><strong>Solo Pagamenti</strong><small>Solo i tuoi pagamenti</small></span></button>
+    <button type="button" class="notifyScopeOption" data-scope="custom"><span class="notifyRadio"></span><span><strong>Scegli le singole voci</strong><small>Attiva le notifiche solo per alcune voci</small></span></button>
   </div>
-  <div class="settingsSubTitle">QUANDO AVVISARE</div>
-  <div class="settingsSubMenu">
-    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>1 giorno prima</strong><small>Ricevi una notifica il giorno prima</small></span><input id="notifyBefore" type="radio" name="notifyWhen" value="before"></label>
-    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Il giorno stesso</strong><small>Ricevi una notifica il giorno della scadenza</small></span><input id="notifySame" type="radio" name="notifyWhen" value="same"></label>
-  </div>
-  <div class="settingsSubTitle">ORARIO PREFERITO</div>
-  <div class="settingsSubMenu">
-    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">◷</span><span><strong>Orario preferito</strong><small>Scegli l’orario per le notifiche</small></span><input id="notifyTime" type="time" style="width:88px;min-height:38px;border:1px solid #dbe8f2;border-radius:9px;background:#fff"></label>
-    <label class="settingsSubRow"><span class="settingsRowIcon iBlue">♫</span><span><strong>Suono notifiche</strong><small>Riproduci un suono per le notifiche</small></span><input id="notifySound" class="settingToggle" type="checkbox"></label>
-  </div>
+  <button id="notificationsConfirm" class="btn notifyConfirm">Conferma</button>
 </section>
 
 <section id="home" class="screen hidden">
