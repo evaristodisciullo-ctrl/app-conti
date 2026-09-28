@@ -1,10 +1,10 @@
-const CACHE='in-ordine-v6';
+const CACHE='in-ordine-v7';
 const CORE=[
   './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
   './assets/landing-bg-1.txt','./assets/landing-bg-2.txt','./assets/landing-bg-3.txt',
   './assets/landing-bg-4.txt','./assets/landing-bg-5.txt','./assets/landing-bg-6.txt',
   './assets/saldo-bg.webp','./assets/home-income-art.webp','./assets/home-payment-art.webp',
-  './assets/income-banner.webp','./assets/payment-banner.txt','./assets/wallet-art.webp'
+  './assets/income-banner-approved.txt','./assets/payment-banner.txt','./assets/wallet-art.webp'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
