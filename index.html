@@ -1205,6 +1205,7 @@ const addDaysISO=(iso,n)=>{const p=iso.split('-').map(Number),d=new Date(p[0],p[
 const daysBetween=(a,b)=>{const pa=a.split('-').map(Number),pb=b.split('-').map(Number);
 const addRecurrenceDate=(startIso,step,unit,every=1)=>{
   const p=startIso.split('-').map(Number),n=step*Math.max(1,Number(every)||1);
+  if(unit==='day')return addDaysISO(startIso,n);
   if(unit==='week')return addDaysISO(startIso,n*7);
   if(unit==='year'){const y=p[0]+n,m=p[1],last=new Date(y,m,0).getDate(),d=Math.min(p[2],last);return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
   const d=new Date(p[0],p[1]-1+n,1),y=d.getFullYear(),m=d.getMonth()+1,last=new Date(y,m,0).getDate(),day=Math.min(p[2],last);
@@ -1632,6 +1633,11 @@ function parseSetupDate(raw){
   };
   const parseDayMonth=(value)=>{
     const v=String(value||'').trim().toLowerCase().replace(/\s+/g,' ');
+    const numericNoYear=v.match(/^(\d{1,2})[\/\-.](\d{1,2})$/);
+    if(numericNoYear){
+      const day=Number(numericNoYear[1]),month=Number(numericNoYear[2]);
+      if(month>=1&&month<=12){const date=buildUpcomingDate(day,month,null);if(date)return date}
+    }
     for(let i=0;i<IT_MONTHS.length;i++){
       const name=IT_MONTHS[i],short=name.slice(0,3);
       const m=v.match(new RegExp('^(\\d{1,2})\\s+(?:'+name+'|'+short+')(?:\\s+(\\d{4}))?$','i'));
@@ -1853,7 +1859,7 @@ function validRecurrence(c){
   if(c.kind==='monthly')return !!c.startMonth;
   if(c.kind==='single')return !!c.month;
   if(c.kind==='custom'){
-    if(!c.startDate||Number(c.every)<1||!['week','month','year'].includes(c.unit)||!['never','count','date'].includes(c.endMode))return false;
+    if(!c.startDate||Number(c.every)<1||!['day','week','month','year'].includes(c.unit)||!['never','count','date'].includes(c.endMode))return false;
     if(c.endMode==='count')return Number(c.count)>=1;
     if(c.endMode==='date')return !!c.endDate&&c.endDate>=c.startDate;
     return true;
@@ -1868,7 +1874,7 @@ function recurrenceSummary(c){
   if(c.kind==='monthly')return 'Ogni mese';
   if(c.kind==='single')return 'Una volta';
   if(c.kind==='custom'){
-    const n=Number(c.every)||1,unit=c.unit==='week'?(n===1?'settimana':'settimane'):c.unit==='year'?(n===1?'anno':'anni'):(n===1?'mese':'mesi');
+    const n=Number(c.every)||1,unit=c.unit==='day'?(n===1?'giorno':'giorni'):c.unit==='week'?(n===1?'settimana':'settimane'):c.unit==='year'?(n===1?'anno':'anni'):(n===1?'mese':'mesi');
     let end='Mai';if(c.endMode==='count')end='Dopo '+c.count+' volte';if(c.endMode==='date')end='Fino al '+fmtMovementDate(c.endDate);
     return 'Ogni '+n+' '+unit+' · '+end;
   }
@@ -2332,7 +2338,7 @@ function openEntryEditor(entry,type){
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
   const noteValue=entry&&entry.note?entry.note:'';
-  const globalAll=state.notifications&&state.notifications.mode==='all';
+  const globalAll=state.notifications&&(state.notifications.mode==='all'||state.notifications.mode===type);
   const notifyDefault=entry?entry.notify===true:globalAll;
   const rule=entry&&entry.notifyRule||null;
   const generalRule=(state.notifications&&state.notifications.rules&&state.notifications.rules[type])||{timing:'same',time:'09:00',overdue:'none'};
@@ -2345,8 +2351,8 @@ function openEntryEditor(entry,type){
     '<div class="field"><label>Nome *</label><input id="editName" enterkeyhint="next" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
     '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
-    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
-    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Ripetizione *</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">◉ &nbsp; Una volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
+    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div><button id="editDateConfirm" type="button" class="btn secondary" style="margin-top:9px;width:100%">Conferma data</button></div>'+
+    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Come vuoi registrarla?</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">○ &nbsp; Una sola volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
     '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
       '<div class="field"><label>Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
@@ -2365,34 +2371,30 @@ function openEntryEditor(entry,type){
   $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;hideEditorKeyboard()});
   $('editName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editAmount').focus()}});
   $('editAmount').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editDateText').focus()}});
-  $('editDateText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();syncDate();hideEditorKeyboard()}});
+  $('editDateText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(syncDate(true))hideEditorKeyboard()}});
   let editorDateSpec=dateValue?{kind:'day',iso:dateValue}:null;
-  $('editRecKind').value=rec?rec.kind:(dateValue?'single':'');
+  $('editRecKind').value=rec?rec.kind:'';
   if(rec&&['count','until','selected'].includes(rec.kind))$('editRecKind').value=rec.kind;
   if(rec&&rec.kind==='custom')$('editRecKind').dataset.custom=JSON.stringify(rec);
   renderEditRecExtra(rec||null);
   const paintRec=()=>{
-    const k=$('editRecKind').value;
-    document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===(['monthly','single'].includes(k)?k:'custom')));
+    const k=$('editRecKind').value,selectedKind=['monthly','single'].includes(k)?k:(k?'custom':'');
+    document.querySelectorAll('#editRecChoices button').forEach(b=>b.classList.toggle('active',b.dataset.kind===selectedKind));
     document.querySelectorAll('#editRecChoices button').forEach(b=>{
-      const base=b.dataset.kind===(['monthly','single'].includes(k)?k:'custom');
-      b.innerHTML=(base?'◉':'○')+' &nbsp; '+(b.dataset.kind==='single'?'Una volta':b.dataset.kind==='monthly'?'Ogni mese':'Altro');
+      const base=b.dataset.kind===selectedKind;
+      b.innerHTML=(base?'◉':'○')+' &nbsp; '+(b.dataset.kind==='single'?'Una sola volta':b.dataset.kind==='monthly'?'Ogni mese':'Altro');
     });
     const summary=recurrenceSummary(collectEditRecurrence()||{});
     $('editRecSummary').textContent=summary||(k==='single'?'L’entrata verrà registrata solo nella data indicata.':'');
     if(k==='single')$('editRecSummary').textContent=(isIncome?'L’entrata':'Il pagamento')+' verrà registrat'+(isIncome?'a':'o')+' solo nella data indicata.';
   };
-  const revealRecurrence=()=>{
-    $('editRecurrenceBlock').classList.remove('hidden');
-    if(!$('editRecKind').value)$('editRecKind').value='single';
-    paintRec();
-  };
-  const syncDate=()=>{
+  const revealRecurrence=()=>{$('editRecurrenceBlock').classList.remove('hidden');paintRec()};
+  const syncDate=(reveal=false)=>{
     const raw=$('editDateText').value,hasText=raw.trim()!=='';
     const parsed=parseSetupDate(raw),spec=parsed&&parsed.spec;
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
     if(!spec){editorDateSpec=null;$('editDate').value='';return false}
-    editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
+    editorDateSpec=spec;$('editDate').value=spec.iso;if(reveal)$('editRecurrenceBlock').classList.remove('hidden');
 
     const rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
     const explicitInline=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(rawLower);
@@ -2404,21 +2406,21 @@ function openEntryEditor(entry,type){
         $('editRecKind').value='count';delete $('editRecKind').dataset.custom;renderEditRecExtra(inlineRec);
       }
     }else{
-      let k=$('editRecKind').value;if(!k){k='single';$('editRecKind').value=k}
+      const k=$('editRecKind').value;
       if(k==='custom'){
         try{const cfg=JSON.parse($('editRecKind').dataset.custom||'null');if(cfg){cfg.startDate=spec.iso;if(cfg.endMode==='date'&&cfg.endDate<spec.iso)cfg.endDate=spec.iso;$('editRecKind').dataset.custom=JSON.stringify(cfg)}}catch(e){}
       }
       renderEditRecExtra(rec||null);
     }
+    if(inlineRec)$('editRecurrenceBlock').classList.remove('hidden');
     paintRec();return true;
   };
-  $('editDateText').addEventListener('focus',revealRecurrence);
-  $('editDateText').addEventListener('click',revealRecurrence);
-  $('editDateText').addEventListener('input',syncDate);$('editDateText').addEventListener('change',syncDate);
+  $('editDateConfirm').onclick=()=>{if(syncDate(true)){revealRecurrence();hideEditorKeyboard()}};
+  $('editDateText').addEventListener('input',()=>syncDate(false));$('editDateText').addEventListener('change',()=>syncDate(false));
   $('editDateText').addEventListener('blur',()=>{
     const raw=$('editDateText').value,rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
     const explicitInline=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(rawLower);
-    if(syncDate()&&raw.trim()&&!explicitInline)$('editDateText').value=manualDateText(editorDateSpec);
+    if(syncDate(false)&&raw.trim()&&!explicitInline)$('editDateText').value=manualDateText(editorDateSpec);
   });
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
     hideEditorKeyboard();
@@ -2442,7 +2444,7 @@ function openEntryEditor(entry,type){
   if($('editDelete'))$('editDelete').onclick=()=>{if(entry)confirmDeleteEntry(entry)};
   $('editCancel').onclick=closeModal;
   $('editSave').onclick=()=>{
-    const dateOk=syncDate(),name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence(),day=date?Number(date.slice(8,10)):0;
+    const dateOk=syncDate(false),name=$('editName').value.trim(),amount=cleanAmount($('editAmount').value),date=$('editDate').value,r=collectEditRecurrence(),day=date?Number(date.slice(8,10)):0;
     let category=$('editCategory').value;
     if(category==='__new__'){
       category=$('newCategory').value.trim();if(!category)return flashModal('Scrivi il nome della nuova categoria.');
@@ -2485,28 +2487,42 @@ function confirmDeleteEntry(entry){
     save();closeModal();renderFlow();
   };
 }
+function parseCustomRecurrenceText(text,startDate){
+  const s=String(text||'').toLowerCase().replace(/\s+/g,' ').trim();
+  if(!s)return null;
+  let every=1,unit='month',endMode='never',count=null,endDate=null;
+  let m=s.match(/ogni\s+(\d+)\s+(giorn[oi]|settiman[ae]|mes[ei]|ann[oi])/);
+  if(m){every=Number(m[1]);unit=/giorn/.test(m[2])?'day':/settiman/.test(m[2])?'week':/ann/.test(m[2])?'year':'month'}
+  else if(/ogni\s+giorno/.test(s))unit='day';
+  else if(/ogni\s+settimana/.test(s))unit='week';
+  else if(/ogni\s+anno/.test(s))unit='year';
+  else if(/ogni\s+mese/.test(s))unit='month';
+  else if((m=s.match(/per\s+(\d+)\s+mesi?/))){unit='month';every=1;endMode='count';count=Number(m[1])}
+  else if((m=s.match(/per\s+(\d+)\s+volte?/))){unit='month';every=1;endMode='count';count=Number(m[1])}
+  else return null;
+  const cm=s.match(/(?:per|dopo)\s+(\d+)\s+volte?/);if(cm){endMode='count';count=Number(cm[1])}
+  const until=s.match(/fino\s+(?:al|a)\s+(.+)$/);
+  if(until){
+    const p=parseSetupDate(until[1]);if(!p||!p.spec||p.spec.kind!=='day')return null;
+    endMode='date';endDate=p.spec.iso;
+  }
+  const out={kind:'custom',startDate,every,unit,endMode,freeText:String(text||'').trim()};
+  if(endMode==='count')out.count=count;
+  if(endMode==='date')out.endDate=endDate;
+  return validRecurrence(out)?out:null;
+}
 function openEditorAdvancedRecurrence(date,current,onSave){
-  if(!date){flashModal('Scrivi prima la data.');return}
-  let cfg=current&&current.kind==='custom'?current:{kind:'custom',startDate:date,every:1,unit:'month',endMode:'never'};
-  openPickerModal('Altro',
-    '<div class="field"><label>Si ripete ogni quanto?</label><div class="recInterval"><input id="editorEvery" type="number" min="1" value="'+Number(cfg.every||1)+'"><select id="editorUnit"><option value="week">settimana/e</option><option value="month">mese/i</option><option value="year">anno/i</option></select></div></div>'+
-    '<div class="field"><label>Quando finisce?</label><select id="editorEndMode"><option value="never">Mai</option><option value="count">Dopo un numero di volte</option><option value="date">Il giorno...</option></select></div>'+
-    '<div id="editorEndExtra"></div>'+
+  if(!date){flashModal('Scrivi prima una data valida.');return}
+  const existing=current&&current.freeText?current.freeText:'';
+  openPickerModal('Come vuoi registrarla?',
+    '<div class="field"><label>Come vuoi registrarla?</label><input id="editorRecText" type="text" inputmode="text" autocomplete="off" placeholder="Scrivi come vuoi…" value="'+escAttr(existing)+'"></div>'+
+    '<div class="hint">Scrivi la regola con parole tue, per esempio “ogni 2 settimane”, “ogni 3 mesi” oppure “ogni mese fino al 10 luglio 2027”.</div>'+
     '<div class="modalBtns"><button id="editorRecCancel" class="btn secondary">Annulla</button><button id="editorRecSave" class="btn">Conferma</button></div>');
-  p$('editorUnit').value=cfg.unit||'month';p$('editorEndMode').value=cfg.endMode||'never';
-  const draw=()=>{
-    const m=p$('editorEndMode').value;
-    if(m==='count')p$('editorEndExtra').innerHTML='<div class="field"><label>Numero di volte</label><input id="editorRepeatCount" type="number" min="1" value="'+Number(cfg.count||2)+'"></div>';
-    else if(m==='date')p$('editorEndExtra').innerHTML='<div class="field"><label>Data fine</label><input id="editorEndDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 10/10/2026" value="'+escAttr(manualDateText(cfg.endDate||addDaysISO(date,30)))+'"></div>';
-    else p$('editorEndExtra').innerHTML='<div class="hint">La ricorrenza continuerà finché non la modifichi o la termini.</div>';
-  };
-  draw();p$('editorEndMode').onchange=draw;p$('editorRecCancel').onclick=closePickerModal;
+  p$('editorRecCancel').onclick=closePickerModal;
   p$('editorRecSave').onclick=()=>{
-    const endMode=p$('editorEndMode').value,n={kind:'custom',startDate:date,every:Number(p$('editorEvery').value),unit:p$('editorUnit').value,endMode};
-    if(endMode==='count')n.count=Number(p$('editorRepeatCount').value);
-    if(endMode==='date'){const spec=parseRequiredDay(p$('editorEndDate').value);if(!spec)return;n.endDate=spec.iso}
-    if(!validRecurrence(n))return;
-    closePickerModal();onSave(n);
+    const cfg=parseCustomRecurrenceText(p$('editorRecText').value,date);
+    if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
+    closePickerModal();onSave(cfg);
   };
 }
 function renderEditRecExtra(rec){
