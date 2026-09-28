@@ -458,13 +458,14 @@ body{color:var(--text)}
 }
 .canonicalCanvas{position:relative;width:100%;max-width:560px;margin:0 auto;overflow:hidden;background:#edf8ff}
 .canonicalImage{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
-.landingCanvas .canonicalImage{clip-path:inset(0 0 .75% 0);margin-bottom:-.75%}
+.landingCanvas .canonicalImage{display:block;width:100%;height:auto}
+.landingCanvas{overflow:visible}
 .landingCanonicalName{
   position:absolute;
-  left:17.3%;
-  top:40.9%;
-  width:72.7%;
-  height:6.0%;
+  left:9.1%;
+  top:44.3%;
+  width:81.8%;
+  height:5.8%;
   border:0!important;
   outline:0!important;
   border-radius:10px;
@@ -477,18 +478,13 @@ body{color:var(--text)}
 }
 .landingCanonicalName::placeholder{color:#77899d;opacity:1}
 .canonicalHotspot{position:absolute;border:0;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.landingStartLabel{
-  position:absolute;left:4%;right:4%;top:45.2%;z-index:3;text-align:center;
-  color:#092855;font-size:clamp(15px,4vw,21px);font-weight:950;line-height:1.1;
-  text-shadow:0 1px 0 rgba(255,255,255,.95);
-}
-.landingHotspotConti{left:4.3%;top:48.6%;width:45.4%;height:36.0%}
-.landingHotspotTodo{left:51.2%;top:48.6%;width:44.5%;height:36.0%}
+.landingHotspotConti{left:5.2%;top:57.4%;width:43.5%;height:36.8%}
+.landingHotspotTodo{left:51.5%;top:57.4%;width:43.5%;height:36.8%}
 .landingNotifyGrid{
   position:relative;z-index:5;
   display:grid;grid-template-columns:1fr 1fr;gap:12px;
-  margin:-150px 18px 0;padding:0 0 28px;
-  background:transparent;
+  margin:10px 18px 0;padding:0 0 28px;
+  background:linear-gradient(180deg,#edf8ff 0%,#e8f6ff 100%);
 }
 .landingNotifyCard{
   border:1.5px solid #cce6f7;background:rgba(255,255,255,.94);border-radius:18px;
@@ -659,7 +655,9 @@ body{color:var(--text)}
 .flowPage .pageBack .arrow{font-size:26px}
 .flowBanner{
   position:relative;
-  min-height:102px;
+  width:100%;
+  aspect-ratio:3.92/1;
+  min-height:0;
   padding:0!important;
   border:0!important;
   border-radius:16px!important;
@@ -670,17 +668,11 @@ body{color:var(--text)}
   box-shadow:0 7px 18px rgba(42,100,142,.06);
   overflow:hidden;
 }
-.flowIncome .flowBanner{background-image:url('assets/home-income-art.webp?fixed=20260928b')!important;background-position:center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
-.flowExpense .flowBanner{background-image:none!important}
+.flowIncome .flowBanner,.flowExpense .flowBanner{background-image:none!important}
 .flowBannerVisual{display:none!important}
 .flowBannerAdd{
   position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
   opacity:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
-}
-.flowIncome .flowBannerAdd{
-  inset:auto!important;left:14px!important;top:31px!important;width:auto!important;min-width:182px!important;height:43px!important;
-  opacity:1!important;border:0!important;border-radius:12px!important;background:#087bf5!important;color:#fff!important;
-  padding:0 16px!important;font-size:14px!important;font-weight:900!important;box-shadow:0 6px 14px rgba(8,123,245,.22)!important;
 }
 .flowBannerAdd:before{display:none!important}
 .flowCurrentBalance{display:flex;align-items:center;justify-content:space-between;margin:10px 0 8px;padding:12px 14px;background:#fff;border:1px solid #dbe8f2;border-radius:14px;box-shadow:0 5px 14px rgba(39,91,135,.05)}
@@ -980,7 +972,6 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <img id="landingCanonicalImage" class="canonicalImage" alt="" style="visibility:hidden">
     <label class="srOnly" for="landingNickname">Come vuoi essere chiamato?</label>
     <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
-    <div class="landingStartLabel">Scegli da dove iniziare.</div>
     <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
     <button id="landingTodo" class="canonicalHotspot landingHotspotTodo" aria-label="Cose da fare"></button>
   </div>
@@ -1729,7 +1720,7 @@ function openDateChooser(initialSpec,onConfirm){
   };
 }
 function save(){localStorage.setItem(KEY,JSON.stringify(state));if(state.backup&&state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));queueNativeNotificationSync()}
-let landingImagePromise=null,paymentBannerPromise=null;
+let landingImagePromise=null,incomeBannerPromise=null,paymentBannerPromise=null;
 function loadChunkedDataUrl(paths,mime){
   return Promise.all(paths.map(p=>fetch(p,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Asset '+p);return r.text()})))
     .then(parts=>'data:'+mime+';base64,'+parts.join('').replace(/\s+/g,''));
@@ -1743,6 +1734,14 @@ function ensureLandingGraphic(){
     img.onload=()=>{img.dataset.loaded='1';img.style.visibility='visible';resolve()};
     img.onerror=reject;img.src=src;
   })).catch(()=>{img.style.visibility='visible'});
+}
+function ensureIncomeBanner(){
+  const banner=document.querySelector('.flowIncome .flowBanner');if(!banner)return Promise.resolve();
+  if(banner.dataset.assetLoaded==='1')return Promise.resolve();
+  if(!incomeBannerPromise)incomeBannerPromise=loadChunkedDataUrl(['assets/income-banner-approved.txt'],'image/webp');
+  return incomeBannerPromise.then(src=>new Promise((resolve,reject)=>{
+    const im=new Image();im.onload=()=>{banner.style.setProperty('background-image','url("'+src+'")','important');banner.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src;
+  })).catch(()=>{});
 }
 function ensurePaymentBanner(){
   const banner=document.querySelector('.flowExpense .flowBanner');if(!banner)return Promise.resolve();
@@ -2127,11 +2126,12 @@ function renderFlow(){
   const isIn=currentFlow==='income';
   $('flow').classList.toggle('flowIncome',isIn);
   $('flow').classList.toggle('flowExpense',!isIn);
+  const bannerEl=$('flow').querySelector('.flowBanner');if(bannerEl){bannerEl.dataset.assetLoaded='';bannerEl.style.removeProperty('background-image')}
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
   $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowAdd').setAttribute('aria-label',isIn?'Aggiungi entrata':'Aggiungi pagamento');
   $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='';
-  if(!isIn)ensurePaymentBanner();
+  if(isIn)ensureIncomeBanner();else ensurePaymentBanner();
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
