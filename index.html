@@ -1884,14 +1884,14 @@ function openSetupRepeatChoice(row,type){
   $('repOther').onclick=()=>openSetupFreeRecurrence(row,type,date);
 }
 function openSetupFreeRecurrence(row,type,date){
-  openPickerModal('Come vuoi registrarla?',
+  openModal('Come vuoi registrarla?',
     '<div class="field"><label>Come vuoi registrarla?</label><input id="setupRecText" type="text" inputmode="text" autocomplete="off" placeholder="Scrivi come vuoi…"></div>'+
     '<div class="modalBtns"><button id="setupRecCancel" class="btn secondary">Annulla</button><button id="setupRecSave" class="btn">Conferma</button></div>');
-  p$('setupRecCancel').onclick=closePickerModal;
-  p$('setupRecSave').onclick=()=>{
-    const cfg=parseCustomRecurrenceText(p$('setupRecText').value,date);
-    if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
-    row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closePickerModal();
+  $('setupRecCancel').onclick=closeModal;
+  $('setupRecSave').onclick=()=>{
+    const cfg=parseCustomRecurrenceText($('setupRecText').value,date);
+    if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
+    row.dataset.recurrence=JSON.stringify(cfg);row.querySelector('.rowMeta').textContent=recurrenceSummary(cfg);persistSetupDraft(containerIdFor(type),type);closeModal();
   };
 }
 function validRecurrence(c){
