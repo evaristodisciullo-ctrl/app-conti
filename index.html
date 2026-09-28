@@ -2358,11 +2358,7 @@ function openEntryEditor(entry,type){
       '<div class="field"><label>Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
       '<div class="field"><label>Nota</label><textarea id="editNote" placeholder="Scrivi una nota (facoltativo)">'+esc(noteValue)+'</textarea></div>'+
       '<div class="field"><label>Notifica</label><select id="editNotifyMode"><option value="off">Nessuna</option><option value="general">Usa impostazioni generali</option><option value="custom">Personalizzata</option></select><input id="editNotify" type="checkbox" class="hidden"></div>'+
-      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+
-        '<div class="field"><label>Quando avvisare</label><select id="entryNotifyTiming"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
-        '<div class="field"><label>Orario</label><input id="entryNotifyTime" type="time" value="'+escAttr(effectiveRule.time||'09:00')+'"></div>'+
-        '<div class="field"><label>Dopo la scadenza</label><select id="entryNotifyOverdue"><option value="none">Nessun promemoria</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div>'+
-      '</div>'+deleteLine+
+      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+notificationRuleFields('entryNotify',effectiveRule,'')+'</div>'+deleteLine+
     '</div></details>'+
     '<div class="modalBtns editorSaveOnly"><button id="editCancel" class="btn secondary">Annulla</button><button id="editSave" class="btn">Salva</button></div>'
   );
@@ -2437,7 +2433,7 @@ function openEntryEditor(entry,type){
     $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};$('editStateDone').onclick=()=>{desiredDone=true;paintState()};paintState();
   }
   $('editCategory').onchange=()=>{$('newCategoryWrap').classList.toggle('hidden',$('editCategory').value!=='__new__')};
-  $('entryNotifyTiming').value=effectiveRule.timing||'same';$('entryNotifyOverdue').value=effectiveRule.overdue||'none';
+  bindNotificationRuleFields('entryNotify',effectiveRule);
   const initialNotifyMode=notifyDefault?(rule?'custom':'general'):'off';
   $('editNotifyMode').value=initialNotifyMode;$('editNotify').checked=notifyDefault;$('entryNotifyRules').classList.toggle('hidden',initialNotifyMode!=='custom');
   $('editNotifyMode').onchange=()=>{const m=$('editNotifyMode').value;$('editNotify').checked=m!=='off';$('entryNotifyRules').classList.toggle('hidden',m!=='custom')};
@@ -2451,7 +2447,7 @@ function openEntryEditor(entry,type){
       if(!state.customCategories[type].includes(category)&&!(DEFAULT_CATEGORIES[type]||[]).includes(category))state.customCategories[type].push(category);
     }
     const nm=$('editNotifyMode').value,notify=nm!=='off';
-    let notifyRule=nm==='custom'?{timing:$('entryNotifyTiming').value,time:$('entryNotifyTime').value||'09:00',overdue:$('entryNotifyOverdue').value}:null;
+    let notifyRule=nm==='custom'?readNotificationRuleFields('entryNotify'):null;
     const note=$('editNote').value.trim();
     if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
@@ -2552,27 +2548,19 @@ function collectEditRecurrence(){
   if(k==='selected')return{kind:k,months:Array.from(document.querySelectorAll('#erMonths input:checked')).map(x=>x.value)};
   return null;
 }
-function renderNotifications(){
-  const n=state.notifications||{},ui=n.ui||(n.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true});
-  const set=(id,v)=>{const el=$(id);if(el)el.checked=!!v};
-  set('notifyIncomeDue',ui.incomeDue);set('notifyIncomeReminder',ui.incomeReminder);
-  set('notifyExpenseDue',ui.expenseDue);set('notifyExpenseOverdue',ui.expenseOverdue);set('notifyExpenseReminder',ui.expenseReminder);set('notifySound',ui.sound);
-  const timing=(n.rules&&n.rules.income&&n.rules.income.timing)||'before';
-  if($('notifyBefore'))$('notifyBefore').checked=timing==='before'||timing==='both';
-  if($('notifySame'))$('notifySame').checked=timing==='same';
-  if($('notifyTime'))$('notifyTime').value=(n.rules&&n.rules.income&&n.rules.income.time)||'09:00';
+let notificationDraftScope=null;
+function currentNotificationScope(){
+  const m=state.notifications&&state.notifications.mode;
+  return ['all','income','expense','custom'].includes(m)?m:'all';
 }
-function syncNotificationSettings(){
-  const n=state.notifications,ui=n.ui||(n.ui={});
-  ui.incomeDue=$('notifyIncomeDue').checked;ui.incomeReminder=$('notifyIncomeReminder').checked;
-  ui.expenseDue=$('notifyExpenseDue').checked;ui.expenseOverdue=$('notifyExpenseOverdue').checked;ui.expenseReminder=$('notifyExpenseReminder').checked;ui.sound=$('notifySound').checked;
-  const timing=$('notifyBefore').checked?'before':'same',time=$('notifyTime').value||'09:00';
-  n.rules.income={timing,time,overdue:'none'};
-  n.rules.expense={timing,time,overdue:ui.expenseOverdue?'daily':'none'};
-  const incomeOn=ui.incomeDue||ui.incomeReminder,expenseOn=ui.expenseDue||ui.expenseOverdue||ui.expenseReminder;
-  state.entries.forEach(e=>{e.notify=e.type==='income'?incomeOn:expenseOn;e.notifyRule=null});
-  n.selected=state.entries.filter(e=>e.notify).map(e=>e.id);n.mode=(incomeOn||expenseOn)?'custom':'off';
-  save();if(n.mode!=='off')requestNotificationPermission();
+function renderNotifications(){
+  if(!notificationDraftScope)notificationDraftScope=currentNotificationScope();
+  document.querySelectorAll('#notifyScopeChoices [data-scope]').forEach(b=>b.classList.toggle('active',b.dataset.scope===notificationDraftScope));
+}
+async function confirmNotificationScope(){
+  const scope=notificationDraftScope||'all';
+  if(scope==='custom'){openCustomNotifications();return}
+  openGlobalNotificationRules(scope);
 }
 function nativeBridge(){return window.InOrdineNative&&window.InOrdineNative.isNative?window.InOrdineNative:null}
 function notificationIdFromKey(key){
@@ -2598,8 +2586,9 @@ function buildNativeNotificationSchedule(){
     const rule=entry.notifyRule||(state.notifications.rules&&state.notifications.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
     if(rule.timing==='same'||rule.timing==='both')add(x.date,rule.time,x,'oggi');
     if(rule.timing==='before'||rule.timing==='both')add(addDaysISO(x.date,-1),rule.time,x,'domani');
+    if(rule.timing==='custom')add(addDaysISO(x.date,-Math.max(1,Number(rule.beforeDays)||1)),rule.time,x,'prima');
     if(rule.overdue!=='none'){
-      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;
       if(every){
         const start=addDaysISO(x.date,every);
         for(let d=start,count=0;count<60&&daysBetween(todayISO(),d)<=120;d=addDaysISO(d,every),count++)add(d,rule.time,x,'scaduto');
@@ -2608,7 +2597,7 @@ function buildNativeNotificationSchedule(){
   }
   return [...groups.entries()].sort((a,b)=>a[1].at-b[1].at).slice(0,60).map(([key,g])=>{
     const rows=g.rows.slice(0,5),body=rows.map(r=>r.x.name+' · '+money(r.x.amount)+(r.label==='scaduto'?' · scaduto':'')).join('\n')+(g.rows.length>5?'\n+'+(g.rows.length-5)+' altre':'');
-    return {id:notificationIdFromKey(key),title:g.rows.length===1?'Promemoria Conti economici':g.rows.length+' promemoria Conti economici',body,at:g.at.toISOString(),extra:{screen:'conti'}};
+    return {id:notificationIdFromKey(key),title:g.rows.length===1?'Promemoria Conti economici':g.rows.length+' promemoria Conti economici',body,at:g.at.toISOString(),extra:{screen:'notification-group',items:g.rows.map(r=>({entryId:r.x.entryId,occurrenceKey:r.x.occurrenceKey||r.x.month,type:r.x.type,name:r.x.name,amount:r.x.amount,date:r.x.date,label:r.label}))}};
   });
 }
 let nativeSyncTimer=null;
@@ -2627,20 +2616,47 @@ async function requestNotificationPermission(){
   try{return await Notification.requestPermission()}catch(e){return 'unsupported'}
 }
 function notificationRuleFields(prefix,rule,title){
-  return '<div class="card" style="padding:14px;margin:10px 0"><div class="settingsTitle">'+title+'</div>'+
-    '<div class="field"><label>Quando avvisare</label><select id="'+prefix+'Timing"><option value="same">Il giorno stesso</option><option value="before">Il giorno prima</option><option value="both">Il giorno prima + stesso giorno</option></select></div>'+
-    '<div class="field"><label>Orario</label><input id="'+prefix+'Time" type="time" value="'+escAttr(rule.time||'09:00')+'"></div>'+
-    '<div class="field"><label>Promemoria dopo la scadenza</label><select id="'+prefix+'Overdue"><option value="none">Nessuno</option><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option></select></div></div>';
+  const r=rule||{timing:'same',time:'09:00',overdue:'none'};
+  return '<div class="card" style="padding:14px;margin:10px 0">'+(title?'<div class="settingsTitle">'+title+'</div>':'')+
+    '<div class="field"><label>Quando avvisare</label><select id="'+prefix+'Timing"><option value="before">Il giorno prima</option><option value="same">Lo stesso giorno</option><option value="both">Il giorno prima + lo stesso giorno</option><option value="custom">Altro</option></select></div>'+
+    '<div id="'+prefix+'BeforeWrap" class="notifyRuleExtra hidden"><label>Quanti giorni prima?</label><input id="'+prefix+'BeforeDays" type="number" min="1" inputmode="numeric" value="'+Math.max(1,Number(r.beforeDays)||5)+'" placeholder="Es. 5"></div>'+
+    '<div class="field"><label>Orario</label><input id="'+prefix+'Time" type="time" value="'+escAttr(r.time||'09:00')+'"></div>'+
+    '<div class="field"><label>Dopo la scadenza</label><select id="'+prefix+'Overdue"><option value="daily">Ogni giorno</option><option value="2">Ogni 2 giorni</option><option value="3">Ogni 3 giorni</option><option value="7">Ogni settimana</option><option value="none">Nessun altro promemoria</option><option value="custom">Altro</option></select></div>'+
+    '<div id="'+prefix+'OverdueWrap" class="notifyRuleExtra hidden"><label>Ogni quanti giorni?</label><input id="'+prefix+'OverdueDays" type="number" min="1" inputmode="numeric" value="'+Math.max(1,Number(r.overdueDays)||5)+'" placeholder="Es. 5"></div></div>';
 }
-function openGlobalNotificationRules(){
+function bindNotificationRuleFields(prefix,rule){
+  const r=rule||{timing:'same',time:'09:00',overdue:'none'};
+  const timing=$(prefix+'Timing'),overdue=$(prefix+'Overdue');
+  if(!timing||!overdue)return;
+  timing.value=r.timing||'same';overdue.value=r.overdue||'none';
+  if($(prefix+'Time'))$(prefix+'Time').value=r.time||'09:00';
+  if($(prefix+'BeforeDays'))$(prefix+'BeforeDays').value=Math.max(1,Number(r.beforeDays)||5);
+  if($(prefix+'OverdueDays'))$(prefix+'OverdueDays').value=Math.max(1,Number(r.overdueDays)||5);
+  const draw=()=>{$(prefix+'BeforeWrap').classList.toggle('hidden',timing.value!=='custom');$(prefix+'OverdueWrap').classList.toggle('hidden',overdue.value!=='custom')};
+  timing.onchange=draw;overdue.onchange=draw;draw();
+}
+function readNotificationRuleFields(prefix){
+  const timing=$(prefix+'Timing').value,overdue=$(prefix+'Overdue').value;
+  const out={timing,time:$(prefix+'Time').value||'09:00',overdue};
+  if(timing==='custom')out.beforeDays=Math.max(1,Number($(prefix+'BeforeDays').value)||1);
+  if(overdue==='custom')out.overdueDays=Math.max(1,Number($(prefix+'OverdueDays').value)||1);
+  return out;
+}
+function openGlobalNotificationRules(scope='all'){
   const ir=state.notifications.rules.income||{timing:'same',time:'09:00',overdue:'none'},er=state.notifications.rules.expense||{timing:'same',time:'09:00',overdue:'none'};
-  openModal('Attiva tutte le notifiche','<div class="hint">Imposta subito due regole separate. I Budget non sono inclusi.</div>'+notificationRuleFields('nIncome',ir,'Entrate')+notificationRuleFields('nExpense',er,'Pagamenti')+'<div class="modalBtns"><button id="nAllCancel" class="btn secondary">Annulla</button><button id="nAllSave" class="btn">Attiva tutte</button></div>');
-  $('nIncomeTiming').value=ir.timing||'same';$('nIncomeOverdue').value=ir.overdue||'none';$('nExpenseTiming').value=er.timing||'same';$('nExpenseOverdue').value=er.overdue||'none';
+  const title=scope==='all'?'Attiva tutte le notifiche':scope==='income'?'Notifiche Entrate':'Notifiche Pagamenti';
+  let body='<div class="hint">Scegli quando vuoi ricevere i promemoria.</div>';
+  if(scope==='all'||scope==='income')body+=notificationRuleFields('nIncome',ir,'Entrate');
+  if(scope==='all'||scope==='expense')body+=notificationRuleFields('nExpense',er,'Pagamenti');
+  body+='<div class="modalBtns"><button id="nAllCancel" class="btn secondary">Annulla</button><button id="nAllSave" class="btn">Conferma</button></div>';
+  openModal(title,body);
+  if(scope==='all'||scope==='income')bindNotificationRuleFields('nIncome',ir);
+  if(scope==='all'||scope==='expense')bindNotificationRuleFields('nExpense',er);
   $('nAllCancel').onclick=closeModal;
   $('nAllSave').onclick=async()=>{
-    state.notifications.rules.income={timing:$('nIncomeTiming').value,time:$('nIncomeTime').value||'09:00',overdue:$('nIncomeOverdue').value};
-    state.notifications.rules.expense={timing:$('nExpenseTiming').value,time:$('nExpenseTime').value||'09:00',overdue:$('nExpenseOverdue').value};
-    closeModal();await finishNotificationChoice('all',[]);
+    if(scope==='all'||scope==='income')state.notifications.rules.income=readNotificationRuleFields('nIncome');
+    if(scope==='all'||scope==='expense')state.notifications.rules.expense=readNotificationRuleFields('nExpense');
+    closeModal();await finishNotificationChoice(scope,[]);
   };
 }
 async function finishNotificationChoice(mode,selected){
@@ -2649,15 +2665,16 @@ async function finishNotificationChoice(mode,selected){
   if(mode==='all'){
     state.entries.forEach(e=>{e.notify=true;e.notifyRule=null});
     state.notifications.selected=state.entries.map(e=>e.id);
-  }
-  if(mode==='custom')state.entries.forEach(e=>e.notify=state.notifications.selected.includes(e.id));
-  if(mode==='off'){
+  }else if(mode==='income'||mode==='expense'){
+    state.entries.forEach(e=>{e.notify=e.type===mode;if(e.type===mode)e.notifyRule=null});
+    state.notifications.selected=state.entries.filter(e=>e.notify).map(e=>e.id);
+  }else if(mode==='custom'){
+    state.entries.forEach(e=>e.notify=state.notifications.selected.includes(e.id));
+  }else if(mode==='off'){
     state.entries.forEach(e=>{e.notify=false;e.notifyRule=null});
-    state.notifications.selected=[];
-    state.notifications.sent={};
-    state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};
+    state.notifications.selected=[];state.notifications.sent={};
   }
-  save();
+  save();notificationDraftScope=mode==='off'?'all':mode;
   if(mode!=='off'){
     const permission=await requestNotificationPermission();
     if(permission==='denied')openModal('Notifiche bloccate','<div class="note">Le notifiche sono disattivate sul telefono/browser. Puoi abilitarle dalle impostazioni del dispositivo o del browser.</div>');
@@ -2691,8 +2708,9 @@ async function checkDueNotifications(){
     const reasons=[];
     if((rule.timing==='same'||rule.timing==='both')&&diff===0)reasons.push('oggi');
     if((rule.timing==='before'||rule.timing==='both')&&diff===-1)reasons.push('domani');
+    if(rule.timing==='custom'&&diff===-Math.max(1,Number(rule.beforeDays)||1))reasons.push('prima');
     if(diff>0&&rule.overdue!=='none'){
-      const every=rule.overdue==='daily'?1:Number(rule.overdue)||0;
+      const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;
       if(every&&diff%every===0)reasons.push('scaduta');
     }
     for(const reason of reasons){
@@ -3024,6 +3042,8 @@ $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
 $('landingConti').onclick=openContiFromLanding;
 $('landingNickname').addEventListener('change',()=>{state.profile.fullName=$('landingNickname').value.trim();save()});
 $('landingTodo').onclick=()=>openModal('Cose da fare','<div class="note">Questa sezione verrà sviluppata dopo Conti economici.</div>');
+$('landingNotifyConti').onclick=()=>{notificationReturn='landing';notificationDraftScope=currentNotificationScope();show('notifications')};
+$('landingNotifyTodo').onclick=()=>openModal('Notifiche Cose da fare','<div class="note">L’accesso è già predisposto. Le notifiche di Cose da fare saranno attive quando svilupperemo quella sezione.</div>');
 $('balanceBack').onclick=()=>show('landing');
 $('homeBackLanding').onclick=()=>show('landing');
 
@@ -3049,7 +3069,7 @@ $('settingsExpense').onclick=()=>openEntrySettingsHub('expense');
 $('settingsMovements').onclick=()=>{movementReturn='settings';show('movements')};
 $('settingsCategories').onclick=openCategoryHub;
 $('settingsBudget').onclick=()=>{budgetMonth=ymNow();budgetReturn='settings';show('budget')};
-$('settingsNotifications').onclick=()=>{notificationReturn='settings';show('notifications')};
+$('settingsNotifications').onclick=()=>{notificationReturn='settings';notificationDraftScope=currentNotificationScope();show('notifications')};
 $('settingsProfile').onclick=openProfileSettings;
 $('settingsColor').onclick=openColorSettings;
 $('settingsGuide').onclick=openGuide;
@@ -3059,7 +3079,8 @@ $('settingsOther').onclick=openOtherSettings;
 $('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
 $('notificationsBack').onclick=()=>show(notificationReturn);
-['notifyIncomeDue','notifyIncomeReminder','notifyExpenseDue','notifyExpenseOverdue','notifyExpenseReminder','notifyBefore','notifySame','notifyTime','notifySound'].forEach(id=>{const el=$(id);if(el)el.onchange=syncNotificationSettings});
+document.querySelectorAll('#notifyScopeChoices [data-scope]').forEach(b=>b.onclick=()=>{notificationDraftScope=b.dataset.scope;renderNotifications()});
+$('notificationsConfirm').onclick=confirmNotificationScope;
 $('movementsBack').onclick=()=>show(movementReturn);
 $('summaryBack').onclick=()=>show('home');
 $('budgetBack').onclick=()=>show(budgetReturn);
