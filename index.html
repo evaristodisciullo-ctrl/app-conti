@@ -562,11 +562,10 @@ body{color:var(--text)}
 }
 .setupSimple .sub{color:#4f6c84!important;font-size:14px!important;margin-top:6px}
 .setupWalletArt,.setupPiggyArt{position:absolute!important;right:0;top:3px;width:142px!important;height:105px!important;flex:none!important}
-.setupWalletArt{background:url('assets/wallet-art.webp') center top/142px auto no-repeat;border-radius:18px;overflow:hidden}
-.setupWalletArt>*{display:none!important}
-.setupPiggyArt{transform:scale(1.1);transform-origin:top right}
-.setupPiggyArt .pigBody{background:#f39aaa;box-shadow:inset -8px -5px 0 rgba(201,85,111,.10)}
-.setupPiggyArt .pigCrack{color:#b83857}
+.setupWalletArt,.setupPiggyArt{border-radius:18px;overflow:hidden;background-position:center!important;background-repeat:no-repeat!important;background-size:cover!important}
+.setupWalletArt{background-image:url('assets/home-income-art.webp')!important}
+.setupPiggyArt{background-image:url('assets/home-payment-art.webp')!important;transform:none!important}
+.setupWalletArt>*,.setupPiggyArt>*{display:none!important}
 .setupSimple .onboardCard{
   position:relative;z-index:1;
   margin-top:0!important;
@@ -661,14 +660,23 @@ body{color:var(--text)}
   box-shadow:0 7px 18px rgba(42,100,142,.06);
   overflow:hidden;
 }
-.flowIncome .flowBanner{background-image:url('assets/income-banner.webp')!important}
+.flowIncome .flowBanner{background-image:url('assets/home-income-art.webp')!important;background-position:right center!important;background-size:cover!important}
 .flowExpense .flowBanner{background-image:none!important}
 .flowBannerVisual{display:none!important}
 .flowBannerAdd{
   position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
   opacity:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
 }
+.flowIncome .flowBannerAdd{
+  inset:auto!important;left:14px!important;top:31px!important;width:auto!important;min-width:182px!important;height:43px!important;
+  opacity:1!important;border:0!important;border-radius:12px!important;background:#087bf5!important;color:#fff!important;
+  padding:0 16px!important;font-size:14px!important;font-weight:900!important;box-shadow:0 6px 14px rgba(8,123,245,.22)!important;
+}
 .flowBannerAdd:before{display:none!important}
+.flowCurrentBalance{display:flex;align-items:center;justify-content:space-between;margin:10px 0 8px;padding:12px 14px;background:#fff;border:1px solid #dbe8f2;border-radius:14px;box-shadow:0 5px 14px rgba(39,91,135,.05)}
+.flowCurrentBalance span{font-size:12px;font-weight:900;color:#385775}
+.flowCurrentBalance strong{font-size:18px;color:#102a50}
+.flowCurrentBalance strong.neg{color:#cb3744}
 .flowTabs{gap:5px;margin:10px 0}
 .flowTab{
   padding:8px 5px;border-radius:999px;border-color:#dbe8f2;color:#718497;background:#fff;font-size:11px
@@ -921,15 +929,15 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .notifyRuleExtra input{width:100%;height:44px;border:1px solid #dbe8f2;border-radius:10px;padding:0 12px;background:#fff}
 .disabledRow{opacity:.5;pointer-events:none}
 
-/* Tastiera mobile: mantiene il form utilizzabile e Salva sempre raggiungibile */
+/* Tastiera mobile: il pulsante Salva resta in fondo al modulo e non copre i campi */
 .modal.fullEditor .modalCard{height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overscroll-behavior:contain}
 .modal.fullEditor #modalBody{min-height:calc(100dvh - 70px)}
 .modal.fullEditor .editorSaveOnly{
-  position:sticky!important;bottom:0!important;z-index:12!important;
-  margin:14px -14px -102px!important;
-  padding:10px 14px calc(10px + env(safe-area-inset-bottom))!important;
-  background:linear-gradient(180deg,rgba(234,246,255,.15),#eaf6ff 24%,#eaf6ff 100%)!important;
-  box-shadow:0 -8px 18px rgba(33,87,124,.06)
+  position:static!important;z-index:auto!important;
+  margin:22px 0 4px!important;
+  padding:0!important;
+  background:transparent!important;
+  box-shadow:none!important
 }
 @supports(height:100dvh){.modal.fullEditor .modalCard{height:100dvh!important}}
 
@@ -994,7 +1002,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <section id="setupIncome" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="incomeSetupBack">‹ Indietro</button><div class="setupWalletArt" aria-hidden="true"><span class="walletBody"></span><span class="walletBill b1">€</span><span class="walletBill b2">€</span><span class="walletCoin">€</span></div></div>
-    <div class="onboardTitle">ENTRATE</div>
+    <div class="onboardTitle">Conti economici</div>
     <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
@@ -1011,7 +1019,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <section id="setupExpense" class="screen setupSimple hidden">
   <div class="onboardHeader">
     <div class="onboardTop"><button class="backText" id="expenseSetupBack">‹ Indietro</button><div class="setupPiggyArt" aria-hidden="true"><span class="pigBody"></span><span class="pigEar"></span><span class="pigLeg l1"></span><span class="pigLeg l2"></span><span class="pigCrack">⌁</span><span class="pigCoin c1">€</span><span class="pigCoin c2">€</span></div></div>
-    <div class="onboardTitle">PAGAMENTI</div>
+    <div class="onboardTitle">Conti economici</div>
     <div class="sub" style="color:rgba(255,255,255,.9)">Saldo, entrate, uscite. Sempre con te.</div>
   </div>
   <div class="onboardCard">
@@ -1110,6 +1118,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <button id="flowAdd" class="flowBannerAdd">+ Aggiungi entrata</button>
     <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
+  <div class="flowCurrentBalance"><span>SALDO ATTUALE</span><strong id="flowCurrentBalanceValue">€ 0,00</strong></div>
   <div class="flowMonthBar" aria-label="Seleziona mese">
     <button id="flowPrevMonth" class="flowMonthArrow" aria-label="Mese precedente">‹</button>
     <div id="flowMonthLabel" class="flowMonthLabel"></div>
@@ -1590,9 +1599,9 @@ function parseFlexibleDate(raw){
     const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]),dt=new Date(y,mo-1,d);
     if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
   }
-  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2}|\d{4})$/);
   if(m){
-    const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]),dt=new Date(y,mo-1,d);
+    const d=Number(m[1]),mo=Number(m[2]),rawY=Number(m[3]),y=m[3].length===2?2000+rawY:rawY,dt=new Date(y,mo-1,d);
     if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
   }
   for(let i=0;i<IT_MONTHS.length;i++){
@@ -1736,6 +1745,7 @@ function ensurePaymentBanner(){
 function openContiFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
   state.profile.fullName=nick;save();
+  if(revisitSetupMode){hydrateFirstSetup();show('setup');return}
   if(state.security&&state.security.enabled&&!securityFresh()){openUnlock();return}
   enterContiAfterUnlock();
 }
@@ -2103,6 +2113,7 @@ function renderFlow(){
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
   $('flowMonthLabel').textContent=monthName(flowMonth);
+  const fb=$('flowCurrentBalanceValue');if(fb){fb.textContent=money(state.balance);fb.classList.toggle('neg',Number(state.balance)<0)}
   let arr=buildFlowItems(currentFlow,flowMonth);
   if(flowFilter==='pending')arr=arr.filter(x=>!x.done);
   if(flowFilter==='done')arr=arr.filter(x=>x.done);
@@ -2359,7 +2370,7 @@ function openEntryEditor(entry,type){
     '<div class="field"><label>Nome *</label><input id="editName" enterkeyhint="next" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
     suggestions+
     '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
-    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div><button id="editDateConfirm" type="button" class="btn secondary" style="margin-top:9px;width:100%">Conferma data</button></div>'+
+    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
     '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Come vuoi registrarla?</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">○ &nbsp; Una sola volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
     '<div id="editRecExtra"></div>'+stateField+
     '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
@@ -2398,7 +2409,7 @@ function openEntryEditor(entry,type){
     const parsed=parseSetupDate(raw),spec=parsed&&parsed.spec;
     $('editDateError').classList.toggle('hidden',!hasText||!!spec);
     if(!spec){editorDateSpec=null;$('editDate').value='';return false}
-    editorDateSpec=spec;$('editDate').value=spec.iso;if(reveal)$('editRecurrenceBlock').classList.remove('hidden');
+    editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
 
     const rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
     const explicitInline=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(rawLower);
@@ -2419,8 +2430,7 @@ function openEntryEditor(entry,type){
     if(inlineRec)$('editRecurrenceBlock').classList.remove('hidden');
     paintRec();return true;
   };
-  $('editDateConfirm').onclick=()=>{if(syncDate(true)){revealRecurrence();hideEditorKeyboard()}};
-  $('editDateText').addEventListener('input',()=>syncDate(false));$('editDateText').addEventListener('change',()=>syncDate(false));
+  $('editDateText').addEventListener('input',()=>syncDate(true));$('editDateText').addEventListener('change',()=>syncDate(true));
   $('editDateText').addEventListener('blur',()=>{
     const raw=$('editDateText').value,rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
     const explicitInline=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(rawLower);
@@ -3077,8 +3087,8 @@ $('addExpenseSetup').onclick=()=>appendSetupRow($('expenseRows'),'expense',null)
 $('skipIncomeSetup').onclick=()=>{if(!revisitSetupMode){state.setupDrafts.income=[];state.entries=state.entries.filter(e=>e.type!=='income')}state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')};
 $('skipExpenseSetup').onclick=()=>{if(!revisitSetupMode){state.setupDrafts.expense=[];state.entries=state.entries.filter(e=>e.type!=='expense')}state.setupDone=true;state.setupStage='done';save();revisitSetupMode=false;show('home')};
 document.querySelectorAll('.flowTab').forEach(b=>b.onclick=()=>{flowFilter=b.dataset.flowFilter;renderFlow()});
-$('incomeSetupBack').onclick=()=>{persistSetupDraft('incomeRows','income');hydrateFirstSetup();show('setup')};
-$('expenseSetupBack').onclick=()=>{persistSetupDraft('expenseRows','expense');createRows('incomeRows','income');show('setupIncome')};
+$('incomeSetupBack').onclick=()=>{persistSetupDraft('incomeRows','income');show('landing')};
+$('expenseSetupBack').onclick=()=>{persistSetupDraft('expenseRows','expense');show('landing')};
 $('saveIncomeSetup').onclick=()=>{try{commitSetupRows('incomeRows','income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
 $('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');state.setupDone=true;state.setupStage='done';save();revisitSetupMode=false;show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
 
@@ -3101,7 +3111,7 @@ $('settingsSecurity').onclick=openSecuritySettings;
 $('settingsOther').onclick=openOtherSettings;
 $('settingsInfo').onclick=openAppInformation;
 $('homeSettingsCard').onclick=()=>show('settings');
-$('homeRestartSetup').onclick=()=>{revisitSetupMode=true;hydrateFirstSetup();show('setup')};
+$('homeRestartSetup').onclick=()=>{revisitSetupMode=true;show('landing')};
 $('homeDeleteAll').onclick=()=>{openModal('Cancella tutto','<div class="note"><strong>Sei sicuro di voler cancellare tutti i dati inseriti?</strong><br><br>Questa operazione non può essere annullata.</div><div class="modalBtns"><button id="homeDeleteNo" class="btn secondary">Annulla</button><button id="homeDeleteYes" class="btn deleteBtn">Sì, cancella tutto</button></div>');$('homeDeleteNo').onclick=closeModal;$('homeDeleteYes').onclick=()=>{localStorage.removeItem(KEY);state=blank();save();closeModal();if($('startBalance'))$('startBalance').value='';if($('landingNickname'))$('landingNickname').value='';revisitSetupMode=false;show('landing')}};
 $('notificationsBack').onclick=()=>show(notificationReturn);
 document.querySelectorAll('#notifyScopeChoices [data-scope]').forEach(b=>b.onclick=()=>{notificationDraftScope=b.dataset.scope;renderNotifications()});
