@@ -88,6 +88,10 @@ async function testApprovedOnboarding(browser){
   await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
+  await page.click('#homeRestartSetup');await page.waitForSelector('#landing:not(.hidden)');
+  assert.equal(await page.locator('#landingNickname').inputValue(),'Mario');
+  await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');
+  assert.equal(await page.locator('#startBalance').inputValue(),'1000.5');
   await context.close();
 }
 
@@ -112,6 +116,7 @@ async function testSetupNaturalRecurrences(browser){
 async function testFinanceManualDatesAndMovements(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
   await page.click('#homeIncome');await page.waitForSelector('#flow:not(.hidden)');
+  assert.match(await page.locator('#flowCurrentBalanceValue').innerText(),/1\.000,00/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata in/);
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
@@ -129,6 +134,9 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
+  await page.fill('#editDateText','15/10/26');await page.dispatchEvent('#editDateText','input');
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);
+  assert.equal(await page.locator('#editDate').inputValue(),'2026-10-15');
   await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');
   await page.locator('#editRecChoices button[data-kind="single"]').click();
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editDateText');
