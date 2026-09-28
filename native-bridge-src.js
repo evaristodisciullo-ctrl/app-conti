@@ -93,6 +93,13 @@ async function authenticateDevice(){
   }
 }
 
+try{
+  LocalNotifications.addListener('localNotificationActionPerformed',event=>{
+    const extra=event&&event.notification&&event.notification.extra||{};
+    window.dispatchEvent(new CustomEvent('inordine-notification-open',{detail:extra}));
+  });
+}catch(e){}
+
 window.InOrdineNative={
   isNative:Capacitor.isNativePlatform(),
   requestNotifications,
