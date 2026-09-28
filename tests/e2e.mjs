@@ -109,7 +109,9 @@ async function testSetupNaturalRecurrences(browser){
   await r1.locator('[data-setup-rec="single"]').click();
   await page.click('#addExpenseSetup');
   const r2=page.locator('#expenseRows .entryRow').nth(1);
-  await r2.locator('.rName').fill('730');await r2.locator('.rAmount').fill('700');await r2.locator('.rDateText').fill('11 ottobre per 3 mesi');await r2.locator('.rDateText').blur();
+  await r2.locator('.rName').fill('730');await r2.locator('.rAmount').fill('700');await r2.locator('.rDateText').fill('11 ottobre');await r2.locator('.rDateText').dispatchEvent('input');
+  await r2.locator('[data-setup-rec="custom"]').click();
+  await page.fill('#setupRecText','ogni mese per 3 volte');await page.click('#setupRecSave');
   await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),one=s.entries.find(e=>e.name==='Fratello'),three=s.entries.find(e=>e.name==='730');
   assert.equal(one.recurrence.kind,'single');
