@@ -115,7 +115,7 @@ async function testSetupNaturalRecurrences(browser){
   await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),one=s.entries.find(e=>e.name==='Fratello'),three=s.entries.find(e=>e.name==='730');
   assert.equal(one.recurrence.kind,'single');
-  assert.equal(three.recurrence.kind,'count');assert.equal(three.recurrence.count,3);
+  assert.equal(three.recurrence.kind,'custom');assert.equal(three.recurrence.unit,'month');assert.equal(three.recurrence.every,1);assert.equal(three.recurrence.endMode,'count');assert.equal(three.recurrence.count,3);
   await context.close();
 }
 
