@@ -37,7 +37,6 @@ async function settings(page){await page.click('#homeSettingsCard');await page.w
 async function chooseDate(page,manual=slash(iso())){
   await page.fill('#editDateText',manual);
   await page.dispatchEvent('#editDateText','input');
-  await page.click('#editDateConfirm');
   await page.waitForSelector('#editRecurrenceBlock:not(.hidden)');
 }
 async function chooseRec(page,kind){await page.locator('#editRecChoices button[data-kind="'+kind+'"]').click()}
@@ -122,7 +121,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.click('#editDateText');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
   await page.fill('#editDateText','4/10');
-  await page.click('#editDateConfirm');
+  await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   assert.match(await page.locator('#editRecChoices').innerText(),/Una sola volta/);
   assert.match(await page.locator('#editRecChoices').innerText(),/Ogni mese/);
@@ -130,7 +129,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
-  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');await page.click('#editDateConfirm');
+  await page.fill('#editDateText',slash(iso()));await page.dispatchEvent('#editDateText','input');
   await page.locator('#editRecChoices button[data-kind="single"]').click();
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editDateText');
   await page.click('#editSave');
@@ -174,7 +173,7 @@ async function testRecurrencesAndHistory(browser){
   s=await state(page);e=s.entries.find(x=>x.name==='Tre mesi test');assert.equal(e.recurrence.kind,'count');assert.equal(e.recurrence.count,3);
 
   await page.click('#flowAdd');
-  await page.fill('#editName','Mensile scritto test');await page.fill('#editAmount','23');await page.fill('#editDateText','23 ottobre');await page.dispatchEvent('#editDateText','input');await page.click('#editDateConfirm');
+  await page.fill('#editName','Mensile scritto test');await page.fill('#editAmount','23');await page.fill('#editDateText','23 ottobre');await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);
   await page.locator('#editRecChoices button[data-kind="monthly"]').click();
   await page.click('#editSave');
