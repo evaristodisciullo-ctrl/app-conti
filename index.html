@@ -1488,6 +1488,7 @@ function enterContiAfterUnlock(){
   if(!state.setupDone&&state.setupStage==='expense'){createRows('expenseRows','expense');show('setupExpense');return}
   if(!state.setupDone&&state.setupStage==='income'){createRows('incomeRows','income');show('setupIncome');return}
   show('home');
+  if(pendingNotificationItems){const items=pendingNotificationItems;pendingNotificationItems=null;setTimeout(()=>openNotificationGroup(items),0)}
 }
 function openUnlock(){
   const device=state.security.credentialId?'<button id="unlockDevice" class="btn secondary" style="margin-top:8px">Usa sicurezza del telefono</button><button id="forgotPin" class="optionalNoteBtn" style="text-align:center">Hai dimenticato il PIN?</button>':'';
@@ -2561,6 +2562,21 @@ async function confirmNotificationScope(){
   if(scope==='custom'){openCustomNotifications();return}
   openGlobalNotificationRules(scope);
 }
+let pendingNotificationItems=null;
+function openNotificationGroup(items){
+  const rows=(items||[]).map(x=>'<div class="notifyToggle"><span><b>'+esc(x.name||'Voce')+'</b><small>'+fmtMovementDate(x.date)+' · '+(x.type==='income'?'Entrata':'Pagamento')+'</small></span><strong>'+money(x.amount)+'</strong></div>').join('');
+  show('home');
+  openModal('Promemoria','<div class="hint">Ecco tutte le voci incluse nel promemoria.</div><div class="notifyList">'+(rows||'<div class="empty">Nessuna voce da mostrare.</div>')+'</div>');
+}
+function handleNotificationOpen(detail){
+  const items=detail&&Array.isArray(detail.items)?detail.items:[];
+  if(!items.length)return;
+  if(state.security&&state.security.enabled&&!securityFresh()){
+    pendingNotificationItems=items;show('landing');openUnlock();return;
+  }
+  openNotificationGroup(items);
+}
+window.addEventListener('inordine-notification-open',e=>handleNotificationOpen(e.detail||{}));
 function nativeBridge(){return window.InOrdineNative&&window.InOrdineNative.isNative?window.InOrdineNative:null}
 function notificationIdFromKey(key){
   let h=2166136261;
@@ -2720,7 +2736,7 @@ async function checkDueNotifications(){
   }
   if(!alerts.length)return;
   const body=alerts.slice(0,5).map(a=>a.x.name+' · '+money(a.x.amount)+(a.reason==='scaduta'?' · scaduto':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
-  try{new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body,silent:!(n.ui&&n.ui.sound)});alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
+  try{const note=new Notification(alerts.length===1?'Promemoria Conti economici':alerts.length+' promemoria Conti economici',{body,silent:!(n.ui&&n.ui.sound)});note.onclick=()=>{try{window.focus()}catch(e){};openNotificationGroup(alerts.map(a=>({entryId:a.x.entryId,occurrenceKey:a.x.occurrenceKey||a.x.month,type:a.x.type,name:a.x.name,amount:a.x.amount,date:a.x.date,label:a.reason})))};alerts.forEach(a=>n.sent[a.key]=true);state.notifications=n;save()}catch(e){}
 }
 function openMovementDetail(id){
   const h=state.history.find(x=>x.id===id);if(!h)return;
