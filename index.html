@@ -1839,7 +1839,6 @@ function appendSetupRow(el,type,draft){
   r.querySelector('.rDelete').onclick=()=>{r.remove();if(!el.querySelector('.entryRow'))appendSetupRow(el,type,null);persistSetupDraft(containerIdFor(type),type)};
   r.querySelectorAll('.rName,.rAmount').forEach(inp=>inp.addEventListener('input',()=>persistSetupDraft(containerIdFor(type),type)));
   r.querySelector('.rDateText').addEventListener('input',syncDate);
-  r.querySelector('.rDateText').addEventListener('blur',syncDate);
 }
 function containerIdFor(type){return type==='income'?'incomeRows':'expenseRows'}
 function rowHasData(r){return !!(r.querySelector('.rName').value.trim()||r.querySelector('.rAmount').value.trim()||r.querySelector('.rDateText').value.trim())}
