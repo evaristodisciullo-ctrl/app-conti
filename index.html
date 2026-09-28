@@ -477,11 +477,18 @@ body{color:var(--text)}
 }
 .landingCanonicalName::placeholder{color:#77899d;opacity:1}
 .canonicalHotspot{position:absolute;border:0;background:transparent;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.landingStartLabel{
+  position:absolute;left:4%;right:4%;top:45.2%;z-index:3;text-align:center;
+  color:#092855;font-size:clamp(15px,4vw,21px);font-weight:950;line-height:1.1;
+  text-shadow:0 1px 0 rgba(255,255,255,.95);
+}
 .landingHotspotConti{left:4.3%;top:48.6%;width:45.4%;height:36.0%}
 .landingHotspotTodo{left:51.2%;top:48.6%;width:44.5%;height:36.0%}
 .landingNotifyGrid{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px 28px;
-  background:linear-gradient(180deg,#edf8ff 0%,#e8f6ff 100%);
+  position:relative;z-index:5;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin:-150px 18px 0;padding:0 0 28px;
+  background:transparent;
 }
 .landingNotifyCard{
   border:1.5px solid #cce6f7;background:rgba(255,255,255,.94);border-radius:18px;
@@ -663,7 +670,7 @@ body{color:var(--text)}
   box-shadow:0 7px 18px rgba(42,100,142,.06);
   overflow:hidden;
 }
-.flowIncome .flowBanner{background-image:url('assets/home-income-art.webp')!important;background-position:right center!important;background-size:cover!important}
+.flowIncome .flowBanner{background-image:url('assets/home-income-art.webp?fixed=20260928b')!important;background-position:center!important;background-size:100% 100%!important;background-repeat:no-repeat!important}
 .flowExpense .flowBanner{background-image:none!important}
 .flowBannerVisual{display:none!important}
 .flowBannerAdd{
@@ -973,6 +980,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <img id="landingCanonicalImage" class="canonicalImage" alt="" style="visibility:hidden">
     <label class="srOnly" for="landingNickname">Come vuoi essere chiamato?</label>
     <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
+    <div class="landingStartLabel">Scegli da dove iniziare.</div>
     <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
     <button id="landingTodo" class="canonicalHotspot landingHotspotTodo" aria-label="Cose da fare"></button>
   </div>
