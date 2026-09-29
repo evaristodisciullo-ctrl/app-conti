@@ -116,6 +116,7 @@ async function testSetupNaturalRecurrences(browser){
   const s=await state(page),one=s.entries.find(e=>e.name==='Fratello'),three=s.entries.find(e=>e.name==='730');
   assert.equal(one.recurrence.kind,'single');
   assert.equal(three.recurrence.kind,'custom');assert.equal(three.recurrence.unit,'month');assert.equal(three.recurrence.every,1);assert.equal(three.recurrence.endMode,'count');assert.equal(three.recurrence.count,3);
+  if(await page.locator('#modal:not(.hidden)').count()){console.log('DEBUG_MODAL_AFTER_SETUP',await page.locator('#modalTitle').innerText(),await page.locator('#modalBody').innerText());await page.click('#modalClose')}
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
   await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1');await page.dispatchEvent('#editDateText','input');
   await page.locator('#editRecChoices button[data-kind="custom"]').click();await page.fill('#editorRecText','settembre, ottobre, novembre');await page.click('#editorRecSave');
