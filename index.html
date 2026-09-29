@@ -1254,7 +1254,7 @@ const money=n=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).
 const todayDate=()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};const todayISO=()=>{const d=todayDate();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const ymNow=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
 const addDaysISO=(iso,n)=>{const p=iso.split('-').map(Number),d=new Date(p[0],p[1]-1,p[2]);d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-const daysBetween=(a,b)=>{const pa=a.split('-').map(Number),pb=b.split('-').map(Number);
+const daysBetween=(a,b)=>{const pa=a.split('-').map(Number),pb=b.split('-').map(Number);return Math.round((new Date(pb[0],pb[1]-1,pb[2])-new Date(pa[0],pa[1]-1,pa[2]))/86400000)};
 const addRecurrenceDate=(startIso,step,unit,every=1)=>{
   const p=startIso.split('-').map(Number),n=step*Math.max(1,Number(every)||1);
   if(unit==='day')return addDaysISO(startIso,n);
@@ -1263,7 +1263,6 @@ const addRecurrenceDate=(startIso,step,unit,every=1)=>{
   const d=new Date(p[0],p[1]-1+n,1),y=d.getFullYear(),m=d.getMonth()+1,last=new Date(y,m,0).getDate(),day=Math.min(p[2],last);
   return y+'-'+String(m).padStart(2,'0')+'-'+String(day).padStart(2,'0');
 };
-return Math.round((new Date(pb[0],pb[1]-1,pb[2])-new Date(pa[0],pa[1]-1,pa[2]))/86400000)};
 const monthName=ym=>{const p=ym.split('-').map(Number);const s=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,1));return s.charAt(0).toUpperCase()+s.slice(1)};
 const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-1+n,1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')};
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
