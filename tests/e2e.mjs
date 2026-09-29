@@ -121,7 +121,7 @@ async function testSetupNaturalRecurrences(browser){
   await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1');await page.dispatchEvent('#editDateText','input');
   await page.locator('#editRecChoices button[data-kind="custom"]').click();await page.fill('#editorRecText','settembre, ottobre, novembre');await page.click('#editorRecSave');
   assert.match(await page.locator('#editRecSummary').innerText(),/mesi selezionati/);
-  await page.click('#editCancel');await context.close();
+  await page.click('#modalClose');await context.close();
 }
 
 async function testFinanceManualDatesAndMovements(browser){
