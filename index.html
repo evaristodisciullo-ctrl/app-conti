@@ -1392,10 +1392,10 @@ function openEntrySettingsHub(type){
 const GUIDE={
   'Introduzione':'In Ordine raccoglie i tuoi conti e le tue attività in un unico posto semplice da consultare.',
   'Primo utilizzo':'Inserisci il saldo reale che possiedi, poi aggiungi le entrate e i pagamenti che vuoi tenere sotto controllo.',
-  'Saldo attuale':'Il saldo contiene solo denaro realmente disponibile. Puoi correggerlo manualmente senza creare movimenti.',
+  'Saldo attuale':'Il saldo contiene solo denaro realmente disponibile. Una correzione manuale crea un movimento “Correzione saldo”, così resta sempre tracciabile.',
   'Entrate':'Le entrate programmate non aumentano il saldo. Il saldo cambia soltanto quando premi RICEVUTO e confermi l’importo realmente ricevuto.',
   'Pagamenti':'I pagamenti programmati non riducono il saldo. Il saldo cambia soltanto quando premi PAGATO e confermi l’importo realmente pagato.',
-  'Movimenti':'Movimenti contiene solo entrate ricevute e pagamenti effettuati. Puoi filtrare, aprire e modificare ogni movimento.',
+  'Movimenti':'Movimenti contiene entrate ricevute, pagamenti effettuati e correzioni manuali del saldo. Puoi aprire e modificare ogni movimento.',
   'Categorie':'Le categorie sono facoltative e aiutano a organizzare entrate e pagamenti.',
   'Notifiche':'Puoi scegliere quali promemoria ricevere, quando riceverli e l’orario preferito.',
   'Aspetto e colore':'Puoi cambiare il colore principale, la dimensione del testo e ridurre le animazioni.',
@@ -2058,8 +2058,7 @@ function openTotalsThrough(ym){
 }
 function projectedEnd(ym){const t=openTotalsThrough(ym);return Number(state.balance||0)+t.toReceive-t.toPay}
 function homeOpenTotals(){
-  const income=buildFlowItems('income').filter(x=>!x.done);
-  const expense=buildFlowItems('expense').filter(x=>!x.done);
+  const ym=ymNow(),income=pendingThrough('income',ym),expense=pendingThrough('expense',ym);
   return{
     toReceive:income.reduce((sum,x)=>sum+Number(x.amount||0),0),
     toPay:expense.reduce((sum,x)=>sum+Number(x.amount||0),0)
@@ -2086,7 +2085,7 @@ function movementVisual(h){
 }
 function renderMovementList(el,arr){
   el.innerHTML='';
-  const clean=arr.filter(x=>x.type!=='adjustment');
+  const clean=arr;
   if(!clean.length){
     el.innerHTML='<div class="movementEmpty"><div class="movementEmptyArt" aria-hidden="true"></div><h3>Nessun movimento</h3><p>Qui troverai tutte le entrate ricevute<br>e i pagamenti effettuati.</p></div>';
     return;
@@ -2094,10 +2093,10 @@ function renderMovementList(el,arr){
   clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isIncome=x.type==='income',label=isIncome?'Entrata':'Uscita',sign=isIncome?'+ ':'- ',v=movementVisual(x);
+    const isAdjustment=x.type==='adjustment',isIncome=x.type==='income',label=isAdjustment?'Correzione saldo':(isIncome?'Entrata':'Pagamento'),sign=isAdjustment?(Number(x.delta||0)>=0?'+ ':'- '):(isIncome?'+ ':'- '),v=isAdjustment?{g:'±',cls:'purple'}:movementVisual(x);
     r.innerHTML='<div class="mIcon '+v.cls+'">'+v.g+'</div>'+
       '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">▣ &nbsp;'+fmtMovementDate(x.date)+'</div></div>'+
-      '<div class="mAmountWrap"><div class="mAmount '+x.type+'">'+sign+money(Number(x.amount||0))+'</div><div class="mType '+x.type+'">'+label+'</div></div>'+
+      '<div class="mAmountWrap"><div class="mAmount '+(isAdjustment?'':x.type)+'">'+sign+money(isAdjustment?Math.abs(Number(x.delta||0)):Number(x.amount||0))+'</div><div class="mType '+(isAdjustment?'':x.type)+'">'+label+'</div></div>'+
       '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
     el.appendChild(r);
@@ -2469,8 +2468,9 @@ function openEntryEditor(entry,type){
   const syncDate=(reveal=false)=>{
     const raw=$('editDateText').value,hasText=raw.trim()!=='';
     const parsed=parseSetupDate(raw),spec=parsed&&parsed.spec;
-    $('editDateError').classList.toggle('hidden',!hasText||!!spec);
-    if(!spec){editorDateSpec=null;$('editDate').value='';return false}
+    $('editDateError').classList.add('hidden');
+    if(hasText)$('editRecurrenceBlock').classList.remove('hidden');
+    if(!spec){editorDateSpec=null;$('editDate').value='';paintRec();return false}
     editorDateSpec=spec;$('editDate').value=spec.iso;$('editRecurrenceBlock').classList.remove('hidden');
 
     const rawLower=raw.toLowerCase().replace(/\s+/g,' ').trim();
@@ -2501,9 +2501,15 @@ function openEntryEditor(entry,type){
   document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
     hideEditorKeyboard();
     if(b.dataset.kind==='custom'){
-      if(!syncDate())return flashModal('Scrivi prima una data valida.');
-      openEditorAdvancedRecurrence($('editDate').value,collectEditRecurrence(),cfg=>{$('editRecKind').value='custom';$('editRecKind').dataset.custom=JSON.stringify(cfg);renderEditRecExtra(cfg);paintRec()});return;
+      syncDate();
+      openEditorAdvancedRecurrence($('editDate').value||'',collectEditRecurrence(),cfg=>{
+        if(cfg.overrideDate){editorDateSpec={kind:'day',iso:cfg.overrideDate};$('editDate').value=cfg.overrideDate;$('editDateText').value=manualDateText(cfg.overrideDate)}
+        $('editRecKind').value=cfg.kind==='single'?'single':cfg.kind==='monthly'?'monthly':'custom';
+        if($('editRecKind').value==='custom')$('editRecKind').dataset.custom=JSON.stringify(cfg);else delete $('editRecKind').dataset.custom;
+        renderEditRecExtra(cfg);paintRec()
+      });return;
     }
+    if(!syncDate())return flashModal('Completa la data per usare questa scelta.');
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
   paintRec();
@@ -2561,6 +2567,7 @@ function confirmDeleteEntry(entry){
     state.entries=state.entries.filter(e=>e.id!==entry.id);
     delete state.futureChanges[entry.id];Object.keys(state.occurrenceOverrides).filter(k=>k.startsWith(entry.id+'|')).forEach(k=>delete state.occurrenceOverrides[k]);
     state.notifications.selected=(state.notifications.selected||[]).filter(id=>id!==entry.id);
+    state.setupDrafts[entry.type]=state.entries.filter(e=>e.type===entry.type).map(setupEntryToDraft);
     save();closeModal();renderFlow();
   };
 }
@@ -2604,7 +2611,6 @@ function parseCustomRecurrenceText(text,startDate){
   return validRecurrence(out)?out:null;
 }
 function openEditorAdvancedRecurrence(date,current,onSave){
-  if(!date){flashModal('Scrivi prima una data valida.');return}
   const existing=current&&current.freeText?current.freeText:'';
   openPickerModal('Come vuoi registrarla?',
     '<div class="hint"><strong>Scrivi come vuoi: l’app proverà a capirti.</strong><br>Puoi indicare mesi, durata, intervalli o una data precisa.</div>'+
@@ -2613,7 +2619,7 @@ function openEditorAdvancedRecurrence(date,current,onSave){
     '<div class="modalBtns"><button id="editorRecCancel" class="btn secondary">Annulla</button><button id="editorRecSave" class="btn">Conferma</button></div>');
   p$('editorRecCancel').onclick=closePickerModal;
   p$('editorRecSave').onclick=()=>{
-    const cfg=parseCustomRecurrenceText(p$('editorRecText').value,date);
+    const cfg=parseCustomRecurrenceText(p$('editorRecText').value,date||'');
     if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
     closePickerModal();onSave(cfg);
   };
@@ -2948,7 +2954,6 @@ function movementPeriodBounds(period){
 function filteredMovements(){
   const bounds=movementPeriodBounds(movementFilters.period);
   return [...state.history].filter(x=>{
-    if(x.type==='adjustment')return false;
     if(movementFilters.type!=='all'&&x.type!==movementFilters.type)return false;
     if(movementFilters.name!=='all'&&x.name!==movementFilters.name)return false;
     if(movementFilters.category!=='all'&&((x.category||'').trim()||'Senza categoria')!==movementFilters.category)return false;
@@ -3139,17 +3144,19 @@ async function checkBudgetNotifications(force){
 function openBalanceEditor(){
   openModal('Saldo attuale',
     '<div class="appearancePreview" style="padding:14px;margin-top:3px"><div style="font-size:11px;color:#5d7487;font-weight:850">Saldo attuale</div><div style="font-size:28px;font-weight:950;color:#102a50;margin-top:4px">'+money(state.balance)+'</div></div>'+
-    '<div class="note" style="margin:9px 0 14px">Qui puoi correggere manualmente il saldo senza creare un’entrata, un pagamento o un movimento.</div>'+
+    '<div class="note" style="margin:9px 0 14px">Puoi correggere il saldo senza creare una normale entrata o un normale pagamento. La correzione resterà visibile nei Movimenti.</div>'+
     '<div class="settingsSubTitle">MODIFICA SALDO</div>'+
     '<div class="field"><label>Nuovo saldo</label><input id="newBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="Es. 1.250 €" value="'+escAttr(String(state.balance==null?'':state.balance))+'"></div>'+
     '<div class="field"><label>Motivo <span style="font-weight:500;color:var(--muted)">(facoltativo)</span></label><input id="balanceReason" type="text" placeholder="Es. Correzione manuale"></div>'+
-    '<div class="note">ⓘ &nbsp; La modifica riguarda solo il saldo attuale. Non crea un movimento nello storico.</div>'+
+    '<div class="note">ⓘ &nbsp; Verrà creato un movimento “Correzione saldo”.</div>'+
     '<div class="modalBtns"><button id="balCancel" class="btn secondary">Annulla</button><button id="balSave" class="btn">Aggiorna saldo</button></div>');
   $('modal').classList.add('fullSettings');
   $('balCancel').onclick=closeModal;
   $('balSave').onclick=()=>{
     const v=cleanAmount($('newBalance').value);
     if(!Number.isFinite(v))return flashModal('Inserisci un saldo valido.');
+    const old=Number(state.balance||0),delta=v-old,reason=$('balanceReason').value.trim(),date=todayISO();
+    if(Math.abs(delta)>0.0001)state.history.push({id:'h'+Date.now()+Math.random(),type:'adjustment',name:'Correzione saldo',amount:Math.abs(delta),delta,date,month:date.slice(0,7),reason,note:reason});
     state.balance=v;save();closeModal();
     if(!$('home').classList.contains('hidden'))renderHome();
     if(!$('movements').classList.contains('hidden'))renderMovements();
