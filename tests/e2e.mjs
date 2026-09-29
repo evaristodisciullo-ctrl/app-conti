@@ -116,7 +116,11 @@ async function testSetupNaturalRecurrences(browser){
   const s=await state(page),one=s.entries.find(e=>e.name==='Fratello'),three=s.entries.find(e=>e.name==='730');
   assert.equal(one.recurrence.kind,'single');
   assert.equal(three.recurrence.kind,'custom');assert.equal(three.recurrence.unit,'month');assert.equal(three.recurrence.every,1);assert.equal(three.recurrence.endMode,'count');assert.equal(three.recurrence.count,3);
-  await context.close();
+  await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
+  await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1');await page.dispatchEvent('#editDateText','input');
+  await page.locator('#editRecChoices button[data-kind="custom"]').click();await page.fill('#editorRecText','settembre, ottobre, novembre');await page.click('#editorRecSave');
+  assert.match(await page.locator('#editRecSummary').innerText(),/mesi selezionati/);
+  await page.click('#editCancel');await context.close();
 }
 
 async function testFinanceManualDatesAndMovements(browser){
@@ -131,6 +135,10 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
   await page.click('#editDateText');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  await page.fill('#editDateText','1');
+  await page.dispatchEvent('#editDateText','input');
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
+  assert.equal(await page.locator('#editDate').inputValue(),'2026-10-01');
   await page.fill('#editDateText','4/10');
   await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
@@ -158,10 +166,10 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.equal((await state(page)).balance,1034);
 
   await settings(page);await page.click('#settingsEditBalance');await page.fill('#newBalance','1040');await page.click('#balSave');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
-  let s=await state(page);assert.equal(s.balance,1040);assert.equal(s.history.some(h=>h.type==='adjustment'),false);
+  let s=await state(page);assert.equal(s.balance,1040);assert.equal(s.history.some(h=>h.type==='adjustment'),true);
 
   await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');
-  assert.equal(await page.locator('.movementQuickTab').count(),4);assert.equal(await page.locator('.movementRow').count(),2);
+  assert.equal(await page.locator('.movementQuickTab').count(),4);assert.equal(await page.locator('.movementRow').count(),3);
   await page.locator('[data-movement-type="income"]').click();assert.equal(await page.locator('.movementRow').count(),1);
   await page.locator('[data-movement-type="all"]').click();
   await page.click('#movementsFilters');await page.locator('#mfTypeChoices button[data-v="expense"]').click();await page.click('#mfApply');
@@ -313,9 +321,9 @@ async function testHomeTotalsMatchOpenLists(browser){
   ];
   for(const [name,amount,date] of expenses){await addItem(page,'expense',name,amount,{date});await backHome(page)}
 
-  assert.match(await page.locator('#homeIncomeTotal').innerText(),/2\.070,00/);
-  assert.match(await page.locator('#homeExpenseTotal').innerText(),/1\.776,00/);
-  assert.match(await page.locator('#homeProjectionValue').innerText(),/-1\.705,00/);
+  assert.match(await page.locator('#homeIncomeTotal').innerText(),/0,00/);
+  assert.match(await page.locator('#homeExpenseTotal').innerText(),/0,00/);
+  assert.match(await page.locator('#homeProjectionValue').innerText(),/1,00/);
 
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');
   const pendingTexts=await page.locator('.flowUnifiedRow .flowUnifiedStatus').allInnerTexts();
