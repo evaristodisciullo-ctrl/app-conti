@@ -580,8 +580,8 @@ body{color:var(--text)}
 .setupSimple .sub{color:#4f6c84!important;font-size:14px!important;margin-top:6px}
 .setupWalletArt,.setupPiggyArt{position:absolute!important;right:-4px;top:4px;width:188px!important;height:142px!important;flex:none!important}
 .setupWalletArt,.setupPiggyArt{border-radius:24px;overflow:hidden;background-position:center!important;background-repeat:no-repeat!important;background-size:cover!important;box-shadow:0 12px 28px rgba(34,94,130,.10)}
-.setupWalletArt{background-image:url('assets/home-income-art.webp')!important}
-.setupPiggyArt{background-image:url('assets/home-payment-art.webp')!important;transform:none!important}
+.setupWalletArt,.setupPiggyArt{background-image:none!important}
+.setupPiggyArt{transform:none!important}
 .setupWalletArt>*,.setupPiggyArt>*{display:none!important}
 .setupSimple .onboardCard{
   position:relative;z-index:1;
@@ -1758,7 +1758,7 @@ function openDateChooser(initialSpec,onConfirm){
   };
 }
 function save(){const payload=JSON.stringify(state);localStorage.setItem(KEY,payload);localStorage.setItem(JOURNAL_KEY,payload);if(state.backup&&state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));queueNativeNotificationSync()}
-let landingImagePromise=null,incomeBannerPromise=null,paymentBannerPromise=null;
+let landingImagePromise=null,incomeBannerPromise=null,paymentBannerPromise=null,setupIncomeArtPromise=null,setupExpenseArtPromise=null;
 function loadChunkedDataUrl(paths,mime){
   return Promise.all(paths.map(p=>fetch(p,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('Asset '+p);return r.text()})))
     .then(parts=>'data:'+mime+';base64,'+parts.join('').replace(/\s+/g,''));
@@ -1772,6 +1772,15 @@ function ensureLandingGraphic(){
     img.onload=()=>{img.dataset.loaded='1';img.style.visibility='visible';resolve()};
     img.onerror=reject;img.src=src;
   })).catch(()=>{img.style.visibility='visible'});
+}
+function ensureSetupArt(type){
+  const el=type==='income'?document.querySelector('.setupWalletArt'):document.querySelector('.setupPiggyArt');if(!el)return Promise.resolve();
+  if(el.dataset.assetLoaded==='1')return Promise.resolve();
+  const isIn=type==='income',path=isIn?'assets/setup-income-art.txt':'assets/setup-expense-art.txt';
+  if(isIn&&!setupIncomeArtPromise)setupIncomeArtPromise=loadChunkedDataUrl([path],'image/webp');
+  if(!isIn&&!setupExpenseArtPromise)setupExpenseArtPromise=loadChunkedDataUrl([path],'image/webp');
+  const p=isIn?setupIncomeArtPromise:setupExpenseArtPromise;
+  return p.then(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{el.style.setProperty('background-image','url("'+src+'")','important');el.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src})).catch(()=>{});
 }
 function ensureIncomeBanner(){
   const banner=document.querySelector('.flowIncome .flowBanner');if(!banner)return Promise.resolve();
@@ -1798,7 +1807,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='setupIncome')ensureSetupArt('income');if(id==='setupExpense')ensureSetupArt('expense');if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -3188,8 +3197,8 @@ $('skipExpenseSetup').onclick=()=>{if(!revisitSetupMode){state.setupDrafts.expen
 document.querySelectorAll('.flowTab').forEach(b=>b.onclick=()=>{flowFilter=b.dataset.flowFilter;renderFlow()});
 $('incomeSetupBack').onclick=()=>{persistSetupDraft('incomeRows','income');show('landing')};
 $('expenseSetupBack').onclick=()=>{persistSetupDraft('expenseRows','expense');show('landing')};
-$('saveIncomeSetup').onclick=()=>{try{commitSetupRows('incomeRows','income');state.setupStage='expense';save();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
-$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');state.setupDone=true;state.setupStage='done';save();revisitSetupMode=false;show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveIncomeSetup').onclick=()=>{try{commitSetupRows('incomeRows','income');state.setupStage='expense';save();closeModal();createRows('expenseRows','expense');show('setupExpense')}catch(e){openModal('Controlla le entrate','<div class="note">'+esc(e.message)+'</div>')}};
+$('saveExpenseSetup').onclick=()=>{try{commitSetupRows('expenseRows','expense');state.setupDone=true;state.setupStage='done';save();revisitSetupMode=false;closeModal();show('home')}catch(e){openModal('Controlla i pagamenti','<div class="note">'+esc(e.message)+'</div>')}};
 
 $('settingsSearch').addEventListener('input',()=>{
   const q=$('settingsSearch').value.trim().toLowerCase();
