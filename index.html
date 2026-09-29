@@ -1641,7 +1641,10 @@ function parseFlexibleDate(raw){
   }
   for(let i=0;i<IT_MONTHS.length;i++){
     const name=IT_MONTHS[i],short=name.slice(0,3);
-    let rx=new RegExp('^(\\d{1,2})\\s+(?:'+name+'|'+short+')(?:\\s+del)?\\s+(\\d{2}|\\d{4})
+    let rx=new RegExp('^(\\d{1,2})\\s+(?:'+name+'|'+short+')(?:\\s+del)?\\s+(\\d{2}|\\d{4})$','i');
+    let mm=s.match(rx);
+    if(mm){
+      const d=Number(mm[1]),mo=i+1,rawY=Number(mm[2]),y=mm[2].length===2?2000+rawY:rawY,dt=new Date(y,mo-1,d);
       if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return{kind:'day',iso:y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
     }
     rx=new RegExp('^(?:'+name+'|'+short+')\\s+(\\d{4})$','i');
