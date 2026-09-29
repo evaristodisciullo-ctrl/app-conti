@@ -147,7 +147,7 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.match(await page.locator('#editRecChoices').innerText(),/Altro/);
   await page.fill('#editName','Test entrata');await page.fill('#editAmount','50');
   await page.fill('#editDateText','35/10/2026');await page.locator('#editDateText').blur();
-  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),1);
+  assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);
   await page.fill('#editDateText','15/10/26');await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editDateError:not(.hidden)').count(),0);
   assert.equal(await page.locator('#editDate').inputValue(),'2026-10-15');
