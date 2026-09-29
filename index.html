@@ -2632,7 +2632,7 @@ function openEditorAdvancedRecurrence(date,current,onSave){
   p$('editorRecSave').onclick=()=>{
     const cfg=parseCustomRecurrenceText(p$('editorRecText').value,date||'');
     if(!cfg){const n=document.createElement('div');n.className='note';n.textContent='Non riesco a capire questa regola. Prova a scriverla in modo più semplice.';p$('pickerBody').prepend(n);setTimeout(()=>n.remove(),1800);return}
-    closePickerModal();onSave(cfg);
+    closePickerModal();$('modal').classList.remove('hidden');onSave(cfg);
   };
 }
 function renderEditRecExtra(rec){
