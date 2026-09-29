@@ -323,7 +323,7 @@ async function testHomeTotalsMatchOpenLists(browser){
 
   assert.match(await page.locator('#homeIncomeTotal').innerText(),/0,00/);
   assert.match(await page.locator('#homeExpenseTotal').innerText(),/0,00/);
-  assert.match(await page.locator('#homeProjectionValue').innerText(),/1,00/);
+  assert.match(await page.locator('#homeProjectionValue').innerText(),/-1\.999,00/);
 
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');
   const pendingTexts=await page.locator('.flowUnifiedRow .flowUnifiedStatus').allInnerTexts();
