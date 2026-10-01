@@ -623,24 +623,43 @@ body{color:var(--text)}
 #home .homeTopLine h1{font-size:25px;color:#102a50;letter-spacing:0}
 #home .homeFeatureGrid{gap:10px}
 #home .homeFeatureCard{
+  position:relative;
   min-height:192px;
   border:0!important;
   border-radius:20px;
-  padding:0 0 14px;
-  background:#fff;
+  padding:0;
+  background:#eefaff;
   box-shadow:0 9px 22px rgba(39,106,151,.12)!important;
   overflow:hidden;
 }
+#home .incomeFeature{background:#effdf8}
+#home .expenseFeature{background:#eef8ff}
 #home .incomeFeature,#home .expenseFeature{outline:0!important}
-#home .homeScene{height:118px!important;margin:0!important;background-color:#eafaff!important;background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important}
+#home .homeScene{
+  position:absolute!important;
+  inset:0!important;
+  height:100%!important;
+  margin:0!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-position:top center!important;
+  background-size:100% auto!important
+}
 #home .incomeFeature .homeScene{background-image:url('assets/home-income-art.webp')!important}
 #home .expenseFeature .homeScene{background-image:url('assets/home-payment-art.webp')!important}
+#home .homeFeatureCard:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;height:48%;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.9) 44%,rgba(255,255,255,.98) 100%);
+  pointer-events:none
+}
 #home .homeScene>*{display:none!important}
-#home .homeFeatureText{display:block;padding:3px 14px 0}
+#home .homeFeatureText{position:absolute;left:0;right:0;bottom:14px;z-index:2;display:block;padding:0 14px}
 #home .homeFeatureText strong{font-size:18px;color:#092855}
 #home .homeFeatureText small{font-size:11px;color:#6f8194;margin-top:2px}
 #home .homeFeatureArrow{
-  right:13px;bottom:12px;
+  z-index:3;right:13px;bottom:12px;
   width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
   background:#087bf5;color:#fff;font-size:22px;box-shadow:0 5px 12px rgba(8,123,245,.22)
 }
