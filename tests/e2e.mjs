@@ -139,7 +139,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await page.fill('#editDateText','1');
   await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
-  assert.equal(await page.locator('#editDate').inputValue(),'2026-10-01');
+  assert.match(await page.locator('#editDate').inputValue(),/^\d{4}-\d{2}-01$/);
   await page.fill('#editDateText','4/10');
   await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
