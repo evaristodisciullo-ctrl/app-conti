@@ -3536,7 +3536,7 @@ function parseTodoDateInput(raw){
       if(spec.kind==='day')date=spec.iso;
       if(spec.kind==='monthYear')date=lastDayISO(spec.ym);
       if(spec.kind==='monthOnly'){
-        const now=todayDate(),m=spec.month,y=(m<now.getMonth()+1)?now.getFullYear()+1:now.getFullYear();
+        const now=todayDate(),m=spec.month,y=now.getFullYear();
         date=todoMonthDeadline(m,y);
       }
       if(spec.kind==='year')date=spec.year+'-12-31';
@@ -3554,7 +3554,7 @@ function parseTodoDateInput(raw){
     let date='';
     if(spec.kind==='monthYear')date=lastDayISO(spec.ym);
     if(spec.kind==='monthOnly'){
-      const now=todayDate(),m=spec.month,y=(m<now.getMonth()+1)?now.getFullYear()+1:now.getFullYear();date=todoMonthDeadline(m,y);
+      const now=todayDate(),m=spec.month,y=now.getFullYear();date=todoMonthDeadline(m,y);
     }
     if(spec.kind==='year')date=spec.year+'-12-31';
     if(date)return{raw:text,date,label:text,precise:false,spec,recurrence:null,explicit:false};
@@ -3692,8 +3692,9 @@ function saveTodoInitialSetup(){
 function renderTodoHub(){applyTodoColor();setTodoGreetings()}
 function todoSortTasks(arr){
   return [...arr].sort((a,b)=>{
-    const ap=a.precise&&a.date?0:a.date?1:2,bp=b.precise&&b.date?0:b.date?1:2;if(ap!==bp)return ap-bp;
-    const ad=a.date||'9999-12-31',bd=b.date||'9999-12-31';if(ad!==bd)return ad.localeCompare(bd);return Number(a.createdAt||0)-Number(b.createdAt||0);
+    const ad=a.date||'9999-12-31',bd=b.date||'9999-12-31';
+    if(ad!==bd)return ad.localeCompare(bd);
+    return Number(a.createdAt||0)-Number(b.createdAt||0);
   });
 }
 function todoDateLabel(t){return t.scheduleText||t.dateText||t.date&&fmtMovementDate(t.date)||'Senza data'}
