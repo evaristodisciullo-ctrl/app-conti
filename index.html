@@ -1114,7 +1114,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .todoHubCard{border:0;border-radius:22px;min-height:110px;padding:18px;display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;text-align:left}
 .todoHubCard .icon{width:60px;height:60px;border-radius:20px;background:rgba(255,255,255,.55);display:grid;place-items:center;font-size:34px}
 .todoHubCard strong{font-size:20px;color:#183354}.todoHubCard small{display:block;margin-top:4px;color:#6d8091}.todoHubCard .chev{font-size:30px}
-.todoHubCard.pending{background:#eee9ff}.todoHubCard.completed{background:#e5f4e9}.todoHubCard.config{background:#eef1f7}
+.todoHubCard.pending{background:#eee9ff}.todoHubCard.completed{background:#e5f4e9}.todoHubCard.notify{background:#fff2c9}.todoHubCard.config{background:#e6efff}.todoHubCard.reopen{background:#f7e7ef}
 .todoListHead,.todoTaskRow{display:grid;grid-template-columns:minmax(0,1fr) 52px 94px;gap:7px;align-items:center}
 .todoListHead{padding:0 5px 8px;color:#58708a;font-size:10px;font-weight:900}
 .todoTaskRow{padding:10px 5px;border-top:1px solid #edf1f3;min-height:62px}
@@ -1266,11 +1266,9 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   <div class="todoHubGrid">
     <button id="todoHubPending" class="todoHubCard pending"><span class="icon">📋</span><span><strong>Cose da fare</strong><small>Vedi le attività ancora aperte</small></span><span class="chev">›</span></button>
     <button id="todoHubDone" class="todoHubCard completed"><span class="icon">✅</span><span><strong>Cose fatte</strong><small>Vedi le attività completate</small></span><span class="chev">›</span></button>
-    <button id="todoHubSettings" class="todoHubCard config"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori, notifiche e gestione dati</small></span><span class="chev">›</span></button>
-  </div>
-  <div class="todoActions">
-    <button id="todoHubSetup" class="todoBigBtn save"><span class="round">✍</span><span>Torna all'inserimento</span></button>
-    <button id="todoHubHome" class="todoBigBtn add"><span class="round">←</span><span>Torna all'inizio</span></button>
+    <button id="todoHubNotifications" class="todoHubCard notify"><span class="icon">🔔</span><span><strong>Notifiche</strong><small>Scegli quali voci vuoi ricevere</small></span><span class="chev">›</span></button>
+    <button id="todoHubSettings" class="todoHubCard config"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori e gestione della sezione</small></span><span class="chev">›</span></button>
+    <button id="todoHubSetup" class="todoHubCard reopen"><span class="icon">✍️</span><span><strong>Torna all'inserimento</strong><small>Rivedi e modifica le voci iniziali</small></span><span class="chev">›</span></button>
   </div>
 </section>
 
@@ -3920,10 +3918,24 @@ function confirmTodoDelete(kind){
 }
 function openTodoNotificationPicker(){
   if(!todoState().setupDone||!todoState().tasks.length){openModal('Notifiche Cose da fare','<div class="note">Prima inserisci almeno una cosa da fare. Poi potrai scegliere le notifiche voce per voce.</div>');return}
-  const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'};
-  openModal('Notifiche Cose da fare','<div class="hint">Scegli quali cose vuoi che l’app ti ricordi.</div><div id="todoNotifyPick" class="notifyList">'+todoSortTasks(todoState().tasks).map(t=>'<label class="notifyToggle"><span><b>'+esc(t.description)+'</b><small>'+esc(todoDateLabel(t))+'</small></span><input type="checkbox" value="'+escAttr(t.id)+'" '+(t.notify?'checked':'')+'></label>').join('')+'</div>'+notificationRuleFields('todoPickRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoPickCancel" class="btn secondary">Annulla</button><button id="todoPickSave" class="btn">Conferma</button></div>');
+  const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'},tasks=todoSortTasks(todoState().tasks),allOn=tasks.length>0&&tasks.every(t=>t.notify);
+  openModal('Notifiche Cose da fare',
+    '<div class="hint">Scegli quali cose vuoi che l’app ti ricordi.</div>'+
+    '<div class="notifyList"><label class="notifyToggle" style="background:#fff5cf"><span><b>Attiva tutte</b><small>Ricevi le notifiche per tutte le cose da fare</small></span><input id="todoNotifyAll" type="checkbox" '+(allOn?'checked':'')+'></label></div>'+
+    '<div id="todoNotifyPick" class="notifyList">'+tasks.map(t=>'<label class="notifyToggle"><span><b>'+esc(t.description)+'</b><small>'+esc(todoDateLabel(t))+'</small></span><input type="checkbox" value="'+escAttr(t.id)+'" '+(t.notify?'checked':'')+'></label>').join('')+'</div>'+
+    notificationRuleFields('todoPickRule',rule,'Quando avvisare')+
+    '<div class="modalBtns"><button id="todoPickCancel" class="btn secondary">Annulla</button><button id="todoPickSave" class="btn">Conferma</button></div>');
   bindNotificationRuleFields('todoPickRule',rule);
-  $('todoPickCancel').onclick=closeModal;$('todoPickSave').onclick=async()=>{const ids=new Set(Array.from(document.querySelectorAll('#todoNotifyPick input:checked')).map(x=>x.value));todoState().tasks.forEach(t=>t.notify=ids.has(t.id));n.rule=readNotificationRuleFields('todoPickRule');n.enabled=ids.size>0;save();closeModal();if(n.enabled)await requestNotificationPermission()};
+  const all=$('todoNotifyAll'),boxes=()=>Array.from(document.querySelectorAll('#todoNotifyPick input[type="checkbox"]'));
+  all.onchange=()=>boxes().forEach(x=>x.checked=all.checked);
+  boxes().forEach(x=>x.onchange=()=>{all.checked=boxes().length>0&&boxes().every(b=>b.checked)});
+  $('todoPickCancel').onclick=closeModal;
+  $('todoPickSave').onclick=async()=>{
+    const ids=new Set(boxes().filter(x=>x.checked).map(x=>x.value));
+    todoState().tasks.forEach(t=>t.notify=ids.has(t.id));
+    n.rule=readNotificationRuleFields('todoPickRule');n.enabled=ids.size>0;save();closeModal();
+    if(n.enabled)await requestNotificationPermission();
+  };
 }
 async function checkDueTodoNotifications(){
   if(nativeBridge()){queueNativeNotificationSync();return}
@@ -3950,9 +3962,9 @@ $('todoSetupSave').onclick=saveTodoInitialSetup;
 $('todoHubBack').onclick=()=>show('landing');
 $('todoHubPending').onclick=()=>show('todoActive');
 $('todoHubDone').onclick=()=>show('todoDone');
+$('todoHubNotifications').onclick=openTodoNotificationPicker;
 $('todoHubSettings').onclick=()=>show('todoSettings');
 $('todoHubSetup').onclick=openTodoSetupRevisit;
-$('todoHubHome').onclick=()=>show('landing');
 $('todoActiveBack').onclick=()=>show('todoHub');
 $('todoAddTask').onclick=()=>openTodoEditor(null);
 $('todoGoDone').onclick=()=>show('todoDone');
