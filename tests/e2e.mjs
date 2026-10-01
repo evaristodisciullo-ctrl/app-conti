@@ -430,7 +430,10 @@ async function testTodoSection(browser){
   await row.waitFor();
   assert.match(await row.locator('.todoCompleteBtn').innerText(),/Segna\s+come fatta/);
   assert.equal(await row.locator('.todoCompleteCircle').count(),1);
-  const wraps=await row.locator('.todoTaskMain').evaluate(el=>({whiteSpace:getComputedStyle(el).whiteSpace,height:el.getBoundingClientRect().height,scrollHeight:el.scrollHeight}));
+  assert.equal(await row.locator('.todoTaskEditCard').count(),1);
+  assert.match(await row.locator('.todoTaskEditCard').innerText(),/Modifica/);
+  assert.match(await row.locator('.todoTaskEditCard').innerText(),/domani/i);
+  const wraps=await row.locator('.todoTaskEditCard strong').evaluate(el=>({whiteSpace:getComputedStyle(el).whiteSpace,height:el.getBoundingClientRect().height,scrollHeight:el.scrollHeight}));
   assert.equal(wraps.whiteSpace,'normal');
   assert.ok(wraps.height>=30,'La descrizione lunga deve poter andare su più righe');
 
@@ -470,7 +473,10 @@ async function testTodoSection(browser){
   await page.waitForSelector('#todoSettings:not(.hidden)');
   await page.click('#todoSettingColor');
   await page.waitForSelector('#modal:not(.hidden)');
+  const beforeColor=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim());
   await page.click('[data-tcolor="Viola"]');
+  const previewColor=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim());
+  assert.notEqual(previewColor,beforeColor,'Il colore deve cambiare subito al tocco, prima di Salva');
   await page.click('#todoColorSave');
   assert.equal((await state(page)).todo.color,'Viola');
 
