@@ -1210,6 +1210,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <button id="todoHubSettings" class="todoHubCard config"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori, notifiche e gestione dati</small></span><span class="chev">›</span></button>
   </div>
   <div class="todoActions">
+    <button id="todoHubSetup" class="todoBigBtn save"><span class="round">✍</span><span>Torna all'inserimento</span></button>
     <button id="todoHubHome" class="todoBigBtn add"><span class="round">←</span><span>Torna all'inizio</span></button>
   </div>
 </section>
@@ -3377,7 +3378,7 @@ function flashModal(msg){let n=document.createElement('div');n.className='note';
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 
-let todoUndoSnapshot=null;
+let todoUndoSnapshot=null,todoSetupRevisit=false;
 const TODO_COLORS={
   Salvia:{accent:'#6f9f83',soft:'#e5f0e8'},
   Sabbia:{accent:'#b38a58',soft:'#f4eadc'},
@@ -3514,6 +3515,31 @@ function addTodoSetupRow(first=false){
   $('todoSetupRows').insertAdjacentHTML('beforeend',todoSetupRowHtml(first));
   bindTodoSetupRow($('todoSetupRows').lastElementChild);
 }
+function hydrateTodoSetupFromTasks(){
+  const box=$('todoSetupRows');box.innerHTML='';
+  const tasks=todoSortTasks(todoState().tasks);
+  if(!tasks.length){for(let i=0;i<4;i++)addTodoSetupRow(i===0);return}
+  tasks.forEach((task,i)=>{
+    addTodoSetupRow(i===0);
+    const row=box.lastElementChild;
+    row.dataset.taskId=task.id||'';
+    row.dataset.createdAt=String(task.createdAt||Date.now()+i);
+    row.dataset.notify=task.notify?'true':'false';
+    row.dataset.recurrence=task.recurrence?JSON.stringify(task.recurrence):'';
+    row.dataset.notifyRule=task.notifyRule?JSON.stringify(task.notifyRule):'';
+    row.querySelector('.todoDescInput').value=task.description||'';
+    row.querySelector('.todoDateInput').value=task.dateText||(task.date?fmtMovementDate(task.date):'');
+    row.querySelector('.todoNotifyToggle').classList.toggle('on',!!task.notify);
+    autoGrowTodo(row.querySelector('.todoDescInput'));
+    paintTodoRowRecurrence(row);
+  });
+  addTodoSetupRow(false);
+}
+function openTodoSetupRevisit(){
+  todoSetupRevisit=true;
+  hydrateTodoSetupFromTasks();
+  show('todoSetup');
+}
 function renderTodoSetup(){
   applyTodoColor();setTodoGreetings();
   if(!$('todoSetupRows').children.length){for(let i=0;i<4;i++)addTodoSetupRow(i===0)}
@@ -3528,7 +3554,7 @@ function collectTodoSetupRows(){
     if(rawDate&&!parsed){errors.push('riga '+(i+1)+': controlla la data');return}
     if(parsed&&parsed.date&&!rec){errors.push('riga '+(i+1)+': scegli Una sola volta, Ogni mese o Altro');return}
     let notifyRule=null;try{notifyRule=JSON.parse(row.dataset.notifyRule||'null')}catch(e){}
-    out.push({id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Date.now()+i});
+    out.push({id:row.dataset.taskId||'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Number(row.dataset.createdAt)||Date.now()+i});
   });
   if(errors.length)throw new Error(errors.slice(0,4).join(' · '));
   return out;
@@ -3536,7 +3562,7 @@ function collectTodoSetupRows(){
 function saveTodoInitialSetup(){
   try{
     const tasks=collectTodoSetupRows();if(!tasks.length){flashModal('Inserisci almeno una cosa da fare.');return}
-    todoState().tasks=tasks;todoState().setupDone=true;save();show('todoHub');
+    todoState().tasks=tasks;todoState().setupDone=true;todoSetupRevisit=false;save();show('todoHub');
   }catch(e){openModal('Controlla le voci','<div class="note">'+esc(e.message)+'</div>')}
 }
 function renderTodoHub(){applyTodoColor();setTodoGreetings()}
@@ -3717,7 +3743,7 @@ function confirmTodoDelete(kind){
   const text=kind==='all'?'Sei sicuro di voler cancellare tutti i dati della sezione Cose da fare?':'Sei sicuro di voler cancellare queste voci?';
   openModal(title,'<div class="note">'+text+'<br><strong>Questa operazione non può essere annullata.</strong></div><div class="modalBtns"><button id="todoDelNo" class="btn secondary">Annulla</button><button id="todoDelYes" class="btn">Sì, cancella</button></div>');
   $('todoDelNo').onclick=closeModal;$('todoDelYes').onclick=()=>{
-    if(kind==='pending')todoState().tasks=[];if(kind==='done')todoState().done=[];if(kind==='all'){const color=todoState().color;state.todo={setupDone:false,tasks:[],done:[],color,notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}};if($('todoSetupRows'))$('todoSetupRows').innerHTML=''}
+    if(kind==='pending')todoState().tasks=[];if(kind==='done')todoState().done=[];if(kind==='all'){const color=todoState().color;todoSetupRevisit=false;state.todo={setupDone:false,tasks:[],done:[],color,notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}};if($('todoSetupRows'))$('todoSetupRows').innerHTML=''}
     save();closeModal();show(kind==='all'?'todoSetup':'todoSettings');
   };
 }
@@ -3747,13 +3773,14 @@ async function checkDueTodoNotifications(){
 }
 
 // Todo navigation/event wiring.
-$('todoSetupBack').onclick=()=>show('landing');
+$('todoSetupBack').onclick=()=>{const back=todoSetupRevisit?'todoHub':'landing';todoSetupRevisit=false;show(back)};
 $('todoSetupAdd').onclick=()=>addTodoSetupRow(false);
 $('todoSetupSave').onclick=saveTodoInitialSetup;
 $('todoHubBack').onclick=()=>show('landing');
 $('todoHubPending').onclick=()=>show('todoActive');
 $('todoHubDone').onclick=()=>show('todoDone');
 $('todoHubSettings').onclick=()=>show('todoSettings');
+$('todoHubSetup').onclick=openTodoSetupRevisit;
 $('todoHubHome').onclick=()=>show('landing');
 $('todoActiveBack').onclick=()=>show('todoHub');
 $('todoAddTask').onclick=()=>openTodoEditor(null);
