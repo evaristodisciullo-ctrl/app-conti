@@ -294,7 +294,8 @@ async function testFlowMonthNavigation(browser){
   assert.match(await page.locator('#flowMonthLabel').innerText(),/Novembre 2026/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
   assert.match(await page.locator('#flowTotal').innerText(),/Totale pagamenti/);
-  assert.match(await page.locator('#flowTotal').innerText(),/20,00/);
+  const recurringRow=page.locator('.flowUnifiedRow').filter({hasText:'Mensile futuro'}).first();
+  assert.match(await recurringRow.locator('.flowUnifiedAmount').innerText(),/20,00/);
 
   await context.close();
 }
