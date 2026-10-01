@@ -443,7 +443,7 @@ async function testTodoSection(browser){
   assert.equal(await notifyBoxes.count(),1);
   assert.equal(await notifyBoxes.first().isChecked(),true);
   await page.click('#todoPickCancel');
-  await page.waitForSelector('#modal.hidden');
+  await page.waitForSelector('#modal',{state:'hidden'});
 
   const firstSavedId=(await state(page)).todo.tasks[0].id;
   await page.click('#todoHubSetup');
