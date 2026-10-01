@@ -621,9 +621,19 @@ body{color:var(--text)}
 #home .homeTopLine{margin:0 3px 15px;align-items:center}
 #home .homeLandingBack{font-size:26px;color:#2d84cb}
 #home .homeTopLine h1{font-size:25px;color:#102a50;letter-spacing:0}
-#home .homeFeatureGrid{gap:10px}
+#home .homeFeatureGrid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:16px!important;
+  width:100%;
+  padding:0 2px;
+  align-items:stretch;
+}
 #home .homeFeatureCard{
   position:relative;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
   min-height:192px;
   border:0!important;
   border-radius:20px;
