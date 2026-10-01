@@ -552,6 +552,53 @@ async function testTodoMonthYearFilters(browser){
   await context.close();
 }
 
+async function testFlowBannerIsSingleCard(browser){
+  const {context,page}=await freshPage(browser);
+  await setup(page,1000);
+
+  for(const cfg of [
+    {button:'#homeIncome',label:'Aggiungi entrata'},
+    {button:'#homeExpense',label:'Aggiungi pagamento'}
+  ]){
+    await page.click(cfg.button);
+    await page.waitForSelector('#flow:not(.hidden)');
+    const layout=await page.evaluate(()=>{
+      const banner=document.querySelector('#flow .flowBanner');
+      const add=document.querySelector('#flowAdd');
+      const art=document.querySelector('#flowBannerIcon');
+      const b=getComputedStyle(banner),a=getComputedStyle(add),v=getComputedStyle(art);
+      const br=banner.getBoundingClientRect(),ar=add.getBoundingClientRect();
+      return {
+        bannerBackgroundImage:b.backgroundImage,
+        bannerBorderTop:parseFloat(b.borderTopWidth),
+        bannerBorderStyle:b.borderTopStyle,
+        addBackground:a.backgroundColor,
+        addBackgroundImage:a.backgroundImage,
+        addBoxShadow:a.boxShadow,
+        addOpacity:a.opacity,
+        addWidth:ar.width,
+        bannerWidth:br.width,
+        artDisplay:v.display,
+        artBackgroundImage:v.backgroundImage
+      };
+    });
+    assert.equal(layout.bannerBackgroundImage,'none','Il banner non deve usare una seconda cornice incorporata');
+    assert.ok(layout.bannerBorderTop>=1,'Deve esserci una sola cornice esterna');
+    assert.notEqual(layout.bannerBorderStyle,'none');
+    assert.ok(layout.addBackground==='rgba(0, 0, 0, 0)'||layout.addBackground==='transparent','Il pulsante deve essere integrato nel banner senza un secondo riquadro');
+    assert.equal(layout.addBackgroundImage,'none');
+    assert.equal(layout.addBoxShadow,'none');
+    assert.equal(layout.addOpacity,'1');
+    assert.ok(layout.addWidth<layout.bannerWidth*.7,'Il pulsante non deve essere un riquadro sovrapposto a tutta la card');
+    assert.equal(layout.artDisplay,'block');
+    assert.notEqual(layout.artBackgroundImage,'none','L’illustrazione deve restare integrata nella card');
+    assert.equal(await page.locator('#flowAdd').innerText(),cfg.label);
+    await page.click('#flowBack');
+    await page.waitForSelector('#home:not(.hidden)');
+  }
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -572,6 +619,7 @@ try{
   await testHomeTotalsMatchOpenLists(browser);
   await testFlowLongMonthDoesNotOverlapAmount(browser);
   await testHomeFeatureCardsAreSingleFrame(browser);
+  await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
   await testTodoMonthYearFilters(browser);
   await testPwaOffline(browser);
