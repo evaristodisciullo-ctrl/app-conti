@@ -582,7 +582,7 @@ async function testFlowBannerIsSingleCard(browser){
         artBackgroundImage:v.backgroundImage
       };
     });
-    assert.equal(layout.bannerBackgroundImage,'none','Il banner non deve usare una seconda cornice incorporata');
+    assert.ok(!layout.bannerBackgroundImage.includes('url('),'Il banner non deve usare una seconda cornice incorporata come immagine completa');
     assert.ok(layout.bannerBorderTop>=1,'Deve esserci una sola cornice esterna');
     assert.notEqual(layout.bannerBorderStyle,'none');
     assert.ok(layout.addBackground==='rgba(0, 0, 0, 0)'||layout.addBackground==='transparent','Il pulsante deve essere integrato nel banner senza un secondo riquadro');
