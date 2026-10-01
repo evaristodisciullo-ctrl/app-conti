@@ -3480,8 +3480,46 @@ function todoMonthDeadline(month,year){
   const now=todayDate(),y=year||now.getFullYear(),ym=y+'-'+String(month).padStart(2,'0');
   return lastDayISO(ym);
 }
+function parseTodoInlineRecurrence(raw){
+  const text=String(raw||'').trim();
+  const normalized=text.toLowerCase().replace(/[;,]+/g,' ').replace(/\s+/g,' ').trim();
+  const m=normalized.match(/^(\d{1,2})\s+(.+)$/);
+  if(!m)return null;
+  const day=Number(m[1]);if(day<1||day>31)return null;
+  const tokens=m[2].split(' ').filter(Boolean);
+  if(tokens.length<2)return null;
+  const monthNumber=token=>{
+    const t=String(token||'').toLowerCase();
+    for(let i=0;i<IT_MONTHS.length;i++){
+      const name=IT_MONTHS[i].toLowerCase();
+      if(t===name||t===name.slice(0,3))return i+1;
+    }
+    return 0;
+  };
+  const monthNums=tokens.map(monthNumber);
+  if(monthNums.some(x=>!x))return null;
+  const now=todayDate(),months=[];let y=now.getFullYear(),prev=0;
+  monthNums.forEach((month,idx)=>{
+    if(idx===0){
+      if(month<now.getMonth()+1||(month===now.getMonth()+1&&day<now.getDate()))y++;
+    }else if(month<=prev)y++;
+    months.push(y+'-'+String(month).padStart(2,'0'));
+    prev=month;
+  });
+  const firstDate=isoFor(months[0],day);
+  return{
+    raw:text,
+    date:firstDate,
+    label:text,
+    precise:true,
+    spec:{kind:'day',iso:firstDate},
+    recurrence:{kind:'selected',months:[...new Set(months)],freeText:text},
+    explicit:true
+  };
+}
 function parseTodoDateInput(raw){
   const text=String(raw||'').trim();if(!text)return{raw:'',date:'',label:'',precise:false,spec:null,recurrence:null,explicit:false};
+  const inline=parseTodoInlineRecurrence(text);if(inline)return inline;
   const low=text.toLowerCase().replace(/\s+/g,' ');
   if(low==='oggi'||low==='domani'||low==='dopodomani'){
     const date=addDaysISO(todayISO(),low==='oggi'?0:low==='domani'?1:2);
@@ -3508,7 +3546,8 @@ function parseTodoDateInput(raw){
   const setup=parseSetupDate(text);
   if(setup&&setup.date){
     const explicit=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(low);
-    return{raw:text,date:setup.date,label:text,precise:true,spec:setup.spec,recurrence:explicit?setup.recurrence:null,explicit};
+    const recurrence=explicit&&setup.recurrence?Object.assign({},setup.recurrence,{freeText:text}):null;
+    return{raw:text,date:setup.date,label:text,precise:true,spec:setup.spec,recurrence,explicit};
   }
   const spec=parseFlexibleDate(text);
   if(spec){
@@ -3523,7 +3562,7 @@ function parseTodoDateInput(raw){
   return null;
 }
 function todoRecurrenceSummary(r){
-  if(!r)return'';if(r.kind==='single')return'Una sola volta';if(r.kind==='monthly')return'Ogni mese';return recurrenceSummary(r);
+  if(!r)return'';if(r.freeText)return r.freeText;if(r.kind==='single')return'Una sola volta';if(r.kind==='monthly')return'Ogni mese';return recurrenceSummary(r);
 }
 function todoSetupRowHtml(first=false){
   return '<div class="todoSetupRow">'+
@@ -3545,11 +3584,16 @@ function paintTodoRowRecurrence(row){
   const parsed=parseTodoDateInput(row.querySelector('.todoDateInput').value);
   if(!row.querySelector('.todoDateInput').value.trim()){area.innerHTML='';return}
   if(!parsed){area.innerHTML='<div class="todoInlineNote">Controlla la data inserita.</div>';return}
+  if(parsed.explicit&&parsed.recurrence){
+    r=parsed.recurrence;row.dataset.recurrence=JSON.stringify(r);row.dataset.scheduleText=parsed.raw||'';
+    area.innerHTML='<div class="todoRecSummary">✓ '+esc(parsed.raw)+'</div>';
+    return;
+  }
   const active=r?(r.kind==='single'?'single':r.kind==='monthly'?'monthly':'custom'):'';
   area.innerHTML='<div class="todoRecChoices"><button data-tr="single" class="'+(active==='single'?'active':'')+'">Una sola volta</button><button data-tr="monthly" class="'+(active==='monthly'?'active':'')+'">Ogni mese</button><button data-tr="custom" class="'+(active==='custom'?'active':'')+'">Altro</button></div>'+(r?'<div class="todoRecSummary">'+esc(todoRecurrenceSummary(r))+'</div>':'');
   area.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{
     if(b.dataset.tr==='custom'){openTodoCustomRecurrence(row,parsed.date);return}
-    setTodoRowRecurrence(row,b.dataset.tr,parsed.date);
+    row.dataset.scheduleText='';setTodoRowRecurrence(row,b.dataset.tr,parsed.date);
   });
 }
 function openTodoCustomRecurrence(row,date){
@@ -3575,7 +3619,12 @@ function openTodoRowNotifyRule(row){
 }
 function bindTodoSetupRow(row){
   const ta=row.querySelector('.todoDescInput');ta.addEventListener('input',()=>autoGrowTodo(ta));autoGrowTodo(ta);
-  row.querySelector('.todoDateInput').addEventListener('input',()=>{row.dataset.recurrence='';paintTodoRowRecurrence(row)});
+  row.querySelector('.todoDateInput').addEventListener('input',()=>{
+    row.dataset.recurrence='';row.dataset.scheduleText='';
+    const parsed=parseTodoDateInput(row.querySelector('.todoDateInput').value);
+    if(parsed&&parsed.explicit&&parsed.recurrence){row.dataset.recurrence=JSON.stringify(parsed.recurrence);row.dataset.scheduleText=parsed.raw||''}
+    paintTodoRowRecurrence(row)
+  });
   const n=row.querySelector('.todoNotifyToggle');n.onclick=()=>{
     const on=row.dataset.notify==='true';
     if(on){row.dataset.notify='false';n.classList.remove('on');return}
@@ -3598,6 +3647,7 @@ function hydrateTodoSetupFromTasks(){
     row.dataset.createdAt=String(task.createdAt||Date.now()+i);
     row.dataset.notify=task.notify?'true':'false';
     row.dataset.recurrence=task.recurrence?JSON.stringify(task.recurrence):'';
+    row.dataset.scheduleText=task.scheduleText||'';
     row.dataset.notifyRule=task.notifyRule?JSON.stringify(task.notifyRule):'';
     row.querySelector('.todoDescInput').value=task.description||'';
     row.querySelector('.todoDateInput').value=task.dateText||(task.date?fmtMovementDate(task.date):'');
@@ -3624,9 +3674,11 @@ function collectTodoSetupRows(){
     if(!description){errors.push('riga '+(i+1)+': manca la descrizione');return}
     const parsed=parseTodoDateInput(rawDate);let rec=null;try{rec=JSON.parse(row.dataset.recurrence||'null')}catch(e){}
     if(rawDate&&!parsed){errors.push('riga '+(i+1)+': controlla la data');return}
+    if(!rec&&parsed&&parsed.explicit&&parsed.recurrence)rec=parsed.recurrence;
     if(parsed&&parsed.date&&!rec){errors.push('riga '+(i+1)+': scegli Una sola volta, Ogni mese o Altro');return}
     let notifyRule=null;try{notifyRule=JSON.parse(row.dataset.notifyRule||'null')}catch(e){}
-    out.push({id:row.dataset.taskId||'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Number(row.dataset.createdAt)||Date.now()+i});
+    const scheduleText=(parsed&&parsed.explicit)?rawDate:(row.dataset.scheduleText||'');
+    out.push({id:row.dataset.taskId||'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,scheduleText,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Number(row.dataset.createdAt)||Date.now()+i});
   });
   if(errors.length)throw new Error(errors.slice(0,4).join(' · '));
   return out;
@@ -3644,7 +3696,7 @@ function todoSortTasks(arr){
     const ad=a.date||'9999-12-31',bd=b.date||'9999-12-31';if(ad!==bd)return ad.localeCompare(bd);return Number(a.createdAt||0)-Number(b.createdAt||0);
   });
 }
-function todoDateLabel(t){return t.dateText||t.date&&fmtMovementDate(t.date)||'Senza data'}
+function todoDateLabel(t){return t.scheduleText||t.dateText||t.date&&fmtMovementDate(t.date)||'Senza data'}
 function todoFilterDate(item,kind){return item&&item.date||''}
 function todoFilterYears(kind){
   const source=kind==='active'?todoState().tasks:todoState().done,years=new Set([String(todayDate().getFullYear())]);
@@ -3716,10 +3768,10 @@ function todoRecurrenceNext(task){
 }
 function completeTodoTask(id){
   const idx=todoState().tasks.findIndex(t=>t.id===id);if(idx<0)return;const original=structuredClone(todoState().tasks[idx]),t=todoState().tasks[idx];
-  const done={id:'td'+Date.now()+Math.random(),taskId:t.id,description:t.description,date:t.date,dateText:t.dateText,completedAt:todayISO(),completedTs:Date.now(),taskSnapshot:structuredClone(t)};
+  const done={id:'td'+Date.now()+Math.random(),taskId:t.id,description:t.description,date:t.date,dateText:t.scheduleText||t.dateText,scheduleText:t.scheduleText||'',completedAt:todayISO(),completedTs:Date.now(),taskSnapshot:structuredClone(t)};
   todoState().done.push(done);
   const next=todoRecurrenceNext(t);
-  if(next){t.date=next;t.dateText=fmtMovementDate(next);t.precise=true;t.dateSpec={kind:'day',iso:next}}
+  if(next){t.date=next;if(!t.scheduleText)t.dateText=fmtMovementDate(next);t.precise=true;t.dateSpec={kind:'day',iso:next}}
   else todoState().tasks.splice(idx,1);
   save();todoUndoSnapshot={doneId:done.id,task:original};showTodoUndo(done.description);renderTodoActive();
 }
@@ -3738,7 +3790,7 @@ function renderTodoDone(){
   if(!rows.length){el.innerHTML='<div class="todoEmpty">'+(allRows.length?'Nessuna cosa fatta per questo periodo.':'Non hai ancora segnato nessuna cosa come fatta.')+'</div>';return}
   rows.forEach(d=>{
     const row=document.createElement('div');row.className='todoDoneRow';
-    row.innerHTML='<button class="todoTaskMain">'+esc(d.description)+'</button><div class="todoTaskDate">'+esc(d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</div><button class="todoNotifyBtn" disabled>🔕</button><div class="todoDoneStatus">✓ Fatta</div>';
+    row.innerHTML='<button class="todoTaskMain">'+esc(d.description)+'</button><div class="todoTaskDate">'+esc(d.scheduleText||d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</div><button class="todoNotifyBtn" disabled>🔕</button><div class="todoDoneStatus">✓ Fatta</div>';
     row.querySelector('.todoTaskMain').onclick=()=>openTodoDoneDetail(d.id);el.appendChild(row);
   });
 }
@@ -3787,6 +3839,11 @@ function openTodoEditor(id){
     const area=$('todoEditRecArea');
     if(!$('todoEditDate').value.trim()){area.innerHTML='';return}
     if(!parsed){area.innerHTML='<div class="note">Controlla la data inserita.</div>';return}
+    if(parsed.explicit&&parsed.recurrence){
+      rec=parsed.recurrence;
+      area.innerHTML='<div class="todoRecSummary">✓ '+esc(parsed.raw)+'</div>';
+      return;
+    }
     const active=rec?(rec.kind==='single'?'single':rec.kind==='monthly'?'monthly':'custom'):'';
     area.innerHTML='<div class="settingsSubTitle">COME VUOI REGISTRARLA?</div><div class="todoRecChoices"><button id="teSingle" class="'+(active==='single'?'active':'')+'">Una sola volta</button><button id="teMonthly" class="'+(active==='monthly'?'active':'')+'">Ogni mese</button><button id="teCustom" class="'+(active==='custom'?'active':'')+'">Altro</button></div>'+(rec?'<div class="todoRecSummary">'+esc(todoRecurrenceSummary(rec))+'</div>':'');
     $('teSingle').onclick=()=>{rec={kind:'single',month:parsed.date.slice(0,7)};paint()};
@@ -3804,8 +3861,10 @@ function openTodoEditor(id){
     const description=$('todoEditDescription').value.trim(),raw=$('todoEditDate').value.trim(),parsed=parseTodoDateInput(raw);
     if(!description){flashModal('Inserisci la descrizione.');return}
     if(raw&&!parsed){flashModal('Controlla la data inserita.');return}
+    if(!rec&&parsed&&parsed.explicit&&parsed.recurrence)rec=parsed.recurrence;
     if(parsed&&parsed.date&&!rec){flashModal('Scegli Una sola volta, Ogni mese o Altro.');return}
-    const obj={id:existing?existing.id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:raw,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:$('todoEditNotify').checked,notifyRule,createdAt:existing?existing.createdAt:Date.now()};
+    const scheduleText=parsed&&parsed.explicit?raw:'';
+    const obj={id:existing?existing.id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:raw,scheduleText,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:$('todoEditNotify').checked,notifyRule,createdAt:existing?existing.createdAt:Date.now()};
     if(existing){const i=todoState().tasks.findIndex(x=>x.id===existing.id);todoState().tasks[i]=obj}else todoState().tasks.push(obj);
     if(obj.notify)todoState().notifications.enabled=true;save();closeModal();show('todoActive');
   };
