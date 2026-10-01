@@ -356,6 +356,45 @@ async function testFlowLongMonthDoesNotOverlapAmount(browser){
   await context.close();
 }
 
+async function testHomeFeatureCardsAreSingleFrame(browser){
+  const {context,page}=await freshPage(browser);await setup(page,1000);
+  const layout=await page.evaluate(()=>{
+    const read=selector=>{
+      const card=document.querySelector(selector);
+      const scene=card.querySelector('.homeScene');
+      const c=card.getBoundingClientRect();
+      const s=scene.getBoundingClientRect();
+      const cs=getComputedStyle(card);
+      const ss=getComputedStyle(scene);
+      const pseudo=getComputedStyle(card,'::after');
+      return {
+        cardLeft:c.left,cardRight:c.right,cardTop:c.top,
+        sceneLeft:s.left,sceneRight:s.right,sceneTop:s.top,
+        sceneWidth:s.width,sceneHeight:s.height,
+        borderTopWidth:parseFloat(cs.borderTopWidth),
+        overflow:cs.overflow,
+        outlineStyle:cs.outlineStyle,
+        pseudoDisplay:pseudo.display,
+        backgroundImage:ss.backgroundImage
+      };
+    };
+    return {income:read('#homeIncome'),expense:read('#homeExpense')};
+  });
+  assert.ok(layout.income.cardRight<layout.expense.cardLeft,'Le card Entrate e Pagamenti devono restare separate');
+  for(const card of [layout.income,layout.expense]){
+    assert.ok(card.borderTopWidth>=1,'Ogni card deve avere una sola cornice esterna');
+    assert.equal(card.overflow,'hidden');
+    assert.equal(card.outlineStyle,'none');
+    assert.equal(card.pseudoDisplay,'none');
+    assert.ok(card.sceneLeft<card.cardLeft,'La cornice incorporata nell’illustrazione va ritagliata a sinistra');
+    assert.ok(card.sceneRight>card.cardRight,'La cornice incorporata nell’illustrazione va ritagliata a destra');
+    assert.ok(card.sceneTop<card.cardTop,'La cornice incorporata nell’illustrazione va ritagliata in alto');
+    assert.ok(card.sceneHeight<card.sceneWidth*174/260-1,'La cornice inferiore dell’illustrazione va ritagliata');
+    assert.notEqual(card.backgroundImage,'none');
+  }
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -375,6 +414,7 @@ try{
   await testFlowMonthNavigation(browser);
   await testHomeTotalsMatchOpenLists(browser);
   await testFlowLongMonthDoesNotOverlapAmount(browser);
+  await testHomeFeatureCardsAreSingleFrame(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
