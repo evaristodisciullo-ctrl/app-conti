@@ -495,6 +495,65 @@ async function testTodoSection(browser){
   await context.close();
 }
 
+async function testTodoInlineDateRecurrences(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();
+  await first.locator('.todoDescInput').fill('Pagamenti trimestrali');
+  await first.locator('.todoDateInput').fill('10 ottobre novembre dicembre');
+  await first.locator('.todoDateInput').dispatchEvent('input');
+
+  assert.equal(await first.locator('[data-tr]').count(),0,'La ricorrenza scritta nella data non deve obbligare ad aprire Altro');
+  assert.match(await first.locator('.todoRecSummary').innerText(),/10 ottobre novembre dicembre/i);
+
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+  let st=await state(page);
+  let task=st.todo.tasks.find(t=>t.description==='Pagamenti trimestrali');
+  assert.ok(task);
+  assert.equal(task.recurrence.kind,'selected');
+  assert.equal(task.recurrence.months.length,3);
+  assert.equal(task.scheduleText,'10 ottobre novembre dicembre');
+
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:'Pagamenti trimestrali'}).first();
+  assert.match(await row.locator('.todoTaskEditCard').innerText(),/10 ottobre novembre dicembre/i);
+
+  await row.locator('.todoCompleteBtn').click();
+  st=await state(page);
+  task=st.todo.tasks.find(t=>t.description==='Pagamenti trimestrali');
+  assert.ok(task,'Dopo il primo mese la voce ricorrente deve restare tra le cose da fare');
+  assert.equal(task.scheduleText,'10 ottobre novembre dicembre');
+  await page.locator('#undoSnack').waitFor({state:'visible'}).catch(()=>{});
+  row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:'Pagamenti trimestrali'}).first();
+  assert.match(await row.locator('.todoTaskEditCard').innerText(),/10 ottobre novembre dicembre/i);
+
+  await page.click('#todoAddTask');
+  await page.waitForSelector('#modal:not(.hidden)');
+  await page.fill('#todoEditDescription','Controllo quattro mesi');
+  await page.fill('#todoEditDate','10 per 4 mesi');
+  await page.dispatchEvent('#todoEditDate','input');
+  assert.equal(await page.locator('#todoEditRecArea #teCustom').count(),0,'Anche "10 per 4 mesi" deve essere riconosciuto direttamente');
+  assert.match(await page.locator('#todoEditRecArea').innerText(),/10 per 4 mesi/i);
+  await page.click('#todoEditSave');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+
+  st=await state(page);
+  const four=st.todo.tasks.find(t=>t.description==='Controllo quattro mesi');
+  assert.ok(four);
+  assert.equal(four.recurrence.kind,'count');
+  assert.equal(four.recurrence.count,4);
+  assert.equal(four.scheduleText,'10 per 4 mesi');
+  const fourRow=page.locator('#todoActiveList .todoTaskRow').filter({hasText:'Controllo quattro mesi'}).first();
+  assert.match(await fourRow.locator('.todoTaskEditCard').innerText(),/10 per 4 mesi/i);
+
+  await context.close();
+}
+
 async function testTodoMonthYearFilters(browser){
   const {context,page}=await freshPage(browser);
   await page.fill('#landingNickname','Evaristo');
@@ -621,6 +680,7 @@ try{
   await testHomeFeatureCardsAreSingleFrame(browser);
   await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
+  await testTodoInlineDateRecurrences(browser);
   await testTodoMonthYearFilters(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
