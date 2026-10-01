@@ -419,11 +419,31 @@ async function testTodoSection(browser){
   await page.click('#todoSetupSave');
   await page.waitForSelector('#todoHub:not(.hidden)');
 
-  assert.equal(await page.locator('#todoHub .todoHubCard').count(),3);
+  assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose fatte/);
+  assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
+  assert.equal(await page.locator('#todoHubHome').count(),0,'Torna all’inizio non deve esserci: si usa la freccia in alto');
+  const compactCards=await page.evaluate(()=>['todoHubNotifications','todoHubSettings','todoHubSetup'].map(id=>{
+    const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundColor;
+    return {id,height:Math.round(r.height),bg};
+  }));
+  assert.equal(compactCards[0].height,compactCards[1].height);
+  assert.equal(compactCards[1].height,compactCards[2].height);
+  assert.equal(new Set(compactCards.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
+
+  await page.click('#todoHubNotifications');
+  await page.waitForSelector('#modal:not(.hidden)');
+  assert.equal(await page.locator('#todoNotifyAll').count(),1);
+  assert.match(await page.locator('#modal').innerText(),/Attiva tutte/);
+  await page.check('#todoNotifyAll');
+  const notifyBoxes=page.locator('#todoNotifyPick input[type="checkbox"]');
+  assert.equal(await notifyBoxes.count(),1);
+  assert.equal(await notifyBoxes.first().isChecked(),true);
+  await page.click('#todoPickCancel');
+  await page.waitForSelector('#modal.hidden');
 
   const firstSavedId=(await state(page)).todo.tasks[0].id;
   await page.click('#todoHubSetup');
