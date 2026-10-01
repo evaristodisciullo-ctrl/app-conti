@@ -423,10 +423,22 @@ async function testTodoSection(browser){
   assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose fatte/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
+  assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
+
+  const firstSavedId=(await state(page)).todo.tasks[0].id;
+  await page.click('#todoHubSetup');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+  assert.equal(await page.locator('#todoSetupRows .todoDescInput').first().inputValue(),longText);
+  await page.locator('#todoSetupRows .todoDescInput').first().fill(longText+' aggiornato');
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+  const afterRevisit=await state(page);
+  assert.equal(afterRevisit.todo.tasks[0].id,firstSavedId,'Tornare all’inserimento non deve duplicare la voce');
+  assert.equal(afterRevisit.todo.tasks[0].description,longText+' aggiornato');
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
-  let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText}).first();
+  let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
   assert.match(await row.locator('.todoCompleteBtn').innerText(),/Segna\s+come fatta/);
   assert.equal(await row.locator('.todoCompleteCircle').count(),1);
@@ -450,7 +462,7 @@ async function testTodoSection(browser){
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
-  assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText));
+  assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
 
   await page.click('#todoDoneToActive');
   await page.waitForSelector('#todoActive:not(.hidden)');
