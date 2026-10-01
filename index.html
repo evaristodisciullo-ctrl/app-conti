@@ -3514,10 +3514,10 @@ function collectTodoSetupRows(){
   Array.from($('todoSetupRows').querySelectorAll('.todoSetupRow')).forEach((row,i)=>{
     const description=row.querySelector('.todoDescInput').value.trim(),rawDate=row.querySelector('.todoDateInput').value.trim();
     if(!description&&!rawDate&&row.dataset.notify!=='true')return;
-    if(!description){errors.push('riga '+(i+1)+': manca la descrizione);return}
+    if(!description){errors.push('riga '+(i+1)+': manca la descrizione');return}
     const parsed=parseTodoDateInput(rawDate);let rec=null;try{rec=JSON.parse(row.dataset.recurrence||'null')}catch(e){}
-    if(rawDate&&!parsed){errors.push('riga '+(i+1)+': controlla la data);return}
-    if(parsed&&parsed.date&&!rec){errors.push('riga '+(i+1)+': scegli Una sola volta, Ogni mese o Altro);return}
+    if(rawDate&&!parsed){errors.push('riga '+(i+1)+': controlla la data');return}
+    if(parsed&&parsed.date&&!rec){errors.push('riga '+(i+1)+': scegli Una sola volta, Ogni mese o Altro');return}
     let notifyRule=null;try{notifyRule=JSON.parse(row.dataset.notifyRule||'null')}catch(e){}
     out.push({id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Date.now()+i});
   });
