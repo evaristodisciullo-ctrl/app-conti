@@ -1479,7 +1479,7 @@ function openColorSettings(){
   $('modal').classList.add('fullSettings');
   $('prefTextSize').value=p.textSize||'medium';$('prefReduceMotion').checked=!!p.reduceAnimations;$('prefLightTheme').checked=p.lightTheme!==false;
   document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(b=>b.onclick=()=>{selected=b.dataset.color;applyAppColor(selected);document.querySelectorAll('#settingsColorDots .settingsColorDot').forEach(x=>x.classList.toggle('active',x===b))});
-  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');applyPreferences();closeModal()};
+  $('colorCancel').onclick=()=>{applyAppColor(state.appColor||'Blu');applyPreferences();applyTodoColor();closeModal()};
   $('colorSave').onclick=()=>{state.appColor=selected;state.preferences.textSize=$('prefTextSize').value;state.preferences.reduceAnimations=$('prefReduceMotion').checked;state.preferences.lightTheme=$('prefLightTheme').checked;save();applyAppColor(selected);applyPreferences();closeModal()};
 }
 function openOtherSettings(){
@@ -1678,6 +1678,8 @@ function scheduleSecurityLock(){
   securityLockTimer=setTimeout(()=>{securityLockTimer=null;if(state.security&&state.security.enabled){closeModal();show('landing')}},remaining);
 }
 function touchSecurity(){
+  const inTodo=['todoSetup','todoHub','todoActive','todoDone','todoSettings'].some(id=>$(id)&&!$(id).classList.contains('hidden'));
+  if(inTodo)return;
   if(state.security&&state.security.enabled&&document.querySelector('#landing.hidden')){
     if(!securityFresh()){closeModal();show('landing');openUnlock();return}
     state.security.lastActivity=Date.now();localStorage.setItem(KEY,JSON.stringify(state));scheduleSecurityLock();
@@ -3611,6 +3613,13 @@ function openTodoRuleEditor(current,onSave,onCancel){
   $('todoRuleCancel').onclick=()=>{closeModal();if(onCancel)onCancel()};
   $('todoRuleSave').onclick=async()=>{const out=readNotificationRuleFields('todoRuleEdit');closeModal();if(onSave)onSave(out);await requestNotificationPermission()};
 }
+function openTodoRulePicker(current,onSave,onCancel){
+  const rule=current||todoState().notifications.rule||{timing:'same',time:'09:00',overdue:'none'};
+  openPickerModal('Quando vuoi essere avvisato?',notificationRuleFields('todoRulePick',rule,'Promemoria')+'<div class="modalBtns"><button id="todoRulePickCancel" class="btn secondary">Annulla</button><button id="todoRulePickSave" class="btn">Conferma</button></div>');
+  bindNotificationRuleFields('todoRulePick',rule);
+  $('todoRulePickCancel').onclick=()=>{closePickerModal();if(onCancel)onCancel()};
+  $('todoRulePickSave').onclick=async()=>{const out=readNotificationRuleFields('todoRulePick');closePickerModal();if(onSave)onSave(out);await requestNotificationPermission()};
+}
 function toggleTodoNotify(id){
   const t=todoState().tasks.find(x=>x.id===id);if(!t)return;
   if(t.notify){t.notify=false;save();renderTodoActive();return}
@@ -3639,7 +3648,7 @@ function openTodoEditor(id){
     $('teCustom').onclick=()=>{openEditorAdvancedRecurrence(parsed.date,rec,cfg=>{rec=cfg;paint()})};
   };
   $('todoEditDate').oninput=()=>{rec=null;paint()};paint();
-  $('todoEditNotify').onchange=()=>{if($('todoEditNotify').checked)openTodoRuleEditor(notifyRule||todoState().notifications.rule,r=>{notifyRule=r;$('modal').classList.remove('hidden')},()=>{$('todoEditNotify').checked=false;$('modal').classList.remove('hidden')})};
+  $('todoEditNotify').onchange=()=>{if($('todoEditNotify').checked)openTodoRulePicker(notifyRule||todoState().notifications.rule,r=>{notifyRule=r},()=>{$('todoEditNotify').checked=false})};
   $('todoEditDelete').onclick=()=>{
     if(!existing){closeModal();return}
     openModal('Elimina voce','<div class="note">Vuoi eliminare questa cosa da fare?</div><div class="modalBtns"><button id="tedNo" class="btn secondary">Annulla</button><button id="tedYes" class="btn">Elimina</button></div>');
@@ -3680,7 +3689,7 @@ function confirmTodoDelete(kind){
   const text=kind==='all'?'Sei sicuro di voler cancellare tutti i dati della sezione Cose da fare?':'Sei sicuro di voler cancellare queste voci?';
   openModal(title,'<div class="note">'+text+'<br><strong>Questa operazione non può essere annullata.</strong></div><div class="modalBtns"><button id="todoDelNo" class="btn secondary">Annulla</button><button id="todoDelYes" class="btn">Sì, cancella</button></div>');
   $('todoDelNo').onclick=closeModal;$('todoDelYes').onclick=()=>{
-    if(kind==='pending')todoState().tasks=[];if(kind==='done')todoState().done=[];if(kind==='all'){const color=todoState().color;state.todo={setupDone:false,tasks:[],done:[],color,notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}}}
+    if(kind==='pending')todoState().tasks=[];if(kind==='done')todoState().done=[];if(kind==='all'){const color=todoState().color;state.todo={setupDone:false,tasks:[],done:[],color,notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}};if($('todoSetupRows'))$('todoSetupRows').innerHTML=''}
     save();closeModal();show(kind==='all'?'todoSetup':'todoSettings');
   };
 }
