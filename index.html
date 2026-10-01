@@ -635,25 +635,29 @@ body{color:var(--text)}
   min-width:0!important;
   max-width:100%!important;
   min-height:192px;
-  border:0!important;
+  border:2px solid transparent!important;
   border-radius:20px;
   padding:0;
-  background:#eefaff;
+  background:#fff;
   box-shadow:0 9px 22px rgba(39,106,151,.12)!important;
   overflow:hidden;
 }
-#home .incomeFeature{background:#effdf8}
-#home .expenseFeature{background:#eef8ff}
+#home .incomeFeature{background:#f4fffb;border-color:#20d7a2!important}
+#home .expenseFeature{background:#f5fbff;border-color:#1eb9ef!important}
 #home .incomeFeature,#home .expenseFeature{outline:0!important}
 #home .homeScene{
   position:absolute!important;
-  inset:0!important;
-  height:100%!important;
+  left:-7px!important;
+  right:-7px!important;
+  top:-5px!important;
+  bottom:auto!important;
+  height:126px!important;
   margin:0!important;
   background-color:transparent!important;
   background-repeat:no-repeat!important;
-  background-position:top center!important;
-  background-size:100% auto!important
+  background-position:center top!important;
+  background-size:100% auto!important;
+  overflow:hidden!important
 }
 #home .incomeFeature .homeScene{background-image:url('assets/home-income-art.webp')!important}
 #home .expenseFeature .homeScene{background-image:url('assets/home-payment-art.webp')!important}
@@ -830,7 +834,7 @@ body{color:var(--text)}
 
 @media(max-width:410px){
   #home .homeFeatureCard{min-height:176px}
-  #home .homeScene{height:108px!important}
+  #home .homeScene{height:126px!important}
   .flowBanner{min-height:92px}
   .flowUnifiedRow{grid-template-columns:minmax(0,1fr) 92px}
   .landingCanonicalName{font-size:16px}
