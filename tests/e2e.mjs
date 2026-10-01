@@ -495,6 +495,63 @@ async function testTodoSection(browser){
   await context.close();
 }
 
+async function testTodoMonthYearFilters(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();
+  await first.locator('.todoDescInput').fill('Voce iniziale');
+  await first.locator('.todoDateInput').fill('15 settembre 2026');
+  await first.locator('.todoDateInput').dispatchEvent('input');
+  await first.locator('[data-tr="single"]').click();
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+
+  await page.evaluate(k=>{
+    const st=JSON.parse(localStorage.getItem(k));
+    st.todo.tasks=[
+      {id:'sep',description:'Da fare settembre',date:'2026-09-15',dateText:'15 settembre 2026',precise:true,dateSpec:{kind:'day',iso:'2026-09-15'},recurrence:{kind:'single',month:'2026-09'},notify:false,createdAt:1},
+      {id:'oct',description:'Da fare ottobre',date:'2026-10-20',dateText:'20 ottobre 2026',precise:true,dateSpec:{kind:'day',iso:'2026-10-20'},recurrence:{kind:'single',month:'2026-10'},notify:false,createdAt:2},
+      {id:'nodate',description:'Da fare senza data',date:'',dateText:'',precise:false,dateSpec:null,recurrence:null,notify:false,createdAt:3}
+    ];
+    st.todo.done=[
+      {id:'dsep',taskId:'x1',description:'Fatta settembre',date:'2026-09-05',dateText:'5 settembre 2026',completedAt:'2026-09-06',completedTs:1},
+      {id:'doct',taskId:'x2',description:'Fatta ottobre',date:'2026-10-08',dateText:'8 ottobre 2026',completedAt:'2026-10-09',completedTs:2}
+    ];
+    localStorage.setItem(k,JSON.stringify(st));
+  },KEY);
+  await page.reload();
+  await page.waitForSelector('#landing:not(.hidden)');
+  await page.click('#landingTodo');
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+
+  await page.selectOption('#todoActiveFilterMonth','09');
+  await page.selectOption('#todoActiveFilterYear','2026');
+  assert.equal(await page.locator('#todoActiveList').getByText('Da fare settembre',{exact:true}).count(),1);
+  assert.equal(await page.locator('#todoActiveList').getByText('Da fare ottobre',{exact:true}).count(),0);
+  assert.equal(await page.locator('#todoActiveList').getByText('Da fare senza data',{exact:true}).count(),0);
+  assert.match(await page.locator('#todoActiveFilterSummary').innerText(),/Settembre.*2026/);
+
+  await page.selectOption('#todoActiveFilterMonth','all');
+  assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),2);
+  await page.click('#todoActiveFilterAll');
+  assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),3);
+
+  await page.click('#todoGoDone');
+  await page.waitForSelector('#todoDone:not(.hidden)');
+  await page.selectOption('#todoDoneFilterMonth','10');
+  await page.selectOption('#todoDoneFilterYear','2026');
+  assert.equal(await page.locator('#todoDoneList').getByText('Fatta ottobre',{exact:true}).count(),1);
+  assert.equal(await page.locator('#todoDoneList').getByText('Fatta settembre',{exact:true}).count(),0);
+  assert.match(await page.locator('#todoDoneFilterSummary').innerText(),/Ottobre.*2026/);
+  await page.click('#todoDoneFilterAll');
+  assert.equal(await page.locator('#todoDoneList .todoDoneRow').count(),2);
+
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -516,6 +573,7 @@ try{
   await testFlowLongMonthDoesNotOverlapAmount(browser);
   await testHomeFeatureCardsAreSingleFrame(browser);
   await testTodoSection(browser);
+  await testTodoMonthYearFilters(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
