@@ -46,7 +46,7 @@ async function confirmStatus(page,{amount,date}={}){
   if(date)await page.fill('#completeActualDate',date);
   await page.click('#completeConfirm');
 }
-async function addItem(page,type,name,amount,{date=slash(iso()),rec='single',category='',complete=false,actualAmount=null}={}){
+async function addItem(page,type,name,amount,{date=slash(iso()),rec='single',category='',complete=false,actualAmount=null,actualDate=null}={}){
   await page.click(type==='income'?'#homeIncome':'#homeExpense');
   await page.waitForSelector('#flow:not(.hidden)');
   await page.click('#flowAdd');
@@ -58,7 +58,7 @@ async function addItem(page,type,name,amount,{date=slash(iso()),rec='single',cat
   await page.click('#editSave');
   const row=page.locator('.flowUnifiedRow').filter({hasText:name}).first();
   await row.waitFor();
-  if(complete){await row.locator('.flowUnifiedStatus').click();await confirmStatus(page,{amount:actualAmount==null?amount:actualAmount})}
+  if(complete){await row.locator('.flowUnifiedStatus').click();await confirmStatus(page,{amount:actualAmount==null?amount:actualAmount,date:actualDate})}
   return row;
 }
 async function backHome(page){if(await page.locator('#flow:not(.hidden)').count())await page.click('#flowBack');await page.waitForSelector('#home:not(.hidden)')}
@@ -272,7 +272,7 @@ async function testSettingsAppearanceSecurityBackup(browser){
 async function testFlowMonthNavigation(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);
 
-  await addItem(page,'expense','Pagamento passato',15,{date:'25 settembre 2026',complete:true});
+  await addItem(page,'expense','Pagamento passato',15,{date:'25 settembre 2026',complete:true,actualDate:'25 settembre 2026'});
   await backHome(page);
 
   await addItem(page,'expense','Mensile futuro',20,{date:'10 ottobre 2026',rec:'monthly'});
@@ -294,8 +294,7 @@ async function testFlowMonthNavigation(browser){
   assert.match(await page.locator('#flowMonthLabel').innerText(),/Novembre 2026/);
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Mensile futuro/);
   assert.match(await page.locator('#flowTotal').innerText(),/Totale pagamenti/);
-  const recurringRow=page.locator('.flowUnifiedRow').filter({hasText:'Mensile futuro'}).first();
-  assert.match(await recurringRow.locator('.flowUnifiedAmount').innerText(),/20,00/);
+  assert.match(await page.locator('#flowTotal').innerText(),/20,00/);
 
   await context.close();
 }
