@@ -709,29 +709,79 @@ body{color:var(--text)}
 .flowBanner{
   position:relative;
   width:100%;
-  aspect-ratio:3.92/1;
-  min-height:0;
-  border:0!important;
-  border-radius:20px!important;
-  box-shadow:0 0 0 2px #67c7e8,0 8px 20px rgba(39,106,151,.08)!important;
+  min-height:108px;
+  aspect-ratio:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:14px 16px!important;
+  border:1px solid #bfe4f3!important;
+  border-radius:18px!important;
+  box-shadow:0 7px 18px rgba(42,100,142,.06)!important;
   overflow:hidden!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:16px!important;
-  background-color:transparent!important;
-  background-position:center!important;
-  background-size:100% 100%!important;
+  background-image:none!important;
+}
+.flowIncome .flowBanner{background:linear-gradient(135deg,#eef9ff,#e7f8f5)!important}
+.flowExpense .flowBanner{background:linear-gradient(135deg,#f2f8ff,#eef4ff)!important}
+.flowBannerVisual{
+  display:block!important;
+  width:148px!important;
+  height:86px!important;
+  flex:0 0 148px!important;
+  border-radius:15px!important;
   background-repeat:no-repeat!important;
-  box-shadow:0 7px 18px rgba(42,100,142,.06);
-  overflow:hidden;
+  background-position:center 18%!important;
+  background-size:135% auto!important;
+  overflow:hidden!important;
 }
-.flowIncome .flowBanner,.flowExpense .flowBanner{background-image:none!important}
-.flowBannerVisual{display:none!important}
+.flowIncome .flowBannerVisual{background-image:url('assets/home-income-art.webp')!important}
+.flowExpense .flowBannerVisual{background-image:url('assets/home-payment-art.webp')!important}
+.flowBannerVisual>*{display:none!important}
 .flowBannerAdd{
-  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
-  opacity:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:54px!important;
+  opacity:1!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  padding:0!important;
+  color:#0b67c8!important;
+  border-radius:0!important;
+  font-size:16px!important;
+  font-weight:950!important;
+  white-space:normal!important;
+  text-align:left!important;
+  display:flex!important;
+  align-items:center!important;
+  z-index:2!important;
 }
-.flowBannerAdd:before{display:none!important}
+.flowExpense .flowBannerAdd{color:#295fa8!important}
+.flowBannerAdd:before{
+  content:'＋'!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  border-radius:50%!important;
+  margin-right:10px!important;
+  background:#fff!important;
+  border:2px solid currentColor!important;
+  color:currentColor!important;
+  font-size:25px!important;
+  line-height:1!important;
+  box-shadow:none!important;
+}
+@media(max-width:410px){
+  .flowBanner{min-height:100px;padding:12px 13px!important}
+  .flowBannerVisual{width:132px!important;height:78px!important;flex-basis:132px!important}
+  .flowBannerAdd{font-size:14px!important}
+  .flowBannerAdd:before{width:34px!important;height:34px!important;min-width:34px!important;font-size:22px!important;margin-right:8px!important}
+}
 .flowCurrentBalance{display:flex;align-items:center;justify-content:space-between;margin:10px 0 8px;padding:12px 14px;background:#fff;border:1px solid #dbe8f2;border-radius:14px;box-shadow:0 5px 14px rgba(39,91,135,.05)}
 .flowCurrentBalance span{font-size:12px;font-weight:900;color:#385775}
 .flowCurrentBalance strong{font-size:18px;color:#102a50}
@@ -2379,12 +2429,11 @@ function renderFlow(){
   const isIn=currentFlow==='income';
   $('flow').classList.toggle('flowIncome',isIn);
   $('flow').classList.toggle('flowExpense',!isIn);
-  const bannerEl=$('flow').querySelector('.flowBanner');if(bannerEl){bannerEl.dataset.assetLoaded='';bannerEl.style.removeProperty('background-image')}
+  const bannerEl=$('flow').querySelector('.flowBanner');if(bannerEl){bannerEl.dataset.assetLoaded='1';bannerEl.style.removeProperty('background-image')}
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
   $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowAdd').setAttribute('aria-label',isIn?'Aggiungi entrata':'Aggiungi pagamento');
   $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='';
-  if(isIn)ensureIncomeBanner();else ensurePaymentBanner();
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
