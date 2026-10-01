@@ -399,6 +399,84 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
   await context.close();
 }
 
+async function testTodoSection(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+
+  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Evaristo/);
+  assert.equal(await page.locator('#todoSetup').innerText().then(t=>t.includes('Stato')),false);
+  assert.equal(await page.locator('#todoSetup').innerText().then(t=>/\bFatto\b/.test(t)),false);
+  assert.equal(await page.locator('#todoSetupRows .todoSetupRow').count(),4);
+
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();
+  const longText='Fare iscrizione Alifond e disdetta sindacato prima della scadenza';
+  await first.locator('.todoDescInput').fill(longText);
+  await first.locator('.todoDateInput').fill('domani');
+  await first.locator('.todoDateInput').dispatchEvent('input');
+  await first.locator('[data-tr="single"]').click();
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+
+  assert.equal(await page.locator('#todoHub .todoHubCard').count(),3);
+  assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
+  assert.match(await page.locator('#todoHub').innerText(),/Cose fatte/);
+  assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
+
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText}).first();
+  await row.waitFor();
+  assert.match(await row.locator('.todoCompleteBtn').innerText(),/Segna\s+come fatta/);
+  assert.equal(await row.locator('.todoCompleteCircle').count(),1);
+  const wraps=await row.locator('.todoTaskMain').evaluate(el=>({whiteSpace:getComputedStyle(el).whiteSpace,height:el.getBoundingClientRect().height,scrollHeight:el.scrollHeight}));
+  assert.equal(wraps.whiteSpace,'normal');
+  assert.ok(wraps.height>=30,'La descrizione lunga deve poter andare su più righe');
+
+  await row.locator('.todoCompleteBtn').click();
+  assert.equal((await state(page)).todo.tasks.length,0);
+  assert.equal((await state(page)).todo.done.length,1);
+  assert.equal(await page.locator('#undoSnack:not(.hidden)').count(),1);
+  await page.click('#undoSnackBtn');
+  assert.equal((await state(page)).todo.tasks.length,1);
+  assert.equal((await state(page)).todo.done.length,0);
+
+  row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText}).first();
+  await row.locator('.todoCompleteBtn').click();
+  await page.click('#todoGoDone');
+  await page.waitForSelector('#todoDone:not(.hidden)');
+  assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
+  assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText));
+
+  await page.click('#todoDoneToActive');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  await page.click('#todoAddTask');
+  await page.waitForSelector('#modal:not(.hidden)');
+  await page.fill('#todoEditDescription','Controllo mensile');
+  await page.fill('#todoEditDate','domani');
+  await page.dispatchEvent('#todoEditDate','input');
+  await page.click('#teMonthly');
+  await page.click('#todoEditSave');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  const recurring=page.locator('#todoActiveList .todoTaskRow').filter({hasText:'Controllo mensile'}).first();
+  await recurring.waitFor();
+  await recurring.locator('.todoCompleteBtn').click();
+  const st=await state(page);
+  assert.equal(st.todo.tasks.some(t=>t.description==='Controllo mensile'),true);
+  assert.equal(st.todo.done.some(t=>t.description==='Controllo mensile'),true);
+
+  await page.click('#todoGoSettings');
+  await page.waitForSelector('#todoSettings:not(.hidden)');
+  await page.click('#todoSettingColor');
+  await page.waitForSelector('#modal:not(.hidden)');
+  await page.click('[data-tcolor="Viola"]');
+  await page.click('#todoColorSave');
+  assert.equal((await state(page)).todo.color,'Viola');
+
+  await context.close();
+}
+
 async function testPwaOffline(browser){
   const {context,page}=await freshPage(browser);
   await page.evaluate(()=>navigator.serviceWorker?.ready);await page.reload();await page.waitForSelector('#landing:not(.hidden)');
@@ -419,6 +497,7 @@ try{
   await testHomeTotalsMatchOpenLists(browser);
   await testFlowLongMonthDoesNotOverlapAmount(browser);
   await testHomeFeatureCardsAreSingleFrame(browser);
+  await testTodoSection(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
