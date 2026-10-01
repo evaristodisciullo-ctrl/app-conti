@@ -554,6 +554,56 @@ async function testTodoInlineDateRecurrences(browser){
   await context.close();
 }
 
+async function testTodoSortsImpreciseDatesChronologically(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();
+  await first.locator('.todoDescInput').fill('Controllare alifond');
+  await first.locator('.todoDateInput').fill('ottobre');
+  await first.locator('.todoDateInput').dispatchEvent('input');
+  await first.locator('[data-tr="single"]').click();
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+
+  let st=await state(page);
+  const october=st.todo.tasks.find(t=>t.description==='Controllare alifond');
+  const currentYear=new Date().getFullYear();
+  assert.equal(october.date.slice(0,4),String(currentYear),'Un mese senza anno deve usare l’anno corrente');
+
+  await page.evaluate(k=>{
+    const st=JSON.parse(localStorage.getItem(k));
+    const y=new Date().getFullYear();
+    st.todo.tasks=[
+      {id:'oct',description:'Ottobre senza giorno',date:y+'-10-31',dateText:'Ottobre',precise:false,dateSpec:{kind:'monthOnly',month:10},recurrence:{kind:'single',month:y+'-10'},notify:false,createdAt:1},
+      {id:'entro',description:'Entro ottobre',date:y+'-10-31',dateText:'Entro ottobre',precise:false,dateSpec:{kind:'monthOnly',month:10},recurrence:{kind:'single',month:y+'-10'},notify:false,createdAt:2},
+      {id:'nov',description:'Novembre senza giorno',date:y+'-11-30',dateText:'Novembre',precise:false,dateSpec:{kind:'monthOnly',month:11},recurrence:{kind:'single',month:y+'-11'},notify:false,createdAt:3},
+      {id:'mar',description:'Marzo anno dopo',date:(y+1)+'-03-28',dateText:'28 marzo '+(y+1),precise:true,dateSpec:{kind:'day',iso:(y+1)+'-03-28'},recurrence:{kind:'single',month:(y+1)+'-03'},notify:false,createdAt:4},
+      {id:'aug',description:'Agosto anno dopo',date:(y+1)+'-08-01',dateText:'1 agosto '+(y+1),precise:true,dateSpec:{kind:'day',iso:(y+1)+'-08-01'},recurrence:{kind:'single',month:(y+1)+'-08'},notify:false,createdAt:5}
+    ];
+    localStorage.setItem(k,JSON.stringify(st));
+  },KEY);
+
+  await page.reload();
+  await page.waitForSelector('#landing:not(.hidden)');
+  await page.click('#landingTodo');
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+
+  const labels=await page.locator('#todoActiveList .todoTaskEditCard strong').allInnerTexts();
+  assert.deepEqual(labels,[
+    'Ottobre senza giorno',
+    'Entro ottobre',
+    'Novembre senza giorno',
+    'Marzo anno dopo',
+    'Agosto anno dopo'
+  ],'Le voci devono essere ordinate solo per la loro data reale, anche quando manca il giorno preciso');
+
+  await context.close();
+}
+
 async function testTodoMonthYearFilters(browser){
   const {context,page}=await freshPage(browser);
   await page.fill('#landingNickname','Evaristo');
@@ -681,6 +731,7 @@ try{
   await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
   await testTodoInlineDateRecurrences(browser);
+  await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
