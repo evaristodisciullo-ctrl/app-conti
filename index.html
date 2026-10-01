@@ -3678,10 +3678,29 @@ function renderTodoSettings(){
   const n=todoState().notifications;$('todoNotifySummary').textContent=n.enabled?'Notifiche attive · '+(n.rule&&n.rule.timing==='before'?'giorno prima':n.rule&&n.rule.timing==='both'?'giorno prima + stesso giorno':n.rule&&n.rule.timing==='custom'?'personalizzate':'stesso giorno'):'Notifiche generali disattivate';
 }
 function openTodoColorSettings(){
-  const choices=Object.entries(TODO_COLORS);
-  openModal('Colore dell’app','<div class="hint">Scegli il colore che preferisci per la sezione Cose da fare.</div><div id="todoColorDots" class="todoColorDots">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i>'+n+'</button>').join('')+'</div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
-  let selected=todoState().color;document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{selected=b.dataset.tcolor;document.querySelectorAll('[data-tcolor]').forEach(x=>x.classList.toggle('active',x===b))});
-  $('todoColorCancel').onclick=closeModal;$('todoColorSave').onclick=()=>{todoState().color=selected;save();applyTodoColor();closeModal();renderTodoSettings()};
+  const choices=Object.entries(TODO_COLORS),original=todoState().color;
+  openModal('Colore dell’app','<div class="hint">Scegli il colore che preferisci per la sezione Cose da fare. Il colore cambia subito così puoi vedere l’anteprima.</div><div id="todoColorDots" class="todoColorDots">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i>'+n+'</button>').join('')+'</div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
+  let selected=todoState().color;
+  document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{
+    selected=b.dataset.tcolor;
+    todoState().color=selected;
+    applyTodoColor();
+    document.querySelectorAll('[data-tcolor]').forEach(x=>x.classList.toggle('active',x===b));
+    if($('todoColorSummary'))$('todoColorSummary').textContent='Colore scelto: '+selected;
+  });
+  $('todoColorCancel').onclick=()=>{
+    todoState().color=original;
+    applyTodoColor();
+    closeModal();
+    renderTodoSettings();
+  };
+  $('todoColorSave').onclick=()=>{
+    todoState().color=selected;
+    save();
+    applyTodoColor();
+    closeModal();
+    renderTodoSettings();
+  };
 }
 function openTodoNotificationSettings(){
   const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'};
