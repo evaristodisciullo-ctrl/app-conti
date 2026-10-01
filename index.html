@@ -624,14 +624,14 @@ body{color:var(--text)}
 #home .homeFeatureGrid{gap:10px}
 #home .homeFeatureCard{
   min-height:192px;
-  border:0;
+  border:0!important;
   border-radius:20px;
   padding:0 0 14px;
   background:#fff;
-  box-shadow:0 0 0 2px #50b9f0,0 9px 22px rgba(39,106,151,.09);
+  box-shadow:0 9px 22px rgba(39,106,151,.12)!important;
   overflow:hidden;
 }
-#home .expenseFeature{box-shadow:0 0 0 2px #7dc8ef,0 9px 22px rgba(39,106,151,.09)}
+#home .incomeFeature,#home .expenseFeature{outline:0!important}
 #home .homeScene{height:118px!important;margin:0!important;background-color:#eafaff!important;background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important}
 #home .incomeFeature .homeScene{background-image:url('assets/home-income-art.webp')!important}
 #home .expenseFeature .homeScene{background-image:url('assets/home-payment-art.webp')!important}
