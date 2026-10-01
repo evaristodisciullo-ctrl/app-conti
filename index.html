@@ -1030,6 +1030,70 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 @media(max-width:410px){
   .flowUnifiedDate{font-size:10px!important}
 }
+
+/* === COSE DA FARE — sezione approvata 01/10/2026 === */
+.todoPage{padding-bottom:28px;background:#fbfcfa}
+.todoTop{display:flex;align-items:center;gap:10px;margin:2px 0 14px}
+.todoBack{border:0;background:#f0f3f5;color:#24405d;width:42px;height:42px;border-radius:50%;font-size:24px;font-weight:900}
+.todoTop h1{margin:0;color:#152e50;font-size:27px;letter-spacing:-.4px}
+.todoHero{position:relative;min-height:116px;border-radius:24px;padding:22px 124px 18px 20px;margin-bottom:16px;overflow:hidden}
+.todoHero.setup{background:#e4f0e7}.todoHero.hub{background:#f6e9d6}.todoHero.active{background:#dff2ef}.todoHero.done{background:#fff3cf}.todoHero.settings{background:#e7ece8}
+.todoHero strong{display:block;font-size:23px;line-height:1.05;color:#163255}.todoHero small{display:block;margin-top:9px;color:#657894;font-size:13px;line-height:1.25}
+.todoHeroArt{position:absolute;right:15px;top:12px;width:92px;height:92px;border-radius:25px;display:grid;place-items:center;font-size:54px;background:rgba(255,255,255,.38);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.todoPanel{background:#fff;border:1px solid #e8eef1;border-radius:22px;padding:14px;box-shadow:0 8px 20px rgba(36,64,93,.07)}
+.todoSetupHead,.todoSetupRow{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(82px,.8fr) 58px;gap:8px;align-items:start}
+.todoSetupHead{padding:1px 4px 8px;color:#58708a;font-size:11px;font-weight:900}
+.todoSetupHead span:last-child{text-align:center}
+.todoSetupRow{padding:10px 4px;border-top:1px solid #edf1f3}
+.todoSetupRow:first-of-type{border-top:0}
+.todoDescInput{width:100%;min-height:48px;resize:none;overflow:hidden;border:1px solid #dfe8ed;border-radius:12px;padding:11px 10px;background:#fff;color:#17324f;font:inherit;font-size:13px;line-height:1.3}
+.todoDateInput{width:100%;height:48px;border:1px solid #d9e3ef;border-radius:12px;padding:0 9px;background:#f7f8ff;color:#405b78;font:inherit;font-size:12px}
+.todoNotifyToggle{width:52px;height:34px;border:0;border-radius:18px;background:#e5e8eb;color:#8e99a4;font-size:17px;display:grid;place-items:center;margin:7px auto 0}
+.todoNotifyToggle.on{background:#bfead5;color:#177456}
+.todoRecArea{grid-column:1/-1;min-height:0}
+.todoRecChoices{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
+.todoRecChoices button{border:1px solid #dce6ee;background:#f8fafb;color:#52677c;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:800}
+.todoRecChoices button.active{border-color:var(--todoAccent,#6c9d83);background:var(--todoSoft,#e5f0e8);color:#244c3a}
+.todoRecSummary{font-size:11px;color:#5b748b;margin-top:5px}
+.todoRowDelete{grid-column:1/-1;border:0;background:transparent;color:#b35a62;font-weight:800;font-size:11px;text-align:right;padding:2px 4px}
+.todoActions{display:grid;gap:10px;margin-top:13px}
+.todoBigBtn{min-height:55px;border:0;border-radius:17px;padding:0 17px;display:flex;align-items:center;gap:12px;font-size:16px;font-weight:900;text-align:left}
+.todoBigBtn .round{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.58)}
+.todoBigBtn.add{background:#eee8ff;color:#5d45bd}.todoBigBtn.save{background:#dff2e7;color:#246246}
+.todoHubGrid{display:grid;gap:13px}
+.todoHubCard{border:0;border-radius:22px;min-height:110px;padding:18px;display:grid;grid-template-columns:62px 1fr auto;gap:14px;align-items:center;text-align:left}
+.todoHubCard .icon{width:60px;height:60px;border-radius:20px;background:rgba(255,255,255,.55);display:grid;place-items:center;font-size:34px}
+.todoHubCard strong{font-size:20px;color:#183354}.todoHubCard small{display:block;margin-top:4px;color:#6d8091}.todoHubCard .chev{font-size:30px}
+.todoHubCard.pending{background:#eee9ff}.todoHubCard.completed{background:#e5f4e9}.todoHubCard.config{background:#eef1f7}
+.todoListHead,.todoTaskRow{display:grid;grid-template-columns:minmax(0,1fr) 86px 52px 94px;gap:7px;align-items:center}
+.todoListHead{padding:0 5px 8px;color:#58708a;font-size:10px;font-weight:900}
+.todoTaskRow{padding:10px 5px;border-top:1px solid #edf1f3;min-height:62px}
+.todoTaskMain{border:0;background:transparent;text-align:left;color:#17324f;padding:0;white-space:normal;overflow-wrap:anywhere;font-weight:750;line-height:1.25;font-size:12px}
+.todoTaskDate{font-size:10.5px;color:#4c6493;background:#f0efff;border-radius:10px;padding:8px 5px;text-align:center;overflow-wrap:anywhere}
+.todoTaskDate.overdue{background:#fff0ed;color:#b04436;font-weight:900}
+.todoNotifyBtn{width:46px;height:32px;border:0;border-radius:17px;background:#e5e8eb;color:#929ca4;font-size:16px}
+.todoNotifyBtn.on{background:#bfead5;color:#177456}
+.todoCompleteBtn{min-height:45px;border:1px solid #e4ca75;border-radius:12px;background:#fff3bd;color:#5c5133;padding:6px 7px;display:grid;grid-template-columns:1fr 20px;gap:4px;align-items:center;text-align:left;font-size:10.5px;font-weight:900;line-height:1.05}
+.todoCompleteCircle{width:17px;height:17px;border-radius:50%;border:1.8px solid #64593b}
+.todoEmpty{padding:28px 12px;text-align:center;color:#73869a}
+.todoDoneRow{display:grid;grid-template-columns:minmax(0,1fr) 90px 48px 72px;gap:7px;align-items:center;padding:10px 5px;border-top:1px solid #edf1f3}
+.todoDoneStatus{background:#e3f4e8;color:#2f7651;border-radius:12px;padding:8px 6px;font-size:11px;font-weight:900;text-align:center}
+.todoSettingsStack{display:grid;gap:11px}
+.todoSettingCard{border:1px solid #e4ebee;background:#fff;border-radius:18px;min-height:72px;padding:13px 14px;display:grid;grid-template-columns:42px 1fr auto;gap:11px;align-items:center;text-align:left}
+.todoSettingCard .i{width:40px;height:40px;border-radius:13px;background:var(--todoSoft,#e5f0e8);display:grid;place-items:center;font-size:22px}
+.todoSettingCard strong{color:#17324f;font-size:15px}.todoSettingCard small{display:block;color:#73869a;margin-top:2px;line-height:1.2}.todoSettingCard .a{font-size:24px;color:#78899a}
+.todoColorDots{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+.todoColorChoice{border:1px solid #dfe7eb;background:#fff;border-radius:14px;padding:10px 5px;font-weight:800;color:#52677c}
+.todoColorChoice i{display:block;width:30px;height:30px;border-radius:50%;margin:0 auto 6px}
+.todoColorChoice.active{outline:3px solid color-mix(in srgb,var(--todoAccent,#6c9d83) 30%,transparent);border-color:var(--todoAccent,#6c9d83)}
+.todoDanger{color:#a7474f!important}
+.todoInlineNote{font-size:11px;color:#6e8090;margin-top:8px}
+@media(max-width:385px){
+  .todoListHead,.todoTaskRow{grid-template-columns:minmax(0,1fr) 78px 46px 86px;gap:5px}
+  .todoTaskMain{font-size:11px}.todoCompleteBtn{font-size:9.5px}.todoTaskDate{font-size:9.5px}
+  .todoSetupHead,.todoSetupRow{grid-template-columns:minmax(0,1.35fr) minmax(76px,.75fr) 54px;gap:6px}
+}
+
 </style>
 </head>
 <body>
@@ -1115,6 +1179,70 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     <button type="button" class="notifyScopeOption" data-scope="custom"><span class="notifyRadio"></span><span><strong>Scegli le singole voci</strong><small>Attiva le notifiche solo per alcune voci</small></span></button>
   </div>
   <button id="notificationsConfirm" class="btn notifyConfirm">Conferma</button>
+</section>
+
+
+<section id="todoSetup" class="screen todoPage hidden">
+  <div class="todoTop"><button id="todoSetupBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
+  <div class="todoHero setup"><strong id="todoSetupGreeting">Ciao</strong><small>Inserisci tutte le cose che hai da fare</small><span class="todoHeroArt" aria-hidden="true">✍️</span></div>
+  <div class="todoPanel">
+    <div class="todoSetupHead"><span>Descrizione</span><span>Data</span><span>Attiva<br>notifiche</span></div>
+    <div id="todoSetupRows"></div>
+  </div>
+  <div class="todoActions">
+    <button id="todoSetupAdd" class="todoBigBtn add"><span class="round">＋</span><span>Aggiungi voce</span></button>
+    <button id="todoSetupSave" class="todoBigBtn save"><span class="round">✓</span><span>Salva e continua</span></button>
+  </div>
+</section>
+
+<section id="todoHub" class="screen todoPage hidden">
+  <div class="todoTop"><button id="todoHubBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
+  <div class="todoHero hub"><strong id="todoHubGreeting">Ciao</strong><small>Scegli cosa vuoi vedere</small><span class="todoHeroArt" aria-hidden="true">🗓️</span></div>
+  <div class="todoHubGrid">
+    <button id="todoHubPending" class="todoHubCard pending"><span class="icon">📋</span><span><strong>Cose da fare</strong><small>Vedi le attività ancora aperte</small></span><span class="chev">›</span></button>
+    <button id="todoHubDone" class="todoHubCard completed"><span class="icon">✅</span><span><strong>Cose fatte</strong><small>Vedi le attività completate</small></span><span class="chev">›</span></button>
+    <button id="todoHubSettings" class="todoHubCard config"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori, notifiche e gestione dati</small></span><span class="chev">›</span></button>
+  </div>
+</section>
+
+<section id="todoActive" class="screen todoPage hidden">
+  <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
+  <div class="todoHero active"><strong id="todoActiveGreeting">Ciao</strong><small>Qui trovi le cose ancora da fare</small><span class="todoHeroArt" aria-hidden="true">🗂️</span></div>
+  <div class="todoPanel">
+    <div class="todoListHead"><span>Descrizione</span><span>Data</span><span>Notifiche</span><span>Completa</span></div>
+    <div id="todoActiveList"></div>
+  </div>
+  <div class="todoActions">
+    <button id="todoAddTask" class="todoBigBtn add"><span class="round">＋</span><span>Aggiungi voce</span></button>
+    <button id="todoGoDone" class="todoBigBtn save"><span class="round">✓</span><span>Cose fatte</span></button>
+    <button id="todoGoSettings" class="todoBigBtn add"><span class="round">⚙</span><span>Impostazioni</span></button>
+  </div>
+</section>
+
+<section id="todoDone" class="screen todoPage hidden">
+  <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose fatte</h1></div>
+  <div class="todoHero done"><strong id="todoDoneGreeting">Ciao</strong><small>Qui trovi le cose già completate</small><span class="todoHeroArt" aria-hidden="true">🏅</span></div>
+  <div class="todoPanel">
+    <div class="todoListHead"><span>Descrizione</span><span>Data</span><span>Notifiche</span><span>Stato</span></div>
+    <div id="todoDoneList"></div>
+  </div>
+  <div class="todoActions">
+    <button id="todoDoneToActive" class="todoBigBtn add"><span class="round">📋</span><span>Cose da fare</span></button>
+    <button id="todoDoneSettings" class="todoBigBtn add"><span class="round">⚙</span><span>Impostazioni</span></button>
+  </div>
+</section>
+
+<section id="todoSettings" class="screen todoPage hidden">
+  <div class="todoTop"><button id="todoSettingsBack" class="todoBack" aria-label="Indietro">←</button><h1>Impostazioni</h1></div>
+  <div class="todoHero settings"><strong id="todoSettingsGreeting">Ciao</strong><small>Scegli come vuoi usare Cose da fare</small><span class="todoHeroArt" aria-hidden="true">🎨</span></div>
+  <div class="todoSettingsStack">
+    <button id="todoSettingColor" class="todoSettingCard"><span class="i">🎨</span><span><strong>Colore dell'app</strong><small id="todoColorSummary">Colore predefinito: Salvia</small></span><span class="a">›</span></button>
+    <button id="todoSettingNotifications" class="todoSettingCard"><span class="i">🔔</span><span><strong>Notifiche</strong><small id="todoNotifySummary">Scegli quando ricevere i promemoria</small></span><span class="a">›</span></button>
+    <button id="todoSettingName" class="todoSettingCard"><span class="i">👤</span><span><strong>Nome</strong><small>Modifica come vuoi essere chiamato</small></span><span class="a">›</span></button>
+    <button id="todoDeletePending" class="todoSettingCard"><span class="i">🗑️</span><span><strong>Cancella tutte le cose da fare</strong><small>Le cose già fatte restano salvate</small></span><span class="a">›</span></button>
+    <button id="todoDeleteDone" class="todoSettingCard"><span class="i">🧹</span><span><strong>Cancella tutte le cose fatte</strong><small>Le cose ancora da fare restano salvate</small></span><span class="a">›</span></button>
+    <button id="todoResetAll" class="todoSettingCard"><span class="i">↻</span><span><strong class="todoDanger">Azzera Cose da fare</strong><small>Riparte dalla schermata iniziale della sezione</small></span><span class="a">›</span></button>
+  </div>
 </section>
 
 <section id="home" class="screen hidden">
@@ -1302,8 +1430,17 @@ const addMonths=(ym,n)=>{const p=ym.split('-').map(Number),d=new Date(p[0],p[1]-
 const monthDiff=(a,b)=>{const x=a.split('-').map(Number),y=b.split('-').map(Number);return (y[0]-x[0])*12+(y[1]-x[1])};
 const isoFor=(ym,day)=>{const p=ym.split('-').map(Number),last=new Date(p[0],p[1],0).getDate(),dd=Math.min(Number(day)||1,last);return ym+'-'+String(dd).padStart(2,'0')};
 const fmtDate=s=>{const p=s.split('-').map(Number);return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long'}).format(new Date(p[0],p[1]-1,p[2]))};const fmtMovementDate=s=>{const p=s.split('-').map(Number);try{if(state&&state.preferences&&state.preferences.dateFormat==='numeric')return String(p[2]).padStart(2,'0')+'/'+String(p[1]).padStart(2,'0')+'/'+p[0]}catch(e){}return new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'long',year:'numeric'}).format(new Date(p[0],p[1]-1,p[2]))};
-const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}},ui:{incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},flowOnlyActive:{income:true,expense:true},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10},backup:{auto:false},preferences:{textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'},version:7});
-let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history)){try{state=JSON.parse(localStorage.getItem(JOURNAL_KEY))}catch(e){}}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(typeof state.security.hideHomeAmounts!=='boolean')state.security.hideHomeAmounts=false;if(!Number.isFinite(Number(state.security.lockMinutes)))state.security.lockMinutes=10;if(!state.notifications.ui)state.notifications.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true};if(!state.flowOnlyActive)state.flowOnlyActive={income:true,expense:true};if(!state.backup)state.backup={auto:false};if(!state.preferences)state.preferences={textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'};if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
+const blank=()=>({balance:null,profile:{fullName:''},appColor:'Blu',entries:[],history:[],adjustments:[],setupDone:false,setupStage:'balance',notifications:{mode:'off',selected:[],sent:{},rules:{income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}},ui:{incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true}},customCategories:{income:[],expense:[]},flowSort:{income:'date',expense:'date'},flowOnlyActive:{income:true,expense:true},hiddenCategories:{income:[],expense:[]},occurrenceOverrides:{},futureChanges:{},budgets:{},budgetPlans:[],budgetNotifications:{total:{enabled:false,mode:'over',sent:{}},categories:{}},setupDrafts:{income:[],expense:[]},todo:{setupDone:false,tasks:[],done:[],color:'Salvia',notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}},security:{enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10},backup:{auto:false},preferences:{textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'},version:8});
+let state;try{state=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history)){try{state=JSON.parse(localStorage.getItem(JOURNAL_KEY))}catch(e){}}if(!state||!Array.isArray(state.entries)||!Array.isArray(state.history))state=blank();if(!state.profile||typeof state.profile!=='object')state.profile={fullName:''};if(typeof state.profile.fullName!=='string')state.profile.fullName='';if(!state.appColor)state.appColor='Blu';if(!state.notifications)state.notifications={mode:'off',selected:[],sent:{}};if(!Array.isArray(state.notifications.selected))state.notifications.selected=[];if(!state.notifications.sent)state.notifications.sent={};if(!state.notifications.rules)state.notifications.rules={income:{timing:'same',time:'09:00',overdue:'none'},expense:{timing:'same',time:'09:00',overdue:'none'}};if(!state.notifications.rules.income)state.notifications.rules.income={timing:'same',time:'09:00',overdue:'none'};if(!state.notifications.rules.expense)state.notifications.rules.expense={timing:'same',time:'09:00',overdue:'none'};if(!state.customCategories)state.customCategories={income:[],expense:[]};if(!state.flowSort)state.flowSort={income:'date',expense:'date'};if(!state.flowSort.income)state.flowSort.income='date';if(!state.flowSort.expense)state.flowSort.expense='date';if(!Array.isArray(state.customCategories.income))state.customCategories.income=[];if(!Array.isArray(state.customCategories.expense))state.customCategories.expense=[];if(!state.hiddenCategories)state.hiddenCategories={income:[],expense:[]};if(!Array.isArray(state.hiddenCategories.income))state.hiddenCategories.income=[];if(!Array.isArray(state.hiddenCategories.expense))state.hiddenCategories.expense=[];if(!state.occurrenceOverrides||typeof state.occurrenceOverrides!=='object')state.occurrenceOverrides={};if(!state.futureChanges||typeof state.futureChanges!=='object')state.futureChanges={};if(!state.budgets||typeof state.budgets!=='object')state.budgets={};if(!Array.isArray(state.budgetPlans))state.budgetPlans=[];if(!state.budgetNotifications||typeof state.budgetNotifications!=='object')state.budgetNotifications={total:{enabled:false,mode:'over',sent:{}},categories:{}};if(!state.budgetNotifications.total)state.budgetNotifications.total={enabled:false,mode:'over',sent:{}};if(!state.budgetNotifications.categories)state.budgetNotifications.categories={};if(!state.budgetPlans.length&&Object.keys(state.budgets).length)state.budgetPlans=[{effectiveMonth:ymNow(),total:0,limits:Object.assign({},state.budgets)}];if(!state.setupDrafts||typeof state.setupDrafts!=='object')state.setupDrafts={income:[],expense:[]};if(!Array.isArray(state.setupDrafts.income))state.setupDrafts.income=[];if(!Array.isArray(state.setupDrafts.expense))state.setupDrafts.expense=[];state.history.forEach(h=>{if(h.entryId&&!h.occurrenceMonth)h.occurrenceMonth=h.month||((h.date||'').slice(0,7));if(!h.month&&h.date)h.month=h.date.slice(0,7)});if(!state.security||typeof state.security!=='object')state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0};if(typeof state.security.enabled!=='boolean')state.security.enabled=false;if(!state.security.pinHash)state.security.pinHash='';if(!state.security.credentialId)state.security.credentialId='';if(!Number.isFinite(Number(state.security.lastActivity)))state.security.lastActivity=0;if(typeof state.security.hideHomeAmounts!=='boolean')state.security.hideHomeAmounts=false;if(!Number.isFinite(Number(state.security.lockMinutes)))state.security.lockMinutes=10;if(!state.notifications.ui)state.notifications.ui={incomeDue:true,incomeReminder:true,expenseDue:true,expenseOverdue:true,expenseReminder:true,sound:true};if(!state.flowOnlyActive)state.flowOnlyActive={income:true,expense:true};if(!state.backup)state.backup={auto:false};if(!state.preferences)state.preferences={textSize:'medium',reduceAnimations:false,lightTheme:true,showSuggestions:true,dateFormat:'dd/mm/yyyy'};
+if(!state.todo||typeof state.todo!=='object')state.todo={setupDone:false,tasks:[],done:[],color:'Salvia',notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}};
+if(!Array.isArray(state.todo.tasks))state.todo.tasks=[];
+if(!Array.isArray(state.todo.done))state.todo.done=[];
+if(typeof state.todo.setupDone!=='boolean')state.todo.setupDone=false;
+if(!state.todo.color)state.todo.color='Salvia';
+if(!state.todo.notifications||typeof state.todo.notifications!=='object')state.todo.notifications={enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}};
+if(typeof state.todo.notifications.enabled!=='boolean')state.todo.notifications.enabled=false;
+if(!state.todo.notifications.rule)state.todo.notifications.rule={timing:'same',time:'09:00',overdue:'none'};
+if(!state.todo.notifications.sent)state.todo.notifications.sent={};if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow();
 let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary',revisitSetupMode=false;
 let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};let undoSnackTimer=null,undoSnackHistoryId=null;
@@ -1840,7 +1977,7 @@ function openContiFromLanding(){
   enterContiAfterUnlock();
 }
 
-function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};['landing','setup','setupIncome','setupExpense','notifications','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='setupIncome')ensureSetupArt('income');if(id==='setupExpense')ensureSetupArt('expense');if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications()}
+function show(id){if(id==='landing'&&securityLockTimer){clearTimeout(securityLockTimer);securityLockTimer=null}const leavingMovements=!$('movements').classList.contains('hidden')&&id!=='movements';if(leavingMovements)movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};['landing','setup','setupIncome','setupExpense','notifications','todoSetup','todoHub','todoActive','todoDone','todoSettings','home','flow','movements','summary','budget','settings'].forEach(x=>$(x).classList.toggle('hidden',x!==id));if(id==='landing'){if($('landingNickname'))$('landingNickname').value=state.profile&&state.profile.fullName||'';ensureLandingGraphic()}if(id==='setupIncome')ensureSetupArt('income');if(id==='setupExpense')ensureSetupArt('expense');if(id==='home'){renderHome();checkDueNotifications()}if(id==='flow')renderFlow();if(id==='movements')renderMovements();if(id==='summary')renderSummary();if(id==='budget')renderBudget();if(id==='notifications')renderNotifications();if(id==='todoSetup')renderTodoSetup();if(id==='todoHub')renderTodoHub();if(id==='todoActive')renderTodoActive();if(id==='todoDone')renderTodoDone();if(id==='todoSettings')renderTodoSettings();if(/^todo/.test(id))checkDueTodoNotifications()}
 function setupEntryToDraft(e){
   const start=entryStartMonth(e);
   const spec=e.dateSpec||null;
@@ -2262,9 +2399,9 @@ function openReopenMovement(h){
   openModal(h.type==='income'?'Entrata ricevuta':'Pagamento effettuato','<div class="note">Vuoi riportare questa voce a '+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'?</div><div class="modalBtns"><button id="reopenCancel" class="btn secondary">ANNULLA</button><button id="reopenYes" class="btn">'+(h.type==='income'?'DA RICEVERE':'DA PAGARE')+'</button></div>');
   $('reopenCancel').onclick=closeModal;$('reopenYes').onclick=()=>{closeModal();undoHistory(h.id)};
 }
-function hideUndoSnack(){if(undoSnackTimer){clearTimeout(undoSnackTimer);undoSnackTimer=null}undoSnackHistoryId=null;$('undoSnack').classList.add('hidden')}
+function hideUndoSnack(){if(undoSnackTimer){clearTimeout(undoSnackTimer);undoSnackTimer=null}undoSnackHistoryId=null;todoUndoSnapshot=null;$('undoSnack').classList.add('hidden')}
 function showUndoSnack(h){if(undoSnackTimer)clearTimeout(undoSnackTimer);undoSnackHistoryId=h.id;$('undoSnackText').textContent=h.name+' segnato come '+(h.type==='income'?'ricevuto':'pagato');$('undoSnack').classList.remove('hidden');undoSnackTimer=setTimeout(hideUndoSnack,4000)}
-function undoFromSnack(){const id=undoSnackHistoryId;if(!id)return;hideUndoSnack();undoHistory(id)}
+function undoFromSnack(){if(todoUndoSnapshot){undoTodoCompletion();return}const id=undoSnackHistoryId;if(!id)return;hideUndoSnack();undoHistory(id)}
 function undoHistory(id){
   const h=state.history.find(x=>x.id===id);if(!h||h.type==='adjustment')return;
   state.balance=Number(state.balance||0)+(h.type==='income'?-Number(h.amount||0):Number(h.amount||0));
@@ -2712,14 +2849,16 @@ async function confirmNotificationScope(){
 }
 let pendingNotificationItems=null;
 function openNotificationGroup(items){
-  const rows=(items||[]).map(x=>'<div class="notifyToggle"><span><b>'+esc(x.name||'Voce')+'</b><small>'+fmtMovementDate(x.date)+' · '+(x.type==='income'?'Entrata':'Pagamento')+'</small></span><strong>'+money(x.amount)+'</strong></div>').join('');
-  show('home');
+  const list=items||[],todoOnly=list.length&&list.every(x=>x.type==='todo');
+  const rows=list.map(x=>x.type==='todo'?'<div class="notifyToggle"><span><b>'+esc(x.name||'Cosa da fare')+'</b><small>'+(x.date?fmtMovementDate(x.date):'Senza data')+(x.label==='scaduto'?' · Scaduta':'')+'</small></span><strong>📋</strong></div>':'<div class="notifyToggle"><span><b>'+esc(x.name||'Voce')+'</b><small>'+fmtMovementDate(x.date)+' · '+(x.type==='income'?'Entrata':'Pagamento')+'</small></span><strong>'+money(x.amount)+'</strong></div>').join('');
+  show(todoOnly?'todoActive':'home');
   openModal('Promemoria','<div class="hint">Ecco tutte le voci incluse nel promemoria.</div><div class="notifyList">'+(rows||'<div class="empty">Nessuna voce da mostrare.</div>')+'</div>');
 }
 function handleNotificationOpen(detail){
   const items=detail&&Array.isArray(detail.items)?detail.items:[];
   if(!items.length)return;
-  if(state.security&&state.security.enabled&&!securityFresh()){
+  const todoOnly=items.length&&items.every(x=>x.type==='todo');
+  if(!todoOnly&&state.security&&state.security.enabled&&!securityFresh()){
     pendingNotificationItems=items;show('landing');openUnlock();return;
   }
   openNotificationGroup(items);
@@ -2736,31 +2875,45 @@ function dateTimeISO(date,time){
   return new Date(p[0],p[1]-1,p[2],parts[0]||0,parts[1]||0,0,0);
 }
 function buildNativeNotificationSchedule(){
-  if(!nativeBridge()||!state.notifications||state.notifications.mode==='off')return [];
-  const end=addMonths(ymNow(),12),all=[...pendingThrough('income',end),...pendingThrough('expense',end)],now=Date.now(),groups=new Map();
-  const add=(date,time,x,label)=>{
-    const at=dateTimeISO(date,time);if(at.getTime()<=now)return;
-    const key=at.toISOString();
-    if(!groups.has(key))groups.set(key,{at,rows:[]});
-    groups.get(key).rows.push({x,label});
+  if(!nativeBridge())return [];
+  const now=Date.now(),groups=new Map();
+  const add=(date,time,row)=>{
+    if(!date)return;const at=dateTimeISO(date,time);if(at.getTime()<=now)return;
+    const key=at.toISOString();if(!groups.has(key))groups.set(key,{at,rows:[]});groups.get(key).rows.push(row);
   };
-  for(const x of all){
-    const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
-    const rule=entry.notifyRule||(state.notifications.rules&&state.notifications.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
-    if(rule.timing==='same'||rule.timing==='both')add(x.date,rule.time,x,'oggi');
-    if(rule.timing==='before'||rule.timing==='both')add(addDaysISO(x.date,-1),rule.time,x,'domani');
-    if(rule.timing==='custom')add(addDaysISO(x.date,-Math.max(1,Number(rule.beforeDays)||1)),rule.time,x,'prima');
-    if(rule.overdue!=='none'){
-      const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;
-      if(every){
-        const start=addDaysISO(x.date,every);
-        for(let d=start,count=0;count<60&&daysBetween(todayISO(),d)<=120;d=addDaysISO(d,every),count++)add(d,rule.time,x,'scaduto');
+  const financeOn=state.notifications&&state.notifications.mode!=='off';
+  if(financeOn){
+    const end=addMonths(ymNow(),12),all=[...pendingThrough('income',end),...pendingThrough('expense',end)];
+    for(const x of all){
+      const entry=state.entries.find(e=>e.id===x.entryId);if(!entry||entry.notify!==true)continue;
+      const rule=entry.notifyRule||(state.notifications.rules&&state.notifications.rules[x.type])||{timing:'same',time:'09:00',overdue:'none'};
+      if(rule.timing==='same'||rule.timing==='both')add(x.date,rule.time,{source:'finance',x,label:'oggi'});
+      if(rule.timing==='before'||rule.timing==='both')add(addDaysISO(x.date,-1),rule.time,{source:'finance',x,label:'domani'});
+      if(rule.timing==='custom')add(addDaysISO(x.date,-Math.max(1,Number(rule.beforeDays)||1)),rule.time,{source:'finance',x,label:'prima'});
+      if(rule.overdue!=='none'){
+        const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;
+        if(every){for(let d=addDaysISO(x.date,every),count=0;count<60&&daysBetween(todayISO(),d)<=120;d=addDaysISO(d,every),count++)add(d,rule.time,{source:'finance',x,label:'scaduto'})}
+      }
+    }
+  }
+  const tn=state.todo&&state.todo.notifications;
+  if(tn&&tn.enabled){
+    for(const task of state.todo.tasks.filter(t=>t.notify===true&&t.date)){
+      const rule=task.notifyRule||tn.rule||{timing:'same',time:'09:00',overdue:'none'};
+      if(rule.timing==='same'||rule.timing==='both')add(task.date,rule.time,{source:'todo',x:task,label:'oggi'});
+      if(rule.timing==='before'||rule.timing==='both')add(addDaysISO(task.date,-1),rule.time,{source:'todo',x:task,label:'domani'});
+      if(rule.timing==='custom')add(addDaysISO(task.date,-Math.max(1,Number(rule.beforeDays)||1)),rule.time,{source:'todo',x:task,label:'prima'});
+      if(rule.overdue!=='none'){
+        const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;
+        if(every){for(let d=addDaysISO(task.date,every),count=0;count<60&&daysBetween(todayISO(),d)<=120;d=addDaysISO(d,every),count++)add(d,rule.time,{source:'todo',x:task,label:'scaduto'})}
       }
     }
   }
   return [...groups.entries()].sort((a,b)=>a[1].at-b[1].at).slice(0,60).map(([key,g])=>{
-    const rows=g.rows.slice(0,5),body=rows.map(r=>r.x.name+' · '+money(r.x.amount)+(r.label==='scaduto'?' · scaduto':'')).join('\n')+(g.rows.length>5?'\n+'+(g.rows.length-5)+' altre':'');
-    return {id:notificationIdFromKey(key),title:g.rows.length===1?'Promemoria Conti economici':g.rows.length+' promemoria Conti economici',body,at:g.at.toISOString(),extra:{screen:'notification-group',items:g.rows.map(r=>({entryId:r.x.entryId,occurrenceKey:r.x.occurrenceKey||r.x.month,type:r.x.type,name:r.x.name,amount:r.x.amount,date:r.x.date,label:r.label}))}};
+    const rows=g.rows.slice(0,6);
+    const body=rows.map(r=>r.source==='todo'?(r.x.description+(r.label==='scaduto'?' · scaduta':'')):(r.x.name+' · '+money(r.x.amount)+(r.label==='scaduto'?' · scaduto':''))).join('\n')+(g.rows.length>6?'\n+'+(g.rows.length-6)+' altre':'');
+    const title=g.rows.length===1?(rows[0].source==='todo'?'Promemoria Cose da fare':'Promemoria Conti economici'):(g.rows.length+' promemoria In Ordine');
+    return {id:notificationIdFromKey(key),title,body,at:g.at.toISOString(),extra:{screen:'notification-group',items:g.rows.map(r=>r.source==='todo'?({type:'todo',taskId:r.x.id,name:r.x.description,date:r.x.date,label:r.label}):({entryId:r.x.entryId,occurrenceKey:r.x.occurrenceKey||r.x.month,type:r.x.type,name:r.x.name,amount:r.x.amount,date:r.x.date,label:r.label}))}};
   });
 }
 let nativeSyncTimer=null;
@@ -3212,12 +3365,379 @@ function closeModal(){$('modal').classList.add('hidden');$('modal').classList.re
 function flashModal(msg){let n=document.createElement('div');n.className='note';n.textContent=msg;$('modalBody').prepend(n);setTimeout(()=>n.remove(),1800)}
 function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
+
+let todoUndoSnapshot=null;
+const TODO_COLORS={
+  Salvia:{accent:'#6f9f83',soft:'#e5f0e8'},
+  Sabbia:{accent:'#b38a58',soft:'#f4eadc'},
+  Giallo:{accent:'#c79b2b',soft:'#fff3c9'},
+  Viola:{accent:'#7659bd',soft:'#eee8ff'},
+  Rosa:{accent:'#c76a8a',soft:'#f8e6ed'},
+  Azzurro:{accent:'#4d94bd',soft:'#e2f1f8'}
+};
+function todoState(){return state.todo}
+function todoDisplayName(){return (state.profile&&state.profile.fullName||'').trim()||'Evaristo'}
+function applyTodoColor(){
+  const c=TODO_COLORS[todoState().color]||TODO_COLORS.Salvia;
+  document.documentElement.style.setProperty('--todoAccent',c.accent);
+  document.documentElement.style.setProperty('--todoSoft',c.soft);
+}
+function setTodoGreetings(){
+  const txt='Ciao '+todoDisplayName();
+  ['todoSetupGreeting','todoHubGreeting','todoActiveGreeting','todoDoneGreeting','todoSettingsGreeting'].forEach(id=>{const el=$(id);if(el)el.textContent=txt});
+}
+function openTodoFromLanding(){
+  const nick=$('landingNickname')?$('landingNickname').value.trim():'';
+  if(nick)state.profile.fullName=nick;save();applyTodoColor();
+  show(todoState().setupDone?'todoHub':'todoSetup');
+}
+function autoGrowTodo(el){el.style.height='auto';el.style.height=Math.max(48,el.scrollHeight)+'px'}
+function todoMonthDeadline(month,year){
+  const now=todayDate(),y=year||now.getFullYear(),ym=y+'-'+String(month).padStart(2,'0');
+  return lastDayISO(ym);
+}
+function parseTodoDateInput(raw){
+  const text=String(raw||'').trim();if(!text)return{raw:'',date:'',label:'',precise:false,spec:null,recurrence:null,explicit:false};
+  const low=text.toLowerCase().replace(/\s+/g,' ');
+  if(low==='oggi'||low==='domani'||low==='dopodomani'){
+    const date=addDaysISO(todayISO(),low==='oggi'?0:low==='domani'?1:2);
+    return{raw:text,date,label:text,precise:true,spec:{kind:'day',iso:date},recurrence:null,explicit:false};
+  }
+  if(low==='entro fine mese'||low==='fine mese'){
+    const date=lastDayISO(ymNow());return{raw:text,date,label:text,precise:false,spec:{kind:'monthYear',ym:ymNow()},recurrence:null,explicit:false};
+  }
+  const entro=low.match(/^entro\s+(.+)$/);
+  if(entro){
+    const spec=parseFlexibleDate(entro[1]);
+    if(spec){
+      let date='';
+      if(spec.kind==='day')date=spec.iso;
+      if(spec.kind==='monthYear')date=lastDayISO(spec.ym);
+      if(spec.kind==='monthOnly'){
+        const now=todayDate(),m=spec.month,y=(m<now.getMonth()+1)?now.getFullYear()+1:now.getFullYear();
+        date=todoMonthDeadline(m,y);
+      }
+      if(spec.kind==='year')date=spec.year+'-12-31';
+      if(date)return{raw:text,date,label:text,precise:spec.kind==='day',spec,recurrence:null,explicit:false};
+    }
+  }
+  const setup=parseSetupDate(text);
+  if(setup&&setup.date){
+    const explicit=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(low);
+    return{raw:text,date:setup.date,label:text,precise:true,spec:setup.spec,recurrence:explicit?setup.recurrence:null,explicit};
+  }
+  const spec=parseFlexibleDate(text);
+  if(spec){
+    let date='';
+    if(spec.kind==='monthYear')date=lastDayISO(spec.ym);
+    if(spec.kind==='monthOnly'){
+      const now=todayDate(),m=spec.month,y=(m<now.getMonth()+1)?now.getFullYear()+1:now.getFullYear();date=todoMonthDeadline(m,y);
+    }
+    if(spec.kind==='year')date=spec.year+'-12-31';
+    if(date)return{raw:text,date,label:text,precise:false,spec,recurrence:null,explicit:false};
+  }
+  return null;
+}
+function todoRecurrenceSummary(r){
+  if(!r)return'';if(r.kind==='single')return'Una sola volta';if(r.kind==='monthly')return'Ogni mese';return recurrenceSummary(r);
+}
+function todoSetupRowHtml(first=false){
+  return '<div class="todoSetupRow">'+
+    '<textarea class="todoDescInput" rows="1" placeholder="'+(first?'Es. Andare dal dentista':'Descrizione')+'"></textarea>'+
+    '<input class="todoDateInput" type="text" inputmode="text" autocomplete="off" placeholder="Es. 15 ottobre">'+
+    '<button type="button" class="todoNotifyToggle" aria-label="Attiva notifiche">🔔</button>'+
+    '<div class="todoRecArea"></div>'+
+    '<button type="button" class="todoRowDelete">Elimina riga</button>'+
+  '</div>';
+}
+function setTodoRowRecurrence(row,kind,date){
+  if(!date)return;
+  if(kind==='single')row.dataset.recurrence=JSON.stringify({kind:'single',month:date.slice(0,7)});
+  if(kind==='monthly')row.dataset.recurrence=JSON.stringify({kind:'monthly',startMonth:date.slice(0,7)});
+  paintTodoRowRecurrence(row);
+}
+function paintTodoRowRecurrence(row){
+  const area=row.querySelector('.todoRecArea');let r=null;try{r=JSON.parse(row.dataset.recurrence||'null')}catch(e){}
+  const parsed=parseTodoDateInput(row.querySelector('.todoDateInput').value);
+  if(!row.querySelector('.todoDateInput').value.trim()){area.innerHTML='';return}
+  if(!parsed){area.innerHTML='<div class="todoInlineNote">Controlla la data inserita.</div>';return}
+  const active=r?(r.kind==='single'?'single':r.kind==='monthly'?'monthly':'custom'):'';
+  area.innerHTML='<div class="todoRecChoices"><button data-tr="single" class="'+(active==='single'?'active':'')+'">Una sola volta</button><button data-tr="monthly" class="'+(active==='monthly'?'active':'')+'">Ogni mese</button><button data-tr="custom" class="'+(active==='custom'?'active':'')+'">Altro</button></div>'+(r?'<div class="todoRecSummary">'+esc(todoRecurrenceSummary(r))+'</div>':'');
+  area.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{
+    if(b.dataset.tr==='custom'){openTodoCustomRecurrence(row,parsed.date);return}
+    setTodoRowRecurrence(row,b.dataset.tr,parsed.date);
+  });
+}
+function openTodoCustomRecurrence(row,date){
+  openModal('Come vuoi registrarla?',
+    '<div class="field"><label>Come vuoi registrarla?</label><input id="todoRecText" type="text" inputmode="text" autocomplete="off" placeholder="Scrivi come vuoi…"></div>'+
+    '<div class="modalBtns"><button id="todoRecCancel" class="btn secondary">Annulla</button><button id="todoRecSave" class="btn">Conferma</button></div>');
+  $('todoRecCancel').onclick=closeModal;
+  $('todoRecSave').onclick=()=>{
+    const cfg=parseCustomRecurrenceText($('todoRecText').value,date);
+    if(!cfg){flashModal('Non riesco a capire questa regola. Prova a scriverla in modo più semplice.');return}
+    row.dataset.recurrence=JSON.stringify(cfg);paintTodoRowRecurrence(row);closeModal();
+  };
+}
+function openTodoRowNotifyRule(row){
+  const current=(()=>{try{return JSON.parse(row.dataset.notifyRule||'null')}catch(e){return null}})()||todoState().notifications.rule;
+  openModal('Notifica della voce',notificationRuleFields('todoRowRule',current,'Quando vuoi essere avvisato?')+'<div class="modalBtns"><button id="todoRowRuleCancel" class="btn secondary">Annulla</button><button id="todoRowRuleSave" class="btn">Conferma</button></div>');
+  bindNotificationRuleFields('todoRowRule',current);
+  $('todoRowRuleCancel').onclick=()=>{row.dataset.notify='false';row.querySelector('.todoNotifyToggle').classList.remove('on');closeModal()};
+  $('todoRowRuleSave').onclick=async()=>{
+    row.dataset.notify='true';row.dataset.notifyRule=JSON.stringify(readNotificationRuleFields('todoRowRule'));row.querySelector('.todoNotifyToggle').classList.add('on');
+    todoState().notifications.enabled=true;closeModal();await requestNotificationPermission();
+  };
+}
+function bindTodoSetupRow(row){
+  const ta=row.querySelector('.todoDescInput');ta.addEventListener('input',()=>autoGrowTodo(ta));autoGrowTodo(ta);
+  row.querySelector('.todoDateInput').addEventListener('input',()=>{row.dataset.recurrence='';paintTodoRowRecurrence(row)});
+  const n=row.querySelector('.todoNotifyToggle');n.onclick=()=>{
+    const on=row.dataset.notify==='true';
+    if(on){row.dataset.notify='false';n.classList.remove('on');return}
+    openTodoRowNotifyRule(row);
+  };
+  row.querySelector('.todoRowDelete').onclick=()=>{row.remove();if(!$('todoSetupRows').children.length)addTodoSetupRow(true)};
+}
+function addTodoSetupRow(first=false){
+  $('todoSetupRows').insertAdjacentHTML('beforeend',todoSetupRowHtml(first));
+  bindTodoSetupRow($('todoSetupRows').lastElementChild);
+}
+function renderTodoSetup(){
+  applyTodoColor();setTodoGreetings();
+  if(!$('todoSetupRows').children.length){for(let i=0;i<4;i++)addTodoSetupRow(i===0)}
+}
+function collectTodoSetupRows(){
+  const out=[],errors=[];
+  Array.from($('todoSetupRows').querySelectorAll('.todoSetupRow')).forEach((row,i)=>{
+    const description=row.querySelector('.todoDescInput').value.trim(),rawDate=row.querySelector('.todoDateInput').value.trim();
+    if(!description&&!rawDate&&row.dataset.notify!=='true')return;
+    if(!description){errors.push('riga '+(i+1)+': manca la descrizione);return}
+    const parsed=parseTodoDateInput(rawDate);let rec=null;try{rec=JSON.parse(row.dataset.recurrence||'null')}catch(e){}
+    if(rawDate&&!parsed){errors.push('riga '+(i+1)+': controlla la data);return}
+    if(parsed&&parsed.date&&!rec){errors.push('riga '+(i+1)+': scegli Una sola volta, Ogni mese o Altro);return}
+    let notifyRule=null;try{notifyRule=JSON.parse(row.dataset.notifyRule||'null')}catch(e){}
+    out.push({id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:rawDate,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:row.dataset.notify==='true',notifyRule,createdAt:Date.now()+i});
+  });
+  if(errors.length)throw new Error(errors.slice(0,4).join(' · '));
+  return out;
+}
+function saveTodoInitialSetup(){
+  try{
+    const tasks=collectTodoSetupRows();if(!tasks.length){flashModal('Inserisci almeno una cosa da fare.');return}
+    todoState().tasks=tasks;todoState().setupDone=true;save();show('todoHub');
+  }catch(e){openModal('Controlla le voci','<div class="note">'+esc(e.message)+'</div>')}
+}
+function renderTodoHub(){applyTodoColor();setTodoGreetings()}
+function todoSortTasks(arr){
+  return [...arr].sort((a,b)=>{
+    const ap=a.precise&&a.date?0:a.date?1:2,bp=b.precise&&b.date?0:b.date?1:2;if(ap!==bp)return ap-bp;
+    const ad=a.date||'9999-12-31',bd=b.date||'9999-12-31';if(ad!==bd)return ad.localeCompare(bd);return Number(a.createdAt||0)-Number(b.createdAt||0);
+  });
+}
+function todoDateLabel(t){return t.dateText||t.date&&fmtMovementDate(t.date)||'Senza data'}
+function renderTodoActive(){
+  applyTodoColor();setTodoGreetings();const el=$('todoActiveList'),tasks=todoSortTasks(todoState().tasks);el.innerHTML='';
+  if(!tasks.length){el.innerHTML='<div class="todoEmpty">Nessuna cosa da fare.<br>Puoi aggiungerne una quando vuoi.</div>';return}
+  tasks.forEach(t=>{
+    const row=document.createElement('div');row.className='todoTaskRow';
+    const overdue=!!(t.date&&t.date<todayISO());
+    row.innerHTML='<button class="todoTaskMain">'+esc(t.description)+'</button><div class="todoTaskDate '+(overdue?'overdue':'')+'">'+esc(overdue?'Scaduta · '+todoDateLabel(t):todoDateLabel(t))+'</div><button class="todoNotifyBtn '+(t.notify?'on':'')+'" aria-label="Notifica">🔔</button><button class="todoCompleteBtn"><span>Segna<br>come fatta</span><span class="todoCompleteCircle"></span></button>';
+    row.querySelector('.todoTaskMain').onclick=()=>openTodoEditor(t.id);
+    row.querySelector('.todoNotifyBtn').onclick=()=>toggleTodoNotify(t.id);
+    row.querySelector('.todoCompleteBtn').onclick=()=>completeTodoTask(t.id);
+    el.appendChild(row);
+  });
+}
+function todoRecurrenceNext(task){
+  if(!task.date||!task.recurrence)return null;const r=task.recurrence,after=task.date;
+  if(r.kind==='single')return null;
+  if(r.kind==='monthly')return isoFor(addMonths(after.slice(0,7),1),Number(after.slice(8,10)));
+  if(r.kind==='custom'){
+    const end=lastDayISO(addMonths(after.slice(0,7),240));
+    return customOccurrencesFromRecurrence(r,end,addDaysISO(after,1))[0]||null;
+  }
+  if(r.kind==='count'){
+    const next=addMonths(after.slice(0,7),1),d=monthDiff(r.startMonth,next);return d>=0&&d<Number(r.count||0)?isoFor(next,Number(after.slice(8,10))):null;
+  }
+  if(r.kind==='until'){
+    const next=addMonths(after.slice(0,7),1);return next<=r.endMonth?isoFor(next,Number(after.slice(8,10))):null;
+  }
+  if(r.kind==='selected'){
+    const next=(r.months||[]).filter(m=>m>after.slice(0,7)).sort()[0];return next?isoFor(next,Number(after.slice(8,10))):null;
+  }
+  return null;
+}
+function completeTodoTask(id){
+  const idx=todoState().tasks.findIndex(t=>t.id===id);if(idx<0)return;const original=structuredClone(todoState().tasks[idx]),t=todoState().tasks[idx];
+  const done={id:'td'+Date.now()+Math.random(),taskId:t.id,description:t.description,date:t.date,dateText:t.dateText,completedAt:todayISO(),completedTs:Date.now(),taskSnapshot:structuredClone(t)};
+  todoState().done.push(done);
+  const next=todoRecurrenceNext(t);
+  if(next){t.date=next;t.dateText=fmtMovementDate(next);t.precise=true;t.dateSpec={kind:'day',iso:next}}
+  else todoState().tasks.splice(idx,1);
+  save();todoUndoSnapshot={doneId:done.id,task:original};showTodoUndo(done.description);renderTodoActive();
+}
+function showTodoUndo(name){
+  if(undoSnackTimer)clearTimeout(undoSnackTimer);undoSnackHistoryId=null;$('undoSnackText').textContent=name+' spostata in Cose fatte';$('undoSnack').classList.remove('hidden');undoSnackTimer=setTimeout(hideUndoSnack,4500)
+}
+function undoTodoCompletion(){
+  const u=todoUndoSnapshot;if(!u)return;todoState().done=todoState().done.filter(x=>x.id!==u.doneId);
+  const i=todoState().tasks.findIndex(x=>x.id===u.task.id);if(i>=0)todoState().tasks[i]=u.task;else todoState().tasks.push(u.task);
+  todoUndoSnapshot=null;save();hideUndoSnack();if(!$('todoActive').classList.contains('hidden'))renderTodoActive();if(!$('todoDone').classList.contains('hidden'))renderTodoDone();
+}
+function renderTodoDone(){
+  applyTodoColor();setTodoGreetings();const el=$('todoDoneList'),rows=[...todoState().done].sort((a,b)=>Number(b.completedTs||0)-Number(a.completedTs||0));el.innerHTML='';
+  if(!rows.length){el.innerHTML='<div class="todoEmpty">Non hai ancora segnato nessuna cosa come fatta.</div>';return}
+  rows.forEach(d=>{
+    const row=document.createElement('div');row.className='todoDoneRow';
+    row.innerHTML='<button class="todoTaskMain">'+esc(d.description)+'</button><div class="todoTaskDate">'+esc(d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</div><button class="todoNotifyBtn" disabled>🔕</button><div class="todoDoneStatus">✓ Fatta</div>';
+    row.querySelector('.todoTaskMain').onclick=()=>openTodoDoneDetail(d.id);el.appendChild(row);
+  });
+}
+function openTodoDoneDetail(id){
+  const d=todoState().done.find(x=>x.id===id);if(!d)return;
+  openModal('Cosa fatta','<div class="card"><strong>'+esc(d.description)+'</strong><div class="hint" style="margin-top:8px">'+esc(d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</div></div><div class="modalBtns"><button id="todoDoneDelete" class="btn secondary">Elimina</button><button id="todoDoneRestore" class="btn">Riporta tra le cose da fare</button></div>');
+  $('todoDoneDelete').onclick=()=>{todoState().done=todoState().done.filter(x=>x.id!==id);save();closeModal();renderTodoDone()};
+  $('todoDoneRestore').onclick=()=>{
+    const snap=d.taskSnapshot?structuredClone(d.taskSnapshot):{id:'t'+Date.now(),description:d.description,date:d.date,dateText:d.dateText,precise:!!d.date,dateSpec:d.date?{kind:'day',iso:d.date}:null,recurrence:d.date?{kind:'single',month:d.date.slice(0,7)}:null,notify:false,notifyRule:null,createdAt:Date.now()};
+    if(todoState().tasks.some(x=>x.id===snap.id)){snap.id='t'+Date.now()+Math.random();if(snap.date)snap.recurrence={kind:'single',month:snap.date.slice(0,7)}}
+    todoState().tasks.push(snap);todoState().done=todoState().done.filter(x=>x.id!==id);save();closeModal();renderTodoDone();
+  };
+}
+function openTodoRuleEditor(current,onSave,onCancel){
+  const rule=current||todoState().notifications.rule||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Quando vuoi essere avvisato?',notificationRuleFields('todoRuleEdit',rule,'Promemoria')+'<div class="modalBtns"><button id="todoRuleCancel" class="btn secondary">Annulla</button><button id="todoRuleSave" class="btn">Conferma</button></div>');
+  bindNotificationRuleFields('todoRuleEdit',rule);
+  $('todoRuleCancel').onclick=()=>{closeModal();if(onCancel)onCancel()};
+  $('todoRuleSave').onclick=async()=>{const out=readNotificationRuleFields('todoRuleEdit');closeModal();if(onSave)onSave(out);await requestNotificationPermission()};
+}
+function toggleTodoNotify(id){
+  const t=todoState().tasks.find(x=>x.id===id);if(!t)return;
+  if(t.notify){t.notify=false;save();renderTodoActive();return}
+  openTodoRuleEditor(t.notifyRule||todoState().notifications.rule,rule=>{t.notify=true;t.notifyRule=rule;todoState().notifications.enabled=true;save();renderTodoActive()});
+}
+function openTodoEditor(id){
+  const existing=id?todoState().tasks.find(x=>x.id===id):null;if(id&&!existing)return;
+  const draft=existing?structuredClone(existing):{id:'',description:'',date:'',dateText:'',precise:false,dateSpec:null,recurrence:null,notify:false,notifyRule:null,createdAt:Date.now()};
+  openModal(existing?'Modifica cosa da fare':'Aggiungi voce',
+    '<div class="field"><label>Descrizione</label><textarea id="todoEditDescription" rows="3" placeholder="Scrivi cosa devi fare">'+esc(draft.description)+'</textarea></div>'+
+    '<div class="field"><label>Data</label><input id="todoEditDate" type="text" inputmode="text" autocomplete="off" placeholder="Es. 15 ottobre, domani, entro ottobre" value="'+escAttr(draft.dateText||'')+'"><div class="manualDateHelp">Scrivi la data liberamente. Non si apre nessun calendario.</div></div>'+
+    '<div id="todoEditRecArea"></div>'+
+    '<label class="settingsSubRow" style="margin-top:12px"><span class="settingsRowIcon iOrange">🔔</span><span><strong>Attiva notifica</strong><small>Puoi scegliere quando essere avvisato</small></span><input id="todoEditNotify" class="settingToggle" type="checkbox" '+(draft.notify?'checked':'')+'></label>'+
+    '<div class="modalBtns"><button id="todoEditDelete" class="btn secondary">'+(existing?'Elimina':'Annulla')+'</button><button id="todoEditSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullEditor');
+  let rec=structuredClone(draft.recurrence),notifyRule=structuredClone(draft.notifyRule);
+  const paint=()=>{
+    const parsed=parseTodoDateInput($('todoEditDate').value);
+    const area=$('todoEditRecArea');
+    if(!$('todoEditDate').value.trim()){area.innerHTML='';return}
+    if(!parsed){area.innerHTML='<div class="note">Controlla la data inserita.</div>';return}
+    const active=rec?(rec.kind==='single'?'single':rec.kind==='monthly'?'monthly':'custom'):'';
+    area.innerHTML='<div class="settingsSubTitle">COME VUOI REGISTRARLA?</div><div class="todoRecChoices"><button id="teSingle" class="'+(active==='single'?'active':'')+'">Una sola volta</button><button id="teMonthly" class="'+(active==='monthly'?'active':'')+'">Ogni mese</button><button id="teCustom" class="'+(active==='custom'?'active':'')+'">Altro</button></div>'+(rec?'<div class="todoRecSummary">'+esc(todoRecurrenceSummary(rec))+'</div>':'');
+    $('teSingle').onclick=()=>{rec={kind:'single',month:parsed.date.slice(0,7)};paint()};
+    $('teMonthly').onclick=()=>{rec={kind:'monthly',startMonth:parsed.date.slice(0,7)};paint()};
+    $('teCustom').onclick=()=>{openEditorAdvancedRecurrence(parsed.date,rec,cfg=>{rec=cfg;paint()})};
+  };
+  $('todoEditDate').oninput=()=>{rec=null;paint()};paint();
+  $('todoEditNotify').onchange=()=>{if($('todoEditNotify').checked)openTodoRuleEditor(notifyRule||todoState().notifications.rule,r=>{notifyRule=r;$('modal').classList.remove('hidden')},()=>{$('todoEditNotify').checked=false;$('modal').classList.remove('hidden')})};
+  $('todoEditDelete').onclick=()=>{
+    if(!existing){closeModal();return}
+    openModal('Elimina voce','<div class="note">Vuoi eliminare questa cosa da fare?</div><div class="modalBtns"><button id="tedNo" class="btn secondary">Annulla</button><button id="tedYes" class="btn">Elimina</button></div>');
+    $('tedNo').onclick=closeModal;$('tedYes').onclick=()=>{todoState().tasks=todoState().tasks.filter(x=>x.id!==existing.id);save();closeModal();renderTodoActive()};
+  };
+  $('todoEditSave').onclick=()=>{
+    const description=$('todoEditDescription').value.trim(),raw=$('todoEditDate').value.trim(),parsed=parseTodoDateInput(raw);
+    if(!description){flashModal('Inserisci la descrizione.');return}
+    if(raw&&!parsed){flashModal('Controlla la data inserita.');return}
+    if(parsed&&parsed.date&&!rec){flashModal('Scegli Una sola volta, Ogni mese o Altro.');return}
+    const obj={id:existing?existing.id:'t'+Date.now()+Math.random(),description,date:parsed&&parsed.date||'',dateText:raw,precise:parsed?parsed.precise:false,dateSpec:parsed&&parsed.spec||null,recurrence:rec,notify:$('todoEditNotify').checked,notifyRule,createdAt:existing?existing.createdAt:Date.now()};
+    if(existing){const i=todoState().tasks.findIndex(x=>x.id===existing.id);todoState().tasks[i]=obj}else todoState().tasks.push(obj);
+    if(obj.notify)todoState().notifications.enabled=true;save();closeModal();show('todoActive');
+  };
+}
+function renderTodoSettings(){
+  applyTodoColor();setTodoGreetings();$('todoColorSummary').textContent='Colore scelto: '+todoState().color;
+  const n=todoState().notifications;$('todoNotifySummary').textContent=n.enabled?'Notifiche attive · '+(n.rule&&n.rule.timing==='before'?'giorno prima':n.rule&&n.rule.timing==='both'?'giorno prima + stesso giorno':n.rule&&n.rule.timing==='custom'?'personalizzate':'stesso giorno'):'Notifiche generali disattivate';
+}
+function openTodoColorSettings(){
+  const choices=Object.entries(TODO_COLORS);
+  openModal('Colore dell’app','<div class="hint">Scegli il colore che preferisci per la sezione Cose da fare.</div><div id="todoColorDots" class="todoColorDots">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i>'+n+'</button>').join('')+'</div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
+  let selected=todoState().color;document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{selected=b.dataset.tcolor;document.querySelectorAll('[data-tcolor]').forEach(x=>x.classList.toggle('active',x===b))});
+  $('todoColorCancel').onclick=closeModal;$('todoColorSave').onclick=()=>{todoState().color=selected;save();applyTodoColor();closeModal();renderTodoSettings()};
+}
+function openTodoNotificationSettings(){
+  const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Notifiche Cose da fare','<label class="settingsSubRow"><span class="settingsRowIcon iOrange">🔔</span><span><strong>Notifiche generali</strong><small>Puoi spegnerle senza perdere le scelte delle singole voci</small></span><input id="todoGlobalNotify" class="settingToggle" type="checkbox" '+(n.enabled?'checked':'')+'></label>'+notificationRuleFields('todoGlobalRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoGlobalCancel" class="btn secondary">Annulla</button><button id="todoGlobalSave" class="btn">Salva</button></div>');
+  bindNotificationRuleFields('todoGlobalRule',rule);
+  $('todoGlobalCancel').onclick=closeModal;$('todoGlobalSave').onclick=async()=>{n.enabled=$('todoGlobalNotify').checked;n.rule=readNotificationRuleFields('todoGlobalRule');save();closeModal();renderTodoSettings();if(n.enabled)await requestNotificationPermission()};
+}
+function openTodoNameSettings(){
+  openModal('Nome','<div class="field"><label>Come vuoi essere chiamato?</label><input id="todoNameInput" value="'+escAttr(state.profile.fullName||'')+'" placeholder="Es. Evaristo"></div><div class="modalBtns"><button id="todoNameCancel" class="btn secondary">Annulla</button><button id="todoNameSave" class="btn">Salva</button></div>');
+  $('todoNameCancel').onclick=closeModal;$('todoNameSave').onclick=()=>{state.profile.fullName=$('todoNameInput').value.trim();save();if($('landingNickname'))$('landingNickname').value=state.profile.fullName;closeModal();renderTodoSettings()};
+}
+function confirmTodoDelete(kind){
+  const title=kind==='pending'?'Cancella tutte le cose da fare':kind==='done'?'Cancella tutte le cose fatte':'Azzera Cose da fare';
+  const text=kind==='all'?'Sei sicuro di voler cancellare tutti i dati della sezione Cose da fare?':'Sei sicuro di voler cancellare queste voci?';
+  openModal(title,'<div class="note">'+text+'<br><strong>Questa operazione non può essere annullata.</strong></div><div class="modalBtns"><button id="todoDelNo" class="btn secondary">Annulla</button><button id="todoDelYes" class="btn">Sì, cancella</button></div>');
+  $('todoDelNo').onclick=closeModal;$('todoDelYes').onclick=()=>{
+    if(kind==='pending')todoState().tasks=[];if(kind==='done')todoState().done=[];if(kind==='all'){const color=todoState().color;state.todo={setupDone:false,tasks:[],done:[],color,notifications:{enabled:false,rule:{timing:'same',time:'09:00',overdue:'none'},sent:{}}}}
+    save();closeModal();show(kind==='all'?'todoSetup':'todoSettings');
+  };
+}
+function openTodoNotificationPicker(){
+  if(!todoState().setupDone||!todoState().tasks.length){openModal('Notifiche Cose da fare','<div class="note">Prima inserisci almeno una cosa da fare. Poi potrai scegliere le notifiche voce per voce.</div>');return}
+  const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'};
+  openModal('Notifiche Cose da fare','<div class="hint">Scegli quali cose vuoi che l’app ti ricordi.</div><div id="todoNotifyPick" class="notifyList">'+todoSortTasks(todoState().tasks).map(t=>'<label class="notifyToggle"><span><b>'+esc(t.description)+'</b><small>'+esc(todoDateLabel(t))+'</small></span><input type="checkbox" value="'+escAttr(t.id)+'" '+(t.notify?'checked':'')+'></label>').join('')+'</div>'+notificationRuleFields('todoPickRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoPickCancel" class="btn secondary">Annulla</button><button id="todoPickSave" class="btn">Conferma</button></div>');
+  bindNotificationRuleFields('todoPickRule',rule);
+  $('todoPickCancel').onclick=closeModal;$('todoPickSave').onclick=async()=>{const ids=new Set(Array.from(document.querySelectorAll('#todoNotifyPick input:checked')).map(x=>x.value));todoState().tasks.forEach(t=>t.notify=ids.has(t.id));n.rule=readNotificationRuleFields('todoPickRule');n.enabled=ids.size>0;save();closeModal();if(n.enabled)await requestNotificationPermission()};
+}
+async function checkDueTodoNotifications(){
+  if(nativeBridge()){queueNativeNotificationSync();return}
+  const n=todoState().notifications;if(!n.enabled||!('Notification' in window)||Notification.permission!=='granted')return;
+  const today=todayISO(),alerts=[];
+  for(const t of todoState().tasks.filter(x=>x.notify&&x.date)){
+    const rule=t.notifyRule||n.rule||{timing:'same',time:'09:00',overdue:'none'};if(!notificationTimeReached(rule))continue;
+    const diff=daysBetween(t.date,today),reasons=[];
+    if((rule.timing==='same'||rule.timing==='both')&&diff===0)reasons.push('oggi');
+    if((rule.timing==='before'||rule.timing==='both')&&diff===-1)reasons.push('domani');
+    if(rule.timing==='custom'&&diff===-Math.max(1,Number(rule.beforeDays)||1))reasons.push('prima');
+    if(diff>0&&rule.overdue!=='none'){const every=rule.overdue==='daily'?1:rule.overdue==='custom'?Math.max(1,Number(rule.overdueDays)||1):Number(rule.overdue)||0;if(every&&diff%every===0)reasons.push('scaduta')}
+    reasons.forEach(reason=>{const key=t.id+'|'+t.date+'|'+today+'|'+reason;if(!n.sent[key])alerts.push({t,reason,key})});
+  }
+  if(!alerts.length)return;
+  const body=alerts.slice(0,5).map(a=>a.t.description+(a.reason==='scaduta'?' · scaduta':'')).join('\n')+(alerts.length>5?'\n+'+(alerts.length-5)+' altre':'');
+  try{const note=new Notification(alerts.length===1?'Promemoria Cose da fare':alerts.length+' promemoria Cose da fare',{body});note.onclick=()=>{try{window.focus()}catch(e){};show('todoActive')};alerts.forEach(a=>n.sent[a.key]=true);save()}catch(e){}
+}
+
+// Todo navigation/event wiring.
+$('todoSetupBack').onclick=()=>show('landing');
+$('todoSetupAdd').onclick=()=>addTodoSetupRow(false);
+$('todoSetupSave').onclick=saveTodoInitialSetup;
+$('todoHubBack').onclick=()=>show('landing');
+$('todoHubPending').onclick=()=>show('todoActive');
+$('todoHubDone').onclick=()=>show('todoDone');
+$('todoHubSettings').onclick=()=>show('todoSettings');
+$('todoActiveBack').onclick=()=>show('todoHub');
+$('todoAddTask').onclick=()=>openTodoEditor(null);
+$('todoGoDone').onclick=()=>show('todoDone');
+$('todoGoSettings').onclick=()=>show('todoSettings');
+$('todoDoneBack').onclick=()=>show('todoHub');
+$('todoDoneToActive').onclick=()=>show('todoActive');
+$('todoDoneSettings').onclick=()=>show('todoSettings');
+$('todoSettingsBack').onclick=()=>show('todoHub');
+$('todoSettingColor').onclick=openTodoColorSettings;
+$('todoSettingNotifications').onclick=openTodoNotificationSettings;
+$('todoSettingName').onclick=openTodoNameSettings;
+$('todoDeletePending').onclick=()=>confirmTodoDelete('pending');
+$('todoDeleteDone').onclick=()=>confirmTodoDelete('done');
+$('todoResetAll').onclick=()=>confirmTodoDelete('all');
+
 $('modalClose').onclick=closeModal;$('undoSnackBtn').onclick=undoFromSnack;
 $('landingConti').onclick=openContiFromLanding;
 $('landingNickname').addEventListener('change',()=>{state.profile.fullName=$('landingNickname').value.trim();save()});
-$('landingTodo').onclick=()=>openModal('Cose da fare','<div class="note">Questa sezione verrà sviluppata dopo Conti economici.</div>');
+$('landingTodo').onclick=openTodoFromLanding;
 $('landingNotifyConti').onclick=()=>{notificationReturn='landing';notificationDraftScope=currentNotificationScope();show('notifications')};
-$('landingNotifyTodo').onclick=()=>openModal('Notifiche Cose da fare','<div class="note">L’accesso è già predisposto. Le notifiche di Cose da fare saranno attive quando svilupperemo quella sezione.</div>');
+$('landingNotifyTodo').onclick=openTodoNotificationPicker;
 $('balanceBack').onclick=()=>show('landing');
 $('homeBackLanding').onclick=()=>show('landing');
 
