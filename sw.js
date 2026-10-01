@@ -1,4 +1,4 @@
-const CACHE='in-ordine-v12';
+const CACHE='in-ordine-v13';
 const CORE=[
   './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
   './assets/landing-bg-1.txt','./assets/landing-bg-2.txt','./assets/landing-bg-3.txt',
