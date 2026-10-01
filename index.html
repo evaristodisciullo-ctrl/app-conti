@@ -1082,6 +1082,13 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .todoCompleteBtn{min-height:45px;border:1px solid #e4ca75;border-radius:12px;background:#fff3bd;color:#5c5133;padding:6px 7px;display:grid;grid-template-columns:1fr 20px;gap:4px;align-items:center;text-align:left;font-size:10.5px;font-weight:900;line-height:1.05}
 .todoCompleteCircle{width:17px;height:17px;border-radius:50%;border:1.8px solid #64593b}
 .todoEmpty{padding:28px 12px;text-align:center;color:#73869a}
+.todoFilterBar{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;margin:0 0 12px}
+.todoFilterAll,.todoFilterSelect{height:42px;border:1px solid #dce6eb;border-radius:13px;background:#fff;color:#496078;font-weight:800;font-size:12px}
+.todoFilterAll{padding:0 15px}
+.todoFilterAll.active{background:var(--todoSoft,#e5f0e8);border-color:var(--todoAccent,#6c9d83);color:#244c3a}
+.todoFilterSelect{padding:0 9px;min-width:0}
+.todoFilterSummary{margin:-4px 2px 10px;color:#6a7f92;font-size:11px;font-weight:750}
+.todoDoneHead{display:grid;grid-template-columns:minmax(0,1fr) 90px 48px 72px;gap:7px;align-items:center;padding:0 5px 8px;color:#58708a;font-size:10px;font-weight:900}
 .todoDoneRow{display:grid;grid-template-columns:minmax(0,1fr) 90px 48px 72px;gap:7px;align-items:center;padding:10px 5px;border-top:1px solid #edf1f3}
 .todoDoneStatus{background:#e3f4e8;color:#2f7651;border-radius:12px;padding:8px 6px;font-size:11px;font-weight:900;text-align:center}
 .todoSettingsStack{display:grid;gap:11px}
@@ -1098,6 +1105,8 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   .todoListHead,.todoTaskRow{grid-template-columns:minmax(0,1fr) 46px 86px;gap:5px}
   .todoTaskMain{font-size:11px}.todoCompleteBtn{font-size:9.5px}.todoTaskDate{font-size:9.5px}
   .todoSetupHead,.todoSetupRow{grid-template-columns:minmax(0,1.35fr) minmax(76px,.75fr) 54px;gap:6px}
+  .todoFilterBar{grid-template-columns:78px 1fr 1fr;gap:6px}
+  .todoFilterAll,.todoFilterSelect{font-size:10.5px;padding-left:6px;padding-right:6px}
 }
 
 </style>
@@ -1218,6 +1227,12 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <section id="todoActive" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
   <div class="todoHero active"><strong id="todoActiveGreeting">Ciao</strong><small>Qui trovi le cose ancora da fare</small><span class="todoHeroArt" aria-hidden="true">🗂️</span></div>
+  <div class="todoFilterBar">
+    <button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button>
+    <select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
+    <select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select>
+  </div>
+  <div id="todoActiveFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel">
     <div class="todoListHead"><span>Voce e data</span><span>Notifiche</span><span>Completa</span></div>
     <div id="todoActiveList"></div>
@@ -1232,8 +1247,14 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose fatte</h1></div>
   <div class="todoHero done"><strong id="todoDoneGreeting">Ciao</strong><small>Qui trovi le cose già completate</small><span class="todoHeroArt" aria-hidden="true">🏅</span></div>
+  <div class="todoFilterBar">
+    <button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button>
+    <select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
+    <select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select>
+  </div>
+  <div id="todoDoneFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel">
-    <div class="todoListHead"><span>Descrizione</span><span>Data</span><span>Notifiche</span><span>Stato</span></div>
+    <div class="todoDoneHead"><span>Descrizione</span><span>Data</span><span>Notifiche</span><span>Stato</span></div>
     <div id="todoDoneList"></div>
   </div>
   <div class="todoActions">
@@ -3379,6 +3400,8 @@ function esc(s){return String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>
 function escAttr(s){return esc(s).replace(/"/g,'&quot;')}
 
 let todoUndoSnapshot=null,todoSetupRevisit=false;
+let todoFilters={active:{month:'all',year:'all'},done:{month:'all',year:'all'}};
+const TODO_MONTH_LABELS=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const TODO_COLORS={
   Salvia:{accent:'#6f9f83',soft:'#e5f0e8'},
   Sabbia:{accent:'#b38a58',soft:'#f4eadc'},
@@ -3573,9 +3596,46 @@ function todoSortTasks(arr){
   });
 }
 function todoDateLabel(t){return t.dateText||t.date&&fmtMovementDate(t.date)||'Senza data'}
+function todoFilterDate(item,kind){return item&&item.date||''}
+function todoFilterYears(kind){
+  const source=kind==='active'?todoState().tasks:todoState().done,years=new Set([String(todayDate().getFullYear())]);
+  source.forEach(x=>{const d=todoFilterDate(x,kind);if(/^\d{4}-\d{2}-\d{2}$/.test(d))years.add(d.slice(0,4))});
+  return [...years].sort((a,b)=>Number(b)-Number(a));
+}
+function renderTodoFilterBar(kind){
+  const prefix=kind==='active'?'todoActive':'todoDone',filter=todoFilters[kind],month=$(prefix+'FilterMonth'),year=$(prefix+'FilterYear'),all=$(prefix+'FilterAll');
+  if(!month||!year||!all)return;
+  month.innerHTML='<option value="all">Tutti i mesi</option>'+TODO_MONTH_LABELS.map((m,i)=>'<option value="'+String(i+1).padStart(2,'0')+'">'+m+'</option>').join('');
+  year.innerHTML='<option value="all">Tutti gli anni</option>'+todoFilterYears(kind).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
+  month.value=filter.month;year.value=filter.year;
+  all.classList.toggle('active',filter.month==='all'&&filter.year==='all');
+  const rerender=kind==='active'?renderTodoActive:renderTodoDone;
+  all.onclick=()=>{filter.month='all';filter.year='all';rerender()};
+  month.onchange=()=>{filter.month=month.value;rerender()};
+  year.onchange=()=>{filter.year=year.value;rerender()};
+}
+function applyTodoFilter(items,kind){
+  const f=todoFilters[kind];
+  return items.filter(x=>{
+    const d=todoFilterDate(x,kind);
+    if(f.month==='all'&&f.year==='all')return true;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;
+    if(f.month!=='all'&&d.slice(5,7)!==f.month)return false;
+    if(f.year!=='all'&&d.slice(0,4)!==f.year)return false;
+    return true;
+  });
+}
+function todoFilterDescription(kind,count,total){
+  const f=todoFilters[kind],parts=[];
+  if(f.month!=='all')parts.push(TODO_MONTH_LABELS[Number(f.month)-1]);
+  if(f.year!=='all')parts.push(f.year);
+  return (f.month==='all'&&f.year==='all'?'Tutte le voci':parts.join(' · '))+' — '+count+' di '+total;
+}
 function renderTodoActive(){
-  applyTodoColor();setTodoGreetings();const el=$('todoActiveList'),tasks=todoSortTasks(todoState().tasks);el.innerHTML='';
-  if(!tasks.length){el.innerHTML='<div class="todoEmpty">Nessuna cosa da fare.<br>Puoi aggiungerne una quando vuoi.</div>';return}
+  applyTodoColor();setTodoGreetings();renderTodoFilterBar('active');
+  const el=$('todoActiveList'),allTasks=todoSortTasks(todoState().tasks),tasks=applyTodoFilter(allTasks,'active');el.innerHTML='';
+  $('todoActiveFilterSummary').textContent=todoFilterDescription('active',tasks.length,allTasks.length);
+  if(!tasks.length){el.innerHTML='<div class="todoEmpty">'+(allTasks.length?'Nessuna cosa da fare per questo periodo.':'Nessuna cosa da fare.<br>Puoi aggiungerne una quando vuoi.')+'</div>';return}
   tasks.forEach(t=>{
     const row=document.createElement('div');row.className='todoTaskRow';
     const overdue=!!(t.date&&t.date<todayISO());
@@ -3623,8 +3683,10 @@ function undoTodoCompletion(){
   todoUndoSnapshot=null;save();hideUndoSnack();if(!$('todoActive').classList.contains('hidden'))renderTodoActive();if(!$('todoDone').classList.contains('hidden'))renderTodoDone();
 }
 function renderTodoDone(){
-  applyTodoColor();setTodoGreetings();const el=$('todoDoneList'),rows=[...todoState().done].sort((a,b)=>Number(b.completedTs||0)-Number(a.completedTs||0));el.innerHTML='';
-  if(!rows.length){el.innerHTML='<div class="todoEmpty">Non hai ancora segnato nessuna cosa come fatta.</div>';return}
+  applyTodoColor();setTodoGreetings();renderTodoFilterBar('done');
+  const el=$('todoDoneList'),allRows=[...todoState().done].sort((a,b)=>Number(b.completedTs||0)-Number(a.completedTs||0)),rows=applyTodoFilter(allRows,'done');el.innerHTML='';
+  $('todoDoneFilterSummary').textContent=todoFilterDescription('done',rows.length,allRows.length);
+  if(!rows.length){el.innerHTML='<div class="todoEmpty">'+(allRows.length?'Nessuna cosa fatta per questo periodo.':'Non hai ancora segnato nessuna cosa come fatta.')+'</div>';return}
   rows.forEach(d=>{
     const row=document.createElement('div');row.className='todoDoneRow';
     row.innerHTML='<button class="todoTaskMain">'+esc(d.description)+'</button><div class="todoTaskDate">'+esc(d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</div><button class="todoNotifyBtn" disabled>🔕</button><div class="todoDoneStatus">✓ Fatta</div>';
