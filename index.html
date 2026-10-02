@@ -2044,60 +2044,219 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
     font-size:19px!important;
   }
 }
+
+/* === LANDING 1:1 APPROVATA — 02/10/2026 === */
+#landing.landingCanonical{
+  margin:-18px -14px -78px!important;
+  padding:0!important;
+  width:calc(100% + 28px)!important;
+  max-width:none!important;
+  min-height:0!important;
+  background:#eff9ff!important;
+  overflow:auto!important;
+}
+#landing .landingExactStage{
+  --blue:#0787f4;
+  --navy:#071b65;
+  --green:#0dbb73;
+  position:relative!important;
+  width:100%!important;
+  max-width:440px!important;
+  aspect-ratio:691/1228!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 63% 7%,rgba(43,176,245,.22) 0 4.5%,transparent 4.8%),
+    radial-gradient(circle at 78% 6%,rgba(25,156,241,.18) 0 2.5%,transparent 2.8%),
+    radial-gradient(circle at 76% 28%,rgba(43,210,158,.10) 0 15%,transparent 15.4%),
+    linear-gradient(150deg,transparent 0 9%,rgba(68,178,238,.11) 9.3% 14%,transparent 14.5% 29%,rgba(78,190,244,.07) 29.3% 33%,transparent 33.4%),
+    linear-gradient(180deg,#fbfeff 0%,#f7fcff 62%,#eef9ff 100%)!important;
+}
+#landing .landingExactStage:before{
+  content:"";position:absolute;right:-8%;top:3%;width:55%;height:30%;border-radius:50%;
+  border:3px solid rgba(64,174,238,.11);transform:rotate(-12deg);box-shadow:
+    0 0 0 18px rgba(53,181,244,.035),0 0 0 40px rgba(53,181,244,.02);
+}
+#landing .landingExactBrand{position:absolute;left:6.2%;top:6.8%;width:40%;z-index:3}
+#landing .landingExactTitle{position:relative;display:flex;flex-direction:column;align-items:flex-start;line-height:.78;letter-spacing:-.05em}
+#landing .landingExactTitle span{font-size:clamp(36px,10.8vw,50px);font-weight:950;color:#071b65}
+#landing .landingExactTitle strong{font-size:clamp(43px,12.8vw,59px);font-weight:950;color:#0787f4}
+#landing .landingExactTitle i{position:absolute;right:-4%;top:34%;width:25%;height:22%}
+#landing .landingExactTitle i:before,#landing .landingExactTitle i:after{
+  content:"";position:absolute;background:#0787f4;border-radius:999px;width:5px;height:18px;transform:rotate(22deg)
+}
+#landing .landingExactTitle i:before{left:12%;top:0}
+#landing .landingExactTitle i:after{left:55%;top:22%;transform:rotate(65deg)}
+#landing .landingExactSubtitle{
+  margin-top:8px;color:#3c4e69;font-size:clamp(13px,3.55vw,17px);line-height:1.08;font-weight:850
+}
+#landing .landingExactTagline{
+  margin-top:13px;color:#138ff4;font-size:clamp(12px,3.4vw,16px);line-height:1.04;font-weight:800;font-style:italic;transform:rotate(-2deg)
+}
+#landing .landingExactTagline b{font-size:1.9em;font-weight:500;vertical-align:-.18em;margin-left:4px}
+
+#landing .landingExactHero{position:absolute;right:3.8%;top:6.0%;width:50%;height:25%;z-index:2}
+#landing .landingExactHero:before{
+  content:"";position:absolute;right:0;top:7%;width:95%;height:84%;border-radius:50%;
+  background:radial-gradient(circle at 44% 52%,rgba(23,157,240,.13),rgba(39,198,177,.07) 48%,transparent 70%)
+}
+#landing .landingExactHeroLogo{
+  position:absolute;object-fit:cover;border-radius:16%;box-shadow:0 9px 20px rgba(2,40,75,.18)
+}
+#landing .landingExactHeroLogo.green{width:47%;right:1%;top:18%;transform:rotate(5deg)}
+#landing .landingExactHeroLogo.blue{width:50%;left:13%;top:28%;transform:rotate(4deg);z-index:2}
+#landing .landingExactHero .orb{position:absolute;border-radius:50%;z-index:3}
+#landing .landingExactHero .orb1{width:7%;aspect-ratio:1;right:15%;top:3%;background:linear-gradient(145deg,#68d5ff,#0787f4)}
+#landing .landingExactHero .orb2{width:4.5%;aspect-ratio:1;left:5%;top:10%;background:rgba(92,190,247,.38)}
+#landing .landingExactHero .orb3{width:6%;aspect-ratio:1;right:22%;bottom:5%;background:linear-gradient(145deg,#68dcff,#13aaf7)}
+
+#landing .landingExactNameCard{
+  position:absolute;left:4.6%;top:30.7%;width:90.8%;height:11.1%;
+  padding:2.1% 2.6% 2.2%;border-radius:17px;background:rgba(255,255,255,.96);
+  box-shadow:0 7px 18px rgba(30,96,145,.10);border:1px solid rgba(211,232,244,.82);z-index:4
+}
+#landing .landingExactNameCard label{
+  display:block;color:#071b65;font-size:clamp(16px,4.25vw,20px);font-weight:950;line-height:1;margin-bottom:1.8%
+}
+#landing .landingCanonicalName{
+  position:static!important;width:100%!important;height:55%!important;min-height:0!important;
+  padding:0 3%!important;border:2.3px solid #0f94ec!important;border-radius:12px!important;outline:0!important;
+  background:#fbfdff!important;color:#21384f!important;font-size:clamp(17px,4.6vw,22px)!important;font-weight:800!important;
+  box-shadow:0 0 0 4px rgba(15,148,236,.08)!important
+}
+
+#landing .landingExactChoose{
+  position:absolute;left:0;right:0;top:43.1%;margin:0;text-align:center;
+  color:#071b65;font-size:clamp(18px,4.7vw,22px);font-weight:950;line-height:1
+}
+#landing .landingExactChoose strong{color:#0787f4}
+
+#landing .landingExactMainCard{
+  position:absolute;top:47.1%;width:44.3%;height:31.5%;padding:2.1% 1.8% 2%;
+  display:flex;flex-direction:column;align-items:center;text-align:center;border-radius:19px;border:1.7px solid;
+  background:rgba(255,255,255,.95);box-shadow:0 6px 16px rgba(39,96,136,.07);overflow:hidden
+}
+#landing .landingExactMainCard.conti{left:4.4%;border-color:#17b9e9;color:#071b65}
+#landing .landingExactMainCard.todo{right:4.4%;border-color:#36c987;color:#083b2d}
+#landing .landingExactMainCard .landingExactBubbles{
+  position:absolute;top:-4%;left:50%;transform:translateX(-50%);width:86%;aspect-ratio:1;border-radius:50%;opacity:.9
+}
+#landing .landingExactMainCard.conti .landingExactBubbles{
+  background:
+    radial-gradient(circle at 12% 56%,rgba(51,170,241,.22) 0 7%,transparent 7.4%),
+    radial-gradient(circle at 23% 72%,rgba(51,170,241,.18) 0 12%,transparent 12.4%),
+    radial-gradient(circle at 86% 70%,rgba(51,170,241,.18) 0 9%,transparent 9.4%),
+    radial-gradient(circle,#effaff 0 55%,transparent 56%)
+}
+#landing .landingExactMainCard.todo .landingExactBubbles{
+  background:
+    radial-gradient(circle at 15% 60%,rgba(43,200,139,.22) 0 7%,transparent 7.4%),
+    radial-gradient(circle at 85% 70%,rgba(43,200,139,.17) 0 12%,transparent 12.4%),
+    radial-gradient(circle,#effdf6 0 55%,transparent 56%)
+}
+#landing .landingExactMainCard img{
+  position:relative;z-index:2;width:47%;aspect-ratio:1;object-fit:cover;border-radius:18%;margin-top:2%;box-shadow:0 6px 15px rgba(7,52,96,.14)
+}
+#landing .landingExactMainCard>strong{
+  position:relative;z-index:2;margin-top:4%;font-size:clamp(18px,4.9vw,23px);line-height:.98;font-weight:950;letter-spacing:-.025em
+}
+#landing .landingExactMainCard>small{
+  position:relative;z-index:2;margin-top:4%;color:#52667f;font-size:clamp(11px,3.05vw,14px);line-height:1.13;font-weight:650
+}
+#landing .landingExactArrow{
+  position:relative;z-index:2;margin-top:auto;width:27%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;color:#fff;
+  font-size:clamp(26px,7.1vw,34px);font-weight:700;box-shadow:0 7px 16px rgba(20,117,198,.17)
+}
+#landing .conti .landingExactArrow{background:linear-gradient(135deg,#0ea8f4,#087bf5)}
+#landing .todo .landingExactArrow{background:linear-gradient(135deg,#15ce84,#08a95f)}
+
+#landing .landingExactNotify{
+  position:absolute;top:82.55%;width:44.3%;height:12.45%;padding:1.9% 2%;
+  display:grid;grid-template-columns:29% minmax(0,1fr) 10%;align-items:center;gap:3%;
+  border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 5px 14px rgba(34,92,135,.06)
+}
+#landing .landingExactNotify.blue{left:4.4%;border:1.3px solid #cbeaf9;color:#0787f4}
+#landing .landingExactNotify.green{right:4.4%;border:1.3px solid #cdeedc;color:#08a95f}
+#landing .landingExactBell{
+  width:100%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center
+}
+#landing .landingExactNotify.blue .landingExactBell{background:#e8f7ff}
+#landing .landingExactNotify.green .landingExactBell{background:#e9faf1}
+#landing .landingExactBell svg{width:50%;height:50%;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#landing .landingExactNotifyText{display:block;text-align:left;min-width:0}
+#landing .landingExactNotifyText strong{
+  display:block;color:#092855;font-size:clamp(13px,3.35vw,16px);line-height:1.0;font-weight:950
+}
+#landing .landingExactNotifyText small{
+  display:block;margin-top:5%;color:#71839a;font-size:clamp(9px,2.3vw,11px);line-height:1.15;font-weight:500
+}
+#landing .landingExactNotifyArrow{font-size:clamp(23px,5.2vw,28px);line-height:1}
+
+#landing .landingExactBottomWave{position:absolute;left:-6%;right:-6%;border-radius:50%;pointer-events:none}
+#landing .landingExactBottomWave.wave1{height:9%;bottom:2.7%;border-top:12px solid rgba(53,166,235,.11);transform:rotate(2deg)}
+#landing .landingExactBottomWave.wave2{height:7%;bottom:-1.5%;border-top:18px solid rgba(47,187,245,.08);transform:rotate(-2deg)}
+
+@media(min-width:441px){
+  #landing .landingExactStage{border-radius:0}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section id="landing" class="screen landing landingCanonical hidden">
-  <div class="canonicalCanvas landingCanvas landingEds">
+  <div class="landingExactStage">
     <img id="landingCanonicalImage" class="canonicalImage" alt="" style="display:none">
 
-    <div class="landingHeroEds">
-      <div class="landingHeroCopy">
-        <div class="landingBrandWord"><span>In</span><strong>Ordine</strong></div>
-        <p>Conti e attività,<br>tutto sotto controllo.</p>
-        <div class="landingTagline">Più tempo<br>per ciò che conta <span>♡</span></div>
-      </div>
-      <div class="landingHeroLogos" aria-hidden="true">
-        <img class="landingHeroLogo blue" src="assets/eds-blue.webp" alt="">
-        <img class="landingHeroLogo green" src="assets/eds-green.webp" alt="">
-      </div>
+    <div class="landingExactBrand">
+      <div class="landingExactTitle"><span>In</span><strong>Ordine</strong><i></i></div>
+      <div class="landingExactSubtitle">Conti e attività,<br>tutto sotto controllo.</div>
+      <div class="landingExactTagline">Più tempo<br>per ciò che conta <b>♡</b></div>
     </div>
 
-    <div class="landingNameCard">
+    <div class="landingExactHero" aria-hidden="true">
+      <span class="orb orb1"></span><span class="orb orb2"></span><span class="orb orb3"></span>
+      <img class="landingExactHeroLogo green" src="assets/eds-green.webp" alt="">
+      <img class="landingExactHeroLogo blue" src="assets/eds-blue.webp" alt="">
+    </div>
+
+    <div class="landingExactNameCard">
       <label for="landingNickname">Come vuoi essere chiamato?</label>
       <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
     </div>
 
-    <h2 class="landingChooseTitle">Scegli da <strong>dove iniziare.</strong></h2>
+    <h2 class="landingExactChoose">Scegli da <strong>dove iniziare.</strong></h2>
 
-    <div class="landingStartGrid">
-      <button id="landingConti" class="landingStartCard landingStartConti" aria-label="Conti economici">
-        <span class="landingStartArt"><img src="assets/eds-blue.webp" alt=""></span>
-        <strong>Conti<br>economici</strong>
-        <small>Monitora entrate,<br>pagamenti e saldo.</small>
-        <span class="landingStartArrow">→</span>
-      </button>
-      <button id="landingTodo" class="landingStartCard landingStartTodo" aria-label="Cose da fare">
-        <span class="landingStartArt"><img src="assets/eds-green.webp" alt=""></span>
-        <strong>Cose da fare</strong>
-        <small>Organizza impegni,<br>scadenze e promemoria.</small>
-        <span class="landingStartArrow">→</span>
-      </button>
-    </div>
+    <button id="landingConti" class="landingExactMainCard conti" aria-label="Conti economici">
+      <span class="landingExactBubbles" aria-hidden="true"></span>
+      <img src="assets/eds-blue.webp" alt="">
+      <strong>Conti<br>economici</strong>
+      <small>Monitora entrate,<br>pagamenti e saldo.</small>
+      <span class="landingExactArrow">→</span>
+    </button>
 
-    <div class="landingNotifyGrid">
-      <button id="landingNotifyConti" class="landingNotifyCard blue" aria-label="Attiva notifiche Conti economici">
-        <span class="landingNotifyBell landingBellBlue" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
-        <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
-        <span class="landingNotifyArrow">›</span>
-      </button>
-      <button id="landingNotifyTodo" class="landingNotifyCard green" aria-label="Attiva notifiche Cose da fare">
-        <span class="landingNotifyBell landingBellGreen" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
-        <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
-        <span class="landingNotifyArrow">›</span>
-      </button>
-    </div>
+    <button id="landingTodo" class="landingExactMainCard todo" aria-label="Cose da fare">
+      <span class="landingExactBubbles" aria-hidden="true"></span>
+      <img src="assets/eds-green.webp" alt="">
+      <strong>Cose da fare</strong>
+      <small>Organizza impegni,<br>scadenze e promemoria.</small>
+      <span class="landingExactArrow">→</span>
+    </button>
+
+    <button id="landingNotifyConti" class="landingExactNotify blue" aria-label="Attiva notifiche Conti economici">
+      <span class="landingExactBell" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
+      <span class="landingExactNotifyText"><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingExactNotifyArrow">›</span>
+    </button>
+
+    <button id="landingNotifyTodo" class="landingExactNotify green" aria-label="Attiva notifiche Cose da fare">
+      <span class="landingExactBell" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
+      <span class="landingExactNotifyText"><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingExactNotifyArrow">›</span>
+    </button>
+
+    <span class="landingExactBottomWave wave1" aria-hidden="true"></span>
+    <span class="landingExactBottomWave wave2" aria-hidden="true"></span>
   </div>
 </section>
 
