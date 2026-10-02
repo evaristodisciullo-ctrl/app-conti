@@ -426,13 +426,22 @@ async function testTodoSection(browser){
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
   assert.equal(await page.locator('#todoHubHome').count(),0,'Torna all’inizio non deve esserci: si usa la freccia in alto');
-  const compactCards=await page.evaluate(()=>['todoHubNotifications','todoHubSettings','todoHubSetup'].map(id=>{
-    const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundColor;
-    return {id,height:Math.round(r.height),bg};
-  }));
-  assert.equal(compactCards[0].height,compactCards[1].height);
-  assert.equal(compactCards[1].height,compactCards[2].height);
-  assert.equal(new Set(compactCards.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
+  const cardSizes=await page.evaluate(()=>{
+    const big=['todoHubPending','todoHubDone'].map(id=>{const el=document.getElementById(id),r=el.getBoundingClientRect();return {id,height:Math.round(r.height)}});
+    const compact=['todoHubNotifications','todoHubSettings','todoHubSetup'].map(id=>{
+      const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundColor;
+      return {id,height:Math.round(r.height),bg};
+    });
+    return {big,compact};
+  });
+  assert.equal(cardSizes.compact[0].height,cardSizes.compact[1].height);
+  assert.equal(cardSizes.compact[1].height,cardSizes.compact[2].height);
+  assert.ok(cardSizes.compact[0].height<cardSizes.big[0].height,'Notifiche, Impostazioni e Torna all’inserimento devono essere più piccoli dei due riquadri principali');
+  assert.equal(new Set(cardSizes.compact.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
+  assert.equal(await page.locator('#todoHubArt svg').count(),1);
+  assert.equal((await page.locator('#todoHub').innerText()).includes('🗓️'),false);
 
   await page.click('#todoHubNotifications');
   await page.waitForSelector('#modal:not(.hidden)');
@@ -458,6 +467,10 @@ async function testTodoSection(browser){
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
+  assert.equal(await page.locator('#todoActiveArt svg').count(),1);
+  assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
   assert.match(await row.locator('.todoCompleteBtn').innerText(),/Segna\s+come fatta/);
@@ -481,6 +494,10 @@ async function testTodoSection(browser){
   await row.locator('.todoCompleteBtn').click();
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
+  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
+  assert.equal(await page.locator('#todoDoneArt svg').count(),1);
+  assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
 
@@ -511,6 +528,29 @@ async function testTodoSection(browser){
   assert.notEqual(previewColor,beforeColor,'Il colore deve cambiare subito al tocco, prima di Salva');
   await page.click('#todoColorSave');
   assert.equal((await state(page)).todo.color,'Viola');
+
+  await context.close();
+}
+
+async function testTodoIllustrationUsesWomanForFemaleName(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Maria');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();
+  await first.locator('.todoDescInput').fill('Voce prova');
+  await first.locator('.todoDateInput').fill('domani');
+  await first.locator('.todoDateInput').dispatchEvent('input');
+  await first.locator('[data-tr="single"]').click();
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+
+  assert.match(await page.locator('#todoHub').innerText(),/Ciao Maria/);
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'female');
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'female');
 
   await context.close();
 }
@@ -750,6 +790,7 @@ try{
   await testHomeFeatureCardsAreSingleFrame(browser);
   await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
+  await testTodoIllustrationUsesWomanForFemaleName(browser);
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
