@@ -540,6 +540,25 @@ async function testTodoSection(browser){
     bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
     pageBg:getComputedStyle(document.getElementById('todoSettings')).backgroundImage
   }));
+  const originalColor=(await state(page)).todo.color;
+  await page.click('[data-tcolor="Azzurro"]');
+  const cancelPreview=await page.evaluate(()=>({
+    accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
+    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim()
+  }));
+  assert.notEqual(cancelPreview.accent,beforeTheme.accent,'L’anteprima deve cambiare immediatamente anche prima di salvare');
+  await page.click('#todoColorCancel');
+  await page.waitForSelector('#modal',{state:'hidden'});
+  const afterCancel=await page.evaluate(()=>({
+    accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
+    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim()
+  }));
+  assert.equal((await state(page)).todo.color,originalColor,'Annulla non deve salvare il colore provato');
+  assert.equal(afterCancel.accent,beforeTheme.accent,'Annulla deve ripristinare subito il tema precedente');
+  assert.equal(afterCancel.bg,beforeTheme.bg,'Annulla deve ripristinare anche lo sfondo precedente');
+
+  await page.click('#todoSettingColor');
+  await page.waitForSelector('#modal:not(.hidden)');
   await page.click('[data-tcolor="Viola"]');
   const previewTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
@@ -561,8 +580,18 @@ async function testTodoArtworkIsIndependentOfName(browser){
   await page.click('#landingTodo');
   await page.waitForSelector('#todoSetup:not(.hidden)');
   assert.match(await page.locator('#todoSetup').innerText(),/Ciao Maria/);
-  assert.match(await page.locator('#todoSetupArt img').getAttribute('src'),/todo-notebook-sharp\.webp$/);
+  const artBefore=await page.locator('#todoSetupArt img').getAttribute('src');
+  assert.match(artBefore,/todo-notebook-sharp\.webp$/);
   assert.equal(await page.locator('[data-gender]').count(),0,'Il nome non deve più cambiare le immagini in uomo/donna');
+
+  await page.evaluate(()=>{
+    state.profile.fullName='Luca';
+    save();
+    setTodoGreetings();
+  });
+  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Luca/);
+  assert.equal(await page.locator('#todoSetupArt img').getAttribute('src'),artBefore,'Cambiare da un nome femminile a uno maschile non deve cambiare l’immagine');
+  assert.equal(await page.locator('[data-gender]').count(),0);
 
   const first=page.locator('#todoSetupRows .todoSetupRow').first();
   await first.locator('.todoDescInput').fill('Voce prova');
