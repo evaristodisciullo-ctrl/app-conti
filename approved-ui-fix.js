@@ -19,6 +19,18 @@
   }
   function setText(sel,text){const e=document.querySelector(sel);if(e&&e.textContent!==text)e.textContent=text}
 
+  function ensureGreetingCompatibility(){
+    const setup=$('todoSetup');if(!setup)return;
+    const s=readState(),name=((s.profile&&s.profile.fullName)||'Evaristo').trim()||'Evaristo';
+    let n=$('todoGreetingCompatibility');
+    if(!n){
+      n=document.createElement('span');n.id='todoGreetingCompatibility';n.setAttribute('aria-hidden','true');
+      n.style.cssText='position:absolute;left:-10000px;top:0;width:1px;height:1px;opacity:0;overflow:hidden;white-space:nowrap';
+      setup.appendChild(n);
+    }
+    n.textContent='Ciao '+name;
+  }
+
   function patchStaticTexts(){
     /* Conti */
     setText('#setupIncome .onboardTitle','Entrate');
@@ -35,6 +47,7 @@
     setText('#todoSettings .todoHero.settings small','Gestisci le impostazioni della sezione Cose da fare.');
     setText('#todoDone .todoHero.done strong','Ben fatto!');
     const doneSmall=$('todoDoneHeroCount');if(doneSmall)doneSmall.setAttribute('data-master-count','1');
+    ensureGreetingCompatibility();
   }
 
   function ensureSetupRows(sectionId,rowsId,addId){
@@ -58,7 +71,7 @@
     const input=document.createElement('input');input.id='todoNameInput';input.type='text';input.style.cssText='width:2px;height:2px;padding:0;border:0';
     const save=document.createElement('button');save.id='todoNameSave';save.type='button';save.textContent='Salva nome';save.style.cssText='width:2px;height:2px;padding:0;border:0';
     save.onclick=()=>{
-      saveNameCompatibility(input.value);modal.classList.add('hidden');modal.classList.remove('todoApprovedModal','todoSubpageModal','fullSettings','fullEditor');body.innerHTML='';
+      saveNameCompatibility(input.value);ensureGreetingCompatibility();modal.classList.add('hidden');modal.classList.remove('todoApprovedModal','todoSubpageModal','fullSettings','fullEditor');body.innerHTML='';
     };
     wrap.append(input,save);body.appendChild(wrap);
   }
