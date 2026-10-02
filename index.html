@@ -1565,29 +1565,345 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   .todoHubCard.compact strong{font-size:15px!important}
 }
 
+
+/* === LANDING E.D.S APPROVATA — 02/10/2026 === */
+#landing.landingCanonical{
+  margin:-18px -14px -78px!important;
+  padding:0!important;
+  min-height:100dvh!important;
+  background:#eef9ff!important;
+  overflow:auto!important;
+}
+#landing .landingEds{
+  width:100%!important;
+  max-width:560px!important;
+  min-height:100dvh!important;
+  margin:0 auto!important;
+  padding:26px 22px 34px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 88% 10%,rgba(74,183,246,.18) 0 120px,transparent 121px),
+    radial-gradient(circle at 72% 14%,rgba(30,212,153,.12) 0 72px,transparent 73px),
+    linear-gradient(150deg,transparent 0 10%,rgba(48,174,239,.075) 11% 17%,transparent 18% 34%,rgba(77,191,247,.055) 35% 40%,transparent 41%),
+    linear-gradient(180deg,#fbfeff 0%,#f2fbff 70%,#ebf8ff 100%)!important;
+}
+#landing .landingHeroEds{
+  min-height:325px;
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(170px,1.08fr);
+  gap:8px;
+  align-items:center;
+  margin:-6px -8px 10px;
+  padding:22px 10px 8px;
+}
+#landing .landingHeroCopy{position:relative;z-index:2;padding-left:3px}
+#landing .landingBrandWord{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  line-height:.82;
+  margin-bottom:15px;
+  letter-spacing:-2.5px;
+}
+#landing .landingBrandWord span{
+  font-size:54px;font-weight:950;color:#081c65;
+}
+#landing .landingBrandWord strong{
+  font-size:58px;font-weight:950;color:#0b83f6;
+}
+#landing .landingHeroCopy p{
+  margin:0;color:#364b69;font-size:18px;line-height:1.13;font-weight:850;
+}
+#landing .landingTagline{
+  margin-top:20px;
+  color:#158ff3;
+  font-size:18px;
+  line-height:1.04;
+  font-weight:750;
+  font-style:italic;
+  transform:rotate(-2deg);
+}
+#landing .landingTagline span{font-size:32px;vertical-align:-5px;margin-left:5px}
+#landing .landingHeroLogos{
+  position:relative;
+  height:235px;
+  align-self:center;
+  isolation:isolate;
+}
+#landing .landingHeroLogos:before,
+#landing .landingHeroLogos:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  filter:blur(.1px);
+  pointer-events:none;
+}
+#landing .landingHeroLogos:before{
+  width:235px;height:235px;right:-28px;top:0;
+  background:radial-gradient(circle at 42% 48%,rgba(42,180,244,.17),rgba(42,180,244,.05) 52%,transparent 70%);
+  box-shadow:0 0 0 22px rgba(88,190,247,.035),0 0 0 48px rgba(88,190,247,.025);
+}
+#landing .landingHeroLogos:after{
+  width:205px;height:62px;right:1px;bottom:28px;
+  border:4px solid rgba(26,169,240,.14);
+  transform:rotate(-12deg);
+}
+#landing .landingHeroLogo{
+  position:absolute;
+  width:118px;height:118px;
+  object-fit:cover;
+  border-radius:28px;
+  box-shadow:0 12px 28px rgba(10,52,94,.16);
+  z-index:2;
+}
+#landing .landingHeroLogo.blue{left:8px;top:63px;transform:rotate(4deg)}
+#landing .landingHeroLogo.green{right:3px;top:38px;transform:rotate(4deg);z-index:1}
+
+#landing .landingNameCard{
+  position:relative;
+  margin:0 2px 14px;
+  padding:13px 14px 15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 9px 24px rgba(31,94,143,.10);
+  border:1px solid #e2eef6;
+}
+#landing .landingNameCard label{
+  display:block;
+  color:#071c64;
+  font-size:20px;
+  font-weight:950;
+  margin:0 0 8px 2px;
+}
+#landing .landingCanonicalName{
+  position:static!important;
+  width:100%!important;
+  height:56px!important;
+  border:3px solid #138ff3!important;
+  outline:0!important;
+  border-radius:15px!important;
+  background:#fbfdff!important;
+  color:#17324a!important;
+  padding:0 14px!important;
+  font-size:20px!important;
+  font-weight:800!important;
+  box-shadow:0 0 0 5px rgba(19,143,243,.09)!important;
+}
+#landing .landingChooseTitle{
+  margin:11px 0 12px;
+  text-align:center;
+  color:#071c64;
+  font-size:22px;
+  font-weight:950;
+}
+#landing .landingChooseTitle strong{color:#108af5}
+
+#landing .landingStartGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:0 0 18px;
+}
+#landing .landingStartCard{
+  min-height:360px;
+  border-radius:22px;
+  border:2px solid;
+  padding:18px 12px 16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 8px 22px rgba(35,92,135,.08);
+  position:relative;
+  overflow:hidden;
+}
+#landing .landingStartCard:before{
+  content:"";
+  position:absolute;
+  width:190px;height:190px;
+  border-radius:50%;
+  top:-15px;left:50%;transform:translateX(-50%);
+  pointer-events:none;
+}
+#landing .landingStartConti{border-color:#19b9e9;color:#092855}
+#landing .landingStartTodo{border-color:#36c987;color:#083b2d}
+#landing .landingStartConti:before{
+  background:radial-gradient(circle,#eefaff 0 58%,transparent 59%),radial-gradient(circle at 22% 72%,rgba(29,157,244,.14) 0 13px,transparent 14px);
+}
+#landing .landingStartTodo:before{
+  background:radial-gradient(circle,#effdf6 0 58%,transparent 59%),radial-gradient(circle at 74% 68%,rgba(44,202,137,.14) 0 16px,transparent 17px);
+}
+#landing .landingStartArt{
+  width:112px;height:112px;
+  display:grid;place-items:center;
+  margin:4px auto 10px;
+  position:relative;z-index:1;
+}
+#landing .landingStartArt img{
+  width:104px;height:104px;object-fit:cover;border-radius:22px;
+  box-shadow:0 8px 20px rgba(7,52,96,.14)
+}
+#landing .landingStartCard>strong{
+  position:relative;z-index:1;
+  font-size:24px;line-height:1.0;font-weight:950;
+  letter-spacing:-.5px;
+}
+#landing .landingStartCard>small{
+  position:relative;z-index:1;
+  margin-top:9px;
+  color:#52667f;
+  font-size:14px;
+  line-height:1.16;
+  font-weight:650;
+}
+#landing .landingStartArrow{
+  margin-top:auto;
+  width:58px;height:58px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  color:#fff;font-size:34px;font-weight:700;
+  box-shadow:0 9px 20px rgba(20,117,198,.18);
+}
+#landing .landingStartConti .landingStartArrow{background:linear-gradient(135deg,#0ea8f4,#087bf5)}
+#landing .landingStartTodo .landingStartArrow{background:linear-gradient(135deg,#15ce84,#08a95f)}
+
+#landing .landingNotifyGrid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  margin:0!important;
+  padding:0!important;
+  background:transparent!important;
+}
+#landing .landingNotifyCard{
+  min-height:132px!important;
+  display:grid!important;
+  grid-template-columns:58px minmax(0,1fr) 18px!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:14px 12px!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.95)!important;
+  box-shadow:0 7px 19px rgba(34,92,135,.07)!important;
+}
+#landing .landingNotifyCard.blue{border:1.5px solid #cae9f8!important}
+#landing .landingNotifyCard.green{border:1.5px solid #cdeedc!important}
+#landing .landingNotifyBell{
+  width:54px;height:54px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  font-size:0!important;
+  position:relative;
+}
+#landing .landingNotifyBell:before{
+  content:"";
+  width:23px;height:25px;
+  border:3px solid currentColor;
+  border-radius:13px 13px 9px 9px;
+  border-top-width:4px;
+  transform:translateY(-2px);
+}
+#landing .landingNotifyBell:after{
+  content:"";
+  position:absolute;
+  width:26px;height:3px;
+  background:currentColor;
+  border-radius:999px;
+  bottom:13px;
+}
+#landing .landingBellBlue{background:#e7f6ff;color:#087bf5}
+#landing .landingBellGreen{background:#e8faf1;color:#08a95f}
+#landing .landingNotifyCard strong{
+  color:#0b2855!important;
+  font-size:16px!important;
+  line-height:1.02!important;
+}
+#landing .landingNotifyCard small{
+  color:#71839a!important;
+  font-size:11.5px!important;
+  line-height:1.28!important;
+  margin-top:5px!important;
+}
+#landing .landingNotifyArrow{font-size:28px!important}
+
+@media(max-width:410px){
+  #landing .landingEds{padding:20px 14px 28px!important}
+  #landing .landingHeroEds{min-height:300px;grid-template-columns:minmax(0,.98fr) minmax(150px,1.02fr)}
+  #landing .landingBrandWord span{font-size:46px}
+  #landing .landingBrandWord strong{font-size:50px}
+  #landing .landingHeroCopy p{font-size:16px}
+  #landing .landingTagline{font-size:16px}
+  #landing .landingHeroLogo{width:102px;height:102px;border-radius:24px}
+  #landing .landingHeroLogo.blue{left:5px;top:72px}
+  #landing .landingHeroLogo.green{right:0;top:47px}
+  #landing .landingStartCard{min-height:330px;padding:15px 9px 14px}
+  #landing .landingStartArt{width:96px;height:96px}
+  #landing .landingStartArt img{width:90px;height:90px;border-radius:19px}
+  #landing .landingStartCard>strong{font-size:21px}
+  #landing .landingStartCard>small{font-size:12.5px}
+  #landing .landingStartArrow{width:52px;height:52px;font-size:30px}
+  #landing .landingNotifyCard{grid-template-columns:50px minmax(0,1fr) 16px!important;padding:12px 9px!important}
+  #landing .landingNotifyBell{width:48px;height:48px}
+  #landing .landingNotifyCard strong{font-size:14px!important}
+  #landing .landingNotifyCard small{font-size:10.5px!important}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
 <section id="landing" class="screen landing landingCanonical hidden">
-  <div class="canonicalCanvas landingCanvas">
-    <img id="landingCanonicalImage" class="canonicalImage" alt="" style="visibility:hidden">
-    <label class="srOnly" for="landingNickname">Come vuoi essere chiamato?</label>
-    <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
-    <button id="landingConti" class="canonicalHotspot landingHotspotConti" aria-label="Conti economici"></button>
-    <button id="landingTodo" class="canonicalHotspot landingHotspotTodo" aria-label="Cose da fare"></button>
-  </div>
-  <div class="landingNotifyGrid">
-    <button id="landingNotifyConti" class="landingNotifyCard blue" aria-label="Attiva notifiche Conti economici">
-      <span class="landingNotifyBell">🔔</span>
-      <span><strong>Attiva notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
-      <span class="landingNotifyArrow">›</span>
-    </button>
-    <button id="landingNotifyTodo" class="landingNotifyCard green" aria-label="Attiva notifiche Cose da fare">
-      <span class="landingNotifyBell">🔔</span>
-      <span><strong>Attiva notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
-      <span class="landingNotifyArrow">›</span>
-    </button>
+  <div class="canonicalCanvas landingCanvas landingEds">
+    <img id="landingCanonicalImage" class="canonicalImage" alt="" style="display:none">
+
+    <div class="landingHeroEds">
+      <div class="landingHeroCopy">
+        <div class="landingBrandWord"><span>In</span><strong>Ordine</strong></div>
+        <p>Conti e attività,<br>tutto sotto controllo.</p>
+        <div class="landingTagline">Più tempo<br>per ciò che conta <span>♡</span></div>
+      </div>
+      <div class="landingHeroLogos" aria-hidden="true">
+        <img class="landingHeroLogo blue" src="assets/eds-blue.webp" alt="">
+        <img class="landingHeroLogo green" src="assets/eds-green.webp" alt="">
+      </div>
+    </div>
+
+    <div class="landingNameCard">
+      <label for="landingNickname">Come vuoi essere chiamato?</label>
+      <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
+    </div>
+
+    <h2 class="landingChooseTitle">Scegli da <strong>dove iniziare.</strong></h2>
+
+    <div class="landingStartGrid">
+      <button id="landingConti" class="landingStartCard landingStartConti" aria-label="Conti economici">
+        <span class="landingStartArt"><img src="assets/eds-blue.webp" alt=""></span>
+        <strong>Conti<br>economici</strong>
+        <small>Monitora entrate,<br>pagamenti e saldo.</small>
+        <span class="landingStartArrow">→</span>
+      </button>
+      <button id="landingTodo" class="landingStartCard landingStartTodo" aria-label="Cose da fare">
+        <span class="landingStartArt"><img src="assets/eds-green.webp" alt=""></span>
+        <strong>Cose da fare</strong>
+        <small>Organizza impegni,<br>scadenze e promemoria.</small>
+        <span class="landingStartArrow">→</span>
+      </button>
+    </div>
+
+    <div class="landingNotifyGrid">
+      <button id="landingNotifyConti" class="landingNotifyCard blue" aria-label="Attiva notifiche Conti economici">
+        <span class="landingNotifyBell landingBellBlue" aria-hidden="true">♢</span>
+        <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+        <span class="landingNotifyArrow">›</span>
+      </button>
+      <button id="landingNotifyTodo" class="landingNotifyCard green" aria-label="Attiva notifiche Cose da fare">
+        <span class="landingNotifyBell landingBellGreen" aria-hidden="true">♢</span>
+        <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+        <span class="landingNotifyArrow">›</span>
+      </button>
+    </div>
   </div>
 </section>
 
