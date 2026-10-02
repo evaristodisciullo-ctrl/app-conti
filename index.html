@@ -1850,6 +1850,45 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   #landing .landingNotifyCard small{font-size:10.5px!important}
 }
 
+
+/* === LANDING FIX MATCH MOCKUP — 02/10/2026 === */
+/* Neutralizza la vecchia landing che sovrapponeva titolo e sottotitolo. */
+#landing .landingCanvas:before,
+#landing .landingCanvas:after{content:none!important;display:none!important}
+
+/* Proporzioni della landing uguali al mockup approvato. */
+#landing .landingHeroEds{min-height:280px!important;margin:-4px -8px 8px!important;padding:18px 10px 4px!important}
+#landing .landingHeroLogos{height:205px!important}
+#landing .landingHeroLogo{width:108px!important;height:108px!important;border-radius:25px!important}
+#landing .landingHeroLogo.blue{left:10px!important;top:58px!important}
+#landing .landingHeroLogo.green{right:0!important;top:34px!important}
+#landing .landingNameCard{margin-top:0!important}
+#landing .landingStartCard{min-height:250px!important;padding:14px 10px 12px!important}
+#landing .landingStartCard:before{width:150px!important;height:150px!important;top:-12px!important}
+#landing .landingStartArt{width:82px!important;height:82px!important;margin:2px auto 7px!important}
+#landing .landingStartArt img{width:78px!important;height:78px!important;border-radius:17px!important}
+#landing .landingStartCard>strong{font-size:19px!important;line-height:1.02!important}
+#landing .landingStartCard>small{font-size:12px!important;line-height:1.14!important;margin-top:7px!important}
+#landing .landingStartArrow{width:46px!important;height:46px!important;font-size:28px!important;margin-top:auto!important}
+#landing .landingNotifyCard{min-height:112px!important}
+#landing .landingNotifyBell{font-size:0!important}
+#landing .landingNotifyBell:before,
+#landing .landingNotifyBell:after{display:none!important}
+#landing .landingNotifyBell svg{
+  width:31px;height:31px;display:block;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round
+}
+@media(max-width:410px){
+  #landing .landingHeroEds{min-height:268px!important}
+  #landing .landingHeroLogo{width:96px!important;height:96px!important;border-radius:22px!important}
+  #landing .landingHeroLogo.blue{left:6px!important;top:64px!important}
+  #landing .landingHeroLogo.green{right:0!important;top:40px!important}
+  #landing .landingStartCard{min-height:238px!important;padding:12px 8px 11px!important}
+  #landing .landingStartArt{width:76px!important;height:76px!important}
+  #landing .landingStartArt img{width:72px!important;height:72px!important;border-radius:16px!important}
+  #landing .landingStartCard>strong{font-size:18px!important}
+  #landing .landingStartCard>small{font-size:11.5px!important}
+  #landing .landingStartArrow{width:44px!important;height:44px!important;font-size:26px!important}
+}
 </style>
 </head>
 <body>
@@ -1894,12 +1933,12 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
     <div class="landingNotifyGrid">
       <button id="landingNotifyConti" class="landingNotifyCard blue" aria-label="Attiva notifiche Conti economici">
-        <span class="landingNotifyBell landingBellBlue" aria-hidden="true">♢</span>
+        <span class="landingNotifyBell landingBellBlue" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
         <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
         <span class="landingNotifyArrow">›</span>
       </button>
       <button id="landingNotifyTodo" class="landingNotifyCard green" aria-label="Attiva notifiche Cose da fare">
-        <span class="landingNotifyBell landingBellGreen" aria-hidden="true">♢</span>
+        <span class="landingNotifyBell landingBellGreen" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
         <span><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
         <span class="landingNotifyArrow">›</span>
       </button>
