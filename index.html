@@ -2232,6 +2232,20 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   pointer-events:none!important;
   user-select:none!important;
 }
+#landing .landingMasterLogo{
+  position:absolute!important;
+  display:block!important;
+  object-fit:cover!important;
+  border-radius:18%!important;
+  z-index:4!important;
+  pointer-events:none!important;
+  box-shadow:0 7px 16px rgba(7,52,96,.16)!important;
+}
+#landing .landingMasterLogo.heroGreen{left:61.5%!important;top:7.0%!important;width:23.7%!important;transform:rotate(5deg)!important}
+#landing .landingMasterLogo.heroBlue{left:49.1%!important;top:9.5%!important;width:26.0%!important;transform:rotate(3deg)!important;z-index:5!important}
+#landing .landingMasterLogo.cardBlue{left:18.1%!important;top:50.0%!important;width:18.23%!important}
+#landing .landingMasterLogo.cardGreen{left:64.8%!important;top:50.0%!important;width:18.23%!important}
+
 #landing .landingMasterInput{
   position:absolute!important;
   left:7.53%!important;
@@ -2285,6 +2299,10 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <section id="landing" class="screen landing landingCanonical hidden">
   <div class="landingMasterStage">
     <img id="landingCanonicalImage" class="landingMasterVisual" src="assets/landing-master.svg" alt="" aria-hidden="true">
+    <img class="landingMasterLogo heroGreen" src="assets/eds-green.webp" alt="" aria-hidden="true">
+    <img class="landingMasterLogo heroBlue" src="assets/eds-blue.webp" alt="" aria-hidden="true">
+    <img class="landingMasterLogo cardBlue" src="assets/eds-blue.webp" alt="" aria-hidden="true">
+    <img class="landingMasterLogo cardGreen" src="assets/eds-green.webp" alt="" aria-hidden="true">
     <input id="landingNickname" class="landingMasterInput" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
     <button id="landingConti" class="landingMasterHotspot landingMasterConti" aria-label="Conti economici"></button>
     <button id="landingTodo" class="landingMasterHotspot landingMasterTodo" aria-label="Cose da fare"></button>
