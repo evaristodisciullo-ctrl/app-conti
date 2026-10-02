@@ -435,7 +435,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve determinare il genere dell’illustrazione');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
   assert.equal(await page.locator('#todoHubArt img').count(),1);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
   const hubLayout=await page.evaluate(()=>{
     const pending=document.getElementById('todoHubPending').getBoundingClientRect();
     const n=document.getElementById('todoHubNotifications').getBoundingClientRect();
@@ -475,7 +475,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
-  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green\\.webp$/);
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green\.webp$/);
   assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
@@ -505,7 +505,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
-  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/eds-green\\.webp$/);
+  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/eds-green\.webp$/);
   assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
@@ -580,7 +580,7 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   assert.equal((await state(page)).profile.fullName,'Maria');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve più determinare uomo o donna');
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
 
   await page.click('#todoHubSettings');
   await page.waitForSelector('#todoSettings:not(.hidden)');
@@ -593,7 +593,7 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   assert.equal((await state(page)).profile.fullName,'Marco');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
 
   await context.close();
 }
