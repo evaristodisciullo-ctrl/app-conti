@@ -440,7 +440,7 @@ async function testTodoSection(browser){
   assert.equal(cardSizes.compact[1].height,cardSizes.compact[2].height);
   assert.ok(cardSizes.compact[0].height<cardSizes.big[0].height,'Notifiche, Impostazioni e Torna all’inserimento devono essere più piccoli dei due riquadri principali');
   assert.equal(new Set(cardSizes.compact.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
-  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve determinare il genere dell’illustrazione');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
   assert.equal(await page.locator('#todoHubArt img').count(),1);
   assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
