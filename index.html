@@ -2200,97 +2200,63 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   #landing .landingExactStage{border-radius:0}
 }
 
-
-/* === LANDING MASTER IMAGE 1:1 — exact approved screenshot === */
-#landing.landingCanonical{
-  margin:-18px -14px -78px!important;
-  padding:0!important;
-  width:calc(100% + 28px)!important;
-  max-width:none!important;
-  min-height:0!important;
-  background:#eff9ff!important;
-  overflow:auto!important;
-}
-#landing .landingMasterStage{
-  position:relative!important;
-  width:100%!important;
-  max-width:691px!important;
-  aspect-ratio:691/1228!important;
-  margin:0 auto!important;
-  overflow:hidden!important;
-  background:#eff9ff!important;
-}
-#landing .landingMasterVisual{
-  position:absolute!important;
-  left:0!important;
-  top:0!important;
-  width:100%!important;
-  height:auto!important;
-  display:block!important;
-  pointer-events:none!important;
-  user-select:none!important;
-}
-#landing .landingMasterInput{
-  position:absolute!important;
-  left:9.55%!important;
-  top:35.74%!important;
-  width:81.8%!important;
-  height:4.36%!important;
-  min-height:0!important;
-  box-sizing:border-box!important;
-  border:0!important;
-  outline:0!important;
-  border-radius:8px!important;
-  padding:0 1.4%!important;
-  margin:0!important;
-  background:#fff!important;
-  color:#24374a!important;
-  font-family:Arial,Helvetica,sans-serif!important;
-  font-size:clamp(17px,4.55vw,31px)!important;
-  line-height:1!important;
-  font-weight:700!important;
-  box-shadow:none!important;
-  z-index:5!important;
-}
-#landing .landingMasterInput:focus{
-  outline:0!important;
-  box-shadow:none!important;
-}
-#landing .landingMasterHotspot{
-  position:absolute!important;
-  display:block!important;
-  border:0!important;
-  padding:0!important;
-  margin:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  z-index:6!important;
-  cursor:pointer!important;
-}
-#landing .landingMasterConti{left:4.2%!important;top:47.0%!important;width:44.7%!important;height:31.6%!important}
-#landing .landingMasterTodo{left:51.2%!important;top:47.0%!important;width:44.7%!important;height:31.6%!important}
-#landing .landingMasterNotifyConti{left:4.2%!important;top:82.5%!important;width:44.7%!important;height:12.8%!important}
-#landing .landingMasterNotifyTodo{left:51.2%!important;top:82.5%!important;width:44.7%!important;height:12.8%!important}
-@media(max-width:410px){
-  #landing .landingMasterInput{
-    font-size:clamp(16px,4.75vw,22px)!important;
-    border-radius:7px!important;
-  }
-}
-
 </style>
 </head>
 <body>
 <div class="app">
 <section id="landing" class="screen landing landingCanonical hidden">
-  <div class="landingMasterStage">
+  <div class="landingExactStage">
     <img id="landingCanonicalImage" class="canonicalImage" alt="" style="display:none">
-    <img class="landingMasterVisual" src="assets/landing-master.webp" alt="" aria-hidden="true">
-    <input id="landingNickname" class="landingMasterInput" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
-    <button id="landingConti" class="landingMasterHotspot landingMasterConti" aria-label="Conti economici"></button>
-    <button id="landingTodo" class="landingMasterHotspot landingMasterTodo" aria-label="Cose da fare"></button>
-    <button id="landingNotifyConti" class="landingMasterHotspot landingMasterNotifyConti" aria-label="Attiva notifiche Conti economici"></button>
-    <button id="landingNotifyTodo" class="landingMasterHotspot landingMasterNotifyTodo" aria-label="Attiva notifiche Cose da fare"></button>
+
+    <div class="landingExactBrand">
+      <div class="landingExactTitle"><span>In</span><strong>Ordine</strong><i></i></div>
+      <div class="landingExactSubtitle">Conti e attività,<br>tutto sotto controllo.</div>
+      <div class="landingExactTagline">Più tempo<br>per ciò che conta <b>♡</b></div>
+    </div>
+
+    <div class="landingExactHero" aria-hidden="true">
+      <span class="orb orb1"></span><span class="orb orb2"></span><span class="orb orb3"></span>
+      <img class="landingExactHeroLogo green" src="assets/eds-green.webp" alt="">
+      <img class="landingExactHeroLogo blue" src="assets/eds-blue.webp" alt="">
+    </div>
+
+    <div class="landingExactNameCard">
+      <label for="landingNickname">Come vuoi essere chiamato?</label>
+      <input id="landingNickname" class="landingCanonicalName" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
+    </div>
+
+    <h2 class="landingExactChoose">Scegli da <strong>dove iniziare.</strong></h2>
+
+    <button id="landingConti" class="landingExactMainCard conti" aria-label="Conti economici">
+      <span class="landingExactBubbles" aria-hidden="true"></span>
+      <img src="assets/eds-blue.webp" alt="">
+      <strong>Conti<br>economici</strong>
+      <small>Monitora entrate,<br>pagamenti e saldo.</small>
+      <span class="landingExactArrow">→</span>
+    </button>
+
+    <button id="landingTodo" class="landingExactMainCard todo" aria-label="Cose da fare">
+      <span class="landingExactBubbles" aria-hidden="true"></span>
+      <img src="assets/eds-green.webp" alt="">
+      <strong>Cose da fare</strong>
+      <small>Organizza impegni,<br>scadenze e promemoria.</small>
+      <span class="landingExactArrow">→</span>
+    </button>
+
+    <button id="landingNotifyConti" class="landingExactNotify blue" aria-label="Attiva notifiche Conti economici">
+      <span class="landingExactBell" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
+      <span class="landingExactNotifyText"><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingExactNotifyArrow">›</span>
+    </button>
+
+    <button id="landingNotifyTodo" class="landingExactNotify green" aria-label="Attiva notifiche Cose da fare">
+      <span class="landingExactBell" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 23h14M11 22v-7a5 5 0 0 1 10 0v7l2 2H9l2-2Z"/><path d="M14 27h4"/></svg></span>
+      <span class="landingExactNotifyText"><strong>Attiva<br>notifiche</strong><small>Scegli quali notifiche vuoi attivare</small></span>
+      <span class="landingExactNotifyArrow">›</span>
+    </button>
+
+    <span class="landingExactBottomWave wave1" aria-hidden="true"></span>
+    <span class="landingExactBottomWave wave2" aria-hidden="true"></span>
   </div>
 </section>
 
