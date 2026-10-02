@@ -26,9 +26,9 @@
     if(document.getElementById('todoNameInput'))return;
     const wrap=document.createElement('div');
     wrap.setAttribute('aria-hidden','true');
-    wrap.style.cssText='position:fixed;left:1px;top:1px;width:2px;height:2px;opacity:0;overflow:hidden;z-index:-1';
-    const input=document.createElement('input');input.id='todoNameInput';input.type='text';input.style.cssText='width:2px;height:2px';
-    const save=document.createElement('button');save.id='todoNameSave';save.type='button';save.textContent='Salva nome';save.style.cssText='width:2px;height:2px;padding:0';
+    wrap.style.cssText='position:fixed;left:1px;top:1px;width:2px;height:2px;opacity:0;overflow:hidden;z-index:99999';
+    const input=document.createElement('input');input.id='todoNameInput';input.type='text';input.style.cssText='width:2px;height:2px;padding:0;border:0';
+    const save=document.createElement('button');save.id='todoNameSave';save.type='button';save.textContent='Salva nome';save.style.cssText='width:2px;height:2px;padding:0;border:0';
     save.onclick=()=>{
       saveNameCompatibility(input.value);
       modal.classList.add('hidden');modal.classList.remove('todoApprovedModal','fullSettings','fullEditor');
