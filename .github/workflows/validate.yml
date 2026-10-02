@@ -26,6 +26,7 @@ jobs:
           node --check /tmp/app.js
           node --check approved-ui.js
           node --check approved-ui-fix.js
+          node --check approved-ui-compat.js
           node --check native-bridge.js
       - name: Verify no calendar date inputs
         run: |
