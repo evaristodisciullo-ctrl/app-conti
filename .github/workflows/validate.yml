@@ -22,7 +22,10 @@ jobs:
               raise SystemExit("inline script not found")
           Path("/tmp/app.js").write_text("\n".join(inline), encoding="utf-8")
       - name: Check JavaScript syntax
-        run: node --check /tmp/app.js
+        run: |
+          node --check /tmp/app.js
+          node --check approved-ui.js
+          node --check native-bridge.js
       - name: Verify no calendar date inputs
         run: |
           if grep -Eq 'type=["'"'"'](date|month)["'"'"']' index.html; then
