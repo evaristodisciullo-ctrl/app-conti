@@ -1889,6 +1889,161 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   #landing .landingStartCard>small{font-size:11.5px!important}
   #landing .landingStartArrow{width:44px!important;height:44px!important;font-size:26px!important}
 }
+
+/* === LANDING ULTRA COMPACT — match mockup approvato === */
+@media(max-width:410px){
+  #landing .landingEds{
+    padding:8px 12px 18px!important;
+    min-height:auto!important;
+  }
+
+  /* HERO: molto più basso, come nella seconda immagine approvata */
+  #landing .landingHeroEds{
+    min-height:158px!important;
+    height:158px!important;
+    margin:0 -2px 6px!important;
+    padding:4px 4px 0!important;
+    grid-template-columns:minmax(0,.94fr) minmax(128px,1.06fr)!important;
+    gap:2px!important;
+  }
+  #landing .landingBrandWord{
+    margin-bottom:6px!important;
+    line-height:.80!important;
+    letter-spacing:-1.7px!important;
+  }
+  #landing .landingBrandWord span{font-size:36px!important}
+  #landing .landingBrandWord strong{font-size:40px!important}
+  #landing .landingHeroCopy p{
+    font-size:12px!important;
+    line-height:1.08!important;
+  }
+  #landing .landingTagline{
+    margin-top:8px!important;
+    font-size:11px!important;
+    line-height:1.0!important;
+  }
+  #landing .landingTagline span{
+    font-size:20px!important;
+    vertical-align:-3px!important;
+  }
+  #landing .landingHeroLogos{
+    height:142px!important;
+  }
+  #landing .landingHeroLogos:before{
+    width:145px!important;height:145px!important;right:-10px!important;top:0!important;
+    box-shadow:0 0 0 12px rgba(88,190,247,.03),0 0 0 24px rgba(88,190,247,.02)!important;
+  }
+  #landing .landingHeroLogos:after{
+    width:132px!important;height:36px!important;right:0!important;bottom:19px!important;border-width:3px!important;
+  }
+  #landing .landingHeroLogo{
+    width:70px!important;height:70px!important;border-radius:17px!important;
+    box-shadow:0 6px 14px rgba(10,52,94,.14)!important;
+  }
+  #landing .landingHeroLogo.blue{left:2px!important;top:46px!important}
+  #landing .landingHeroLogo.green{right:0!important;top:27px!important}
+
+  /* NOME: altezza e spazi uguali al mockup compatto */
+  #landing .landingNameCard{
+    margin:0 0 6px!important;
+    padding:7px 8px 8px!important;
+    border-radius:14px!important;
+    box-shadow:0 5px 12px rgba(31,94,143,.08)!important;
+  }
+  #landing .landingNameCard label{
+    font-size:14px!important;
+    margin:0 0 4px 1px!important;
+  }
+  #landing .landingCanonicalName{
+    height:38px!important;
+    border-width:2px!important;
+    border-radius:10px!important;
+    padding:0 10px!important;
+    font-size:15px!important;
+    box-shadow:0 0 0 3px rgba(19,143,243,.08)!important;
+  }
+
+  #landing .landingChooseTitle{
+    margin:6px 0 7px!important;
+    font-size:16px!important;
+  }
+
+  /* DUE CARD PRINCIPALI: compatte e complete nello stesso schermo */
+  #landing .landingStartGrid{
+    gap:8px!important;
+    margin:0 0 8px!important;
+  }
+  #landing .landingStartCard{
+    min-height:178px!important;
+    height:178px!important;
+    border-radius:16px!important;
+    border-width:1.6px!important;
+    padding:8px 6px 7px!important;
+    box-shadow:0 4px 11px rgba(35,92,135,.06)!important;
+  }
+  #landing .landingStartCard:before{
+    width:105px!important;height:105px!important;top:-13px!important;
+  }
+  #landing .landingStartArt{
+    width:58px!important;height:58px!important;
+    margin:0 auto 4px!important;
+  }
+  #landing .landingStartArt img{
+    width:56px!important;height:56px!important;
+    border-radius:13px!important;
+    box-shadow:0 4px 10px rgba(7,52,96,.12)!important;
+  }
+  #landing .landingStartCard>strong{
+    font-size:15.5px!important;
+    line-height:.98!important;
+    letter-spacing:-.25px!important;
+  }
+  #landing .landingStartCard>small{
+    font-size:9.7px!important;
+    line-height:1.12!important;
+    margin-top:4px!important;
+  }
+  #landing .landingStartArrow{
+    width:35px!important;height:35px!important;
+    font-size:22px!important;
+    margin-top:auto!important;
+    box-shadow:0 4px 10px rgba(20,117,198,.14)!important;
+  }
+
+  /* NOTIFICHE: piccole, come nella seconda immagine */
+  #landing .landingNotifyGrid{
+    gap:8px!important;
+    margin:0!important;
+  }
+  #landing .landingNotifyCard{
+    min-height:78px!important;
+    height:78px!important;
+    grid-template-columns:39px minmax(0,1fr) 12px!important;
+    gap:6px!important;
+    padding:7px 7px!important;
+    border-radius:15px!important;
+    box-shadow:0 4px 10px rgba(34,92,135,.05)!important;
+  }
+  #landing .landingNotifyBell{
+    width:37px!important;height:37px!important;
+  }
+  #landing .landingNotifyBell svg{
+    width:23px!important;height:23px!important;
+    stroke-width:2.5!important;
+  }
+  #landing .landingNotifyCard strong{
+    font-size:11px!important;
+    line-height:1.0!important;
+  }
+  #landing .landingNotifyCard small{
+    font-size:8.4px!important;
+    line-height:1.16!important;
+    margin-top:3px!important;
+  }
+  #landing .landingNotifyArrow{
+    font-size:19px!important;
+  }
+}
 </style>
 </head>
 <body>
