@@ -480,7 +480,7 @@ async function testTodoSection(browser){
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
-  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
   assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-think-male\.webp$/);
@@ -510,7 +510,7 @@ async function testTodoSection(browser){
   await row.locator('.todoCompleteBtn').click();
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
-  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
   assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/todo-done-male\.webp$/);
