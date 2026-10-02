@@ -1194,6 +1194,27 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 }
 
 /* Conti economici: immagini nitide approvate, riutilizzate ovunque */
+/* Forza le nuove immagini sopra le vecchie scene canonicali */
+#home .homeScene.sharpScene{
+  position:absolute!important;
+  left:-7px!important;
+  right:-7px!important;
+  top:-5px!important;
+  bottom:auto!important;
+  height:auto!important;
+  aspect-ratio:260 / 166!important;
+  margin:0!important;
+  background:none!important;
+  overflow:hidden!important;
+}
+#home .homeScene.sharpScene > .homeFeatureArt{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+
 .homeScene.sharpScene{
   height:112px!important;
   margin:-14px -14px 8px!important;
