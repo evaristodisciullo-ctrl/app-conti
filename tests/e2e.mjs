@@ -423,7 +423,7 @@ async function testTodoSection(browser){
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
-  assert.match(await page.locator('#todoHub').innerText(),/Cose fatte/);
+  assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
