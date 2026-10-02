@@ -1,11 +1,7 @@
-const CACHE='in-ordine-v26';
+const CACHE='in-ordine-v27';
 const CORE=[
   './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
-  './assets/landing-bg-1.txt','./assets/landing-bg-2.txt','./assets/landing-bg-3.txt',
-  './assets/landing-bg-4.txt','./assets/landing-bg-5.txt','./assets/landing-bg-6.txt',
-  './assets/saldo-bg.webp','./assets/home-income-art.webp','./assets/home-payment-art.webp',
-  './assets/todo-thumb-male.webp','./assets/todo-think-male.webp','./assets/todo-done-male.webp',
-  './assets/income-banner-approved.txt','./assets/payment-banner.txt','./assets/setup-income-art.txt','./assets/setup-expense-art.txt','./assets/wallet-art.webp'
+  './assets/saldo-bg.webp','./assets/eds-blue.webp','./assets/eds-green.webp'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

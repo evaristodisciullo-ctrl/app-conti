@@ -367,34 +367,27 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
       const card=document.querySelector(selector);
       const scene=card.querySelector('.homeScene');
       const c=card.getBoundingClientRect();
-      const s=scene.getBoundingClientRect();
       const cs=getComputedStyle(card);
       const ss=getComputedStyle(scene);
-      const pseudo=getComputedStyle(card,'::after');
       return {
-        cardLeft:c.left,cardRight:c.right,cardTop:c.top,
-        sceneLeft:s.left,sceneRight:s.right,sceneTop:s.top,
-        sceneWidth:s.width,sceneHeight:s.height,
+        left:c.left,right:c.right,
         borderTopWidth:parseFloat(cs.borderTopWidth),
         overflow:cs.overflow,
         outlineStyle:cs.outlineStyle,
-        pseudoDisplay:pseudo.display,
-        backgroundImage:ss.backgroundImage
+        backgroundImage:ss.backgroundImage,
+        backgroundSize:ss.backgroundSize,
+        textAlign:getComputedStyle(card.querySelector('.homeFeatureText')).textAlign
       };
     };
     return {income:read('#homeIncome'),expense:read('#homeExpense')};
   });
-  assert.ok(layout.income.cardRight<layout.expense.cardLeft,'Le card Entrate e Pagamenti devono restare separate');
+  assert.ok(layout.income.right<layout.expense.left,'Le card Entrate e Pagamenti devono restare separate');
   for(const card of [layout.income,layout.expense]){
-    assert.ok(card.borderTopWidth>=1,'Ogni card deve avere una sola cornice esterna');
+    assert.ok(card.borderTopWidth>=1,'Ogni card deve avere una cornice E.D.S.');
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
-    assert.equal(card.pseudoDisplay,'none');
-    assert.ok(card.sceneLeft<card.cardLeft,'La cornice incorporata nell’illustrazione va ritagliata a sinistra');
-    assert.ok(card.sceneRight>card.cardRight,'La cornice incorporata nell’illustrazione va ritagliata a destra');
-    assert.ok(card.sceneTop<card.cardTop,'La cornice incorporata nell’illustrazione va ritagliata in alto');
-    assert.ok(card.sceneHeight<card.sceneWidth*174/260-1,'La cornice inferiore dell’illustrazione va ritagliata');
-    assert.notEqual(card.backgroundImage,'none');
+    assert.match(card.backgroundImage,/eds-blue\.webp/,'Ogni card deve usare il logo E.D.S blu');
+    assert.equal(card.textAlign,'center');
   }
   await context.close();
 }
@@ -422,7 +415,7 @@ async function testTodoSection(browser){
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
-  assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
+  assert.match(await page.locator('#todoHub').innerText(),/In scadenza/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
@@ -439,11 +432,10 @@ async function testTodoSection(browser){
   assert.equal(cardSizes.compact[0].height,cardSizes.compact[1].height);
   assert.equal(cardSizes.compact[1].height,cardSizes.compact[2].height);
   assert.ok(cardSizes.compact[0].height<cardSizes.big[0].height,'Notifiche, Impostazioni e Torna all’inserimento devono essere più piccoli dei due riquadri principali');
-  assert.equal(new Set(cardSizes.compact.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve determinare il genere dell’illustrazione');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
   assert.equal(await page.locator('#todoHubArt img').count(),1);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
   const hubLayout=await page.evaluate(()=>{
     const pending=document.getElementById('todoHubPending').getBoundingClientRect();
     const n=document.getElementById('todoHubNotifications').getBoundingClientRect();
@@ -452,8 +444,8 @@ async function testTodoSection(browser){
     return {pendingH:pending.height,compactH:n.height,ys:[n.y,s.y,r.y],xs:[n.x,s.x,r.x]};
   });
   assert.ok(hubLayout.compactH<hubLayout.pendingH*0.8,'Le tre scorciatoie devono essere nettamente più piccole delle card principali');
-  assert.ok(Math.max(...hubLayout.ys)-Math.min(...hubLayout.ys)<3,'Notifiche, Impostazioni e Torna all’inserimento devono stare sulla stessa riga');
-  assert.ok(hubLayout.xs[0]<hubLayout.xs[1]&&hubLayout.xs[1]<hubLayout.xs[2]);
+  assert.ok(hubLayout.ys[0]<hubLayout.ys[1]&&hubLayout.ys[1]<hubLayout.ys[2],'Notifiche, Impostazioni e Torna all’inserimento devono essere impilate');
+  assert.ok(Math.max(...hubLayout.xs)-Math.min(...hubLayout.xs)<3,'Le tre scorciatoie devono essere allineate a sinistra');
   assert.equal((await page.locator('#todoHub').innerText()).includes('🗓️'),false);
 
   await page.click('#todoHubNotifications');
@@ -483,7 +475,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
-  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-think-male\.webp$/);
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green\\.webp$/);
   assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
@@ -513,7 +505,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
-  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/todo-done-male\.webp$/);
+  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/eds-green\\.webp$/);
   assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
@@ -586,9 +578,9 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
   await page.click('#todoSetupSave');
   await page.waitForSelector('#todoHub:not(.hidden)');
 
-  assert.match(await page.locator('#todoHub').innerText(),/Ciao Maria/);
+  assert.equal((await state(page)).profile.fullName,'Maria');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve più determinare uomo o donna');
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
 
   await page.click('#todoHubSettings');
   await page.waitForSelector('#todoSettings:not(.hidden)');
@@ -599,9 +591,9 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
   await page.click('#todoSettingsBack');
   await page.waitForSelector('#todoHub:not(.hidden)');
 
-  assert.match(await page.locator('#todoHub').innerText(),/Ciao Marco/);
+  assert.equal((await state(page)).profile.fullName,'Marco');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\\.webp$/);
 
   await context.close();
 }

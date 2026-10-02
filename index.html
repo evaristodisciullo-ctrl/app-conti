@@ -660,8 +660,8 @@ body{color:var(--text)}
   background-size:100% auto!important;
   overflow:hidden!important
 }
-#home .incomeFeature .homeScene{background-image:url('assets/home-income-art.webp')!important}
-#home .expenseFeature .homeScene{background-image:url('assets/home-payment-art.webp')!important}
+#home .incomeFeature .homeScene{background-image:url('assets/eds-blue.webp')!important}
+#home .expenseFeature .homeScene{background-image:url('assets/eds-blue.webp')!important}
 #home .homeFeatureCard:after{display:none!important}
 #home .homeScene>*{display:none!important}
 #home .homeFeatureText{
@@ -735,8 +735,8 @@ body{color:var(--text)}
   background-size:contain!important;
   overflow:hidden!important;
 }
-.flowIncome .flowBannerVisual{background-image:url('assets/home-income-art.webp')!important}
-.flowExpense .flowBannerVisual{background-image:url('assets/home-payment-art.webp')!important}
+.flowIncome .flowBannerVisual{background-image:url('assets/eds-blue.webp')!important}
+.flowExpense .flowBannerVisual{background-image:url('assets/eds-blue.webp')!important}
 .flowBannerVisual>*{display:none!important}
 .flowBannerAdd{
   position:relative!important;
@@ -1225,6 +1225,335 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   .todoFilterAll,.todoFilterSelect{font-size:10.5px;padding-left:6px;padding-right:6px}
 }
 
+
+/* === E.D.S VISUAL SYSTEM — 02/10/2026 === */
+:root{
+  --edsBlue:#087bf5;
+  --edsBlueDeep:#061c50;
+  --edsCyan:#16c8f2;
+  --edsBlueSoft:#eaf7ff;
+  --edsGreen:#08a95f;
+  --edsGreenDeep:#063d2b;
+  --edsMint:#dffbef;
+}
+
+/* Base: same light, crisp E.D.S language everywhere. */
+#home,.flowPage,#movements,#settings,#notifications,#summary,#budget{
+  background:
+    radial-gradient(circle at 96% 0%,rgba(22,200,242,.14) 0 110px,transparent 111px),
+    linear-gradient(155deg,transparent 0 13%,rgba(28,167,242,.07) 14% 18%,transparent 19% 37%,rgba(7,123,245,.045) 38% 42%,transparent 43%),
+    linear-gradient(180deg,#fbfdff 0%,#eef9ff 100%)!important;
+}
+#home,.flowPage,#movements,#settings,#notifications{color:var(--edsBlueDeep)}
+.pageHeader h1,.homeTopLine h1{color:var(--edsBlueDeep)!important;font-weight:950}
+.pageBack,.homeLandingBack{color:var(--edsBlue)!important}
+
+/* IN ORDINE: no people; two clear E.D.S destinations. */
+#landing.landingCanonical{
+  padding:0 0 28px!important;
+  background:
+    radial-gradient(circle at 90% 5%,rgba(14,190,237,.16),transparent 25%),
+    linear-gradient(180deg,#f9fdff,#ebf8ff 62%,#effdf7)!important;
+}
+#landing .landingCanvas{
+  min-height:610px!important;
+  background:
+    linear-gradient(155deg,transparent 0 12%,rgba(29,178,243,.08) 13% 17%,transparent 18% 33%,rgba(10,123,245,.05) 34% 38%,transparent 39%),
+    linear-gradient(180deg,#fbfeff,#eff9ff)!important;
+}
+#landingCanonicalImage{display:none!important}
+#landing .landingCanvas:before{
+  content:"IN ORDINE";
+  position:absolute;top:46px;left:0;right:0;text-align:center;
+  color:var(--edsBlueDeep);font-size:34px;font-weight:950;letter-spacing:.5px
+}
+#landing .landingCanvas:after{
+  content:"Conti e cose da fare, in un solo posto";
+  position:absolute;top:96px;left:18px;right:18px;text-align:center;
+  color:#617b96;font-size:14px;font-weight:700
+}
+#landing .landingCanonicalName{
+  left:8%!important;top:145px!important;width:84%!important;height:54px!important;
+  border-radius:16px!important;background:#fff!important;border:1.5px solid #b8ddf4!important;
+  box-shadow:0 8px 22px rgba(39,91,135,.08)!important;font-size:16px!important
+}
+#landing .landingHotspotConti,#landing .landingHotspotTodo{
+  top:230px!important;height:305px!important;width:42%!important;
+  border:1.5px solid!important;border-radius:24px!important;
+  background-repeat:no-repeat!important;background-position:center 34px!important;background-size:78px 78px!important;
+  box-shadow:0 10px 24px rgba(26,83,124,.09)!important;
+}
+#landing .landingHotspotConti{
+  left:6%!important;border-color:#18b8ec!important;
+  background-color:#f7fcff!important;background-image:url('assets/eds-blue.webp')!important
+}
+#landing .landingHotspotTodo{
+  left:52%!important;border-color:#39c982!important;
+  background-color:#f7fffb!important;background-image:url('assets/eds-green.webp')!important
+}
+#landing .landingHotspotConti:after,#landing .landingHotspotTodo:after{
+  position:absolute;left:10px;right:10px;top:142px;text-align:center;white-space:pre-line;
+  font-size:20px;line-height:1.2;font-weight:950
+}
+#landing .landingHotspotConti:after{content:"Conti economici\A\A Entrate · Pagamenti";color:#092855}
+#landing .landingHotspotTodo:after{content:"Cose da fare\A\A Scadenze · Attività";color:#073f2d}
+#landing .landingNotifyGrid{background:transparent!important;margin-top:0!important}
+
+/* First finance setup: blue E.D.S style, old illustrations disabled. */
+#setupIncome.setupSimple,#setupExpense.setupSimple{
+  background:
+    radial-gradient(circle at 92% 8%,rgba(22,200,242,.14) 0 120px,transparent 121px),
+    linear-gradient(180deg,#f8fcff,#ebf8ff 58%,#f8fdff)!important
+}
+.setupWalletArt,.setupPiggyArt{
+  right:4px!important;top:5px!important;width:112px!important;height:112px!important;
+  border-radius:22px!important;background:url('assets/eds-blue.webp') center/78px 78px no-repeat!important;
+  box-shadow:none!important
+}
+.setupWalletArt>*,.setupPiggyArt>*{display:none!important}
+.setupSimple .onboardHeader{min-height:166px!important}
+.setupSimple .onboardCard{border:1px solid #d9ebf6!important;box-shadow:0 9px 24px rgba(39,91,135,.08)!important}
+.setupSimple .setupContinue{background:linear-gradient(135deg,var(--edsBlue),#1199f5)!important}
+
+/* CONTI ECONOMICI HOME — approved two-card composition. */
+#home{padding-top:5px!important}
+#home .homeTopLine{margin-bottom:16px!important}
+#home .homeFeatureGrid{gap:12px!important}
+#home .homeFeatureCard{
+  min-height:186px!important;border:1.7px solid #18b8ec!important;border-radius:22px!important;
+  background:
+    linear-gradient(155deg,transparent 0 38%,rgba(45,192,238,.08) 39% 47%,transparent 48%),
+    linear-gradient(180deg,#fbfeff,#f0faff)!important;
+  overflow:hidden!important;outline:0!important;box-shadow:0 8px 20px rgba(35,105,153,.08)!important
+}
+#home .incomeFeature,#home .expenseFeature{background-color:#f8fdff!important;border-color:#18b8ec!important}
+#home .homeScene{
+  left:-7px!important;right:-7px!important;top:-5px!important;height:150px!important;aspect-ratio:auto!important;
+  background-image:url('assets/eds-blue.webp')!important;
+  background-repeat:no-repeat!important;background-position:right 20px top 16px!important;background-size:62px 62px!important
+}
+#home .homeScene:before{
+  position:absolute;left:24px;top:38px;width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,255,255,.90);box-shadow:0 6px 15px rgba(8,123,245,.14);
+  color:var(--edsBlue);font-size:38px;font-weight:900
+}
+#home .incomeScene:before{content:"↑"}
+#home .expenseScene:before{content:"↓"}
+#home .homeFeatureText{
+  left:8px!important;right:8px!important;bottom:15px!important;padding:8px 42px 8px 12px!important;
+  text-align:center!important;background:transparent!important
+}
+#home .homeFeatureText strong{font-size:18px!important;color:var(--edsBlueDeep)!important}
+#home .homeFeatureText small{font-size:12px!important}
+#home .homeFeatureArrow{
+  right:13px!important;bottom:13px!important;width:38px!important;height:38px!important;
+  background:linear-gradient(135deg,#1199f5,var(--edsBlue))!important
+}
+#home .homeSummaryCard,#home .homeActionCard{background:rgba(255,255,255,.94)!important}
+#home .homeSummaryRow:nth-child(3){background:#eaf8ff!important}
+
+/* Entrate / Pagamenti: blue frame, small E.D.S logo, no legacy banner art. */
+.flowPage{padding-top:2px!important}
+.flowBanner{
+  min-height:164px!important;padding:14px!important;display:block!important;
+  border:1.5px solid #18b8ec!important;border-radius:22px!important;
+  background:
+    linear-gradient(160deg,transparent 0 38%,rgba(45,192,238,.10) 39% 47%,transparent 48%),
+    linear-gradient(180deg,#fbfeff,#eef9ff)!important
+}
+.flowBannerVisual{
+  position:absolute!important;right:14px!important;top:14px!important;width:58px!important;height:58px!important;
+  min-width:58px!important;flex:none!important;border-radius:15px!important;
+  background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(4,42,91,.10)!important
+}
+.flowBanner:before{
+  position:absolute;left:16px;top:39px;width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;background:#fff;box-shadow:0 7px 18px rgba(8,123,245,.13);
+  color:var(--edsBlue);font-size:36px;font-weight:950;z-index:1
+}
+.flowIncome .flowBanner:before{content:"↑"}
+.flowExpense .flowBanner:before{content:"↓"}
+.flowBanner:after{
+  position:absolute;left:84px;right:84px;top:35px;color:var(--edsBlueDeep);
+  font-size:17px;font-weight:950;line-height:1.15;pointer-events:none
+}
+.flowIncome .flowBanner:after{content:"Aggiungi una nuova entrata"}
+.flowExpense .flowBanner:after{content:"Gestisci i tuoi pagamenti"}
+.flowBannerAdd{
+  position:absolute!important;left:84px!important;right:14px!important;bottom:16px!important;top:auto!important;
+  min-height:46px!important;display:flex!important;justify-content:center!important;
+  border-radius:999px!important;padding:0 14px!important;
+  color:#fff!important;background:linear-gradient(135deg,#1199f5,var(--edsBlue))!important;
+  box-shadow:0 7px 16px rgba(8,123,245,.18)!important;font-size:13px!important;text-align:center!important
+}
+.flowBannerAdd:before{
+  width:28px!important;height:28px!important;min-width:28px!important;border:0!important;
+  background:rgba(255,255,255,.16)!important;color:#fff!important;margin-right:7px!important;font-size:20px!important
+}
+.flowCurrentBalance,.flowMonthBar,.flowTotal{background:rgba(255,255,255,.96)!important}
+.flowTab.active{background:linear-gradient(135deg,#129cf6,var(--edsBlue))!important;color:#fff!important;border-color:transparent!important}
+.flowUnifiedMain{background:rgba(255,255,255,.96)!important}
+
+/* Add/edit forms: same blue system and a discreet logo in the header. */
+.modal.fullEditor .modalHead{position:relative!important;padding-right:62px!important}
+.modal.fullEditor .modalHead:after{
+  content:"";position:absolute;right:10px;top:8px;width:46px;height:46px;border-radius:12px;
+  background:url('assets/eds-blue.webp') center/cover no-repeat;box-shadow:0 4px 10px rgba(4,42,91,.10)
+}
+.modal.fullEditor .modalCard{
+  background:
+    linear-gradient(160deg,transparent 0 18%,rgba(28,174,241,.06) 19% 23%,transparent 24%),
+    linear-gradient(180deg,#fbfdff,#eef9ff)!important
+}
+.modal.fullEditor .btn:not(.secondary){background:linear-gradient(135deg,#1199f5,var(--edsBlue))!important}
+
+/* Movimenti and finance settings: blue waves + small logo, keeping all functions. */
+#movements .pageHeader,#settings .pageHeader,#notifications .pageHeader{position:relative;padding-right:58px}
+#movements .pageHeader:after,#settings .pageHeader:after,#notifications .pageHeader:after{
+  content:"";position:absolute;right:4px;top:0;width:46px;height:46px;border-radius:12px;
+  background:url('assets/eds-blue.webp') center/cover no-repeat;box-shadow:0 4px 10px rgba(4,42,91,.08)
+}
+#movements .movementQuickTab.active{background:linear-gradient(135deg,#1199f5,var(--edsBlue))!important;color:#fff!important}
+#allMovements .movementRow,.settingsMenu,.notifyScopeOption{background:rgba(255,255,255,.96)!important}
+.settingsRowIcon{border-radius:50%!important}
+.notifyHero{background:rgba(255,255,255,.78);border:1px solid #d9ebf6;border-radius:20px;margin-bottom:12px}
+.notifyBell{background:#e7f6ff!important;color:var(--edsBlue)!important}
+
+/* COSE DA FARE — green E.D.S system across every screen. */
+.todoPage{
+  background:
+    radial-gradient(circle at 94% 0%,color-mix(in srgb,var(--todoAccent,#12ad6a) 15%,transparent) 0 120px,transparent 121px),
+    linear-gradient(155deg,transparent 0 14%,color-mix(in srgb,var(--todoAccent,#12ad6a) 7%,transparent) 15% 19%,transparent 20% 42%,color-mix(in srgb,var(--todoSoft,#dff7e9) 44%,transparent) 43% 49%,transparent 50%),
+    linear-gradient(180deg,#fcfffd,var(--todoBg,#f1fbf6))!important
+}
+.todoTop{margin-bottom:14px!important}
+.todoTop h1{color:var(--todoDeep,#063d2b)!important;font-size:29px!important;font-weight:950!important}
+.todoBack{color:var(--todoAccent,#12ad6a)!important}
+.todoHero{
+  min-height:112px!important;padding:22px 86px 18px 20px!important;border-radius:21px!important;
+  border:1px solid color-mix(in srgb,var(--todoAccent,#12ad6a) 45%,white)!important;
+  background:
+    linear-gradient(160deg,transparent 0 44%,color-mix(in srgb,var(--todoAccent,#12ad6a) 9%,transparent) 45% 53%,transparent 54%),
+    linear-gradient(180deg,var(--todoSurface,#fbfffd),var(--todoSoft,#e6f7ee))!important;
+  box-shadow:0 7px 18px rgba(18,112,74,.06)!important
+}
+.todoHero.hub{display:none!important}
+.todoHeroArt{
+  right:14px!important;top:14px!important;bottom:auto!important;width:58px!important;height:58px!important;
+  align-items:center!important;border-radius:15px!important
+}
+.todoHeroArt img{width:58px!important;height:58px!important;object-fit:cover!important;border-radius:15px!important}
+.todoHero strong{font-size:20px!important;color:var(--todoDeep,#063d2b)!important}
+.todoHero small{font-size:12.5px!important;color:#607b70!important}
+.todoHero.active:before,.todoHero.done:before{
+  position:absolute;left:18px;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;background:color-mix(in srgb,var(--todoSoft,#e6f7ee) 80%,white);
+  color:var(--todoAccent,#12ad6a);font-size:26px;font-weight:950
+}
+.todoHero.active:before{content:"◷"}
+.todoHero.done:before{content:"✓"}
+.todoHero.active,.todoHero.done{padding-left:72px!important}
+
+/* Approved green home: two main cards + three full-width actions. */
+.todoHubGrid{grid-template-columns:1fr 1fr!important;gap:12px!important}
+.todoHubCard{
+  border:1.3px solid color-mix(in srgb,var(--todoAccent,#12ad6a) 50%,white)!important;
+  box-shadow:0 8px 20px rgba(18,112,74,.065)!important;color:var(--todoDeep,#063d2b)!important
+}
+.todoHubCard.pending,.todoHubCard.completed{
+  grid-column:auto!important;min-height:184px!important;display:block!important;padding:14px!important;
+  background:
+    linear-gradient(160deg,transparent 0 43%,rgba(44,211,139,.10) 44% 52%,transparent 53%),
+    linear-gradient(180deg,#fbfffd,#e9fbf2)!important
+}
+.todoHubCard.pending:before,.todoHubCard.completed:before{
+  position:absolute;left:14px;top:24px;width:48px;height:48px;border-radius:50%;
+  display:grid;place-items:center;background:#e2faed;color:var(--todoAccent,#12ad6a);
+  font-size:27px;font-weight:950;box-shadow:0 5px 12px rgba(18,112,74,.06)
+}
+.todoHubCard.pending:before{content:"◷"}
+.todoHubCard.completed:before{content:"✓"}
+.todoHubCard.pending>span:first-child,.todoHubCard.completed>span:first-child{
+  display:block!important;padding-top:88px!important;padding-right:0!important;text-align:center!important
+}
+.todoHubCard strong{color:var(--todoDeep,#063d2b)!important;font-size:17px!important}
+.todoHubCard small{color:#617e72!important;font-size:11.5px!important}
+.todoHubPerson{
+  position:absolute!important;right:14px!important;top:14px!important;width:54px!important;height:54px!important;
+  align-items:center!important
+}
+.todoHubPerson img{width:54px!important;height:54px!important;object-fit:cover!important;border-radius:14px!important}
+.todoHubCard .chev{
+  position:absolute!important;right:14px!important;bottom:14px!important;top:auto!important;transform:none!important;
+  width:36px!important;height:36px!important;border-radius:50%!important;display:grid!important;place-items:center!important;
+  background:linear-gradient(135deg,#18c477,var(--todoAccent,#12ad6a))!important;color:#fff!important;font-size:24px!important
+}
+.todoHubCard.compact{
+  grid-column:1/-1!important;min-height:70px!important;display:grid!important;
+  grid-template-columns:46px 1fr 36px!important;gap:12px!important;align-items:center!important;
+  padding:11px 14px!important;text-align:left!important;border-radius:18px!important
+}
+.todoHubCard.notify,.todoHubCard.config,.todoHubCard.reopen{
+  background:
+    linear-gradient(160deg,transparent 0 50%,rgba(36,201,130,.075) 51% 59%,transparent 60%),
+    linear-gradient(180deg,#fbfffd,#ecfbf3)!important
+}
+.todoHubCard.compact .icon{
+  width:42px!important;height:42px!important;border-radius:50%!important;background:#e2faed!important;
+  color:var(--todoAccent,#12ad6a)!important;font-size:24px!important
+}
+.todoHubCard.compact strong{font-size:16px!important}
+.todoHubCard.compact .chev{right:14px!important;bottom:17px!important;width:34px!important;height:34px!important}
+
+/* Green list screens: same card language, states stay legible. */
+.todoPanel{background:rgba(255,255,255,.80)!important;border-color:color-mix(in srgb,var(--todoAccent,#12ad6a) 28%,white)!important}
+.todoFilterAll,.todoFilterSelect{border-radius:999px!important;background:rgba(255,255,255,.94)!important}
+.todoFilterAll.active{background:linear-gradient(135deg,#18c477,var(--todoAccent,#12ad6a))!important;color:#fff!important;border-color:transparent!important}
+.todoTaskRow,.todoDoneRow{
+  background:
+    linear-gradient(160deg,transparent 0 48%,rgba(45,210,140,.08) 49% 57%,transparent 58%),
+    linear-gradient(180deg,#fbfffd,#ecfbf3)!important;
+  border:1px solid #dbf2e6!important;box-shadow:0 6px 16px rgba(18,112,74,.05)!important
+}
+.todoTaskEditCard strong,.todoTaskMain{color:var(--todoDeep,#063d2b)!important}
+.todoNotifyBtn,.todoNotifyToggle{background:#e9f7ef!important;color:#6b8b7d!important}
+.todoNotifyBtn.on,.todoNotifyToggle.on{background:#d5f7e5!important;color:var(--todoAccent,#12ad6a)!important}
+.todoCompleteBtn{
+  background:linear-gradient(135deg,#18c477,var(--todoAccent,#12ad6a))!important;color:#fff!important;
+  box-shadow:0 5px 12px rgba(18,112,74,.12)!important
+}
+.todoCompleteCircle{border-color:#fff!important}
+.todoDoneStatus{background:#dff8e9!important;color:#087b52!important}
+.todoBigBtn.add,.todoBigBtn.save{
+  background:linear-gradient(135deg,var(--todoSoft,#e6f7ee),#d7f5e4)!important;color:var(--todoDeep,#063d2b)!important
+}
+.todoBigBtn.save{background:linear-gradient(135deg,#18c477,var(--todoAccent,#12ad6a))!important;color:#fff!important}
+
+/* Green settings screen. */
+.todoSettingsStack{gap:10px!important}
+.todoSettingCard{
+  background:
+    linear-gradient(160deg,transparent 0 52%,rgba(45,210,140,.07) 53% 61%,transparent 62%),
+    linear-gradient(180deg,#fbfffd,#eefbf4)!important;
+  border-color:#d8efe3!important;box-shadow:0 5px 14px rgba(18,112,74,.04)!important
+}
+.todoSettingCard .i{border-radius:50%!important;background:#e2faed!important;color:var(--todoAccent,#12ad6a)!important}
+.todoSettingCard strong{color:var(--todoDeep,#063d2b)!important}
+.todoSettingCard .a{color:var(--todoAccent,#12ad6a)!important}
+
+/* Keep logos sharp and discreet on small phones. */
+@media(max-width:410px){
+  #landing .landingHotspotConti,#landing .landingHotspotTodo{background-size:66px 66px!important}
+  #home .homeScene{background-size:54px 54px!important;background-position:right 13px top 13px!important}
+  #home .homeFeatureCard{min-height:174px!important}
+  .flowBannerVisual{width:52px!important;height:52px!important;min-width:52px!important}
+  .flowBanner:after{left:75px;right:76px;font-size:15px}
+  .flowBannerAdd{left:75px!important}
+  .todoHubCard.pending,.todoHubCard.completed{min-height:176px!important}
+  .todoHubCard strong{font-size:15px!important}
+  .todoHubCard.compact strong{font-size:15px!important}
+}
+
 </style>
 </head>
 <body>
@@ -1330,7 +1659,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   <div class="todoTop"><button id="todoHubBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
   <div class="todoHero hub"><strong id="todoHubGreeting">Ciao</strong><small>Tutto sotto controllo!</small><span id="todoHubArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
   <div class="todoHubGrid">
-    <button id="todoHubPending" class="todoHubCard pending"><span><strong>Cose da fare</strong><small id="todoHubPendingCount">0 attività da completare</small></span><span id="todoHubPendingArt" class="todoHubPerson" aria-hidden="true"></span><span class="chev">›</span></button>
+    <button id="todoHubPending" class="todoHubCard pending"><span><strong>In scadenza</strong><small id="todoHubPendingCount">0 attività da completare</small></span><span id="todoHubPendingArt" class="todoHubPerson" aria-hidden="true"></span><span class="chev">›</span></button>
     <button id="todoHubDone" class="todoHubCard completed"><span><strong>Cose già fatte</strong><small id="todoHubDoneCount">0 attività completate</small></span><span id="todoHubDoneArt" class="todoHubPerson" aria-hidden="true"></span><span class="chev">›</span></button>
     <button id="todoHubNotifications" class="todoHubCard notify compact"><span class="icon"><svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><strong>Notifiche</strong><span class="chev">›</span></button>
     <button id="todoHubSettings" class="todoHubCard config compact"><span class="icon">⚙</span><strong>Impostazioni</strong><span class="chev">›</span></button>
@@ -1339,8 +1668,8 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 </section>
 
 <section id="todoActive" class="screen todoPage hidden">
-  <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero active"><strong>Cose da fare</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
+  <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>In scadenza</h1></div>
+  <div class="todoHero active"><strong>Attività in scadenza</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
   <div class="todoFilterBar">
     <button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button>
     <select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
@@ -1381,7 +1710,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   <div class="todoSettingsStack">
     <button id="todoSettingColor" class="todoSettingCard"><span class="i">🎨</span><span><strong>Colore dell'app</strong><small id="todoColorSummary">Colore predefinito: Salvia</small></span><span class="a">›</span></button>
     <button id="todoSettingNotifications" class="todoSettingCard"><span class="i"><svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span><strong>Notifiche</strong><small id="todoNotifySummary">Scegli quando ricevere i promemoria</small></span><span class="a">›</span></button>
-    <button id="todoSettingName" class="todoSettingCard"><span class="i">👤</span><span><strong>Nome</strong><small>Modifica come vuoi essere chiamato</small></span><span class="a">›</span></button>
+    <button id="todoSettingName" class="todoSettingCard"><span class="i">✎</span><span><strong>Nome</strong><small>Modifica come vuoi essere chiamato</small></span><span class="a">›</span></button>
     <button id="todoDeletePending" class="todoSettingCard"><span class="i">🗑️</span><span><strong>Cancella tutte le cose da fare</strong><small>Le cose già fatte restano salvate</small></span><span class="a">›</span></button>
     <button id="todoDeleteDone" class="todoSettingCard"><span class="i">🧹</span><span><strong>Cancella tutte le cose fatte</strong><small>Le cose ancora da fare restano salvate</small></span><span class="a">›</span></button>
     <button id="todoResetAll" class="todoSettingCard"><span class="i">↻</span><span><strong class="todoDanger">Azzera Cose da fare</strong><small>Riparte dalla schermata iniziale della sezione</small></span><span class="a">›</span></button>
@@ -2080,38 +2409,29 @@ function loadChunkedDataUrl(paths,mime){
 }
 function ensureLandingGraphic(){
   const img=$('landingCanonicalImage');if(!img)return Promise.resolve();
-  if(img.dataset.loaded==='1')return Promise.resolve();
-  if(!landingImagePromise)landingImagePromise=loadChunkedDataUrl([1,2,3,4,5,6].map(i=>'assets/landing-bg-'+i+'.txt'),'image/webp');
-  return landingImagePromise.then(src=>new Promise((resolve,reject)=>{
-    if(img.dataset.loaded==='1')return resolve();
-    img.onload=()=>{img.dataset.loaded='1';img.style.visibility='visible';resolve()};
-    img.onerror=reject;img.src=src;
-  })).catch(()=>{img.style.visibility='visible'});
+  img.dataset.loaded='1';
+  img.style.visibility='hidden';
+  img.removeAttribute('src');
+  return Promise.resolve();
 }
 function ensureSetupArt(type){
-  const el=type==='income'?document.querySelector('.setupWalletArt'):document.querySelector('.setupPiggyArt');if(!el)return Promise.resolve();
-  if(el.dataset.assetLoaded==='1')return Promise.resolve();
-  const isIn=type==='income',path=isIn?'assets/setup-income-art.txt':'assets/setup-expense-art.txt';
-  if(isIn&&!setupIncomeArtPromise)setupIncomeArtPromise=loadChunkedDataUrl([path],'image/webp');
-  if(!isIn&&!setupExpenseArtPromise)setupExpenseArtPromise=loadChunkedDataUrl([path],'image/webp');
-  const p=isIn?setupIncomeArtPromise:setupExpenseArtPromise;
-  return p.then(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{el.style.setProperty('background-image','url("'+src+'")','important');el.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src})).catch(()=>{});
+  const el=type==='income'?document.querySelector('.setupWalletArt'):document.querySelector('.setupPiggyArt');
+  if(!el)return Promise.resolve();
+  el.dataset.assetLoaded='1';
+  el.style.removeProperty('background-image');
+  return Promise.resolve();
 }
 function ensureIncomeBanner(){
   const banner=document.querySelector('.flowIncome .flowBanner');if(!banner)return Promise.resolve();
-  if(banner.dataset.assetLoaded==='1')return Promise.resolve();
-  if(!incomeBannerPromise)incomeBannerPromise=loadChunkedDataUrl(['assets/income-banner-approved.txt'],'image/webp');
-  return incomeBannerPromise.then(src=>new Promise((resolve,reject)=>{
-    const im=new Image();im.onload=()=>{banner.style.setProperty('background-image','url("'+src+'")','important');banner.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src;
-  })).catch(()=>{});
+  banner.dataset.assetLoaded='1';
+  banner.style.removeProperty('background-image');
+  return Promise.resolve();
 }
 function ensurePaymentBanner(){
   const banner=document.querySelector('.flowExpense .flowBanner');if(!banner)return Promise.resolve();
-  if(banner.dataset.assetLoaded==='1')return Promise.resolve();
-  if(!paymentBannerPromise)paymentBannerPromise=loadChunkedDataUrl(['assets/payment-banner.txt'],'image/webp');
-  return paymentBannerPromise.then(src=>new Promise((resolve,reject)=>{
-    const im=new Image();im.onload=()=>{banner.style.setProperty('background-image','url("'+src+'")','important');banner.dataset.assetLoaded='1';resolve()};im.onerror=reject;im.src=src;
-  })).catch(()=>{});
+  banner.dataset.assetLoaded='1';
+  banner.style.removeProperty('background-image');
+  return Promise.resolve();
 }
 
 function openContiFromLanding(){
@@ -3538,9 +3858,7 @@ function todoBellSvg(){
   return '<svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 }
 function todoPersonAsset(scene){
-  if(scene==='active')return'assets/todo-think-male.webp';
-  if(scene==='done')return'assets/todo-done-male.webp';
-  return'assets/todo-thumb-male.webp';
+  return'assets/eds-green.webp';
 }
 function setTodoPersonArt(el,scene){
   if(!el)return;
