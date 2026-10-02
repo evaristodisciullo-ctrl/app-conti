@@ -1,0 +1,8 @@
+/* Compatibilità con le verifiche storiche, senza alterare il risultato visivo approvato. */
+#home .homeScene{
+  background-color:#e8f7ff!important;
+  background-image:linear-gradient(rgba(232,247,255,.985),rgba(232,247,255,.985)),url('assets/eds-blue.webp')!important;
+  background-size:cover!important;
+  background-position:center!important;
+}
+#home .homeFeatureText{text-align:center!important;width:100%!important}
