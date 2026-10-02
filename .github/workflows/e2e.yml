@@ -22,4 +22,13 @@ jobs:
           python3 -m http.server 4173 >/tmp/inordine-server.log 2>&1 &
           for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
       - name: Run regression tests
-        run: node tests/e2e.mjs
+        run: |
+          set -o pipefail
+          node tests/e2e.mjs 2>&1 | tee e2e.log
+      - name: Upload regression log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: in-ordine-e2e-log
+          path: e2e.log
+          if-no-files-found: error
