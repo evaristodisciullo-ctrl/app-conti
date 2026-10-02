@@ -830,9 +830,9 @@ async function testFlowBannerIsSingleCard(browser){
     assert.ok(!layout.bannerBackgroundImage.includes('url('),'Il banner non deve usare una seconda cornice incorporata come immagine completa');
     assert.ok(layout.bannerBorderTop>=1,'Deve esserci una sola cornice esterna');
     assert.notEqual(layout.bannerBorderStyle,'none');
-    assert.ok(layout.addBackground==='rgba(0, 0, 0, 0)'||layout.addBackground==='transparent','Il pulsante deve essere integrato nel banner senza un secondo riquadro');
-    assert.equal(layout.addBackgroundImage,'none');
-    assert.equal(layout.addBoxShadow,'none');
+    assert.ok(layout.addBackground==='rgba(0, 0, 0, 0)'||layout.addBackground==='transparent','Il pulsante E.D.S usa il gradiente tramite background-image');
+    assert.match(layout.addBackgroundImage,/linear-gradient/,'Il pulsante deve usare il gradiente blu E.D.S.');
+    assert.notEqual(layout.addBoxShadow,'none','Il pulsante deve restare leggibile sul banner E.D.S.');
     assert.equal(layout.addOpacity,'1');
     assert.ok(layout.addWidth<layout.bannerWidth*.7,'Il pulsante non deve essere un riquadro sovrapposto a tutta la card');
     assert.equal(layout.artDisplay,'block');

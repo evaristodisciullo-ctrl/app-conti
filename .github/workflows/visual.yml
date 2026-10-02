@@ -32,7 +32,7 @@ jobs:
             const shot=async(name)=>page.screenshot({path:'visual/'+name+'.png',fullPage:true});
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
             await page.evaluate(()=>localStorage.clear());await page.reload();
-            await page.waitForSelector('#landing:not(.hidden)');await page.waitForSelector('#landingCanonicalImage[data-loaded="1"]',{timeout:15000});await shot('01-in-ordine');
+            await page.waitForSelector('#landing:not(.hidden)');await page.waitForSelector('#landingCanonicalImage[data-loaded="1"]',{state:'attached',timeout:15000});await shot('01-in-ordine');
             await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');await shot('02-saldo');
             await page.fill('#startBalance','1000');await page.click('#startBtn');await page.waitForSelector('#setupIncome:not(.hidden)');await shot('03-entrate-primo-inserimento');
             await page.click('#skipIncomeSetup');await page.waitForSelector('#setupExpense:not(.hidden)');await shot('04-pagamenti-primo-inserimento');
