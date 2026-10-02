@@ -4,8 +4,7 @@ const CORE=[
   './assets/landing-bg-1.txt','./assets/landing-bg-2.txt','./assets/landing-bg-3.txt',
   './assets/landing-bg-4.txt','./assets/landing-bg-5.txt','./assets/landing-bg-6.txt',
   './assets/saldo-bg.webp','./assets/home-income-art.webp','./assets/home-payment-art.webp',
-  './assets/conti-income-sharp.webp','./assets/conti-expense-sharp.webp',
-  './assets/todo-notebook-sharp.webp','./assets/todo-alarm-sharp.webp','./assets/todo-alarm-active-sharp.webp','./assets/todo-check-sharp.webp',
+  './assets/todo-thumb-male.webp','./assets/todo-think-male.webp','./assets/todo-done-male.webp',
   './assets/income-banner-approved.txt','./assets/payment-banner.txt','./assets/setup-income-art.txt','./assets/setup-expense-art.txt','./assets/wallet-art.webp'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
