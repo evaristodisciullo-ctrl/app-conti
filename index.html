@@ -1186,10 +1186,16 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .todoDateInput{background:color-mix(in srgb,var(--todoSurface,#f8fcf9) 72%,var(--todoSoft,#e5f0e8))}
 .todoBigBtn.add{background:var(--todoSoft,#e5f0e8);color:var(--todoDeep,#376b55)}
 .todoBigBtn.add .round{color:var(--todoDeep,#376b55)}
-.todoHubCard.config,.todoHubCard.reopen{
+.todoHubCard.config{
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--todoSurface,#f8fcf9) 68%,#e7f4ff),
+    color-mix(in srgb,var(--todoUtility,#d8ebdf) 58%,#cfe8ff))
+}
+.todoHubCard.reopen{
   background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),var(--todoUtility,#d8ebdf))
 }
-.todoHubCard.config .icon,.todoHubCard.reopen .icon{color:var(--todoDeep,#376b55)}
+.todoHubCard.config .icon{color:#2878b8}
+.todoHubCard.reopen .icon{color:var(--todoDeep,#376b55)}
 .todoTaskRow{
   background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),color-mix(in srgb,var(--todoSoft,#e5f0e8) 58%,white))
 }
