@@ -366,20 +366,20 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     const read=selector=>{
       const card=document.querySelector(selector);
       const scene=card.querySelector('.homeScene');
-      const img=scene.querySelector('img');
       const c=card.getBoundingClientRect();
-      const cs=getComputedStyle(card),ss=getComputedStyle(scene),is=getComputedStyle(img);
+      const s=scene.getBoundingClientRect();
+      const cs=getComputedStyle(card);
+      const ss=getComputedStyle(scene);
       const pseudo=getComputedStyle(card,'::after');
       return {
-        cardLeft:c.left,cardRight:c.right,
+        cardLeft:c.left,cardRight:c.right,cardTop:c.top,
+        sceneLeft:s.left,sceneRight:s.right,sceneTop:s.top,
+        sceneWidth:s.width,sceneHeight:s.height,
         borderTopWidth:parseFloat(cs.borderTopWidth),
         overflow:cs.overflow,
         outlineStyle:cs.outlineStyle,
         pseudoDisplay:pseudo.display,
-        sceneBackground:ss.backgroundImage,
-        imgSrc:img.getAttribute('src'),
-        imgObjectFit:is.objectFit,
-        imgWidth:img.getBoundingClientRect().width
+        backgroundImage:ss.backgroundImage
       };
     };
     return {income:read('#homeIncome'),expense:read('#homeExpense')};
@@ -390,12 +390,12 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
     assert.equal(card.pseudoDisplay,'none');
-    assert.equal(card.sceneBackground,'none','La scena non deve contenere una seconda cornice come sfondo');
-    assert.equal(card.imgObjectFit,'cover');
-    assert.ok(card.imgWidth>100,'L’illustrazione nitida deve occupare bene la card');
+    assert.ok(card.sceneLeft<card.cardLeft,'La cornice incorporata nell’illustrazione va ritagliata a sinistra');
+    assert.ok(card.sceneRight>card.cardRight,'La cornice incorporata nell’illustrazione va ritagliata a destra');
+    assert.ok(card.sceneTop<card.cardTop,'La cornice incorporata nell’illustrazione va ritagliata in alto');
+    assert.ok(card.sceneHeight<card.sceneWidth*174/260-1,'La cornice inferiore dell’illustrazione va ritagliata');
+    assert.notEqual(card.backgroundImage,'none');
   }
-  assert.match(layout.income.imgSrc,/conti-income-sharp\.webp$/);
-  assert.match(layout.expense.imgSrc,/conti-expense-sharp\.webp$/);
   await context.close();
 }
 
@@ -411,9 +411,6 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoSetupRows .todoSetupRow').count(),4);
   assert.equal(await page.locator('#todoSetup input[type="date"]').count(),0,'Le date devono restare campi di testo, senza calendario');
   assert.equal(await page.locator('#todoSetupRows .todoNotifyToggle .todoLineBell').count(),4,'Le campanelle iniziali devono essere lineari');
-  assert.equal(await page.locator('#todoSetupArt img').count(),1);
-  assert.match(await page.locator('#todoSetupArt img').getAttribute('src'),/todo-notebook-sharp\.webp$/);
-  assert.equal(await page.locator('#todoSetupArt').getAttribute('data-gender'),null,'Il nome non deve più scegliere uomo o donna');
 
   const first=page.locator('#todoSetupRows .todoSetupRow').first();
   const longText='Fare iscrizione Alifond e disdetta sindacato prima della scadenza';
@@ -426,30 +423,38 @@ async function testTodoSection(browser){
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/Cose da fare/);
-  assert.match(await page.locator('#todoHub').innerText(),/In scadenza/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
   assert.equal(await page.locator('#todoHubHome').count(),0,'Torna all’inizio non deve esserci: si usa la freccia in alto');
-  assert.equal(await page.locator('#todoHubArt').count(),0,'La Home Cose da fare non deve avere il riquadro Ciao con una persona');
-  assert.match(await page.locator('#todoHubPendingArt img').getAttribute('src'),/todo-alarm-sharp\.webp$/);
-  assert.match(await page.locator('#todoHubDoneArt img').getAttribute('src'),/todo-check-sharp\.webp$/);
-  assert.equal(await page.locator('#todoHubPending .todoHubTap').innerText(),'›');
-  assert.equal(await page.locator('#todoHubDone .todoHubTap').innerText(),'›');
-  const hubLayout=await page.evaluate(()=>{
-    const read=id=>{const r=document.getElementById(id).getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height}};
-    return {
-      pending:read('todoHubPending'),done:read('todoHubDone'),
-      n:read('todoHubNotifications'),s:read('todoHubSettings'),r:read('todoHubSetup')
-    };
+  const cardSizes=await page.evaluate(()=>{
+    const big=['todoHubPending','todoHubDone'].map(id=>{const el=document.getElementById(id),r=el.getBoundingClientRect();return {id,height:Math.round(r.height)}});
+    const compact=['todoHubNotifications','todoHubSettings','todoHubSetup'].map(id=>{
+      const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundImage;
+      return {id,height:Math.round(r.height),bg};
+    });
+    return {big,compact};
   });
-  assert.ok(Math.abs(hubLayout.pending.y-hubLayout.done.y)<3,'In scadenza e Cose già fatte devono essere affiancati');
-  assert.ok(hubLayout.pending.x<hubLayout.done.x);
-  assert.ok(hubLayout.pending.h>hubLayout.n.h*2,'I riquadri principali devono essere molto più grandi');
-  assert.ok(hubLayout.n.y>hubLayout.pending.y+hubLayout.pending.h+20,'Le utilità devono essere più staccate dai riquadri principali');
-  assert.ok(hubLayout.n.y<hubLayout.s.y&&hubLayout.s.y<hubLayout.r.y,'Notifiche, Impostazioni e Torna all’inserimento devono essere uno sotto l’altro');
-  assert.ok(Math.abs(hubLayout.n.x-hubLayout.s.x)<3&&Math.abs(hubLayout.s.x-hubLayout.r.x)<3);
+  assert.equal(cardSizes.compact[0].height,cardSizes.compact[1].height);
+  assert.equal(cardSizes.compact[1].height,cardSizes.compact[2].height);
+  assert.ok(cardSizes.compact[0].height<cardSizes.big[0].height,'Notifiche, Impostazioni e Torna all’inserimento devono essere più piccoli dei due riquadri principali');
+  assert.equal(new Set(cardSizes.compact.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
+  assert.equal(await page.locator('#todoHubArt img').count(),1);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+  const hubLayout=await page.evaluate(()=>{
+    const pending=document.getElementById('todoHubPending').getBoundingClientRect();
+    const n=document.getElementById('todoHubNotifications').getBoundingClientRect();
+    const s=document.getElementById('todoHubSettings').getBoundingClientRect();
+    const r=document.getElementById('todoHubSetup').getBoundingClientRect();
+    return {pendingH:pending.height,compactH:n.height,ys:[n.y,s.y,r.y],xs:[n.x,s.x,r.x]};
+  });
+  assert.ok(hubLayout.compactH<hubLayout.pendingH*0.8,'Le tre scorciatoie devono essere nettamente più piccole delle card principali');
+  assert.ok(Math.max(...hubLayout.ys)-Math.min(...hubLayout.ys)<3,'Notifiche, Impostazioni e Torna all’inserimento devono stare sulla stessa riga');
+  assert.ok(hubLayout.xs[0]<hubLayout.xs[1]&&hubLayout.xs[1]<hubLayout.xs[2]);
+  assert.equal((await page.locator('#todoHub').innerText()).includes('🗓️'),false);
 
   await page.click('#todoHubNotifications');
   await page.waitForSelector('#modal:not(.hidden)');
@@ -475,11 +480,11 @@ async function testTodoSection(browser){
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
-  assert.equal(await page.locator('#todoActive .todoTop h1').count(),0,'In scadenza deve avere solo la freccia circolare in alto');
-  assert.match(await page.locator('#todoActive .todoHero strong').innerText(),/In scadenza/);
-  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
-  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-alarm-active-sharp\.webp$/);
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-think-male\.webp$/);
+  assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
   assert.match(await row.locator('.todoCompleteBtn').innerText(),/Segna\s+come fatta/);
@@ -505,11 +510,11 @@ async function testTodoSection(browser){
   await row.locator('.todoCompleteBtn').click();
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
-  assert.equal(await page.locator('#todoDone .todoTop h1').count(),0,'Cose già fatte deve avere solo la freccia circolare in alto');
-  assert.match(await page.locator('#todoDone .todoHero strong').innerText(),/Cose già fatte/);
-  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
+  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),'male');
+  assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
-  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/todo-check-sharp\.webp$/);
+  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/todo-done-male\.webp$/);
+  assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
   assert.equal(await page.locator('#todoDoneList .todoNotifyBtn').count(),0,'Nelle Cose già fatte non serve la colonna notifiche');
@@ -537,61 +542,41 @@ async function testTodoSection(browser){
   await page.waitForSelector('#modal:not(.hidden)');
   const beforeTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
-    pageBg:getComputedStyle(document.getElementById('todoSettings')).backgroundImage
+    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
+    card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
+    pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,
+    done:getComputedStyle(document.getElementById('todoHubDone')).backgroundImage,
+    notify:getComputedStyle(document.getElementById('todoHubNotifications')).backgroundImage
   }));
-  const originalColor=(await state(page)).todo.color;
-  await page.click('[data-tcolor="Azzurro"]');
-  const cancelPreview=await page.evaluate(()=>({
-    accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim()
-  }));
-  assert.notEqual(cancelPreview.accent,beforeTheme.accent,'L’anteprima deve cambiare immediatamente anche prima di salvare');
-  await page.click('#todoColorCancel');
-  await page.waitForSelector('#modal',{state:'hidden'});
-  const afterCancel=await page.evaluate(()=>({
-    accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim()
-  }));
-  assert.equal((await state(page)).todo.color,originalColor,'Annulla non deve salvare il colore provato');
-  assert.equal(afterCancel.accent,beforeTheme.accent,'Annulla deve ripristinare subito il tema precedente');
-  assert.equal(afterCancel.bg,beforeTheme.bg,'Annulla deve ripristinare anche lo sfondo precedente');
-
-  await page.click('#todoSettingColor');
-  await page.waitForSelector('#modal:not(.hidden)');
   await page.click('[data-tcolor="Viola"]');
   const previewTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    bg:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
-    pageBg:getComputedStyle(document.getElementById('todoSettings')).backgroundImage
+    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
+    card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
+    pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,
+    done:getComputedStyle(document.getElementById('todoHubDone')).backgroundImage,
+    notify:getComputedStyle(document.getElementById('todoHubNotifications')).backgroundImage
   }));
   assert.notEqual(previewTheme.accent,beforeTheme.accent,'Il colore deve cambiare subito al tocco, prima di Salva');
-  assert.notEqual(previewTheme.bg,beforeTheme.bg,'Il tema deve cambiare gran parte della schermata, non solo un dettaglio');
-  assert.notEqual(previewTheme.pageBg,beforeTheme.pageBg,'Lo sfondo della sezione deve mostrare subito il nuovo tema');
+  assert.notEqual(previewTheme.page,beforeTheme.page,'Il tema deve cambiare subito lo sfondo della sezione');
+  assert.notEqual(previewTheme.hero,beforeTheme.hero,'Il tema deve cambiare subito il banner generale');
+  assert.notEqual(previewTheme.card,beforeTheme.card,'Il tema deve cambiare subito le card delle impostazioni');
+  assert.equal(previewTheme.pending,beforeTheme.pending,'In scadenza deve mantenere il giallo funzionale');
+  assert.equal(previewTheme.done,beforeTheme.done,'Cose già fatte deve mantenere il verde funzionale');
+  assert.equal(previewTheme.notify,beforeTheme.notify,'Notifiche deve mantenere il rosa/rosso funzionale');
   await page.click('#todoColorSave');
   assert.equal((await state(page)).todo.color,'Viola');
 
   await context.close();
 }
 
-async function testTodoArtworkIsIndependentOfName(browser){
+async function testTodoIllustrationDoesNotDependOnName(browser){
   const {context,page}=await freshPage(browser);
   await page.fill('#landingNickname','Maria');
   await page.click('#landingTodo');
   await page.waitForSelector('#todoSetup:not(.hidden)');
-  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Maria/);
-  const artBefore=await page.locator('#todoSetupArt img').getAttribute('src');
-  assert.match(artBefore,/todo-notebook-sharp\.webp$/);
-  assert.equal(await page.locator('[data-gender]').count(),0,'Il nome non deve più cambiare le immagini in uomo/donna');
-
-  await page.evaluate(()=>{
-    state.profile.fullName='Luca';
-    save();
-    setTodoGreetings();
-  });
-  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Luca/);
-  assert.equal(await page.locator('#todoSetupArt img').getAttribute('src'),artBefore,'Cambiare da un nome femminile a uno maschile non deve cambiare l’immagine');
-  assert.equal(await page.locator('[data-gender]').count(),0);
 
   const first=page.locator('#todoSetupRows .todoSetupRow').first();
   await first.locator('.todoDescInput').fill('Voce prova');
@@ -600,14 +585,23 @@ async function testTodoArtworkIsIndependentOfName(browser){
   await first.locator('[data-tr="single"]').click();
   await page.click('#todoSetupSave');
   await page.waitForSelector('#todoHub:not(.hidden)');
-  assert.equal((await page.locator('#todoHub').innerText()).includes('Ciao Maria'),false,'Il riquadro Ciao deve essere rimosso dalla Home');
-  assert.match(await page.locator('#todoHubPendingArt img').getAttribute('src'),/todo-alarm-sharp\.webp$/);
-  assert.match(await page.locator('#todoHubDoneArt img').getAttribute('src'),/todo-check-sharp\.webp$/);
 
-  await page.click('#todoHubPending');
-  await page.waitForSelector('#todoActive:not(.hidden)');
-  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-alarm-active-sharp\.webp$/);
-  assert.equal(await page.locator('[data-gender]').count(),0);
+  assert.match(await page.locator('#todoHub').innerText(),/Ciao Maria/);
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve più determinare uomo o donna');
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+
+  await page.click('#todoHubSettings');
+  await page.waitForSelector('#todoSettings:not(.hidden)');
+  await page.click('#todoSettingName');
+  await page.waitForSelector('#modal:not(.hidden)');
+  await page.fill('#todoNameInput','Marco');
+  await page.click('#todoNameSave');
+  await page.click('#todoSettingsBack');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+
+  assert.match(await page.locator('#todoHub').innerText(),/Ciao Marco/);
+  assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
 
   await context.close();
 }
@@ -838,9 +832,7 @@ async function testFlowBannerIsSingleCard(browser){
         addWidth:ar.width,
         bannerWidth:br.width,
         artDisplay:v.display,
-        artBackgroundImage:v.backgroundImage,
-        artSrc:art.querySelector('img')?.getAttribute('src')||'',
-        artImgCount:art.querySelectorAll('img').length
+        artBackgroundImage:v.backgroundImage
       };
     });
     assert.ok(!layout.bannerBackgroundImage.includes('url('),'Il banner non deve usare una seconda cornice incorporata come immagine completa');
@@ -852,9 +844,7 @@ async function testFlowBannerIsSingleCard(browser){
     assert.equal(layout.addOpacity,'1');
     assert.ok(layout.addWidth<layout.bannerWidth*.7,'Il pulsante non deve essere un riquadro sovrapposto a tutta la card');
     assert.equal(layout.artDisplay,'block');
-    assert.equal(layout.artBackgroundImage,'none');
-    assert.equal(layout.artImgCount,1,'Il banner deve usare direttamente l’illustrazione nitida');
-    assert.match(layout.artSrc,cfg.label.includes('entrata')?/conti-income-sharp\.webp$/:/conti-expense-sharp\.webp$/);
+    assert.notEqual(layout.artBackgroundImage,'none','L’illustrazione deve restare integrata nella card');
     assert.equal(await page.locator('#flowAdd').innerText(),cfg.label);
     await page.click('#flowBack');
     await page.waitForSelector('#home:not(.hidden)');
@@ -884,7 +874,7 @@ try{
   await testHomeFeatureCardsAreSingleFrame(browser);
   await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
-  await testTodoArtworkIsIndependentOfName(browser);
+  await testTodoIllustrationDoesNotDependOnName(browser);
   await testTodoBellAlignmentAndNeutralRows(browser);
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
