@@ -1179,6 +1179,257 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   .todoFilterAll,.todoFilterSelect{font-size:10.5px;padding-left:6px;padding-right:6px}
 }
 
+
+/* =========================================================
+   GRAFICA DEFINITIVA APPROVATA — 02/10/2026
+   ========================================================= */
+:root{
+  --todoAccent:#6f9f83;
+  --todoSoft:#e5f0e8;
+  --todoBg:#f3f9f5;
+  --todoSurface:#f7fbf8;
+  --todoBorder:#bfd6c8;
+  --todoDeep:#376b55;
+  --todoUtility:#dceee4;
+}
+
+/* Conti economici: immagini nitide approvate, riutilizzate ovunque */
+.homeScene.sharpScene{
+  height:112px!important;
+  margin:-14px -14px 8px!important;
+  display:block!important;
+  overflow:hidden!important;
+  border-radius:20px 20px 0 0!important;
+}
+.homeScene.sharpScene .homeFeatureArt{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+}
+.flowBannerVisual.sharp{
+  display:block!important;
+  width:176px!important;
+  height:98px!important;
+  flex:0 0 176px!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  background:transparent!important;
+}
+.flowBannerVisual.sharp img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
+/* Tema Cose da fare: cambio evidente e immediato */
+.todoPage{
+  background:linear-gradient(180deg,var(--todoBg) 0%,#fff 78%)!important;
+  border-radius:24px;
+}
+.todoPage .todoPanel:not(.todoListPanel),
+.todoPage .todoSettingCard,
+.todoPage .todoBigBtn.add,
+.todoPage .todoFilterSelect{
+  border-color:var(--todoBorder)!important;
+}
+.todoPage .todoBigBtn.add,
+.todoPage .todoSettingCard{
+  background:linear-gradient(135deg,#fff,var(--todoSurface))!important;
+}
+.todoPage .todoFilterAll.active,
+.todoPage .todoRecChoices button.active{
+  background:var(--todoSoft)!important;
+  color:var(--todoDeep)!important;
+  border-color:var(--todoAccent)!important;
+}
+.todoPage .todoEditHint,
+.todoPage .todoInlineNote,
+.todoPage .todoSettingCard .a{
+  color:var(--todoDeep)!important;
+}
+.todoBack{
+  width:46px!important;
+  height:46px!important;
+  border-radius:50%!important;
+  background:var(--todoSoft)!important;
+  color:var(--todoDeep)!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:31px!important;
+  line-height:1!important;
+}
+.todoBack.todoBackPlain{
+  background:transparent!important;
+  color:#2a8af4!important;
+  border-radius:0!important;
+}
+.todoTopIconOnly{margin:2px 0 14px!important;min-height:46px!important}
+.todoTopIconOnly .todoBack{margin-left:0!important}
+
+/* Inserimento e impostazioni: quadernino fisso, mai uomo/donna */
+.todoHero.setup,.todoHero.settings{
+  background:linear-gradient(135deg,var(--todoSoft),var(--todoSurface))!important;
+  border:1px solid var(--todoBorder)!important;
+}
+#todoSetupArt,#todoSettingsArt{
+  width:164px!important;
+  height:116px!important;
+  right:9px!important;
+  bottom:0!important;
+}
+#todoSetupArt img,#todoSettingsArt img{
+  width:100%!important;height:100%!important;object-fit:contain!important;
+}
+
+/* Home Cose da fare */
+.todoHubGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.todoHubCard.pending,.todoHubCard.completed{
+  grid-column:auto!important;
+  min-height:218px!important;
+  border-radius:28px!important;
+  padding:24px 18px!important;
+  display:block!important;
+  position:relative!important;
+  overflow:hidden!important;
+  text-align:center!important;
+}
+.todoHubCard.pending{background:linear-gradient(145deg,#fff9dc,#fff0b2)!important}
+.todoHubCard.completed{background:linear-gradient(145deg,#edfff2,#cff3d8)!important}
+.todoHubCardText{
+  display:block!important;
+  position:relative!important;
+  z-index:2!important;
+}
+.todoHubCardText strong{
+  display:block!important;
+  font-size:22px!important;
+  line-height:1.08!important;
+  color:#102a55!important;
+  white-space:normal!important;
+}
+.todoHubCardText small{
+  display:block!important;
+  margin-top:8px!important;
+  color:#617896!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+.todoHubPerson{
+  position:absolute!important;
+  right:14px!important;
+  bottom:12px!important;
+  width:82px!important;
+  height:76px!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:flex-end!important;
+}
+.todoHubPerson img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
+.todoHubTap{
+  position:absolute!important;
+  left:18px!important;
+  bottom:48px!important;
+  width:48px!important;
+  height:48px!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.52)!important;
+  display:grid!important;
+  place-items:center!important;
+  color:#111!important;
+  font-size:37px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  box-shadow:0 5px 13px rgba(30,54,80,.08)!important;
+}
+.todoHubCard.compact{
+  grid-column:1/-1!important;
+  min-height:72px!important;
+  padding:10px 16px!important;
+  border-radius:20px!important;
+  display:grid!important;
+  grid-template-columns:50px minmax(0,1fr) 24px!important;
+  gap:13px!important;
+  align-items:center!important;
+  text-align:left!important;
+}
+.todoHubCard.notify{margin-top:32px!important;background:linear-gradient(135deg,#ffdfe5,#ffcfd8)!important}
+.todoHubCard.config{background:linear-gradient(135deg,var(--todoSoft),var(--todoUtility))!important;border:1px solid var(--todoBorder)!important}
+.todoHubCard.reopen{background:linear-gradient(135deg,var(--todoSurface),var(--todoSoft))!important;border:1px solid var(--todoBorder)!important}
+.todoHubCard.compact .icon{
+  width:46px!important;height:46px!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;
+  background:rgba(255,255,255,.62)!important;font-size:28px!important;
+}
+.todoHubCard.notify .icon{color:#e83f61!important}
+.todoHubCard.config .icon{color:#1976d2!important}
+.todoHubCard.reopen .icon{color:var(--todoDeep)!important;font-size:32px!important}
+.todoHubCard.compact strong{font-size:18px!important;line-height:1.1!important;color:#102a55!important}
+.todoHubCard.compact .chev{font-size:28px!important;color:#102a55!important}
+
+/* In scadenza / Cose già fatte: colori semantici fissi */
+.todoHero.active{
+  min-height:126px!important;
+  background:linear-gradient(135deg,#fff9e3,#ffefad)!important;
+  border:1px solid #f7df8b!important;
+  padding-right:130px!important;
+}
+.todoHero.done{
+  min-height:126px!important;
+  background:linear-gradient(135deg,#edfff2,#d3f5dc)!important;
+  border:1px solid #b8e6c5!important;
+  padding-right:130px!important;
+}
+.todoHero.active strong,.todoHero.done strong{font-size:27px!important}
+#todoActiveArt,#todoDoneArt{
+  width:98px!important;height:96px!important;right:20px!important;bottom:10px!important;
+}
+#todoActiveArt img,#todoDoneArt img{width:100%!important;height:100%!important;object-fit:contain!important}
+.todoTaskRow{
+  background:linear-gradient(135deg,#fff,var(--todoSurface))!important;
+  border:1px solid var(--todoBorder)!important;
+}
+.todoDoneRow{
+  background:linear-gradient(135deg,#fff,var(--todoSurface))!important;
+  border:1px solid var(--todoBorder)!important;
+}
+.todoNotifyBtn{justify-self:center!important}
+
+/* Settings/utility UI changes with the selected theme */
+.todoSettingsStack{gap:11px!important}
+.todoSettingCard{
+  box-shadow:0 5px 14px rgba(28,69,103,.05)!important;
+}
+.todoSettingCard .i{
+  background:var(--todoSoft)!important;
+  color:var(--todoDeep)!important;
+}
+.todoColorChoice.active{
+  border-color:var(--todoAccent)!important;
+  box-shadow:0 0 0 2px var(--todoSoft)!important;
+}
+@media(max-width:410px){
+  .homeScene.sharpScene{height:101px!important}
+  .flowBannerVisual.sharp{width:154px!important;height:86px!important;flex-basis:154px!important}
+  .todoHubCard.pending,.todoHubCard.completed{min-height:202px!important;padding:21px 12px!important}
+  .todoHubCardText strong{font-size:19px!important}
+  .todoHubCardText small{font-size:11.5px!important}
+  .todoHubPerson{width:72px!important;height:68px!important;right:10px!important}
+  .todoHubTap{width:44px!important;height:44px!important;left:12px!important;bottom:42px!important;font-size:33px!important}
+  .todoHubCard.compact{min-height:68px!important}
+}
 </style>
 </head>
 <body>
@@ -1269,7 +1520,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
 <section id="todoSetup" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoSetupBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero setup"><strong id="todoSetupGreeting">Ciao</strong><small>Inserisci tutte le cose che hai da fare</small><span id="todoSetupArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
+  <div class="todoHero setup"><strong id="todoSetupGreeting">Ciao</strong><small>Inserisci tutte le cose che hai da fare</small><span id="todoSetupArt" class="todoHeroArt" aria-hidden="true"></span></div>
   <div class="todoPanel">
     <div class="todoSetupHead"><span>Descrizione</span><span>Data</span><span>Attiva<br>notifiche</span></div>
     <div id="todoSetupRows"></div>
@@ -1281,20 +1532,27 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 </section>
 
 <section id="todoHub" class="screen todoPage hidden">
-  <div class="todoTop"><button id="todoHubBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero hub"><strong id="todoHubGreeting">Ciao</strong><small>Tutto sotto controllo!</small><span id="todoHubArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
+  <div class="todoTop"><button id="todoHubBack" class="todoBack todoBackPlain" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
   <div class="todoHubGrid">
-    <button id="todoHubPending" class="todoHubCard pending"><span><strong>Cose da fare</strong><small id="todoHubPendingCount">0 attività da completare</small></span><span id="todoHubPendingArt" class="todoHubPerson" aria-hidden="true"></span><span class="chev">›</span></button>
-    <button id="todoHubDone" class="todoHubCard completed"><span><strong>Cose già fatte</strong><small id="todoHubDoneCount">0 attività completate</small></span><span id="todoHubDoneArt" class="todoHubPerson" aria-hidden="true"></span><span class="chev">›</span></button>
+    <button id="todoHubPending" class="todoHubCard pending">
+      <span class="todoHubCardText"><strong>In scadenza</strong><small id="todoHubPendingCount">0 attività da completare</small></span>
+      <span id="todoHubPendingArt" class="todoHubPerson" aria-hidden="true"></span>
+      <span class="todoHubTap" aria-hidden="true">›</span>
+    </button>
+    <button id="todoHubDone" class="todoHubCard completed">
+      <span class="todoHubCardText"><strong>Cose già fatte</strong><small id="todoHubDoneCount">0 attività completate</small></span>
+      <span id="todoHubDoneArt" class="todoHubPerson" aria-hidden="true"></span>
+      <span class="todoHubTap" aria-hidden="true">›</span>
+    </button>
     <button id="todoHubNotifications" class="todoHubCard notify compact"><span class="icon"><svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><strong>Notifiche</strong><span class="chev">›</span></button>
     <button id="todoHubSettings" class="todoHubCard config compact"><span class="icon">⚙</span><strong>Impostazioni</strong><span class="chev">›</span></button>
-    <button id="todoHubSetup" class="todoHubCard reopen compact"><span class="icon">＋</span><strong>Torna<br>all'inserimento</strong><span class="chev">›</span></button>
+    <button id="todoHubSetup" class="todoHubCard reopen compact"><span class="icon">＋</span><strong>Torna all'inserimento</strong><span class="chev">›</span></button>
   </div>
 </section>
 
 <section id="todoActive" class="screen todoPage hidden">
-  <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero active"><strong>Cose da fare</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
+  <div class="todoTop todoTopIconOnly"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button></div>
+  <div class="todoHero active"><strong>In scadenza</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" aria-hidden="true"></span></div>
   <div class="todoFilterBar">
     <button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button>
     <select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
@@ -1306,14 +1564,14 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
   </div>
   <div class="todoActions">
     <button id="todoAddTask" class="todoBigBtn add"><span class="round">＋</span><span>Aggiungi voce</span></button>
-    <button id="todoGoDone" class="todoBigBtn save"><span class="round">✓</span><span>Cose fatte</span></button>
+    <button id="todoGoDone" class="todoBigBtn save"><span class="round">✓</span><span>Cose già fatte</span></button>
     <button id="todoGoSettings" class="todoBigBtn add"><span class="round">⚙</span><span>Impostazioni</span></button>
   </div>
 </section>
 
 <section id="todoDone" class="screen todoPage hidden">
-  <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose già fatte</h1></div>
-  <div class="todoHero done"><strong>Cose già fatte</strong><small id="todoDoneHeroCount" class="todoHeroCount">0 attività completate</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
+  <div class="todoTop todoTopIconOnly"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button></div>
+  <div class="todoHero done"><strong>Cose già fatte</strong><small id="todoDoneHeroCount" class="todoHeroCount">0 attività completate</small><span id="todoDoneArt" class="todoHeroArt" aria-hidden="true"></span></div>
   <div class="todoFilterBar">
     <button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button>
     <select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
@@ -1331,7 +1589,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
 <section id="todoSettings" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoSettingsBack" class="todoBack" aria-label="Indietro">←</button><h1>Impostazioni</h1></div>
-  <div class="todoHero settings"><strong id="todoSettingsGreeting">Ciao</strong><small>Scegli come vuoi usare Cose da fare</small><span id="todoSettingsArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
+  <div class="todoHero settings"><strong id="todoSettingsGreeting">Ciao</strong><small>Scegli come vuoi usare Cose da fare</small><span id="todoSettingsArt" class="todoHeroArt" aria-hidden="true"></span></div>
   <div class="todoSettingsStack">
     <button id="todoSettingColor" class="todoSettingCard"><span class="i">🎨</span><span><strong>Colore dell'app</strong><small id="todoColorSummary">Colore predefinito: Salvia</small></span><span class="a">›</span></button>
     <button id="todoSettingNotifications" class="todoSettingCard"><span class="i"><svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span><strong>Notifiche</strong><small id="todoNotifySummary">Scegli quando ricevere i promemoria</small></span><span class="a">›</span></button>
@@ -1347,15 +1605,11 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
   <div class="homeFeatureGrid">
     <button id="homeIncome" class="homeFeatureCard incomeFeature">
-      <span class="homeScene coupleScene incomeScene" aria-hidden="true">
-        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↑</span><span class="sceneCoin">€</span>
-      </span>
+      <span class="homeScene sharpScene incomeScene" aria-hidden="true"><img class="homeFeatureArt" src="assets/conti-income-sharp.webp" alt=""></span>
       <span class="homeFeatureText"><strong>Entrate</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
     <button id="homeExpense" class="homeFeatureCard expenseFeature">
-      <span class="homeScene coupleScene expenseScene" aria-hidden="true">
-        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↓</span><span class="sceneWallet">€</span>
-      </span>
+      <span class="homeScene sharpScene expenseScene" aria-hidden="true"><img class="homeFeatureArt" src="assets/conti-expense-sharp.webp" alt=""></span>
       <span class="homeFeatureText"><strong>Pagamenti</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
   </div>
@@ -2449,7 +2703,8 @@ function renderFlow(){
   $('flowTitle').textContent=isIn?'Entrate':'Pagamenti';
   $('flowAdd').textContent=isIn?'Aggiungi entrata':'Aggiungi pagamento';
   $('flowAdd').setAttribute('aria-label',isIn?'Aggiungi entrata':'Aggiungi pagamento');
-  $('flowBannerIcon').className='flowBannerVisual '+(isIn?'income':'expense');$('flowBannerIcon').innerHTML='';
+  $('flowBannerIcon').className='flowBannerVisual sharp '+(isIn?'income':'expense');
+  $('flowBannerIcon').innerHTML='<img src="'+(isIn?'assets/conti-income-sharp.webp':'assets/conti-expense-sharp.webp')+'" alt="">';
   $('flowPendingTab').textContent=isIn?'Da ricevere':'Da pagare';
   $('flowDoneTab').textContent=isIn?'Ricevute':'Pagati';
   document.querySelectorAll('.flowTab').forEach(b=>b.classList.toggle('active',b.dataset.flowFilter===flowFilter));
@@ -3468,62 +3723,47 @@ let todoUndoSnapshot=null,todoSetupRevisit=false;
 let todoFilters={active:{month:'all',year:'all'},done:{month:'all',year:'all'}};
 const TODO_MONTH_LABELS=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 const TODO_COLORS={
-  Salvia:{accent:'#6f9f83',soft:'#e5f0e8'},
-  Sabbia:{accent:'#b38a58',soft:'#f4eadc'},
-  Giallo:{accent:'#c79b2b',soft:'#fff3c9'},
-  Viola:{accent:'#7659bd',soft:'#eee8ff'},
-  Rosa:{accent:'#c76a8a',soft:'#f8e6ed'},
-  Azzurro:{accent:'#4d94bd',soft:'#e2f1f8'}
+  Salvia:{accent:'#6f9f83',soft:'#e5f0e8',bg:'#f2f8f4',surface:'#f8fcf9',border:'#bdd5c6',deep:'#376b55',utility:'#d8ebdf'},
+  Sabbia:{accent:'#b38a58',soft:'#f4eadc',bg:'#fbf6ee',surface:'#fffaf4',border:'#dfc8aa',deep:'#76552f',utility:'#f0dfc9'},
+  Giallo:{accent:'#c79b2b',soft:'#fff0b8',bg:'#fff9e6',surface:'#fffdf4',border:'#e8ce69',deep:'#80620f',utility:'#f8e6a5'},
+  Viola:{accent:'#7659bd',soft:'#e9e0ff',bg:'#f6f2ff',surface:'#fbf9ff',border:'#cbbbee',deep:'#50358f',utility:'#ded0ff'},
+  Rosa:{accent:'#c76a8a',soft:'#f8dfe9',bg:'#fff3f7',surface:'#fff9fb',border:'#e7b5c8',deep:'#8e3d5c',utility:'#f2cfdd'},
+  Azzurro:{accent:'#4d94bd',soft:'#dceef8',bg:'#f0f8fd',surface:'#f8fcff',border:'#add4e8',deep:'#2d6b8f',utility:'#cce7f5'}
 };
 function todoState(){return state.todo}
 function todoDisplayName(){return (state.profile&&state.profile.fullName||'').trim()||'Evaristo'}
 function applyTodoColor(){
   const c=TODO_COLORS[todoState().color]||TODO_COLORS.Salvia;
-  document.documentElement.style.setProperty('--todoAccent',c.accent);
-  document.documentElement.style.setProperty('--todoSoft',c.soft);
-}
-function todoPersonGender(){
-  const first=todoDisplayName().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/\s+/)[0]||'';
-  const maleAliases=new Set(['eva','evaristo']);
-  const femaleNames=new Set([
-    'ada','adriana','alessandra','alessia','alice','ambra','anna','annalisa','antonella','arianna','aurora',
-    'barbara','beatrice','benedetta','bianca','camilla','carla','carmen','carolina','caterina','cecilia','chiara',
-    'claudia','cristina','daniela','debora','elena','eleonora','elisa','elisabetta','emanuela','emma','erica',
-    'federica','francesca','gabriella','gaia','giada','giovanna','giulia','ilaria','irene','isabella','laura',
-    'letizia','linda','lisa','lucia','luisa','mara','margherita','maria','marina','martina','michela','monica',
-    'nadia','noemi','paola','patrizia','rachele','rebecca','rita','roberta','rosa','sabrina','sara','serena',
-    'silvia','simona','sofia','sonia','stefania','teresa','valentina','valeria','veronica','viola','vittoria'
-  ]);
-  if(maleAliases.has(first))return'male';
-  if(femaleNames.has(first))return'female';
-  if(first.endsWith('a')&&!['andrea','luca','nicola','mattia','enea','elia'].includes(first))return'female';
-  return'male';
+  const root=document.documentElement.style;
+  root.setProperty('--todoAccent',c.accent);
+  root.setProperty('--todoSoft',c.soft);
+  root.setProperty('--todoBg',c.bg);
+  root.setProperty('--todoSurface',c.surface);
+  root.setProperty('--todoBorder',c.border);
+  root.setProperty('--todoDeep',c.deep);
+  root.setProperty('--todoUtility',c.utility);
 }
 function todoBellSvg(){
   return '<svg class="todoLineBell" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9.5a5.5 5.5 0 0 1 11 0v3.6l1.8 2.9H4.7l1.8-2.9V9.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 18.2a2.2 2.2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 }
-function todoPersonAsset(scene,gender){
-  if(gender==='female'){
-    return scene==='active'||scene==='done'?'assets/home-payment-art.webp':'assets/home-income-art.webp';
-  }
-  if(scene==='active')return'assets/todo-think-male.webp';
-  if(scene==='done')return'assets/todo-done-male.webp';
-  return'assets/todo-thumb-male.webp';
-}
-function setTodoPersonArt(el,scene,gender){
+function setTodoFixedArt(el,asset){
   if(!el)return;
-  const src=todoPersonAsset(scene,gender);
-  el.dataset.gender=gender;el.dataset.scene=scene;
-  el.classList.toggle('female',gender==='female');
-  el.innerHTML='<img src="'+src+'" alt="">';
+  el.removeAttribute('data-gender');
+  el.removeAttribute('data-scene');
+  el.classList.remove('female');
+  el.innerHTML='<img src="'+asset+'" alt="">';
 }
 function setTodoIllustrations(){
-  const gender=todoPersonGender();
-  [['todoSetupArt','hub'],['todoHubArt','hub'],['todoActiveArt','active'],['todoDoneArt','done'],['todoSettingsArt','hub'],['todoHubPendingArt','active'],['todoHubDoneArt','done']].forEach(([id,scene])=>setTodoPersonArt($(id),scene,gender));
+  setTodoFixedArt($('todoSetupArt'),'assets/todo-notebook-sharp.webp');
+  setTodoFixedArt($('todoSettingsArt'),'assets/todo-notebook-sharp.webp');
+  setTodoFixedArt($('todoActiveArt'),'assets/todo-alarm-active-sharp.webp');
+  setTodoFixedArt($('todoDoneArt'),'assets/todo-check-sharp.webp');
+  setTodoFixedArt($('todoHubPendingArt'),'assets/todo-alarm-sharp.webp');
+  setTodoFixedArt($('todoHubDoneArt'),'assets/todo-check-sharp.webp');
 }
 function setTodoGreetings(){
   const txt='Ciao '+todoDisplayName();
-  ['todoSetupGreeting','todoHubGreeting','todoSettingsGreeting'].forEach(id=>{const el=$(id);if(el)el.textContent=txt});
+  ['todoSetupGreeting','todoSettingsGreeting'].forEach(id=>{const el=$(id);if(el)el.textContent=txt});
   setTodoIllustrations();
 }
 function openTodoFromLanding(){
@@ -3748,7 +3988,7 @@ function saveTodoInitialSetup(){
 function renderTodoHub(){
   applyTodoColor();setTodoGreetings();
   const pending=todoState().tasks.length,done=todoState().done.length;
-  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent=pending+' '+(pending===1?'attività da completare':'attività da completare');
+  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent=pending+' attività da completare';
   if($('todoHubDoneCount'))$('todoHubDoneCount').textContent=done+' '+(done===1?'attività completata':'attività completate');
 }
 function todoSortTasks(arr){
