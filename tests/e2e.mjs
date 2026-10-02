@@ -409,6 +409,8 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>t.includes('Stato')),false);
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>/\bFatto\b/.test(t)),false);
   assert.equal(await page.locator('#todoSetupRows .todoSetupRow').count(),4);
+  assert.equal(await page.locator('#todoSetup input[type="date"]').count(),0,'Le date devono restare campi di testo, senza calendario');
+  assert.equal(await page.locator('#todoSetupRows .todoNotifyToggle .todoLineBell').count(),4,'Le campanelle iniziali devono essere lineari');
 
   const first=page.locator('#todoSetupRows .todoSetupRow').first();
   const longText='Fare iscrizione Alifond e disdetta sindacato prima della scadenza';
@@ -429,7 +431,7 @@ async function testTodoSection(browser){
   const cardSizes=await page.evaluate(()=>{
     const big=['todoHubPending','todoHubDone'].map(id=>{const el=document.getElementById(id),r=el.getBoundingClientRect();return {id,height:Math.round(r.height)}});
     const compact=['todoHubNotifications','todoHubSettings','todoHubSetup'].map(id=>{
-      const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundColor;
+      const el=document.getElementById(id),r=el.getBoundingClientRect(),bg=getComputedStyle(el).backgroundImage;
       return {id,height:Math.round(r.height),bg};
     });
     return {big,compact};
@@ -440,7 +442,18 @@ async function testTodoSection(browser){
   assert.equal(new Set(cardSizes.compact.map(x=>x.bg)).size,3,'Notifiche, Impostazioni e Torna all’inserimento devono avere colori diversi');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'male');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
-  assert.equal(await page.locator('#todoHubArt svg').count(),1);
+  assert.equal(await page.locator('#todoHubArt img').count(),1);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/todo-thumb-male\.webp$/);
+  const hubLayout=await page.evaluate(()=>{
+    const pending=document.getElementById('todoHubPending').getBoundingClientRect();
+    const n=document.getElementById('todoHubNotifications').getBoundingClientRect();
+    const s=document.getElementById('todoHubSettings').getBoundingClientRect();
+    const r=document.getElementById('todoHubSetup').getBoundingClientRect();
+    return {pendingH:pending.height,compactH:n.height,ys:[n.y,s.y,r.y],xs:[n.x,s.x,r.x]};
+  });
+  assert.ok(hubLayout.compactH<hubLayout.pendingH*0.8,'Le tre scorciatoie devono essere nettamente più piccole delle card principali');
+  assert.ok(Math.max(...hubLayout.ys)-Math.min(...hubLayout.ys)<3,'Notifiche, Impostazioni e Torna all’inserimento devono stare sulla stessa riga');
+  assert.ok(hubLayout.xs[0]<hubLayout.xs[1]&&hubLayout.xs[1]<hubLayout.xs[2]);
   assert.equal((await page.locator('#todoHub').innerText()).includes('🗓️'),false);
 
   await page.click('#todoHubNotifications');
@@ -469,7 +482,8 @@ async function testTodoSection(browser){
   await page.waitForSelector('#todoActive:not(.hidden)');
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'male');
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
-  assert.equal(await page.locator('#todoActiveArt svg').count(),1);
+  assert.equal(await page.locator('#todoActiveArt img').count(),1);
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/todo-think-male\.webp$/);
   assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
@@ -478,6 +492,8 @@ async function testTodoSection(browser){
   assert.equal(await row.locator('.todoTaskEditCard').count(),1);
   assert.match(await row.locator('.todoTaskEditCard').innerText(),/Modifica/);
   assert.match(await row.locator('.todoTaskEditCard').innerText(),/domani/i);
+  assert.equal(await row.locator('.todoNotifyBtn .todoLineBell').count(),1,'La campanella deve essere un’icona lineare');
+  assert.equal((await row.locator('.todoNotifyBtn').innerText()).includes('🔔'),false);
   const wraps=await row.locator('.todoTaskEditCard strong').evaluate(el=>({whiteSpace:getComputedStyle(el).whiteSpace,height:el.getBoundingClientRect().height,scrollHeight:el.scrollHeight}));
   assert.equal(wraps.whiteSpace,'normal');
   assert.ok(wraps.height>=30,'La descrizione lunga deve poter andare su più righe');
@@ -496,10 +512,12 @@ async function testTodoSection(browser){
   await page.waitForSelector('#todoDone:not(.hidden)');
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),'male');
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
-  assert.equal(await page.locator('#todoDoneArt svg').count(),1);
+  assert.equal(await page.locator('#todoDoneArt img').count(),1);
+  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/todo-done-male\.webp$/);
   assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
+  assert.equal(await page.locator('#todoDoneList .todoNotifyBtn').count(),0,'Nelle Cose già fatte non serve la colonna notifiche');
 
   await page.click('#todoDoneToActive');
   await page.waitForSelector('#todoActive:not(.hidden)');
@@ -548,10 +566,45 @@ async function testTodoIllustrationUsesWomanForFemaleName(browser){
 
   assert.match(await page.locator('#todoHub').innerText(),/Ciao Maria/);
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),'female');
+  assert.equal(await page.locator('#todoHubArt img').count(),1);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/home-income-art\.webp$/);
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),'female');
 
+  await context.close();
+}
+
+async function testTodoBellAlignmentAndNeutralRows(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');
+  await page.click('#landingTodo');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
+  const rows=page.locator('#todoSetupRows .todoSetupRow');
+  const data=[
+    ['Dentista','5 ottobre 2026'],
+    ['Visita medicina legale 13:30','8 ottobre 2026'],
+    ['Fare pagamenti per visita patente','12 ottobre 2026'],
+    ['Controllare alifond','18 ottobre 2026']
+  ];
+  for(let i=0;i<data.length;i++){
+    const r=rows.nth(i);
+    await r.locator('.todoDescInput').fill(data[i][0]);
+    await r.locator('.todoDateInput').fill(data[i][1]);
+    await r.locator('.todoDateInput').dispatchEvent('input');
+    await r.locator('[data-tr="single"]').click();
+  }
+  await page.click('#todoSetupSave');
+  await page.waitForSelector('#todoHub:not(.hidden)');
+  await page.click('#todoHubPending');
+  await page.waitForSelector('#todoActive:not(.hidden)');
+  const bells=page.locator('#todoActiveList .todoNotifyBtn');
+  const xs=await bells.evaluateAll(els=>els.map(el=>Math.round(el.getBoundingClientRect().x)));
+  assert.ok(xs.length>=4);
+  assert.ok(Math.max(...xs)-Math.min(...xs)<=2,'Tutte le campanelle devono essere allineate sulla stessa colonna');
+  const alifond=page.locator('#todoActiveList .todoTaskRow').filter({hasText:'Controllare alifond'}).first();
+  const bg=await alifond.evaluate(el=>getComputedStyle(el).backgroundImage+' '+getComputedStyle(el).backgroundColor);
+  assert.equal(/rgb\(255,\s*0,\s*0\)|#f00|fff0ed|ffe7e7/i.test(bg),false,'Controllare alifond non deve essere evidenziato in rosso');
   await context.close();
 }
 
@@ -791,6 +844,7 @@ try{
   await testFlowBannerIsSingleCard(browser);
   await testTodoSection(browser);
   await testTodoIllustrationUsesWomanForFemaleName(browser);
+  await testTodoBellAlignmentAndNeutralRows(browser);
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
