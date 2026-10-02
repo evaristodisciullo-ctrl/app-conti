@@ -1089,7 +1089,8 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .todoHero{position:relative;min-height:116px;border-radius:24px;padding:22px 124px 18px 20px;margin-bottom:16px;overflow:hidden}
 .todoHero.setup{background:#e4f0e7}.todoHero.hub{background:#f6e9d6}.todoHero.active{background:#dff2ef}.todoHero.done{background:#fff3cf}.todoHero.settings{background:#e7ece8}
 .todoHero strong{display:block;font-size:23px;line-height:1.05;color:#163255}.todoHero small{display:block;margin-top:9px;color:#657894;font-size:13px;line-height:1.25}
-.todoHeroArt{position:absolute;right:15px;top:12px;width:92px;height:92px;border-radius:25px;display:grid;place-items:center;font-size:54px;background:rgba(255,255,255,.38);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45)}
+.todoHeroArt{position:absolute;right:15px;top:12px;width:98px;height:92px;border-radius:25px;display:grid;place-items:center;font-size:54px;background:rgba(255,255,255,.38);box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);overflow:hidden}
+.todoHeroArt svg{display:block;width:100%;height:100%}
 .todoPanel{background:#fff;border:1px solid #e8eef1;border-radius:22px;padding:14px;box-shadow:0 8px 20px rgba(36,64,93,.07)}
 .todoSetupHead,.todoSetupRow{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(82px,.8fr) 58px;gap:8px;align-items:start}
 .todoSetupHead{padding:1px 4px 8px;color:#58708a;font-size:11px;font-weight:900}
@@ -1115,6 +1116,9 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 .todoHubCard .icon{width:60px;height:60px;border-radius:20px;background:rgba(255,255,255,.55);display:grid;place-items:center;font-size:34px}
 .todoHubCard strong{font-size:20px;color:#183354}.todoHubCard small{display:block;margin-top:4px;color:#6d8091}.todoHubCard .chev{font-size:30px}
 .todoHubCard.pending{background:#eee9ff}.todoHubCard.completed{background:#e5f4e9}.todoHubCard.notify{background:#fff2c9}.todoHubCard.config{background:#e6efff}.todoHubCard.reopen{background:#f7e7ef}
+.todoHubCard.compact{min-height:76px;padding:11px 14px;grid-template-columns:44px 1fr auto;gap:11px;border-radius:18px}
+.todoHubCard.compact .icon{width:42px;height:42px;border-radius:14px;font-size:23px}
+.todoHubCard.compact strong{font-size:16px}.todoHubCard.compact small{font-size:11px;margin-top:2px}.todoHubCard.compact .chev{font-size:24px}
 .todoListHead,.todoTaskRow{display:grid;grid-template-columns:minmax(0,1fr) 52px 94px;gap:7px;align-items:center}
 .todoListHead{padding:0 5px 8px;color:#58708a;font-size:10px;font-weight:900}
 .todoTaskRow{padding:10px 5px;border-top:1px solid #edf1f3;min-height:62px}
@@ -1262,19 +1266,19 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
 <section id="todoHub" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoHubBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero hub"><strong id="todoHubGreeting">Ciao</strong><small>Scegli cosa vuoi vedere</small><span class="todoHeroArt" aria-hidden="true">🗓️</span></div>
+  <div class="todoHero hub"><strong id="todoHubGreeting">Ciao</strong><small>Scegli cosa vuoi vedere</small><span id="todoHubArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
   <div class="todoHubGrid">
     <button id="todoHubPending" class="todoHubCard pending"><span class="icon">📋</span><span><strong>Cose da fare</strong><small>Vedi le attività ancora aperte</small></span><span class="chev">›</span></button>
     <button id="todoHubDone" class="todoHubCard completed"><span class="icon">✅</span><span><strong>Cose fatte</strong><small>Vedi le attività completate</small></span><span class="chev">›</span></button>
-    <button id="todoHubNotifications" class="todoHubCard notify"><span class="icon">🔔</span><span><strong>Notifiche</strong><small>Scegli quali voci vuoi ricevere</small></span><span class="chev">›</span></button>
-    <button id="todoHubSettings" class="todoHubCard config"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori e gestione della sezione</small></span><span class="chev">›</span></button>
-    <button id="todoHubSetup" class="todoHubCard reopen"><span class="icon">✍️</span><span><strong>Torna all'inserimento</strong><small>Rivedi e modifica le voci iniziali</small></span><span class="chev">›</span></button>
+    <button id="todoHubNotifications" class="todoHubCard notify compact"><span class="icon">🔔</span><span><strong>Notifiche</strong><small>Scegli quali voci vuoi ricevere</small></span><span class="chev">›</span></button>
+    <button id="todoHubSettings" class="todoHubCard config compact"><span class="icon">⚙️</span><span><strong>Impostazioni</strong><small>Colori e gestione della sezione</small></span><span class="chev">›</span></button>
+    <button id="todoHubSetup" class="todoHubCard reopen compact"><span class="icon">✍️</span><span><strong>Torna all'inserimento</strong><small>Rivedi e modifica le voci iniziali</small></span><span class="chev">›</span></button>
   </div>
 </section>
 
 <section id="todoActive" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero active"><strong id="todoActiveGreeting">Ciao</strong><small>Qui trovi le cose ancora da fare</small><span class="todoHeroArt" aria-hidden="true">🗂️</span></div>
+  <div class="todoHero active"><strong id="todoActiveGreeting">Ciao</strong><small>Qui trovi le cose ancora da fare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
   <div class="todoFilterBar">
     <button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button>
     <select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
@@ -1294,7 +1298,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose fatte</h1></div>
-  <div class="todoHero done"><strong id="todoDoneGreeting">Ciao</strong><small>Qui trovi le cose già completate</small><span class="todoHeroArt" aria-hidden="true">🏅</span></div>
+  <div class="todoHero done"><strong id="todoDoneGreeting">Ciao</strong><small>Qui trovi le cose già completate</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
   <div class="todoFilterBar">
     <button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button>
     <select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
@@ -3464,9 +3468,54 @@ function applyTodoColor(){
   document.documentElement.style.setProperty('--todoAccent',c.accent);
   document.documentElement.style.setProperty('--todoSoft',c.soft);
 }
+function todoPersonGender(){
+  const first=todoDisplayName().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').split(/\s+/)[0]||'';
+  const maleAliases=new Set(['eva','evaristo']);
+  const femaleNames=new Set([
+    'ada','adriana','alessandra','alessia','alice','ambra','anna','annalisa','antonella','arianna','aurora',
+    'barbara','beatrice','benedetta','bianca','camilla','carla','carmen','carolina','caterina','cecilia','chiara',
+    'claudia','cristina','daniela','debora','elena','eleonora','elisa','elisabetta','emanuela','emma','erica',
+    'federica','francesca','gabriella','gaia','giada','giovanna','giulia','ilaria','irene','isabella','laura',
+    'letizia','linda','lisa','lucia','luisa','mara','margherita','maria','marina','martina','michela','monica',
+    'nadia','noemi','paola','patrizia','rachele','rebecca','rita','roberta','rosa','sabrina','sara','serena',
+    'silvia','simona','sofia','sonia','stefania','teresa','valentina','valeria','veronica','viola','vittoria'
+  ]);
+  if(maleAliases.has(first))return'male';
+  if(femaleNames.has(first))return'female';
+  if(first.endsWith('a')&&!['andrea','luca','nicola','mattia','enea','elia'].includes(first))return'female';
+  return'male';
+}
+function todoPersonIllustration(scene,gender){
+  const female=gender==='female';
+  const hair=female
+    ? '<path d="M30 36c0-16 10-25 24-25 15 0 25 10 25 27v26H28V41c0-2 0-4 2-5z" fill="#5b4338"/><circle cx="54" cy="37" r="17" fill="#f4c7a8"/>'
+    : '<circle cx="54" cy="37" r="17" fill="#f4c7a8"/><path d="M38 32c2-13 11-20 23-17 7 2 12 7 13 14-8-4-15-6-24-4-5 1-9 3-12 7z" fill="#5b4338"/>';
+  const face='<circle cx="49" cy="38" r="1.6" fill="#36485c"/><circle cx="59" cy="38" r="1.6" fill="#36485c"/><path d="M49 46c3 3 7 3 10 0" fill="none" stroke="#a75b4b" stroke-width="2" stroke-linecap="round"/>';
+  const shirt=female?'#d993b0':'#7aa7d8';
+  let body='',extras='';
+  if(scene==='hub'){
+    body='<path d="M31 83c2-17 12-28 23-28 12 0 23 11 25 28z" fill="'+shirt+'"/><path d="M70 63c7-4 11-11 13-18" fill="none" stroke="#f4c7a8" stroke-width="7" stroke-linecap="round"/>';
+    extras='<g transform="translate(75 24) scale(.72)"><path d="M8 29h8V13c0-3 2-6 5-9 2-2 5-1 5 2v10h9c4 0 6 3 5 7l-3 13c-1 3-3 5-6 5H16V29H8z" fill="#f4c7a8"/><rect x="2" y="27" width="8" height="16" rx="3" fill="#6f9f83"/></g><path d="M73 17l3-5m6 9l5-3" stroke="#d4a629" stroke-width="2" stroke-linecap="round"/>';
+  }else if(scene==='active'){
+    body='<path d="M31 83c2-17 12-28 23-28 12 0 23 11 25 28z" fill="'+shirt+'"/><path d="M66 63c-3 5-6 10-7 15" fill="none" stroke="#f4c7a8" stroke-width="7" stroke-linecap="round"/><path d="M60 76c-5-1-9-4-12-8" fill="none" stroke="#f4c7a8" stroke-width="6" stroke-linecap="round"/>';
+    extras='<circle cx="82" cy="20" r="7" fill="#fff" opacity=".9"/><circle cx="91" cy="11" r="4" fill="#fff" opacity=".9"/><circle cx="77" cy="31" r="3" fill="#fff" opacity=".85"/>';
+  }else{
+    body='<path d="M29 83c3-17 13-28 25-28s22 11 25 28z" fill="'+shirt+'"/><path d="M37 65c-5-6-8-11-9-16m43 16c6-5 9-10 11-16" fill="none" stroke="#f4c7a8" stroke-width="7" stroke-linecap="round"/>';
+    extras='<path d="M20 26l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4zm65 4l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4z" fill="#e2b63f"/>';
+  }
+  return '<svg viewBox="0 0 108 92" role="img" aria-hidden="true">'+hair+face+body+extras+'</svg>';
+}
+function setTodoIllustrations(){
+  const gender=todoPersonGender();
+  [['todoHubArt','hub'],['todoActiveArt','active'],['todoDoneArt','done']].forEach(([id,scene])=>{
+    const el=$(id);if(!el)return;
+    el.dataset.gender=gender;el.dataset.scene=scene;el.innerHTML=todoPersonIllustration(scene,gender);
+  });
+}
 function setTodoGreetings(){
   const txt='Ciao '+todoDisplayName();
   ['todoSetupGreeting','todoHubGreeting','todoActiveGreeting','todoDoneGreeting','todoSettingsGreeting'].forEach(id=>{const el=$(id);if(el)el.textContent=txt});
+  setTodoIllustrations();
 }
 function openTodoFromLanding(){
   const nick=$('landingNickname')?$('landingNickname').value.trim():'';
