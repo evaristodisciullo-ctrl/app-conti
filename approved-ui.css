@@ -1,0 +1,251 @@
+/* IN ORDINE — override grafico approvato 02/10/2026
+   Mantiene il DOM e la logica esistenti. Nessuna persona. */
+:root{
+  --eds-blue:#078cf2;--eds-blue2:#19b9f4;--eds-navy:#09265a;--eds-cyan:#dff6ff;
+  --eds-green:#10b86e;--eds-green2:#33d594;--eds-deep:#0a4a35;--eds-mint:#e9fbf2;
+  --eds-bg:#f7fcff;--eds-line:#d7eaf6;--eds-muted:#687f94;
+  --eds-shadow:0 8px 22px rgba(25,88,128,.08);
+  --eds-green-shadow:0 8px 22px rgba(14,110,70,.08)
+}
+html,body{background:#f4faff!important}
+body{color:var(--eds-navy)!important}
+.app{max-width:560px!important;background:linear-gradient(180deg,#fbfeff,#f1f9ff)!important;padding:18px 14px 88px!important;overflow-x:hidden!important}
+.screen{color:var(--eds-navy)}
+button{touch-action:manipulation}
+
+/* decorazione comune Conti */
+#home,.flowPage,#movements,#summary,#budget,#settings,#notifications,.setupSimple{
+  position:relative;background:
+    radial-gradient(circle at 96% 4%,rgba(23,174,244,.12),transparent 22%),
+    linear-gradient(155deg,transparent 0 17%,rgba(56,186,241,.055) 17.2% 21%,transparent 21.3% 53%,rgba(34,149,244,.04) 53.2% 57%,transparent 57.3%),
+    linear-gradient(180deg,#fbfeff,#f5fbff)!important
+}
+#home:after,.flowPage:after,#movements:after,#summary:after,#budget:after,#settings:after,#notifications:after,.setupSimple:after{
+  content:"";position:absolute;left:-14px;right:-14px;bottom:-78px;height:120px;pointer-events:none;z-index:0;
+  background:radial-gradient(90% 80px at 50% 120%,rgba(20,170,236,.15) 0 46%,transparent 47%),radial-gradient(85% 70px at 28% 120%,rgba(55,205,178,.08) 0 48%,transparent 49%)
+}
+#home>* ,.flowPage>* ,#movements>* ,#summary>* ,#budget>* ,#settings>* ,#notifications>* ,.setupSimple>*{position:relative;z-index:1}
+
+/* LANDING — master 01_IN_ORDINE */
+#landing.landingCanonical{margin:-18px -14px -78px!important;padding:0!important;width:calc(100% + 28px)!important;max-width:none!important;background:#f7fcff!important;overflow:auto!important}
+#landing .landingExactStage{max-width:560px!important;aspect-ratio:941/1672!important;background:
+  radial-gradient(circle at 76% 7%,rgba(31,166,243,.18) 0 6%,transparent 6.2%),
+  radial-gradient(circle at 91% 9%,rgba(31,166,243,.12) 0 2.4%,transparent 2.7%),
+  radial-gradient(circle at 73% 20%,rgba(35,206,151,.075) 0 15%,transparent 15.2%),
+  linear-gradient(152deg,transparent 0 9%,rgba(40,171,238,.085) 9.2% 13.7%,transparent 14% 29%,rgba(72,190,246,.055) 29.2% 33%,transparent 33.2%),
+  linear-gradient(180deg,#fff 0%,#fbfeff 60%,#eef9ff 100%)!important}
+#landing .landingExactStage:before{right:-6%!important;top:2%!important;width:58%!important;height:29%!important;border-color:rgba(48,170,239,.13)!important;box-shadow:0 0 0 22px rgba(43,181,244,.035),0 0 0 46px rgba(43,181,244,.02)!important}
+#landing .landingExactBrand{left:5.1%!important;top:6.2%!important;width:42%!important}
+#landing .landingExactTitle span{font-size:clamp(42px,11vw,62px)!important}
+#landing .landingExactTitle strong{font-size:clamp(48px,12.7vw,72px)!important;color:#108af1!important}
+#landing .landingExactSubtitle{font-size:clamp(14px,3.55vw,20px)!important;color:#354b60!important;line-height:1.12!important}
+#landing .landingExactTagline{margin-top:13px!important;font-size:clamp(14px,3.5vw,20px)!important;color:#168fe9!important;font-family:"Segoe Print","Comic Sans MS",cursive!important;font-weight:700!important}
+#landing .landingExactHero{right:3%!important;top:5.0%!important;width:51%!important;height:26%!important}
+#landing .landingExactHeroLogo{border-radius:20%!important;box-shadow:0 10px 22px rgba(5,50,86,.18)!important}
+#landing .landingExactHeroLogo.green{width:49%!important;right:1%!important;top:19%!important}
+#landing .landingExactHeroLogo.blue{width:52%!important;left:12%!important;top:31%!important}
+#landing .landingExactNameCard{left:4.2%!important;top:29.9%!important;width:91.6%!important;height:11.3%!important;padding:2% 2.6%!important;border-radius:22px!important;box-shadow:var(--eds-shadow)!important}
+#landing .landingExactNameCard label{font-size:clamp(17px,4.1vw,23px)!important}
+#landing .landingCanonicalName{height:55%!important;border-color:#0e94ed!important;background:#fff!important;font-size:clamp(17px,4.3vw,24px)!important}
+#landing .landingExactChoose{top:43.0%!important;font-size:clamp(19px,4.7vw,26px)!important}
+#landing .landingExactMainCard{top:47.0%!important;height:31.3%!important;border-radius:25px!important;background:rgba(255,255,255,.97)!important;box-shadow:0 7px 18px rgba(29,91,132,.07)!important}
+#landing .landingExactMainCard.conti{left:4.2%!important;border-color:#1ab6e8!important}
+#landing .landingExactMainCard.todo{right:4.2%!important;border-color:#35ca88!important}
+#landing .landingExactMainCard img{width:43%!important;margin-top:4%!important;border-radius:19%!important}
+#landing .landingExactMainCard>strong{margin-top:5%!important;font-size:clamp(18px,4.75vw,27px)!important}
+#landing .landingExactMainCard>small{font-size:clamp(11px,2.8vw,16px)!important;color:#5b7084!important;line-height:1.17!important}
+#landing .landingExactArrow{width:27%!important;background:linear-gradient(135deg,#15b8f4,#087df5)!important}
+#landing .todo .landingExactArrow{background:linear-gradient(135deg,#1bd281,#09ad61)!important}
+#landing .landingExactNotify{top:82.35%!important;height:12.7%!important;border-radius:22px!important;background:#fff!important;box-shadow:0 6px 15px rgba(31,91,130,.06)!important}
+#landing .landingExactNotify.blue{left:4.2%!important}.landingExactNotify.green{right:4.2%!important}
+#landing .landingExactNotifyText strong{font-size:clamp(13px,3.25vw,18px)!important}
+#landing .landingExactNotifyText small{font-size:clamp(9px,2.15vw,12px)!important}
+
+/* SALDO INIZIALE: mantiene asset master e rende l'input pulito */
+#setup.setupCanonical{margin:-18px -14px -78px!important;padding:0!important;background:#f7fcff!important}
+#setup .saldoCanonicalInput{font-weight:900!important;color:#12315b!important;background:#fff!important;border-color:#d8eaf7!important;box-shadow:none!important}
+
+/* setup entrate/pagamenti */
+.setupSimple{margin:-18px -14px -78px!important;padding:24px 18px 92px!important;min-height:100dvh!important}
+.setupSimple .onboardHeader{margin:0!important;padding:17px 18px 20px!important;border:1px solid #bfe8f8!important;border-radius:18px!important;background:
+  radial-gradient(circle at 92% 20%,rgba(13,154,239,.13),transparent 35%),
+  linear-gradient(135deg,#f9fdff,#e9f8ff)!important;color:var(--eds-navy)!important;box-shadow:var(--eds-shadow)!important}
+.setupSimple .backText{color:#168fe9!important;font-size:14px!important}
+.setupSimple .onboardTitle{margin-top:10px!important;font-size:24px!important;color:var(--eds-navy)!important}
+.setupSimple .onboardHeader .sub{color:#6c8298!important}
+.setupWalletArt,.setupPiggyArt{width:56px!important;height:56px!important;border:0!important;border-radius:14px!important;background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(17,85,137,.14)!important}
+.setupWalletArt>*,.setupPiggyArt>*{display:none!important}
+.setupSimple .onboardCard{margin-top:14px!important;padding:14px!important;border:0!important;border-radius:18px!important;background:transparent!important;box-shadow:none!important}
+.setupSimple .onboardCard h2{font-size:22px!important;color:var(--eds-navy)!important;margin-bottom:4px!important}
+.setupSimple .onboardHint{font-size:12px!important;color:#71869b!important}
+.entryGridHead,.entryRow{grid-template-columns:minmax(0,1.35fr) minmax(80px,.8fr) minmax(95px,.9fr) 30px!important;gap:7px!important}
+.entryGridHead{color:#355b7e!important;font-size:11px!important}
+.entryRow{padding:8px!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 12px rgba(31,87,126,.05)!important}
+.entryRow input,.entryRow select{height:40px!important;border-color:#d9eaf5!important;background:#fbfdff!important;color:#15365e!important}
+.setupAddRow{border:1px solid #22a5ec!important;border-radius:12px!important;background:#fff!important;color:#1089df!important;font-weight:850!important}
+.setupContinue{border-radius:13px!important;background:linear-gradient(135deg,#12aaf4,#087ff4)!important;box-shadow:0 7px 16px rgba(8,126,231,.18)!important}
+.setupSkip{color:#698198!important}
+
+/* intestazioni conti */
+.homeTopLine,.pageHeader{margin-bottom:13px!important}
+.homeTopLine h1,.pageHeader h1{font-size:clamp(25px,7vw,34px)!important;color:var(--eds-navy)!important;letter-spacing:-.6px!important}
+.homeLandingBack,.pageBack{color:#0b84dc!important}
+.pageBack span:last-child{font-size:12px!important}
+
+/* HOME CONTI — nessuna persona */
+#home{padding-top:0!important}
+#home .homeFeatureGrid{grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:8px!important}
+#home .homeFeatureCard{position:relative!important;min-height:180px!important;padding:13px 10px 13px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;border-radius:18px!important;background:linear-gradient(160deg,#fff,#ecf8ff)!important;border:1.5px solid #bfe8f8!important;box-shadow:0 6px 15px rgba(31,88,128,.055)!important;text-align:left!important;overflow:hidden!important}
+#home .expenseFeature{background:linear-gradient(160deg,#fff,#eef9ff)!important}
+#home .homeScene{display:block!important;width:58px!important;height:58px!important;min-height:58px!important;border-radius:14px!important;background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(13,78,127,.14)!important;margin:2px 0 10px!important}
+#home .homeScene>*{display:none!important}
+#home .homeFeatureCard:after{content:"";position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:10px;background:url('assets/eds-blue.webp') center/cover no-repeat;opacity:.92}
+#home .homeFeatureText strong{font-size:22px!important;color:var(--eds-navy)!important}
+#home .homeFeatureText small{margin-top:3px!important;color:#6c8299!important;font-size:12px!important}
+#home .homeFeatureArrow{margin-top:auto!important;align-self:flex-end!important;width:34px!important;height:34px!important;border-radius:50%!important;background:linear-gradient(135deg,#12b4f4,#087ef5)!important;color:white!important;display:grid!important;place-items:center!important;font-size:25px!important}
+#home .homeSummaryTitle{font-size:11px!important;color:#6b8298!important;letter-spacing:.9px!important;margin:17px 4px 7px!important;font-weight:900!important}
+#home .homeSummaryCard{border:1px solid #dbeaf5!important;border-radius:18px!important;background:#fff!important;box-shadow:var(--eds-shadow)!important;overflow:hidden!important}
+#home .homeSummaryRow{min-height:68px!important;padding:11px 12px!important;border-bottom:1px solid #edf3f7!important}
+#home .homeSummaryRow:last-child{border-bottom:0!important}
+#home .homeSummaryIcon{width:36px!important;height:36px!important;border-radius:11px!important;display:grid!important;place-items:center!important;font-weight:900!important}
+#home .iBlue{background:#e3f4ff!important;color:#0b90e8!important}.iOrange{background:#fff0dd!important;color:#ee8a19!important}.iGreen{background:#e6f8ef!important;color:#11a965!important}.iIndigo{background:#eee9ff!important;color:#7560cf!important}.iPurple{background:#f0eaff!important;color:#7654c8!important}
+#home .homeSummaryLabel{font-size:11px!important;color:#61778d!important;font-weight:850!important}
+#home .homeSummaryValue{font-size:18px!important;color:#15345b!important}
+#home .homeSummaryEdit{color:#0788df!important}
+#home .homeActionCard{min-height:70px!important;margin-top:10px!important;border:1px solid #dceaf4!important;border-radius:16px!important;background:#fff!important;box-shadow:0 5px 13px rgba(31,87,126,.05)!important}
+#home .homeActionIcon{width:38px!important;height:38px!important;border-radius:11px!important;display:grid!important;place-items:center!important}
+#home .homeResetActions{opacity:.72!important}
+
+/* Entrate / Pagamenti */
+.flowPage .flowBanner{min-height:110px!important;padding:15px!important;border:1px solid #bee8f7!important;border-radius:18px!important;background:
+  radial-gradient(circle at 92% 15%,rgba(12,153,237,.14),transparent 35%),
+  linear-gradient(135deg,#fbfeff,#e9f8ff)!important;box-shadow:var(--eds-shadow)!important}
+.flowPage .flowBannerVisual{width:54px!important;height:54px!important;border-radius:14px!important;background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(15,78,126,.14)!important}
+.flowPage .flowBannerVisual>*{display:none!important}
+.flowPage .flowBannerAdd{border-radius:999px!important;background:linear-gradient(135deg,#12adf4,#087ff4)!important;color:#fff!important;font-weight:850!important;padding:10px 14px!important}
+.flowPage .flowCurrentBalance{margin:12px 0 8px!important;border:0!important;background:transparent!important;color:#5e7690!important}
+.flowPage .flowCurrentBalance strong{color:#15345b!important}
+.flowMonthBar,.monthBar{border:1px solid #d5eaf6!important;border-radius:13px!important;background:#fff!important;box-shadow:0 3px 10px rgba(31,87,126,.04)!important}
+.flowMonthArrow,.monthBar button{color:#0b8ee7!important}
+.flowTabs,.movementQuickTabs{display:flex!important;gap:6px!important;padding:4px!important;border-radius:999px!important;background:#e9f5fb!important}
+.flowTab,.movementQuickTab{flex:1!important;border:0!important;border-radius:999px!important;background:transparent!important;color:#668096!important;font-size:11px!important;font-weight:850!important}
+.flowTab.active,.movementQuickTab.active{background:linear-gradient(135deg,#12aef4,#087ff4)!important;color:#fff!important;box-shadow:0 4px 10px rgba(8,126,229,.16)!important}
+.flowUnified{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:10px!important}
+.flowUnifiedRow{border:1px solid #e0edf6!important;border-radius:15px!important;background:#fff!important;box-shadow:0 4px 12px rgba(31,87,126,.04)!important}
+.flowUnifiedRow.overdue{background:#fff6f5!important;border-color:#ffd9d4!important}.flowUnifiedRow.dueToday{background:#fffaf0!important;border-color:#ffe0ad!important}
+.flowTotal{border-top:0!important;margin-top:10px!important;border-radius:14px!important;background:#eef8ff!important;padding:12px 14px!important;color:#15345b!important}
+
+/* MOVIMENTI */
+#movements .movementQuickTabs{margin-bottom:10px!important}
+#movements #allMovements.list{border:0!important;background:transparent!important;box-shadow:none!important;display:flex!important;flex-direction:column!important;gap:8px!important}
+#movements .movementRow{border:1px solid #e0edf5!important;border-radius:15px!important;background:#fff!important;padding:11px 12px!important;box-shadow:0 4px 12px rgba(31,87,126,.04)!important}
+#movements .mIcon{border-radius:11px!important}.mIcon.income{background:#e2f7ed!important;color:#12a866!important}.mIcon.expense{background:#fff0e0!important;color:#f08b20!important}
+#movements .mName{color:#15345b!important}.mDate,.mType{color:#71869b!important}.mAmount.income{color:#0fa565!important}.mAmount.expense{color:#d65445!important}
+
+/* RIEPILOGO / BUDGET */
+#summary .summaryBalanceCard,#summary .card,#budget .budgetRow,#budget .budgetCard{border:1px solid #dceaf5!important;border-radius:16px!important;background:#fff!important;box-shadow:0 4px 13px rgba(31,87,126,.045)!important}
+#summary .summaryBalanceCard{background:linear-gradient(135deg,#fbfeff,#eaf8ff)!important}
+#summary .value{color:#1187df!important}
+#summary .manageBudgetBtn{border-radius:16px!important;border:1px solid #d8eaf5!important;background:#fff!important;color:#15345b!important}
+#budget .addBtn{border-radius:999px!important;background:linear-gradient(135deg,#12aef4,#087ff4)!important}
+
+/* IMPOSTAZIONI CONTI */
+#settings .settingsSearch{border:1px solid #d8eaf5!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 12px rgba(31,87,126,.04)!important}
+#settings .settingsGroupTitle{font-size:11px!important;letter-spacing:.8px!important;color:#6b8297!important;margin:15px 3px 7px!important}
+#settings .settingsMenu{border:1px solid #dceaf5!important;border-radius:16px!important;background:#fff!important;overflow:hidden!important;box-shadow:0 4px 13px rgba(31,87,126,.045)!important}
+#settings .settingsRow{min-height:64px!important;border-bottom:1px solid #edf3f7!important;background:#fff!important}
+#settings .settingsRow:last-child{border-bottom:0!important}
+#settings .settingsRowIcon{width:36px!important;height:36px!important;border-radius:11px!important;display:grid!important;place-items:center!important}
+#settings .settingsRowText strong{color:#15345b!important}.settingsRowText small{color:#71869a!important}
+
+/* notifiche Conti */
+#notifications .notifyHero{padding:9px 8px 13px!important;border:1px solid #bee8f7!important;border-radius:18px!important;background:linear-gradient(135deg,#fbfeff,#eaf8ff)!important;box-shadow:var(--eds-shadow)!important}
+#notifications .notifyBell{width:56px!important;height:56px!important;background:#e5f6ff!important;color:#0d8fe8!important;font-size:27px!important}
+#notifications .notifyHero h2{color:#15345b!important;font-size:18px!important}
+#notifications .notifyScopeChoices{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:11px!important}
+#notifications .notifyScopeOption{border:1px solid #dceaf5!important;border-radius:15px!important;background:#fff!important;box-shadow:0 3px 10px rgba(31,87,126,.035)!important}
+#notifications .notifyScopeOption.active{border-color:#1598eb!important;background:#eff9ff!important}
+#notifications .notifyConfirm{margin-top:13px!important;border-radius:13px!important;background:linear-gradient(135deg,#12aef4,#087ff4)!important}
+
+/* TOD0: base verde/menta */
+.todoPage{margin:-18px -14px -78px!important;padding:24px 18px 92px!important;min-height:100dvh!important;color:var(--eds-deep)!important;background:
+  radial-gradient(circle at 92% 5%,rgba(35,210,145,.11),transparent 22%),
+  linear-gradient(155deg,transparent 0 15%,rgba(58,218,165,.06) 15.2% 19.5%,transparent 19.8% 52%,rgba(35,196,139,.04) 52.2% 57%,transparent 57.3%),
+  linear-gradient(180deg,#fbfffd,#f0fcf6)!important}
+.todoPage:after{content:"";position:absolute;left:-18px;right:-18px;bottom:-78px;height:120px;pointer-events:none;background:radial-gradient(90% 80px at 50% 120%,rgba(32,203,142,.13) 0 46%,transparent 47%),radial-gradient(80% 70px at 20% 120%,rgba(48,220,180,.08) 0 48%,transparent 49%)}
+.todoPage>*{position:relative;z-index:1}
+.todoTop{display:flex!important;align-items:center!important;gap:7px!important;margin-bottom:12px!important}
+.todoTop h1{margin:0!important;font-size:clamp(25px,7vw,34px)!important;color:#0b4936!important;letter-spacing:-.7px!important}
+.todoBack{border:0!important;background:transparent!important;color:#15966a!important;font-size:27px!important;padding:0 2px!important}
+.todoHero{position:relative!important;min-height:104px!important;border:1px solid #bfead5!important;border-radius:18px!important;padding:14px 82px 14px 15px!important;background:
+  radial-gradient(circle at 91% 13%,rgba(20,184,110,.12),transparent 38%),
+  linear-gradient(135deg,#fbfffd,#e9faf2)!important;box-shadow:var(--eds-green-shadow)!important;overflow:hidden!important}
+.todoHero strong{display:block!important;font-size:18px!important;color:#0b4936!important}.todoHero small{display:block!important;margin-top:5px!important;color:#678a7b!important;font-size:11px!important;line-height:1.25!important}
+.todoHeroArt{position:absolute!important;right:14px!important;top:50%!important;transform:translateY(-50%)!important;width:54px!important;height:54px!important;border-radius:14px!important;background:url('assets/eds-green.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(10,103,66,.13)!important}
+.todoHeroArt>*{display:none!important}
+.todoPanel{margin-top:12px!important;border:1px solid #d6f0e3!important;border-radius:16px!important;background:rgba(255,255,255,.92)!important;box-shadow:0 4px 13px rgba(18,109,74,.04)!important;padding:10px!important}
+.todoSetupHead{color:#527a68!important;font-size:10px!important;font-weight:850!important}
+.todoSetupRow{border:0!important;border-radius:13px!important;background:#f9fefb!important;margin-bottom:8px!important;padding:7px!important}
+.todoDescInput,.todoDateInput{border:1px solid #d8eee3!important;border-radius:10px!important;background:#fff!important;color:#164c39!important}
+.todoActions{display:flex!important;gap:9px!important;margin-top:12px!important}
+.todoBigBtn{min-height:50px!important;border-radius:13px!important;font-weight:850!important}
+.todoBigBtn.add{border:1px solid #1fb878!important;background:#fff!important;color:#109961!important}.todoBigBtn.save{border:0!important;background:linear-gradient(135deg,#1bcf84,#0ba862)!important;color:#fff!important;box-shadow:0 6px 14px rgba(10,158,91,.16)!important}
+
+/* Home Cose da fare */
+.todoHubGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:12px!important}
+.todoHubCard{position:relative!important;border:1px solid #ccebdd!important;border-radius:18px!important;background:linear-gradient(150deg,#fff,#edf9f3)!important;color:#0b4936!important;box-shadow:0 5px 13px rgba(16,105,71,.045)!important;text-align:left!important}
+.todoHubCard.pending,.todoHubCard.completed{min-height:170px!important;padding:14px 10px!important;display:flex!important;flex-direction:column!important}
+.todoHubCard.pending>span:first-child,.todoHubCard.completed>span:first-child{margin-top:72px!important}
+.todoHubCard.pending strong,.todoHubCard.completed strong{font-size:18px!important;color:#0b4936!important}
+.todoHubCard.pending small,.todoHubCard.completed small{display:block!important;margin-top:4px!important;color:#6a8b7d!important;font-size:10px!important}
+.todoHubPerson{position:absolute!important;left:14px!important;top:13px!important;width:55px!important;height:55px!important;border-radius:14px!important;background:url('assets/eds-green.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(11,102,66,.12)!important}
+.todoHubPerson>*{display:none!important}
+.todoHubCard.pending .chev,.todoHubCard.completed .chev{position:absolute!important;right:12px!important;bottom:12px!important;width:31px!important;height:31px!important;border-radius:50%!important;background:linear-gradient(135deg,#1ace82,#0ba65f)!important;color:#fff!important;display:grid!important;place-items:center!important;font-size:22px!important}
+.todoHubCard.compact{grid-column:1/-1!important;min-height:64px!important;padding:10px 13px!important;display:grid!important;grid-template-columns:42px 1fr 22px!important;align-items:center!important;gap:9px!important}
+.todoHubCard.compact .icon{width:38px!important;height:38px!important;border-radius:12px!important;background:#e4f8ed!important;color:#0ba562!important;display:grid!important;place-items:center!important}
+.todoHubCard.notify .icon{background:#e6f7ec!important;color:#10b06b!important}.todoHubCard.config .icon{background:#dcf5f0!important;color:#0f8e7e!important}.todoHubCard.reopen .icon{background:#e6f8ef!important;color:#10a667!important}
+.todoHubCard.compact strong{font-size:16px!important;color:#0b4936!important}.todoHubCard.compact .chev{color:#15a56c!important;font-size:25px!important}
+
+/* Liste Todo */
+.todoFilterBar{display:grid!important;grid-template-columns:82px 1fr 1fr!important;gap:7px!important;margin:11px 0 8px!important}
+.todoFilterAll,.todoFilterSelect{min-height:38px!important;border:1px solid #ccebdd!important;border-radius:999px!important;background:#fff!important;color:#547666!important;font-size:11px!important;font-weight:850!important}
+.todoFilterAll.active{background:linear-gradient(135deg,#1bcf84,#0ba862)!important;color:#fff!important;border-color:transparent!important}
+.todoFilterSummary{color:#6e8d7f!important;font-size:10px!important;margin:0 2px 8px!important}
+.todoListPanel{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.todoTaskRow,.todoDoneRow{border:1px solid #d9efe4!important;border-radius:15px!important;background:#fff!important;box-shadow:0 4px 12px rgba(18,109,74,.035)!important;margin-bottom:8px!important;padding:10px!important}
+.todoTaskEditCard strong,.todoTaskMain{color:#124b38!important}.todoTaskEditCard small,.todoTaskMain small,.todoTaskDate{color:#708d80!important}
+.todoNotifyBtn,.todoNotifyToggle{background:#e6f8ef!important;color:#159765!important}.todoNotifyBtn.on,.todoNotifyToggle.on{background:#cdf5df!important;color:#0ba862!important}
+.todoCompleteBtn{background:linear-gradient(135deg,#1bcf84,#0ba862)!important;color:#fff!important;border-radius:999px!important}
+.todoDoneStatus{background:#dff7e9!important;color:#0d8e57!important;border-radius:999px!important}
+
+/* Todo settings */
+.todoSettingsStack{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:12px!important}
+.todoSettingCard{min-height:66px!important;border:1px solid #d4eddf!important;border-radius:16px!important;background:#fff!important;box-shadow:0 4px 12px rgba(18,109,74,.035)!important;display:grid!important;grid-template-columns:42px 1fr 22px!important;align-items:center!important;gap:9px!important;padding:10px 12px!important;text-align:left!important}
+.todoSettingCard .i{width:38px!important;height:38px!important;border-radius:12px!important;background:#e4f8ed!important;color:#0ba562!important;display:grid!important;place-items:center!important;font-size:20px!important}
+.todoSettingCard strong{color:#0d4937!important;font-size:15px!important}.todoSettingCard small{display:block!important;margin-top:3px!important;color:#6d8c7e!important;font-size:10px!important}.todoSettingCard .a{color:#14a56b!important;font-size:24px!important}
+
+/* Modali coerenti */
+.modal{background:rgba(5,31,49,.32)!important;backdrop-filter:blur(3px)!important}
+.modalCard{border-radius:22px!important;background:#fbfeff!important;box-shadow:0 18px 48px rgba(7,41,65,.2)!important}
+.modalTitle{color:#11345b!important}.todoApprovedModal .modalCard{background:#f7fff9!important}.todoApprovedModal .modalTitle{color:#0b4936!important}
+.settingToggle{accent-color:#10b66d!important}
+
+/* responsive */
+@media(max-width:385px){
+  .app{padding-left:12px!important;padding-right:12px!important}
+  .setupSimple,.todoPage{padding-left:14px!important;padding-right:14px!important}
+  #home .homeFeatureCard{min-height:165px!important}
+  .entryGridHead,.entryRow{grid-template-columns:minmax(0,1.2fr) 76px 88px 28px!important;gap:5px!important}
+  .todoHubCard.pending,.todoHubCard.completed{min-height:158px!important}
+  .todoTaskRow{grid-template-columns:minmax(0,1fr) 42px 100px!important}
+}
+@media(min-width:520px){
+  #landing .landingExactStage{border-radius:0!important}
+  .setupSimple,.todoPage{padding-left:28px!important;padding-right:28px!important}
+}
+
+/* tema Todo scuro/sistema, gestito da approved-ui.js */
+body.todo-theme-dark .todoPage{background:linear-gradient(180deg,#0b1813,#10241b)!important;color:#eaf8f1!important}
+body.todo-theme-dark .todoTop h1,body.todo-theme-dark .todoHero strong,body.todo-theme-dark .todoHubCard strong,body.todo-theme-dark .todoSettingCard strong,body.todo-theme-dark .todoTaskEditCard strong,body.todo-theme-dark .todoTaskMain{color:#eaf8f1!important}
+body.todo-theme-dark .todoHero,body.todo-theme-dark .todoHubCard,body.todo-theme-dark .todoPanel,body.todo-theme-dark .todoSettingCard,body.todo-theme-dark .todoTaskRow,body.todo-theme-dark .todoDoneRow{background:#142a20!important;border-color:#265640!important}
+body.todo-theme-dark .todoHero small,body.todo-theme-dark .todoHubCard small,body.todo-theme-dark .todoSettingCard small,body.todo-theme-dark .todoTaskEditCard small,body.todo-theme-dark .todoTaskMain small{color:#9cc8b3!important}
