@@ -2298,11 +2298,7 @@ body.reduceMotion *,body.reduceMotion *:before,body.reduceMotion *:after{animati
 <div class="app">
 <section id="landing" class="screen landing landingCanonical hidden">
   <div class="landingMasterStage">
-    <img id="landingCanonicalImage" class="landingMasterVisual" src="assets/landing-master.svg" alt="" aria-hidden="true">
-    <img class="landingMasterLogo heroGreen" src="assets/eds-green.webp" alt="" aria-hidden="true">
-    <img class="landingMasterLogo heroBlue" src="assets/eds-blue.webp" alt="" aria-hidden="true">
-    <img class="landingMasterLogo cardBlue" src="assets/eds-blue.webp" alt="" aria-hidden="true">
-    <img class="landingMasterLogo cardGreen" src="assets/eds-green.webp" alt="" aria-hidden="true">
+    <img id="landingCanonicalImage" class="landingMasterVisual" alt="" aria-hidden="true">
     <input id="landingNickname" class="landingMasterInput" type="text" autocomplete="name" placeholder="Es. Marco" aria-label="Come vuoi essere chiamato?">
     <button id="landingConti" class="landingMasterHotspot landingMasterConti" aria-label="Conti economici"></button>
     <button id="landingTodo" class="landingMasterHotspot landingMasterTodo" aria-label="Cose da fare"></button>
@@ -3140,10 +3136,17 @@ function loadChunkedDataUrl(paths,mime){
 }
 function ensureLandingGraphic(){
   const img=$('landingCanonicalImage');if(!img)return Promise.resolve();
-  img.dataset.loaded='1';
-  img.style.visibility='visible';
-  img.style.display='block';
-  return Promise.resolve();
+  if(landingImagePromise)return landingImagePromise;
+  landingImagePromise=loadChunkedDataUrl(
+    ['assets/landing-bg-1.txt','assets/landing-bg-2.txt','assets/landing-bg-3.txt','assets/landing-bg-4.txt','assets/landing-bg-5.txt','assets/landing-bg-6.txt'],
+    'image/webp'
+  ).then(src=>{
+    img.src=src;
+    img.dataset.loaded='1';
+    img.style.visibility='visible';
+    img.style.display='block';
+  });
+  return landingImagePromise;
 }
 function ensureSetupArt(type){
   const el=type==='income'?document.querySelector('.setupWalletArt'):document.querySelector('.setupPiggyArt');
