@@ -6,10 +6,7 @@
     radial-gradient(circle at 92% 5%,color-mix(in srgb,var(--todoAccent,#6f9f83) 14%,transparent),transparent 22%),
     linear-gradient(155deg,transparent 0 15%,color-mix(in srgb,var(--todoSoft,#e5f0e8) 44%,transparent) 15.2% 19.5%,transparent 19.8% 52%,color-mix(in srgb,var(--todoAccent,#6f9f83) 8%,transparent) 52.2% 57%,transparent 57.3%)!important;
 }
-.todoHero.setup,.todoHero.hub,.todoHero.settings{
-  background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),var(--todoSoft,#e5f0e8))!important;
-  border-color:var(--todoBorder,#bdd5c6)!important;
-}
+.todoHero.setup,.todoHero.hub,.todoHero.settings{background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),var(--todoSoft,#e5f0e8))!important;border-color:var(--todoBorder,#bdd5c6)!important}
 .todoPanel,.todoTaskRow,.todoDoneRow{border-color:color-mix(in srgb,var(--todoBorder,#bdd5c6) 72%,white)!important}
 .todoSettingCard{background-color:var(--todoSurface,#f8fcf9)!important;border-color:var(--todoBorder,#bdd5c6)!important}
 .todoSettingCard .i{background:var(--todoSoft,#e5f0e8)!important;color:var(--todoDeep,#376b55)!important}
@@ -18,7 +15,6 @@
 .todoFilterAll,.todoFilterSelect{border-color:var(--todoBorder,#bdd5c6)!important}
 .todoFilterAll.active{background:var(--todoAccent,#6f9f83)!important;color:#fff!important;border-color:transparent!important}
 
-/* Colori semantici fissi: non cambiano con il tema scelto. */
 .todoHero.active,.todoHubCard.pending{background:linear-gradient(135deg,#fff9e5,#fff0bc)!important;border-color:#f3dd94!important}
 .todoHero.done,.todoHubCard.completed{background:linear-gradient(135deg,#eefff3,#d8f5e2)!important;border-color:#bfe8cb!important}
 .todoHubCard.notify{background:linear-gradient(135deg,#fff2f2,#ffe5e8)!important;border-color:#f3ccd1!important}
@@ -26,18 +22,13 @@
 .todoCompleteBtn{background:linear-gradient(135deg,#ffe690,#ffd966)!important;color:#4f4528!important}
 .todoDoneStatus{background:linear-gradient(135deg,#e5f9ea,#c9f3d5)!important;color:#1f7a49!important}
 
-/* Le due card principali della Home Todo usano soltanto il logo E.D.S verde. */
 #todoHubPendingArt,#todoHubDoneArt{width:55px!important;height:55px!important;border-radius:14px!important;background:none!important;box-shadow:0 5px 12px rgba(11,102,66,.12)!important;overflow:hidden!important}
 #todoHubPendingArt img,#todoHubDoneArt img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:14px!important}
 .todoHeroArt{background:none!important}
 .todoHeroArt img{display:block!important;width:54px!important;height:54px!important;object-fit:cover!important;border-radius:14px!important}
 
-/* I pannelli Tema / Colore / Notifiche / Backup / Privacy diventano vere pagine, come nei master. */
 #modal.todoSubpageModal{align-items:stretch!important;padding:0!important;background:#f5fcf8!important;backdrop-filter:none!important;overflow:auto!important}
-#modal.todoSubpageModal .modalCard{width:min(560px,100%)!important;max-width:none!important;min-height:100dvh!important;max-height:none!important;margin:0 auto!important;border-radius:0!important;padding:24px 18px 92px!important;background:
-  radial-gradient(circle at 92% 4%,rgba(31,207,143,.11),transparent 20%),
-  linear-gradient(155deg,transparent 0 12%,rgba(46,211,157,.06) 12.2% 17%,transparent 17.3% 55%,rgba(39,189,135,.045) 55.2% 60%,transparent 60.3%),
-  linear-gradient(180deg,#fcfffd,#f1fcf6)!important;box-shadow:none!important;overflow:visible!important}
+#modal.todoSubpageModal .modalCard{width:min(560px,100%)!important;max-width:none!important;min-height:100dvh!important;max-height:none!important;margin:0 auto!important;border-radius:0!important;padding:24px 18px 92px!important;background:radial-gradient(circle at 92% 4%,rgba(31,207,143,.11),transparent 20%),linear-gradient(155deg,transparent 0 12%,rgba(46,211,157,.06) 12.2% 17%,transparent 17.3% 55%,rgba(39,189,135,.045) 55.2% 60%,transparent 60.3%),linear-gradient(180deg,#fcfffd,#f1fcf6)!important;box-shadow:none!important;overflow:visible!important}
 #modal.todoSubpageModal .modalHead{position:sticky!important;top:0!important;z-index:4!important;margin:-24px -18px 10px!important;padding:21px 18px 10px!important;background:rgba(250,255,252,.94)!important;backdrop-filter:blur(9px)!important;border-bottom:0!important}
 #modal.todoSubpageModal .modalTitle{font-size:28px!important;color:#0b4936!important;font-weight:950!important;letter-spacing:-.6px!important}
 #modal.todoSubpageModal #modalClose{width:34px!important;height:34px!important;border-radius:50%!important;background:#e6f8ef!important;color:#0b9460!important;font-size:0!important}
@@ -51,19 +42,18 @@
 #modal.todoSubpageModal .btn{border-radius:13px!important;background:linear-gradient(135deg,#1bcf84,#0ba862)!important}
 #modal.todoSubpageModal .btn.secondary{background:#fff!important;color:#0d9460!important;border:1px solid #bfe8d3!important}
 
-/* Setup Conti più vicino ai master: titolo sezione e tre righe reali. */
+/* Setup Conti: titolo pagina + vero blocco "Scrivi le tue ..." + tre righe reali. */
 .setupSimple .onboardHeader{min-height:112px!important;padding:18px 88px 17px 18px!important;position:relative!important}
 .setupSimple .onboardHeader .onboardTop{position:absolute!important;left:18px!important;right:16px!important;top:12px!important}
 .setupSimple .onboardHeader .onboardTitle{margin-top:26px!important;font-size:28px!important}
 .setupSimple .onboardHeader .sub{font-size:11px!important;line-height:1.2!important}
 .setupWalletArt,.setupPiggyArt{position:absolute!important;right:14px!important;top:31px!important;width:58px!important;height:58px!important}
-.setupSimple .onboardCard{padding:13px 4px!important}
-.setupSimple .onboardCard h2{display:none!important}
-.setupSimple .onboardHint{display:none!important}
+.setupSimple .onboardCard{padding:10px 4px 13px!important}
+.setupSimple .onboardCard h2{display:block!important;margin:0 0 3px!important;padding:10px 12px 0!important;font-size:19px!important;color:#0b3260!important}
+.setupSimple .onboardHint{display:block!important;margin:0 0 8px!important;padding:0 12px 9px!important;font-size:10.5px!important;color:#6f8498!important;border-bottom:1px solid #e3eff7!important}
 .setupSimple .entryGridHead{margin-top:3px!important;padding:7px 8px!important;border-radius:11px!important;background:#eef7fd!important;color:#315c7e!important}
 .setupSimple .entryRow{margin-top:7px!important}
 
-/* Home Conti: icona grande funzionale a sinistra, E.D.S piccolo a destra. */
 #home .homeScene{position:relative!important;background:#e8f7ff!important;box-shadow:none!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#0b91e9!important;font-size:34px!important;font-weight:950!important}
 #home .homeScene:before{display:block!important;line-height:1!important}
 #home .incomeFeature .homeScene:before{content:'↑'}
@@ -73,6 +63,5 @@
 #home .homeFeatureText small{max-width:115px!important;line-height:1.18!important}
 
 body.todo-theme-dark .todoPage{background-color:#0b1813!important;background-image:linear-gradient(180deg,#0b1813,#10241b)!important}
-body.todo-theme-dark .todoHero.setup,body.todo-theme-dark .todoHero.hub,body.todo-theme-dark .todoHero.settings,
-body.todo-theme-dark .todoPanel,body.todo-theme-dark .todoSettingCard,body.todo-theme-dark .todoTaskRow,body.todo-theme-dark .todoDoneRow{background:#142a20!important;border-color:#265640!important}
+body.todo-theme-dark .todoHero.setup,body.todo-theme-dark .todoHero.hub,body.todo-theme-dark .todoHero.settings,body.todo-theme-dark .todoPanel,body.todo-theme-dark .todoSettingCard,body.todo-theme-dark .todoTaskRow,body.todo-theme-dark .todoDoneRow{background:#142a20!important;border-color:#265640!important}
 body.todo-theme-dark #modal.todoSubpageModal,body.todo-theme-dark #modal.todoSubpageModal .modalCard{background:#0d1c15!important}
