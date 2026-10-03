@@ -28,43 +28,58 @@ jobs:
           const { chromium } = require('playwright');
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
-            const shot=async(name)=>page.screenshot({path:'visual/'+name+'.png',fullPage:true});
+            const page=await browser.newPage({viewport:{width:390,height:694},deviceScaleFactor:1});
+            const shot=async(name)=>page.screenshot({path:'visual/'+name+'.png',fullPage:false});
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
             await page.evaluate(()=>localStorage.clear());await page.reload();
             await page.waitForSelector('#landing:not(.hidden)');await page.waitForSelector('#landingCanonicalImage[data-loaded="1"]',{state:'attached',timeout:15000});await shot('01-in-ordine');
             await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');await shot('02-saldo');
             await page.fill('#startBalance','1000');await page.click('#startBtn');await page.waitForSelector('#setupIncome:not(.hidden)');await shot('03-entrate-primo-inserimento');
             await page.click('#skipIncomeSetup');await page.waitForSelector('#setupExpense:not(.hidden)');await shot('04-pagamenti-primo-inserimento');
-            await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');await shot('05-home');
+            await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
 
             const today=new Date().toISOString().slice(0,10),ym=today.slice(0,7),day=Number(today.slice(8,10));
-            await page.evaluate(({today,ym,day})=>{
+            const dateFor=d=>ym+'-'+String(d).padStart(2,'0');
+            await page.evaluate(({today,ym})=>{
+              const dateFor=d=>ym+'-'+String(d).padStart(2,'0');
               const key='inOrdineContiV1',s=JSON.parse(localStorage.getItem(key));
+              const entry=(id,type,name,amount,day,category)=>({id,type,name,amount,day,dateSpec:{kind:'day',iso:dateFor(day)},recurrence:{kind:'monthly',startMonth:ym},category,notify:false,note:'',notifyRule:null});
               s.entries=[
-                {id:'i1',type:'income',name:'Stipendio',amount:1400,day,dateSpec:{kind:'day',iso:today},recurrence:{kind:'monthly',startMonth:ym},category:'Lavoro',notify:false,note:'',notifyRule:null},
-                {id:'e1',type:'expense',name:'Mutuo',amount:387.03,day,dateSpec:{kind:'day',iso:today},recurrence:{kind:'monthly',startMonth:ym},category:'Casa',notify:false,note:'',notifyRule:null}
+                entry('i1','income','Stipendio',1500,1,'Lavoro'),entry('i2','income','Rimborso spese',320,15,'Rimborsi'),
+                entry('i3','income','Affitto immobile',750,20,'Affitti'),entry('i4','income','Interessi bancari',45,31,'Altro'),
+                entry('e1','expense','Fornitore Rossi S.r.l.',450,5,'Casa'),entry('e2','expense','Utenza Energia',128.5,10,'Bollette'),
+                entry('e3','expense','Affitto Sede',750,10,'Casa'),entry('e4','expense','Servizi Internet',89,10,'Bollette')
               ];
               s.history=[
-                {id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1400,date:today,month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''},
-                {id:'h2',entryId:'e1',type:'expense',name:'Mutuo',amount:387.03,date:today,month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Casa',note:''}
+                {id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1500,date:dateFor(1),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''},
+                {id:'h2',entryId:'sample-rimborso',type:'income',name:'Rimborso spese',amount:320,date:dateFor(2),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Rimborsi',note:''},
+                {id:'h3',entryId:'sample-fornitore',type:'expense',name:'Fornitore Rossi S.r.l.',amount:450,date:dateFor(2),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Casa',note:''},
+                {id:'h4',entryId:'sample-energia',type:'expense',name:'Utenza Energia',amount:128.5,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Bollette',note:''},
+                {id:'h5',entryId:'sample-spesa',type:'expense',name:'Spesa supermercato',amount:52.38,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Spesa',note:''},
+                {id:'h6',entryId:'sample-interessi',type:'income',name:'Interessi bancari',amount:45,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Altro',note:''}
               ];
+              s.customCategories={income:['Interessi'],expense:['Spesa','Trasporti','Svago']};
+              s.budgets={Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80};
+              s.budgetPlans=[{effectiveMonth:ym,total:1600,limits:{Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80}}];
               s.balance=2012.97;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
-            },{today,ym,day});
-            await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('06-home-con-dati');
-            await page.click('#homeIncome');await shot('07-elenco-entrate');
-            await page.click('#flowAdd');await shot('08-aggiungi-entrata');await page.click('#modalClose');
-            await page.click('#flowBack');await page.click('#homeExpense');await page.waitForSelector('.flowExpense .flowBanner[data-asset-loaded="1"]',{timeout:15000});await shot('09-elenco-pagamenti');
-            await page.click('#flowAdd');await shot('10-aggiungi-pagamento');await page.click('#modalClose');
-            await page.click('#flowBack');await page.click('#homeAllMovements');await shot('11-movimenti');
+            },{today,ym});
+            await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('05-home');await shot('06-home-con-dati');
+            await page.click('#homeIncome');await shot('07-elenco-entrate');await shot('06-elenco-entrate-master');
+            await page.click('#flowAdd');await shot('08-aggiungi-entrata');await shot('08-nuova-entrata-master');await page.click('#modalClose');
+            await page.click('#flowBack');await page.click('#homeExpense');await page.waitForSelector('.flowExpense .flowBanner[data-asset-loaded="1"]',{timeout:15000});await shot('09-elenco-pagamenti');await shot('07-elenco-pagamenti-master');
+            await page.click('#flowAdd');await shot('10-aggiungi-pagamento');await shot('09-nuovo-pagamento-master');await page.click('#modalClose');
+            await page.click('#flowBack');await page.click('#homeAllMovements');await shot('11-movimenti');await shot('10-movimenti-master');
             await page.locator('.movementRow').first().click();await shot('12-dettaglio-movimento');await page.click('#modalClose');
             await page.click('#movementsFilters');await shot('13-filtra-movimenti');await page.click('#modalClose');
-            await page.click('#movementsBack');await page.click('#homeSettingsCard');await shot('14-impostazioni');
+            await page.click('#movementsBack');await page.click('#homeProjection');await page.waitForSelector('#summary:not(.hidden)');await shot('11-riepilogo-master');
+            await page.click('#manageBudget');await page.waitForSelector('#budget:not(.hidden)');await shot('12-budget-master');
+            await page.click('#budgetBack');await page.click('#summaryBack');await page.waitForSelector('#home:not(.hidden)');
+            await page.click('#homeSettingsCard');await shot('14-impostazioni');await shot('13-impostazioni-conti-master');
             await page.click('#settingsIncome');await shot('15-impostazioni-entrate');await page.click('#modalClose');
             await page.click('#settingsExpense');await shot('16-impostazioni-pagamenti');await page.click('#modalClose');
             await page.click('#settingsEditBalance');await shot('17-saldo-attuale');await page.click('#modalClose');
             await page.click('#settingsCategories');await shot('18-categorie');await page.click('#modalClose');
-            await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');await shot('19-notifiche');await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
+            await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');await shot('19-notifiche');await shot('14-notifiche-conti-master');await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');
             await page.click('#settingsColor');await shot('20-aspetto-colore');await page.click('#modalClose');
             await page.click('#settingsSecurity');await shot('21-sicurezza');await page.click('#modalClose');
             await page.click('#settingsBackup');await shot('22-backup-dati');await page.click('#modalClose');
@@ -72,6 +87,37 @@ jobs:
             await page.click('#settingsGuide');await shot('24-tutorial');
             await page.locator('#guideTopics button[data-topic="Entrate"]').click();await shot('25-guida-entrate');await page.click('#modalClose');
             await page.click('#settingsInfo');await shot('26-informazioni');await page.click('#modalClose');
+            await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');await page.click('#homeBackLanding');await page.waitForSelector('#landing:not(.hidden)');
+            await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+            const todoRows=page.locator('#todoSetupRows .todoSetupRow');
+            const todoSamples=[
+              ['Pagare bolletta luce','10 ottobre novembre dicembre'],
+              ['Rinnovare documento','15 ottobre una volta'],
+              ['Prenotare visita medica','20 ottobre una volta'],
+              ['Fare revisione auto','21 ottobre una volta']
+            ];
+            for(let i=0;i<todoSamples.length;i++){
+              const row=todoRows.nth(i);
+              await row.locator('.todoDescInput').fill(todoSamples[i][0]);
+              await row.locator('.todoDateInput').fill(todoSamples[i][1]);
+            }
+            await page.click('#todoSetupAdd');
+            const fifth=todoRows.nth(4);
+            await fifth.locator('.todoDescInput').fill('Inviare documenti E.D.S.');
+            await fifth.locator('.todoDateInput').fill('24 ottobre una volta');
+            await shot('15-todo-inserimento');
+            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+            await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+            await page.locator('.todoCompleteBtn').first().click();await page.locator('.todoCompleteBtn').first().click();
+            await page.click('#todoActiveBack');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
+            await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('17-todo-in-scadenza');
+            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await shot('18-todo-cose-gia-fatte');
+            await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');await shot('20-todo-impostazioni');
+            await page.click('#todoSettingNotifications');await shot('19-todo-notifiche');await page.click('#modalClose');
+            await page.click('#todoSettingTheme');await shot('21-todo-tema');await page.click('#modalClose');
+            await page.click('#todoSettingColor');await shot('22-todo-colore');await page.click('#modalClose');
+            await page.click('#todoSettingBackup');await shot('23-todo-backup');await page.click('#modalClose');
+            await page.click('#todoSettingPrivacy');await shot('24-todo-privacy');await page.click('#modalClose');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE

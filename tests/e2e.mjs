@@ -74,17 +74,17 @@ async function testApprovedOnboarding(browser){
   await page.waitForSelector('#setupIncome:not(.hidden)');
   assert.match(await page.locator('#setupIncome').innerText(),/Scrivi le tue entrate/);
   const inc=page.locator('#incomeRows .entryRow').first();
-  assert.equal(await inc.locator('.rName').getAttribute('placeholder'),'Es. Stipendio');
-  assert.equal(await inc.locator('.rAmount').getAttribute('placeholder'),'Es. 1.400 €');
-  assert.equal(await inc.locator('.rDateText').getAttribute('placeholder'),'Es. 10 del mese');
+  assert.equal(await inc.locator('.rName').getAttribute('placeholder'),'Stipendio');
+  assert.equal(await inc.locator('.rAmount').getAttribute('placeholder'),'1.500,00 €');
+  assert.equal(await inc.locator('.rDateText').getAttribute('placeholder'),'01/10/2026');
   await inc.locator('.rName').fill('Stipendio');await inc.locator('.rAmount').fill('1400');await inc.locator('.rDateText').fill('10 del mese');await inc.locator('.rDateText').blur();
   await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
-  assert.match(await page.locator('#setupExpense').innerText(),/Scrivi i tuoi pagamenti/);
+  assert.match(await page.locator('#setupExpense').innerText(),/Gestisci i tuoi pagamenti/);
   const exp=page.locator('#expenseRows .entryRow').first();
-  assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Es. Mutuo');
-  assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'Es. 387,03 €');
-  assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'Es. 1 del mese');
+  assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Affitto sede');
+  assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'950,00 €');
+  assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'05/10/2026');
   await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
@@ -386,7 +386,7 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     assert.ok(card.borderTopWidth>=1,'Ogni card deve avere una cornice E.D.S.');
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
-    assert.match(card.backgroundImage,/eds-blue\.webp/,'Ogni card deve usare il logo E.D.S blu');
+    assert.match(card.backgroundImage,/eds-blue-approved\.png/,'Ogni card deve usare il logo E.D.S blu');
     assert.equal(card.textAlign,'center');
   }
   await context.close();
@@ -435,7 +435,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve determinare il genere dell’illustrazione');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-scene'),'hub');
   assert.equal(await page.locator('#todoHubArt img').count(),1);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green-approved\.png$/);
   const hubLayout=await page.evaluate(()=>{
     const pending=document.getElementById('todoHubPending').getBoundingClientRect();
     const n=document.getElementById('todoHubNotifications').getBoundingClientRect();
@@ -475,7 +475,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
-  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green\.webp$/);
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
   assert.equal((await page.locator('#todoActive').innerText()).includes('🗂️'),false);
   let row=page.locator('#todoActiveList .todoTaskRow').filter({hasText:longText+' aggiornato'}).first();
   await row.waitFor();
@@ -505,7 +505,7 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
-  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/eds-green\.webp$/);
+  assert.match(await page.locator('#todoDoneArt img').getAttribute('src'),/eds-green-approved\.png$/);
   assert.equal((await page.locator('#todoDone').innerText()).includes('🏅'),false);
   assert.match(await page.locator('#todoDoneList').innerText(),/Fatta/);
   assert.match(await page.locator('#todoDoneList').innerText(),new RegExp(longText+' aggiornato'));
@@ -534,17 +534,17 @@ async function testTodoSection(browser){
   await page.waitForSelector('#modal:not(.hidden)');
   const beforeTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    page:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
     hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
     card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
     pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,
     done:getComputedStyle(document.getElementById('todoHubDone')).backgroundImage,
     notify:getComputedStyle(document.getElementById('todoHubNotifications')).backgroundImage
   }));
-  await page.click('[data-tcolor="Viola"]');
+  await page.click('[data-tcolor="Menta"]');
   const previewTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    page:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
     hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
     card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
     pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,
@@ -559,7 +559,7 @@ async function testTodoSection(browser){
   assert.equal(previewTheme.done,beforeTheme.done,'Cose già fatte deve mantenere il verde funzionale');
   assert.equal(previewTheme.notify,beforeTheme.notify,'Notifiche deve mantenere il rosa/rosso funzionale');
   await page.click('#todoColorSave');
-  assert.equal((await state(page)).todo.color,'Viola');
+  assert.equal((await state(page)).todo.color,'Menta');
 
   await context.close();
 }
@@ -580,10 +580,11 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   assert.equal((await state(page)).profile.fullName,'Maria');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null,'Il nome non deve più determinare uomo o donna');
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green-approved\.png$/);
 
   await page.click('#todoHubSettings');
   await page.waitForSelector('#todoSettings:not(.hidden)');
+  await page.locator('.todoManageDetails summary').click();
   await page.click('#todoSettingName');
   await page.waitForSelector('#modal:not(.hidden)');
   await page.fill('#todoNameInput','Marco');
@@ -593,7 +594,7 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   assert.equal((await state(page)).profile.fullName,'Marco');
   assert.equal(await page.locator('#todoHubArt').getAttribute('data-gender'),null);
-  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green\.webp$/);
+  assert.match(await page.locator('#todoHubArt img').getAttribute('src'),/eds-green-approved\.png$/);
 
   await context.close();
 }
@@ -797,6 +798,41 @@ async function testTodoMonthYearFilters(browser){
   await context.close();
 }
 
+async function testApprovedMasterRules(browser){
+  const {context,page}=await freshPage(browser);
+  await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+  const row=page.locator('#todoSetupRows .todoSetupRow').first();
+  await row.locator('.todoDescInput').fill('Pagare bolletta luce');
+  await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+  assert.match(await page.locator('#todoHubPendingArt img').getAttribute('src'),/eds-green-approved\.png$/);
+  const hubRules=await page.evaluate(()=>({
+    pending:getComputedStyle(document.querySelector('#todoHubPending'),'::before').content,
+    completed:getComputedStyle(document.querySelector('#todoHubDone'),'::before').content,
+    logos:[...document.querySelectorAll('#todoHubPendingArt img,#todoHubDoneArt img')].map(x=>x.getAttribute('src')),
+    personImages:[...document.querySelectorAll('#todoHub img')].filter(x=>/male|female|person/i.test(x.getAttribute('src')||'')).length
+  }));
+  assert.equal(hubRules.pending,'none');assert.equal(hubRules.completed,'none');
+  assert.equal(hubRules.personImages,0);assert.equal(hubRules.logos.length,2);
+  assert.ok(hubRules.logos.every(x=>x.endsWith('eds-green-approved.png')));
+
+  await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
+  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.color,'rgb(35, 75, 54)');assert.equal(completeStyle.shadow,'none');
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
+  await page.locator('.todoCompleteBtn').first().click();
+  await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');
+  await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
+
+  await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');
+  await page.click('[data-ttheme="dark"]');await page.click('#todoThemeSave');
+  assert.equal((await state(page)).todo.theme,'dark');assert.equal(await page.locator('body').getAttribute('data-todo-theme'),'dark');
+  await page.click('#todoSettingBackup');await page.waitForSelector('#backupLocal');await page.click('#backupLocal');
+  const backup=await page.evaluate(k=>JSON.parse(localStorage.getItem(k+'_local_copy')),KEY);
+  assert.equal(backup.data.todo.theme,'dark');assert.equal(backup.data.todo.done.length,1);
+  await page.click('#modalClose');
+  await context.close();
+}
+
 async function testFlowBannerIsSingleCard(browser){
   const {context,page}=await freshPage(browser);
   await setup(page,1000);
@@ -871,6 +907,7 @@ try{
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
+  await testApprovedMasterRules(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
