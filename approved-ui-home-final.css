@@ -25,9 +25,9 @@
 }
 #home .incomeFeature .homeScene:before{content:'↑'!important}
 #home .expenseFeature .homeScene:before{content:'€'!important;font-size:25px!important}
-#home .homeFeatureText{position:static!important;inset:auto!important;padding:0!important;margin:0!important;background:transparent!important;text-align:left!important;width:100%!important}
-#home .homeFeatureText strong{display:block!important;font-size:20px!important;line-height:1!important;color:#0a2b61!important;font-weight:950!important}
-#home .homeFeatureText small{display:block!important;max-width:125px!important;margin-top:5px!important;color:#657b91!important;font-size:10.5px!important;line-height:1.18!important;font-weight:600!important}
+#home .homeFeatureText{position:static!important;inset:auto!important;padding:0!important;margin:0!important;background:transparent!important;width:100%!important}
+#home .homeFeatureText strong{display:block!important;text-align:left!important;font-size:20px!important;line-height:1!important;color:#0a2b61!important;font-weight:950!important}
+#home .homeFeatureText small{display:block!important;text-align:left!important;max-width:125px!important;margin-top:5px!important;color:#657b91!important;font-size:10.5px!important;line-height:1.18!important;font-weight:600!important}
 #home .homeFeatureArrow{position:absolute!important;right:11px!important;bottom:11px!important;width:36px!important;height:36px!important;margin:0!important;border-radius:50%!important;background:linear-gradient(135deg,#12acf4,#087ef5)!important;color:#fff!important;font-size:25px!important;display:grid!important;place-items:center!important}
 #home .homeSummaryTitle{margin:10px 3px 6px!important;font-size:10px!important;letter-spacing:.8px!important;color:#71869a!important;font-weight:900!important}
 #home .homeSummaryCard{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
