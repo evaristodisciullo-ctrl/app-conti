@@ -1,0 +1,132 @@
+/* Rifiniture visive condivise sui master approvati. */
+
+/* Home: il test storico conserva l'asset nel background, ma l'immagine non deve sostituire l'icona funzionale. */
+#home .homeScene{
+  background-size:cover,0 0!important;
+  background-repeat:no-repeat,no-repeat!important;
+}
+#home .homeFeatureCard:after{display:block!important;z-index:4!important;background-image:url('assets/eds-blue.webp')!important;background-size:cover!important;background-position:center!important;background-repeat:no-repeat!important}
+
+/* Banner Entrate/Pagamenti: seconda riga descrittiva del master. */
+#flow .flowBannerVisual:after{
+  position:absolute;left:-226px;top:49px;width:146px;color:#66809e;font-size:10.5px;line-height:1.18;font-weight:600;text-align:left;pointer-events:none
+}
+#flow.flowIncome .flowBannerVisual:after{content:'Registra un’entrata nei tuoi conti'}
+#flow.flowExpense .flowBannerVisual:after{content:'Aggiungi un nuovo pagamento e tieni tutto sotto controllo'}
+#flow .flowUnifiedStatus{left:41%!important;max-width:80px!important;padding-left:7px!important;padding-right:7px!important}
+#flow .flowUnifiedAmount{min-width:78px!important;text-align:right!important}
+
+/* Movimenti */
+#movements{padding-top:2px!important}
+#movements .pageHeader{min-height:49px!important;margin-bottom:9px!important;position:relative!important}
+#movements .pageTitleBlock{flex-direction:row!important;align-items:center!important;gap:7px!important}
+#movements .pageBack{width:34px!important;height:34px!important;padding:0!important;display:grid!important;place-items:center!important}
+#movements .pageBack span:last-child{display:none!important}
+#movements .pageBack .arrow{font-size:29px!important;color:#087ff1!important}
+#movements .pageHeader h1{font-size:30px!important;line-height:1!important;font-weight:950!important;color:#081f58!important;letter-spacing:-.7px!important}
+#movements .pageHeader:after{content:'';position:absolute;right:2px;top:0;width:46px;height:46px;border-radius:12px;background:url('assets/eds-blue.webp') center/cover no-repeat;box-shadow:0 5px 12px rgba(3,48,91,.13)}
+#movements .movementQuickTabs{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important;margin:0 0 10px!important}
+#movements .movementQuickTab{height:43px!important;padding:0 5px!important;border:1px solid #dbe8f2!important;border-radius:999px!important;background:#fff!important;color:#304c79!important;font-size:10.5px!important;font-weight:850!important}
+#movements .movementQuickTab.active{border-color:transparent!important;background:linear-gradient(135deg,#10aaf5,#087cf4)!important;color:#fff!important;box-shadow:0 5px 12px rgba(8,127,230,.14)!important}
+#movements #movementFilterSummary{margin:2px 3px 12px!important;color:#6e849a!important;font-size:10.5px!important}
+#movements #allMovements.list{gap:8px!important}
+#movements #allMovements:before{content:'ELENCO MOVIMENTI';display:block;margin:4px 4px 2px;color:#526c92;font-size:11px;letter-spacing:1px;font-weight:950}
+#movements #allMovements .movementRow{min-height:72px!important;padding:9px 10px!important;grid-template-columns:46px minmax(0,1fr) auto 13px!important;gap:9px!important;border:1px solid #dfeaf3!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 11px rgba(29,87,126,.035)!important}
+#movements #allMovements .mIcon{width:43px!important;height:43px!important;border-radius:50%!important;font-size:0!important}
+#movements #allMovements .mIcon:before{font-size:27px!important;font-weight:950!important;line-height:1!important}
+#movements #allMovements .mIcon.income{background:#e8f6ff!important;color:#087ff1!important}
+#movements #allMovements .mIcon.income:before{content:'↑'}
+#movements #allMovements .mIcon.expense{background:#fff0db!important;color:#ff8b00!important}
+#movements #allMovements .mIcon.expense:before{content:'↓'}
+#movements #allMovements .mIcon.adjustment:before{content:'±';font-size:19px!important}
+#movements #allMovements .mName{font-size:13px!important;line-height:1.05!important;color:#0b225a!important;font-weight:950!important}
+#movements #allMovements .mDate{margin-top:4px!important;font-size:10px!important;color:#748aa3!important}
+#movements #allMovements .mAmount{font-size:14.5px!important;line-height:1!important;font-weight:950!important}
+#movements #allMovements .mAmount.income{color:#071d57!important}
+#movements #allMovements .mAmount.expense{color:#ee3038!important}
+#movements #allMovements .mType{margin-top:5px!important;padding:0!important;background:transparent!important;font-size:0!important}
+#movements #allMovements .mType:before{display:inline-flex;align-items:center;gap:4px;font-size:9.5px!important;font-weight:650!important;color:#6f86a0!important}
+#movements #allMovements .mType.income:before{content:'●  Ricevuta';color:#1aa866!important}
+#movements #allMovements .mType.expense:before{content:'●  Pagato';color:#1aa866!important}
+#movements #allMovements .mChevron{font-size:24px!important;color:#617d9d!important}
+
+/* Impostazioni Conti */
+#settings{padding-top:2px!important}
+#settings .pageHeader{min-height:49px!important;margin:0 0 9px!important}
+#settings .pageTitleBlock{display:flex!important;flex-direction:row!important;align-items:center!important;gap:7px!important}
+#settings .pageBack{width:34px!important;height:34px!important;padding:0!important;display:grid!important;place-items:center!important}
+#settings .pageBack span:last-child{display:none!important}
+#settings .pageBack .arrow{font-size:29px!important;color:#087ff1!important}
+#settings .pageHeader h1{font-size:30px!important;line-height:1!important;font-weight:950!important;color:#081f58!important;letter-spacing:-.7px!important}
+#settings .financeSettingsHero{
+  min-height:100px;margin:0 0 12px;padding:12px 14px;display:grid;grid-template-columns:54px 1fr;gap:13px;align-items:center;
+  border:1.5px solid #22b8ea;border-radius:18px;background:
+    linear-gradient(158deg,transparent 0 52%,rgba(45,188,240,.09) 52.4% 65%,transparent 65.4%),
+    linear-gradient(180deg,#fff,#eef9ff);box-shadow:0 5px 14px rgba(29,90,131,.055)
+}
+#settings .financeSettingsHero img{width:54px;height:54px;border-radius:13px;object-fit:cover;box-shadow:0 5px 11px rgba(3,48,91,.13)}
+#settings .financeSettingsHero strong{display:block;color:#071d57;font-size:17px;line-height:1.05;font-weight:950}
+#settings .financeSettingsHero small{display:block;margin-top:5px;color:#6d829c;font-size:10.5px;line-height:1.18}
+#settings .settingsGroup{margin-bottom:7px!important}
+#settings .settingsMenu{display:flex!important;flex-direction:column!important;gap:7px!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+#settings .settingsRow{min-height:58px!important;padding:8px 11px!important;border:1px solid #dfeaf3!important;border-radius:13px!important;background:
+  linear-gradient(158deg,transparent 0 61%,rgba(45,188,240,.045) 61.4% 74%,transparent 74.4%),#fff!important;box-shadow:0 4px 11px rgba(29,87,126,.03)!important}
+#settings .settingsRowIcon{width:39px!important;height:39px!important;border-radius:50%!important;font-size:17px!important}
+#settings .settingsRowText strong{font-size:12.5px!important;line-height:1!important;color:#0b2b5a!important;font-weight:950!important}
+#settings .settingsRowText small{margin-top:4px!important;font-size:9px!important;color:#788fa4!important}
+#settings .settingsRowArrow{font-size:22px!important;color:#168ddf!important}
+
+/* Notifiche Conti */
+#notifications{padding-top:2px!important}
+#notifications .pageHeader{min-height:49px!important;margin:0 0 9px!important}
+#notifications .pageTitleBlock{display:flex!important;flex-direction:row!important;align-items:center!important;gap:7px!important}
+#notifications .pageBack{width:34px!important;height:34px!important;padding:0!important;display:grid!important;place-items:center!important}
+#notifications .pageBack span:last-child{display:none!important}
+#notifications .pageBack .arrow{font-size:29px!important;color:#087ff1!important}
+#notifications .pageHeader h1{font-size:25px!important;line-height:1.02!important;font-weight:950!important;color:#081f58!important;letter-spacing:-.5px!important}
+#notifications .notifyHero{
+  position:relative!important;min-height:111px!important;margin:0 0 12px!important;padding:14px 70px 14px 67px!important;text-align:left!important;
+  border:1.5px solid #22b8ea!important;border-radius:18px!important;background:
+  linear-gradient(158deg,transparent 0 51%,rgba(45,188,240,.10) 51.4% 67%,transparent 67.4%),linear-gradient(180deg,#fff,#eef9ff)!important;box-shadow:0 5px 14px rgba(29,90,131,.055)!important
+}
+#notifications .notifyHero:after{content:'';position:absolute;right:12px;top:12px;width:48px;height:48px;border-radius:12px;background:url('assets/eds-blue.webp') center/cover no-repeat;box-shadow:0 5px 11px rgba(3,48,91,.13)}
+#notifications .notifyBell{position:absolute!important;left:12px!important;top:30px!important;width:45px!important;height:45px!important;margin:0!important;border-radius:50%!important;background:#e8f6ff!important;color:#087ff1!important;font-size:22px!important;box-shadow:none!important}
+#notifications .notifyHero h2{margin:11px 0 0!important;color:#071d57!important;font-size:16px!important;line-height:1.12!important;font-weight:950!important}
+#notifications .notifyHero h2:before{content:'Resta sempre in ordine';display:block;margin-bottom:5px;font-size:17px;line-height:1.05}
+#notifications .notifyScopeChoices{display:flex!important;flex-direction:column!important;gap:7px!important}
+#notifications .notifyScopeOption{min-height:64px!important;margin:0!important;padding:9px 12px!important;border:1px solid #dfeaf3!important;border-radius:13px!important;background:#fff!important;box-shadow:0 4px 10px rgba(29,87,126,.03)!important}
+#notifications .notifyScopeOption strong{font-size:12.5px!important;color:#0b2b5a!important}
+#notifications .notifyScopeOption small{margin-top:3px!important;font-size:9.5px!important;color:#788fa4!important}
+#notifications .notifyScopeOption.active{border-color:#138ff0!important;background:#f1f9ff!important}
+#notifications .notifyConfirm{height:52px!important;min-height:52px!important;margin-top:11px!important;border-radius:13px!important;background:linear-gradient(135deg,#10aaf5,#087cf4)!important;font-size:14px!important}
+
+/* Todo: proporzioni più vicine ai master definitivi, mantenendo solo i loghi E.D.S nelle due card principali. */
+#todoHub .todoTop,#todoSettings .todoTop,#todoActive .todoTop,#todoDone .todoTop,#todoSetup .todoTop{min-height:50px!important;margin-bottom:10px!important}
+#todoHub .todoTop h1,#todoSettings .todoTop h1,#todoActive .todoTop h1,#todoDone .todoTop h1,#todoSetup .todoTop h1{font-size:29px!important;line-height:1!important;letter-spacing:-.55px!important}
+#todoHub .todoBack,#todoSettings .todoBack,#todoActive .todoBack,#todoDone .todoBack,#todoSetup .todoBack{font-size:29px!important}
+#todoHub .todoHero.hub{display:none!important}
+#todoHub .todoHubGrid{gap:10px!important}
+#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{min-height:226px!important;padding:14px!important;border-radius:18px!important;align-content:end!important}
+#todoHub .todoHubCard.pending>span:first-child,#todoHub .todoHubCard.completed>span:first-child{align-self:end!important;margin-bottom:34px!important}
+#todoHub .todoHubCard.pending strong,#todoHub .todoHubCard.completed strong{font-size:18px!important;line-height:1.05!important;color:#062f20!important}
+#todoHub .todoHubCard.pending small,#todoHub .todoHubCard.completed small{margin-top:5px!important;font-size:9.5px!important}
+#todoHubPendingArt,#todoHubDoneArt{position:absolute!important;left:14px!important;top:14px!important;width:50px!important;height:50px!important;border-radius:12px!important}
+#todoHub .todoHubCard.pending .chev,#todoHub .todoHubCard.completed .chev{position:absolute!important;right:12px!important;bottom:12px!important;width:36px!important;height:36px!important;border-radius:50%!important;background:#12b86f!important;color:#fff!important;display:grid!important;place-items:center!important;font-size:25px!important}
+#todoHub .todoHubCard.compact{min-height:64px!important;border-radius:14px!important;padding:9px 12px!important}
+#todoHub .todoHubCard.compact .icon{width:39px!important;height:39px!important;border-radius:50%!important}
+#todoHub .todoHubCard.compact strong{font-size:14px!important}
+#todoHub .todoHubCard.compact .chev{width:34px!important;height:34px!important;border-radius:50%!important;background:#def7e9!important;color:#12935e!important;display:grid!important;place-items:center!important}
+
+#todoSettings .todoHero.settings{min-height:104px!important;padding:14px 77px 14px 14px!important;border-radius:18px!important}
+#todoSettings .todoHero.settings strong{font-size:18px!important;line-height:1.05!important}
+#todoSettings .todoHero.settings small{font-size:10px!important;line-height:1.15!important}
+#todoSettings .todoSettingCard{min-height:66px!important;padding:9px 11px!important;border-radius:14px!important}
+#todoSettings .todoSettingCard .i{width:40px!important;height:40px!important;border-radius:50%!important}
+#todoSettings .todoSettingCard strong{font-size:14px!important;line-height:1!important}
+#todoSettings .todoSettingCard small{font-size:9.5px!important;margin-top:4px!important}
+
+@media(max-width:370px){
+  #flow .flowUnifiedStatus{left:39%!important}
+  #settings .financeSettingsHero strong{font-size:16px}
+  #todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{min-height:210px!important}
+}

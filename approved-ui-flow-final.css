@@ -1,0 +1,108 @@
+/* Entrate / Pagamenti - master definitivi */
+#flow.flowPage{padding-top:2px!important}
+#flow .pageHeader{min-height:49px!important;margin:0 0 9px!important;align-items:center!important}
+#flow .pageTitleBlock{display:flex!important;flex-direction:row!important;align-items:center!important;gap:7px!important}
+#flow .pageBack{width:34px!important;height:34px!important;padding:0!important;display:grid!important;place-items:center!important}
+#flow .pageBack span:last-child{display:none!important}
+#flow .pageBack .arrow{font-size:29px!important;color:#087ff1!important}
+#flow .pageHeader h1{font-size:30px!important;line-height:1!important;font-weight:950!important;color:#081f58!important;letter-spacing:-.7px!important}
+
+#flow .flowBanner{
+  position:relative!important;min-height:123px!important;height:123px!important;margin:0 0 13px!important;padding:0!important;
+  border:1.6px solid #18b9e9!important;border-radius:20px!important;overflow:hidden!important;
+  background:
+    radial-gradient(circle at 67% 63%,rgba(53,184,240,.11) 0 16%,transparent 16.4%),
+    radial-gradient(circle at 77% 68%,rgba(53,184,240,.09) 0 22%,transparent 22.5%),
+    linear-gradient(158deg,transparent 0 45%,rgba(45,188,240,.085) 45.4% 55%,transparent 55.4%),
+    linear-gradient(180deg,#fff,#edf9ff)!important;
+  box-shadow:0 6px 16px rgba(28,94,139,.06)!important
+}
+#flow .flowBanner:before{
+  position:absolute!important;left:15px!important;top:41px!important;width:50px!important;height:50px!important;
+  display:grid!important;place-items:center!important;border-radius:50%!important;background:#eef9ff!important;
+  box-shadow:0 6px 14px rgba(7,126,225,.10)!important;color:#087ff1!important;font-size:32px!important;font-weight:950!important;z-index:2!important
+}
+#flow.flowIncome .flowBanner:before{content:'↑'!important}
+#flow.flowExpense .flowBanner:before{content:'€'!important;font-size:24px!important}
+#flow .flowBanner:after{
+  position:absolute!important;left:79px!important;right:60px!important;top:31px!important;color:#071d57!important;
+  font-size:16.5px!important;line-height:1.08!important;font-weight:950!important;letter-spacing:-.2px!important;pointer-events:none!important
+}
+#flow.flowIncome .flowBanner:after{content:'Aggiungi una nuova entrata'!important}
+#flow.flowExpense .flowBanner:after{content:'Gestisci i tuoi pagamenti'!important}
+#flow .flowBannerVisual{
+  position:absolute!important;right:12px!important;top:10px!important;width:47px!important;height:47px!important;min-width:47px!important;
+  border-radius:12px!important;background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(3,48,91,.14)!important
+}
+#flow .flowBannerAdd{
+  position:absolute!important;right:11px!important;left:auto!important;bottom:10px!important;top:auto!important;width:166px!important;min-height:42px!important;height:42px!important;
+  padding:0 13px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:0!important;border-radius:999px!important;
+  color:#fff!important;background:linear-gradient(135deg,#11a9f5,#087af5)!important;box-shadow:0 6px 14px rgba(8,124,228,.18)!important;
+  font-size:12.5px!important;line-height:1!important;font-weight:850!important;white-space:nowrap!important
+}
+#flow .flowBannerAdd:before{content:'+'!important;width:24px!important;height:24px!important;min-width:24px!important;margin-right:6px!important;border-radius:50%!important;background:rgba(255,255,255,.18)!important;color:#fff!important;font-size:19px!important}
+#flow.flowIncome .flowBanner:before{box-shadow:0 6px 14px rgba(7,126,225,.10),-24px -20px 0 -21px #0b7ef4,-8px -30px 0 -21px #0b7ef4!important}
+
+/* Il saldo resta nella logica, ma non compare nei master di elenco. */
+#flow .flowCurrentBalance{position:absolute!important;left:-10000px!important;top:0!important;width:1px!important;height:1px!important;overflow:hidden!important;margin:0!important;padding:0!important;opacity:0!important}
+
+#flow .flowMonthBar{
+  min-height:54px!important;height:54px!important;margin:0 0 11px!important;padding:5px 8px!important;display:grid!important;grid-template-columns:44px 1fr 44px!important;align-items:center!important;
+  border:1px solid #dcebf5!important;border-radius:15px!important;background:#fff!important;box-shadow:0 5px 13px rgba(31,86,124,.045)!important
+}
+#flow .flowMonthArrow{width:42px!important;height:42px!important;border-radius:50%!important;background:#e8f5ff!important;color:#087ff1!important;font-size:27px!important;display:grid!important;place-items:center!important}
+#flow .flowMonthLabel{text-align:center!important;color:#071d57!important;font-size:16px!important;font-weight:950!important}
+
+#flow .flowTabs{height:45px!important;margin:0 0 11px!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:7px!important}
+#flow .flowTab{height:45px!important;padding:0 5px!important;border:1.2px solid #dbe8f2!important;border-radius:999px!important;background:rgba(255,255,255,.94)!important;color:#304c79!important;font-size:11.5px!important;font-weight:850!important}
+#flow .flowTab.active{border-color:transparent!important;background:linear-gradient(135deg,#10aaf5,#087cf4)!important;color:#fff!important;box-shadow:0 5px 12px rgba(8,127,230,.14)!important}
+
+#flow .flowUnified{display:flex!important;flex-direction:column!important;gap:8px!important}
+#flow .flowUnifiedRow{
+  position:relative!important;display:block!important;min-height:73px!important;height:73px!important;padding:0!important;
+  border:1px solid #e0ebf4!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 11px rgba(29,87,126,.035)!important;overflow:hidden!important
+}
+#flow .flowUnifiedMain{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding:10px 92px 10px 62px!important;
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;column-gap:7px!important;align-content:center!important;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#122d5f!important;text-align:left!important
+}
+#flow .flowUnifiedMain:before{
+  content:'▣';position:absolute;left:10px;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  background:#e8f6ff;color:#087ff1;font-size:22px;font-weight:900
+}
+#flow.flowIncome .flowUnifiedMain:before{content:'▣'}
+#flow.flowExpense .flowUnifiedMain:before{content:'◷';background:#fff4d9;color:#ef9700}
+#flow .flowUnifiedRow:has(.flowUnifiedStatus.done) .flowUnifiedMain:before{content:'✓';background:#e7faef;color:#10a865}
+#flow .flowUnifiedRow:has(.flowUnifiedStatus.overdue) .flowUnifiedMain:before{content:'!';background:#ffe8e8;color:#ef3038}
+#flow .flowUnifiedName{grid-column:1!important;grid-row:1!important;align-self:end!important;max-width:128px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#0b225a!important;font-size:12.5px!important;line-height:1.05!important;font-weight:950!important}
+#flow .flowUnifiedDate{grid-column:1!important;grid-row:2!important;align-self:start!important;margin-top:3px!important;color:#758aa3!important;font-size:9.5px!important;line-height:1!important}
+#flow .flowUnifiedAmount{grid-column:2!important;grid-row:1/3!important;align-self:center!important;color:#071d57!important;font-size:14.5px!important;line-height:1!important;font-weight:950!important;white-space:nowrap!important}
+#flow.flowExpense .flowUnifiedAmount:before{content:'-'}
+#flow .flowUnifiedChevron{position:absolute!important;right:7px!important;top:50%!important;transform:translateY(-50%)!important;color:#667e9d!important;font-size:24px!important;line-height:1!important}
+#flow .flowUnifiedStatus{
+  position:absolute!important;z-index:4!important;left:48%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+  min-height:0!important;height:26px!important;width:auto!important;max-width:92px!important;padding:0 9px!important;border-radius:999px!important;
+  font-size:9.3px!important;line-height:1!important;font-weight:850!important;white-space:nowrap!important;box-shadow:none!important
+}
+#flow .flowUnifiedStatus.done{background:#e6f9ed!important;color:#0d985a!important}
+#flow .flowUnifiedStatus.pending{background:#fff3d7!important;color:#e78b00!important}
+#flow .flowUnifiedStatus.overdue{background:#ffe2e3!important;color:#e9343c!important}
+
+#flow .flowEmpty{min-height:90px!important;padding:26px 16px!important;border:1px solid #e0ebf4!important;border-radius:14px!important;background:#fff!important;color:#7890a4!important;font-size:11px!important}
+#flow .flowTotal{
+  min-height:58px!important;margin-top:9px!important;padding:8px 14px!important;display:grid!important;grid-template-columns:40px 1fr auto!important;align-items:center!important;gap:9px!important;
+  border:1px solid #dfebf4!important;border-radius:13px!important;background:#f4faff!important;box-shadow:0 4px 10px rgba(29,87,126,.035)!important
+}
+#flow .flowTotal:before{content:'€';width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#e8f6ff;color:#087ff1;font-size:23px;font-weight:950}
+#flow .flowTotal span{font-size:11px!important;line-height:1!important;color:#0a2b61!important;font-weight:950!important}
+#flow .flowTotal strong{font-size:20px!important;line-height:1!important;color:#087ff1!important;font-weight:950!important;white-space:nowrap!important}
+#flow.flowExpense .flowTotal strong{color:#ed3339!important}
+
+@media(max-width:370px){
+  #flow .flowBannerAdd{width:150px!important;font-size:11.5px!important}
+  #flow .flowBanner:after{font-size:15px!important}
+  #flow .flowUnifiedMain{padding-right:82px!important}
+  #flow .flowUnifiedStatus{left:46%!important;font-size:8.7px!important}
+  #flow .flowUnifiedAmount{font-size:13px!important}
+}

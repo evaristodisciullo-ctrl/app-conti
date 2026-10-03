@@ -1,0 +1,172 @@
+/* Correzioni finali del layer approvato: il colore scelto resta dinamico,
+   mentre i colori funzionali di Cose da fare restano fissi. */
+.todoPage{
+  background-color:var(--todoBg,#f2f8f4)!important;
+  background-image:
+    radial-gradient(circle at 92% 5%,color-mix(in srgb,var(--todoAccent,#6f9f83) 14%,transparent),transparent 22%),
+    linear-gradient(155deg,transparent 0 15%,color-mix(in srgb,var(--todoSoft,#e5f0e8) 44%,transparent) 15.2% 19.5%,transparent 19.8% 52%,color-mix(in srgb,var(--todoAccent,#6f9f83) 8%,transparent) 52.2% 57%,transparent 57.3%)!important;
+}
+.todoHero.setup,.todoHero.hub,.todoHero.settings{background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),var(--todoSoft,#e5f0e8))!important;border-color:var(--todoBorder,#bdd5c6)!important}
+.todoPanel,.todoTaskRow,.todoDoneRow{border-color:color-mix(in srgb,var(--todoBorder,#bdd5c6) 72%,white)!important}
+.todoSettingCard{background-color:var(--todoSurface,#f8fcf9)!important;border-color:var(--todoBorder,#bdd5c6)!important}
+.todoSettingCard .i{background:var(--todoSoft,#e5f0e8)!important;color:var(--todoDeep,#376b55)!important}
+.todoSettingCard .a,.todoBack{color:var(--todoAccent,#6f9f83)!important}
+.todoTop h1,.todoHero strong,.todoSettingCard strong{color:var(--todoDeep,#376b55)!important}
+.todoFilterAll,.todoFilterSelect{border-color:var(--todoBorder,#bdd5c6)!important}
+.todoFilterAll.active{background:var(--todoAccent,#6f9f83)!important;color:#fff!important;border-color:transparent!important}
+
+.todoHero.active,.todoHubCard.pending{background:linear-gradient(135deg,#fff9e5,#fff0bc)!important;border-color:#f3dd94!important}
+.todoHero.done,.todoHubCard.completed{background:linear-gradient(135deg,#eefff3,#d8f5e2)!important;border-color:#bfe8cb!important}
+.todoHubCard.notify{background:linear-gradient(135deg,#fff2f2,#ffe5e8)!important;border-color:#f3ccd1!important}
+.todoNotifyToggle.on,.todoNotifyBtn.on{background:#ffe7eb!important;color:#ee4658!important}
+.todoCompleteBtn{background:linear-gradient(135deg,#ffe690,#ffd966)!important;color:#4f4528!important}
+.todoDoneStatus{background:linear-gradient(135deg,#e5f9ea,#c9f3d5)!important;color:#1f7a49!important}
+
+#todoHubPendingArt,#todoHubDoneArt{width:55px!important;height:55px!important;border-radius:14px!important;background:none!important;box-shadow:0 5px 12px rgba(11,102,66,.12)!important;overflow:hidden!important}
+#todoHubPendingArt img,#todoHubDoneArt img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;border-radius:14px!important}
+.todoHeroArt{background:none!important}
+.todoHeroArt img{display:block!important;width:54px!important;height:54px!important;object-fit:cover!important;border-radius:14px!important}
+
+#modal.todoSubpageModal{align-items:stretch!important;padding:0!important;background:#f5fcf8!important;backdrop-filter:none!important;overflow:auto!important}
+#modal.todoSubpageModal .modalCard{width:min(560px,100%)!important;max-width:none!important;min-height:100dvh!important;max-height:none!important;margin:0 auto!important;border-radius:0!important;padding:24px 18px 92px!important;background:radial-gradient(circle at 92% 4%,rgba(31,207,143,.11),transparent 20%),linear-gradient(155deg,transparent 0 12%,rgba(46,211,157,.06) 12.2% 17%,transparent 17.3% 55%,rgba(39,189,135,.045) 55.2% 60%,transparent 60.3%),linear-gradient(180deg,#fcfffd,#f1fcf6)!important;box-shadow:none!important;overflow:visible!important}
+#modal.todoSubpageModal .modalHead{position:sticky!important;top:0!important;z-index:4!important;margin:-24px -18px 10px!important;padding:21px 18px 10px!important;background:rgba(250,255,252,.94)!important;backdrop-filter:blur(9px)!important;border-bottom:0!important}
+#modal.todoSubpageModal .modalTitle{font-size:28px!important;color:#0b4936!important;font-weight:950!important;letter-spacing:-.6px!important}
+#modal.todoSubpageModal #modalClose{width:34px!important;height:34px!important;border-radius:50%!important;background:#e6f8ef!important;color:#0b9460!important;font-size:0!important}
+#modal.todoSubpageModal #modalClose:before{content:'←';font-size:22px!important}
+#modal.todoSubpageModal .modalBody{overflow:visible!important;padding:0!important}
+.todoSubHero{position:relative;min-height:104px;margin:4px 0 13px;padding:14px 82px 14px 15px;border:1px solid var(--todoBorder,#bdd5c6);border-radius:18px;background:linear-gradient(135deg,var(--todoSurface,#f8fcf9),var(--todoSoft,#e5f0e8));box-shadow:0 6px 15px rgba(16,105,71,.06);overflow:hidden}
+.todoSubHero strong{display:block;font-size:19px;line-height:1.06;color:var(--todoDeep,#376b55)}
+.todoSubHero small{display:block;margin-top:6px;color:#66897a;font-size:11px;line-height:1.25}
+.todoSubHero img{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:14px;object-fit:cover;box-shadow:0 5px 12px rgba(10,103,66,.13)}
+#modal.todoSubpageModal .modalBtns{position:sticky!important;bottom:0!important;padding:10px 0 max(10px,env(safe-area-inset-bottom))!important;background:linear-gradient(180deg,rgba(245,252,248,0),#f5fcf8 22%)!important}
+#modal.todoSubpageModal .btn{border-radius:13px!important;background:linear-gradient(135deg,#1bcf84,#0ba862)!important}
+#modal.todoSubpageModal .btn.secondary{background:#fff!important;color:#0d9460!important;border:1px solid #bfe8d3!important}
+
+/* Setup Conti */
+.setupSimple .onboardHeader{min-height:112px!important;padding:18px 88px 17px 18px!important;position:relative!important}
+.setupSimple .onboardHeader .onboardTop{position:absolute!important;left:18px!important;right:16px!important;top:12px!important}
+.setupSimple .onboardHeader .onboardTitle{margin-top:26px!important;font-size:28px!important}
+.setupSimple .onboardHeader .sub{font-size:11px!important;line-height:1.2!important}
+.setupWalletArt,.setupPiggyArt{position:absolute!important;right:14px!important;top:31px!important;width:58px!important;height:58px!important}
+.setupSimple .onboardCard{padding:10px 4px 13px!important}
+.setupSimple .onboardCard h2{display:block!important;margin:0 0 3px!important;padding:10px 12px 0!important;font-size:19px!important;color:#0b3260!important}
+.setupSimple .onboardHint{display:block!important;margin:0 0 8px!important;padding:0 12px 9px!important;font-size:10.5px!important;color:#6f8498!important;border-bottom:1px solid #e3eff7!important}
+.setupSimple .entryGridHead{margin-top:3px!important;padding:7px 8px!important;border-radius:11px!important;background:#eef7fd!important;color:#315c7e!important}
+.setupSimple .entryRow{margin-top:7px!important}
+
+#home .homeScene{position:relative!important;background:#e8f7ff!important;box-shadow:none!important;border-radius:50%!important;display:grid!important;place-items:center!important;color:#0b91e9!important;font-size:34px!important;font-weight:950!important}
+#home .homeScene:before{display:block!important;line-height:1!important}
+#home .incomeFeature .homeScene:before{content:'↑'}
+#home .expenseFeature .homeScene:before{content:'€';font-size:26px}
+#home .homeFeatureCard:after{width:44px!important;height:44px!important;border-radius:12px!important;right:11px!important;top:11px!important}
+#home .homeFeatureCard{min-height:170px!important;padding-top:14px!important}
+#home .homeFeatureText small{max-width:115px!important;line-height:1.18!important}
+
+body.todo-theme-dark .todoPage{background-color:#0b1813!important;background-image:linear-gradient(180deg,#0b1813,#10241b)!important}
+body.todo-theme-dark .todoHero.setup,body.todo-theme-dark .todoHero.hub,body.todo-theme-dark .todoHero.settings,body.todo-theme-dark .todoPanel,body.todo-theme-dark .todoSettingCard,body.todo-theme-dark .todoTaskRow,body.todo-theme-dark .todoDoneRow{background:#142a20!important;border-color:#265640!important}
+body.todo-theme-dark #modal.todoSubpageModal,body.todo-theme-dark #modal.todoSubpageModal .modalCard{background:#0d1c15!important}
+
+/* === MASTER SALDO INIZIALE === */
+#setup.setupCanonical{
+  margin:-18px -14px -78px!important;padding:0!important;min-height:100dvh!important;
+  background:#f5fbff!important;overflow:auto!important
+}
+#setup .canonicalCanvas.saldoMasterReady{
+  width:100%!important;max-width:560px!important;min-height:100dvh!important;height:auto!important;aspect-ratio:auto!important;
+  margin:0 auto!important;padding:22px 16px 96px!important;overflow:hidden!important;position:relative!important;
+  background:
+    radial-gradient(circle at 88% 7%,rgba(12,157,239,.15),transparent 22%),
+    linear-gradient(156deg,transparent 0 9%,rgba(35,181,240,.08) 9.3% 14%,transparent 14.4% 44%,rgba(18,136,238,.055) 44.3% 49%,transparent 49.3%),
+    linear-gradient(180deg,#fbfeff 0%,#f7fcff 64%,#edf8ff 100%)!important
+}
+#setup .saldoMasterShell{width:100%;display:flex;flex-direction:column;gap:18px;position:relative;z-index:2}
+#setup .saldoMasterTop{display:grid;grid-template-columns:40px 1fr;align-items:center;gap:4px;min-height:48px}
+#setup .saldoMasterTop h1{margin:0;color:#0a2b61;font-size:31px;line-height:1;font-weight:950;letter-spacing:-.7px}
+#setup .saldoMasterBack{
+  position:static!important;inset:auto!important;width:36px!important;height:36px!important;min-width:36px!important;padding:0!important;
+  border:0!important;background:transparent!important;color:#0a8be7!important;font-size:30px!important;line-height:1!important;display:grid!important;place-items:center!important
+}
+#setup .saldoMasterHero{
+  min-height:126px;display:grid;grid-template-columns:62px minmax(0,1fr) 58px;align-items:center;gap:12px;
+  padding:16px 14px;border:1.6px solid #25b8ea;border-radius:20px;background:
+  linear-gradient(155deg,transparent 0 56%,rgba(31,184,239,.10) 56.4% 66%,transparent 66.4%),
+  linear-gradient(135deg,#fbfeff,#edf9ff);box-shadow:0 8px 20px rgba(24,99,145,.08)
+}
+#setup .saldoMasterEuro,#setup .saldoMasterBigEuro{
+  width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#e8f7ff;color:#078df1;
+  font-size:33px;font-weight:950;box-shadow:0 6px 15px rgba(12,139,225,.12)
+}
+#setup .saldoMasterCopy strong{display:block;color:#09295e;font-size:19px;line-height:1.05;font-weight:950}
+#setup .saldoMasterCopy small{display:block;margin-top:7px;color:#71869b;font-size:12px;line-height:1.25;font-weight:600}
+#setup .saldoMasterHero img{width:58px;height:58px;border-radius:14px;object-fit:cover;box-shadow:0 6px 14px rgba(6,49,91,.15)}
+#setup .saldoMasterCard{
+  min-height:305px;padding:28px 16px 22px;display:flex;flex-direction:column;align-items:center;
+  border:1px solid #dfedf6;border-radius:18px;background:#fff;box-shadow:0 8px 22px rgba(28,91,132,.08)
+}
+#setup .saldoMasterBigEuro{width:70px;height:70px;font-size:40px;margin-bottom:14px}
+#setup .saldoMasterCard>strong{color:#112b55;font-size:18px;font-weight:900;margin-bottom:14px}
+#setup .saldoMasterInputWrap{width:100%;border:1.5px solid #cfe4f2;border-radius:14px;background:#fbfdff;padding:2px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+#setup .saldoMasterInput{
+  position:static!important;inset:auto!important;width:100%!important;height:74px!important;min-height:74px!important;padding:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;text-align:center!important;
+  color:#0e2658!important;font-size:34px!important;line-height:1!important;font-weight:950!important
+}
+#setup .saldoMasterCard .setupError{position:static!important;width:100%!important;margin-top:8px!important;text-align:center!important}
+#setup .saldoMasterCard>small{margin-top:18px;color:#7d91a4;font-size:11px;text-align:center}
+#setup .saldoMasterContinue{
+  position:static!important;inset:auto!important;width:100%!important;height:54px!important;min-height:54px!important;padding:0 18px!important;
+  display:grid!important;place-items:center!important;border:0!important;border-radius:14px!important;
+  color:#fff!important;background:linear-gradient(135deg,#0ea6f4,#0780f5)!important;font-size:16px!important;font-weight:900!important;
+  box-shadow:0 7px 16px rgba(8,126,231,.20)!important
+}
+#setup .saldoMasterContinue:after{content:'  →';font-size:18px}
+
+/* === MASTER SETUP ENTRATE / PAGAMENTI === */
+.setupSimple.masterSetupReady{
+  margin:-18px -14px -78px!important;padding:20px 16px 94px!important;min-height:100dvh!important;
+  background:
+    radial-gradient(circle at 95% 3%,rgba(16,171,240,.13),transparent 20%),
+    linear-gradient(155deg,transparent 0 9%,rgba(34,180,239,.07) 9.2% 14%,transparent 14.3% 47%,rgba(31,153,239,.045) 47.2% 52%,transparent 52.3%),
+    linear-gradient(180deg,#fbfeff,#f2faff)!important
+}
+.setupSimple.masterSetupReady .onboardHeader{
+  min-height:72px!important;margin:0!important;padding:0 2px 8px!important;border:0!important;border-radius:0!important;
+  background:transparent!important;box-shadow:none!important;color:#0a2b61!important
+}
+.setupSimple.masterSetupReady .onboardHeader .onboardTop{position:static!important;min-height:26px!important;display:block!important}
+.setupSimple.masterSetupReady .backText{font-size:14px!important;font-weight:800!important;color:#128ee5!important}
+.setupSimple.masterSetupReady .onboardTitle{margin:2px 0 0!important;font-size:31px!important;line-height:1!important;font-weight:950!important;color:#0a2b61!important;letter-spacing:-.6px!important}
+.setupSimple.masterSetupReady .onboardHeader .sub{display:none!important}
+.setupSimple.masterSetupReady .masterOnboardCard{position:relative!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.setupSimple.masterSetupReady .masterSetupLogo{
+  position:absolute!important;right:14px!important;top:15px!important;width:58px!important;height:58px!important;border-radius:14px!important;
+  background:url('assets/eds-blue.webp') center/cover no-repeat!important;box-shadow:0 5px 12px rgba(13,78,127,.15)!important;z-index:3
+}
+.setupSimple.masterSetupReady .masterSetupLogo>*{display:none!important}
+.setupSimple.masterSetupReady .masterOnboardCard h2{
+  min-height:66px!important;margin:0!important;padding:17px 84px 4px 66px!important;position:relative!important;
+  border:1.5px solid #22b8ea!important;border-bottom:0!important;border-radius:19px 19px 0 0!important;
+  background:linear-gradient(145deg,#fbfeff,#eef9ff)!important;color:#0a2b61!important;font-size:18px!important;line-height:1.08!important;font-weight:950!important
+}
+.setupSimple.masterSetupReady .masterOnboardCard h2:before{
+  content:'↑';position:absolute;left:15px;top:18px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  background:#e6f6ff;color:#078cf2;font-size:28px;font-weight:950;box-shadow:0 5px 12px rgba(8,132,226,.11)
+}
+#setupExpense.masterSetupReady .masterOnboardCard h2:before{content:'€';font-size:23px}
+.setupSimple.masterSetupReady .onboardHint{
+  display:block!important;min-height:48px!important;margin:0 0 12px!important;padding:2px 84px 14px 66px!important;
+  border:1.5px solid #22b8ea!important;border-top:0!important;border-radius:0 0 19px 19px!important;
+  background:linear-gradient(145deg,#fbfeff,#eef9ff)!important;color:#71869b!important;font-size:11px!important;line-height:1.22!important
+}
+.setupSimple.masterSetupReady .entryGridHead{
+  grid-template-columns:minmax(0,1.38fr) minmax(78px,.8fr) minmax(96px,.9fr) 30px!important;gap:7px!important;
+  margin:0!important;padding:9px 9px!important;border-radius:11px!important;background:#edf7fd!important;color:#305c7d!important;font-size:10.5px!important;font-weight:900!important
+}
+.setupSimple.masterSetupReady .entryRow{
+  grid-template-columns:minmax(0,1.38fr) minmax(78px,.8fr) minmax(96px,.9fr) 30px!important;gap:7px!important;
+  min-height:56px!important;margin-top:8px!important;padding:6px 7px!important;border:1px solid #e2edf5!important;border-radius:10px!important;background:#fff!important;box-shadow:0 3px 8px rgba(29,87,126,.035)!important
+}
+.setupSimple.masterSetupReady .entryRow input,.setupSimple.masterSetupReady .entryRow select{height:42px!important;min-height:42px!important;font-size:10.5px!important;border-radius:8px!important}
+.setupSimple.masterSetupReady .setupAddRow{height:50px!important;margin-top:12px!important;border:1.5px solid #1198e9!important;border-radius:12px!important;font-size:13px!important;font-weight:900!important;background:#fff!important;color:#087fd3!important}
+.setupSimple.masterSetupReady .setupContinue{height:52px!important;margin-top:10px!important;border-radius:13px!important;font-size:14px!important;font-weight:900!important}
+.setupSimple.masterSetupReady .setupSkip{margin-top:8px!important;font-size:11px!important;color:#7790a4!important}

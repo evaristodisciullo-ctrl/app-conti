@@ -72,6 +72,22 @@ jobs:
             await page.click('#settingsGuide');await shot('24-tutorial');
             await page.locator('#guideTopics button[data-topic="Entrate"]').click();await shot('25-guida-entrate');await page.click('#modalClose');
             await page.click('#settingsInfo');await shot('26-informazioni');await page.click('#modalClose');
+
+            /* Cose da fare */
+            await page.evaluate(()=>localStorage.clear());await page.reload();await page.waitForSelector('#landing:not(.hidden)');
+            await page.fill('#landingNickname','Eva');await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');await shot('27-todo-inserimento');
+            const first=page.locator('#todoSetupRows .todoSetupRow').first();
+            await first.locator('.todoDescInput').fill('Andare dal dentista');await first.locator('.todoDateInput').fill('domani');await first.locator('.todoDateInput').dispatchEvent('input');await first.locator('[data-tr="single"]').click();
+            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');await shot('28-todo-home');
+            await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('29-todo-in-scadenza');
+            await page.click('#todoActiveBack');await page.click('#todoHubDone');await page.waitForSelector('#todoDone:not(.hidden)');await shot('30-todo-fatte');
+            await page.click('#todoDoneBack');await page.click('#todoHubSettings');await page.waitForSelector('#todoSettings:not(.hidden)');await shot('31-todo-impostazioni');
+            await page.click('#todoSettingName');await shot('32-todo-tema');await page.click('#modalClose');
+            await page.click('#todoSettingColor');await shot('33-todo-colore');await page.click('#modalClose');
+            await page.click('#todoSettingNotifications');await shot('34-todo-notifiche');await page.click('#modalClose');
+            await page.click('#todoDeletePending');await shot('35-todo-backup');await page.click('#modalClose');
+            await page.click('#todoDeleteDone');await shot('36-todo-privacy');await page.click('#modalClose');
+            await page.click('#todoResetAll');await shot('37-todo-versione');await page.click('#modalClose');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
