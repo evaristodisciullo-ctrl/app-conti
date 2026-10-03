@@ -50,7 +50,14 @@ jobs:
                 entry('e1','expense','Fornitore Rossi S.r.l.',450,5,'Casa'),entry('e2','expense','Utenza Energia',128.5,10,'Bollette'),
                 entry('e3','expense','Affitto Sede',750,10,'Casa'),entry('e4','expense','Servizi Internet',89,10,'Bollette')
               ];
-              s.history=[{id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1500,date:dateFor(1),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''}];
+              s.history=[
+                {id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1500,date:dateFor(1),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''},
+                {id:'h2',entryId:'sample-rimborso',type:'income',name:'Rimborso spese',amount:320,date:dateFor(2),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Rimborsi',note:''},
+                {id:'h3',entryId:'sample-fornitore',type:'expense',name:'Fornitore Rossi S.r.l.',amount:450,date:dateFor(2),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Casa',note:''},
+                {id:'h4',entryId:'sample-energia',type:'expense',name:'Utenza Energia',amount:128.5,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Bollette',note:''},
+                {id:'h5',entryId:'sample-spesa',type:'expense',name:'Spesa supermercato',amount:52.38,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Spesa',note:''},
+                {id:'h6',entryId:'sample-interessi',type:'income',name:'Interessi bancari',amount:45,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Altro',note:''}
+              ];
               s.customCategories={income:['Interessi'],expense:['Spesa','Trasporti','Svago']};
               s.budgets={Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80};
               s.budgetPlans=[{effectiveMonth:ym,total:1600,limits:{Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80}}];
