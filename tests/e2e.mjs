@@ -584,6 +584,7 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   await page.click('#todoHubSettings');
   await page.waitForSelector('#todoSettings:not(.hidden)');
+  await page.locator('.todoManageDetails summary').click();
   await page.click('#todoSettingName');
   await page.waitForSelector('#modal:not(.hidden)');
   await page.fill('#todoNameInput','Marco');

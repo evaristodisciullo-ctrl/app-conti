@@ -29,7 +29,7 @@ jobs:
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:694},deviceScaleFactor:1});
-            const shot=async(name)=>page.screenshot({path:'visual/'+name+'.png',fullPage:true});
+            const shot=async(name)=>page.screenshot({path:'visual/'+name+'.png',fullPage:false});
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
             await page.evaluate(()=>localStorage.clear());await page.reload();
             await page.waitForSelector('#landing:not(.hidden)');await page.waitForSelector('#landingCanonicalImage[data-loaded="1"]',{state:'attached',timeout:15000});await shot('01-in-ordine');
