@@ -1,7 +1,7 @@
-const CACHE='in-ordine-v32';
+const CACHE='in-ordine-v33';
 const CORE=[
   './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
-  './approved-ui.css','./approved-ui-fix.css','./approved-ui-compat.css','./approved-ui.js','./approved-ui-fix.js','./approved-ui-compat.js',
+  './approved-ui.css','./approved-ui-fix.css','./approved-ui-home-final.css','./approved-ui-compat.css','./approved-ui.js','./approved-ui-fix.js','./approved-ui-compat.js',
   './assets/saldo-bg.webp','./assets/eds-blue.webp','./assets/eds-green.webp'
 ];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
