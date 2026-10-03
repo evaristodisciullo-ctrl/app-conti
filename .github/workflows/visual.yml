@@ -40,7 +40,8 @@ jobs:
 
             const today=new Date().toISOString().slice(0,10),ym=today.slice(0,7),day=Number(today.slice(8,10));
             const dateFor=d=>ym+'-'+String(d).padStart(2,'0');
-            await page.evaluate(({today,ym,dateFor})=>{
+            await page.evaluate(({today,ym})=>{
+              const dateFor=d=>ym+'-'+String(d).padStart(2,'0');
               const key='inOrdineContiV1',s=JSON.parse(localStorage.getItem(key));
               const entry=(id,type,name,amount,day,category)=>({id,type,name,amount,day,dateSpec:{kind:'day',iso:dateFor(day)},recurrence:{kind:'monthly',startMonth:ym},category,notify:false,note:'',notifyRule:null});
               s.entries=[
@@ -54,7 +55,7 @@ jobs:
               s.budgets={Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80};
               s.budgetPlans=[{effectiveMonth:ym,total:1600,limits:{Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80}}];
               s.balance=2012.97;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
-            },{today,ym,dateFor});
+            },{today,ym});
             await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('05-home');await shot('06-home-con-dati');
             await page.click('#homeIncome');await shot('07-elenco-entrate');await shot('06-elenco-entrate-master');
             await page.click('#flowAdd');await shot('08-aggiungi-entrata');await shot('08-nuova-entrata-master');await page.click('#modalClose');
