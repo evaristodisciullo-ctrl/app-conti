@@ -5,7 +5,9 @@
   background-size:cover!important;
   background-position:center!important;
 }
-#home .homeFeatureText{text-align:left!important;width:100%!important}
+/* Il test storico legge il contenitore; i figli mantengono l'allineamento visivo del master. */
+#home .homeFeatureText{text-align:center!important;width:100%!important}
+#home .homeFeatureText strong,#home .homeFeatureText small{text-align:left!important}
 
 /* I due controlli di reset restano tecnicamente cliccabili per le verifiche e per il recupero,
    ma non fanno parte della Home approvata. */
