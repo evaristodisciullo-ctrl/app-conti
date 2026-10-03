@@ -19,6 +19,43 @@
   }
   function setText(sel,text){const e=document.querySelector(sel);if(e&&e.textContent!==text)e.textContent=text}
 
+  function patchSaldoMaster(){
+    const setup=$('setup');if(!setup)return;
+    const canvas=setup.querySelector('.canonicalCanvas');if(!canvas||canvas.classList.contains('saldoMasterReady'))return;
+    const back=$('balanceBack'),input=$('startBalance'),err=$('setupError'),start=$('startBtn');
+    if(!back||!input||!err||!start)return;
+    const oldImage=canvas.querySelector('.saldoImage');if(oldImage)oldImage.style.display='none';
+
+    const shell=document.createElement('div');shell.className='saldoMasterShell';
+    const top=document.createElement('div');top.className='saldoMasterTop';
+    back.textContent='←';back.classList.add('saldoMasterBack');
+    const title=document.createElement('h1');title.textContent='Saldo iniziale';
+    top.append(back,title);
+
+    const hero=document.createElement('div');hero.className='saldoMasterHero';
+    hero.innerHTML='<span class="saldoMasterEuro">€</span><span class="saldoMasterCopy"><strong>Imposta il tuo saldo attuale</strong><small>Da qui parte il conteggio dei tuoi conti.</small></span><img src="assets/eds-blue.webp" alt="">';
+
+    const card=document.createElement('div');card.className='saldoMasterCard';
+    const icon=document.createElement('span');icon.className='saldoMasterBigEuro';icon.textContent='€';
+    const label=document.createElement('strong');label.textContent='Saldo attuale';
+    const wrap=document.createElement('div');wrap.className='saldoMasterInputWrap';
+    input.classList.add('saldoMasterInput');wrap.appendChild(input);
+    const note=document.createElement('small');note.textContent='Inserisci il denaro reale che hai adesso.';
+    card.append(icon,label,wrap,err,note);
+
+    start.textContent='Continua';start.classList.add('saldoMasterContinue');
+    shell.append(top,hero,card,start);
+    canvas.appendChild(shell);canvas.classList.add('saldoMasterReady');
+  }
+
+  function patchSetupMaster(sectionId,artSelector){
+    const section=$(sectionId);if(!section||section.classList.contains('masterSetupReady'))return;
+    const card=section.querySelector('.onboardCard'),art=section.querySelector(artSelector);
+    if(!card)return;
+    if(art){card.insertBefore(art,card.firstChild);art.classList.add('masterSetupLogo')}
+    card.classList.add('masterOnboardCard');section.classList.add('masterSetupReady');
+  }
+
   function ensureGreetingCompatibility(){
     const setup=$('todoSetup');if(!setup)return;
     const s=readState(),name=((s.profile&&s.profile.fullName)||'Evaristo').trim()||'Evaristo';
@@ -101,12 +138,15 @@
   function apply(){
     document.querySelectorAll('.miniPerson,.lpPerson,.lpHead,.lpBody').forEach(n=>n.remove());
     IDS.forEach(id=>ensureLogo($(id)));
+    patchSaldoMaster();
+    patchSetupMaster('setupIncome','.setupWalletArt');
+    patchSetupMaster('setupExpense','.setupPiggyArt');
     patchStaticTexts();patchSetupRows();patchSubpage();
   }
 
   function init(){
     apply();setTimeout(apply,0);
-    ['setupIncome','setupExpense','todoSetup','todoHub','todoActive','todoDone','todoSettings'].map(id=>$(id)).filter(Boolean).forEach(root=>{
+    ['setup','setupIncome','setupExpense','todoSetup','todoHub','todoActive','todoDone','todoSettings'].map(id=>$(id)).filter(Boolean).forEach(root=>{
       new MutationObserver(()=>setTimeout(apply,0)).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
     });
     const modal=$('modal');if(modal)new MutationObserver(()=>setTimeout(apply,0)).observe(modal,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
