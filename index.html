@@ -2436,6 +2436,14 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 .todoColorPreview strong{color:#172c23}.todoColorPreview>div>small{color:#758278}.todoColorPreview b{grid-column:2/4;justify-self:end;border:1px solid var(--todoBorder);border-radius:12px;background:var(--todoSoft);color:var(--todoDeep);padding:5px 8px;font-size:9px}
 .todoPreviewDot{width:10px;height:10px;border-radius:50%;background:var(--todoAccent)}
 
+
+.modal.fullSettings.todoSettingsModal{background:#f3fbf6!important}
+.modal.fullSettings.todoSettingsModal .modalCard{background:linear-gradient(180deg,#fbfffc,#effaf4)!important}
+.modal.fullSettings.todoSettingsModal .modalTitle{color:#102c21!important}
+.modal.fullSettings.todoSettingsModal .close{background:#e1f4e8!important;color:#167857!important}
+.modal.fullSettings.todoPrivacyModal .settingsSubRow{min-height:64px;border-color:#dceee2;border-radius:15px;background:rgba(255,255,255,.94)}
+.modal.fullSettings.todoPrivacyModal .settingsSubRow .settingsRowIcon{background:#def5e7!important;color:#13784b!important}
+
 </style>
 </head>
 <body>
@@ -5209,7 +5217,7 @@ function openTodoColorSettings(){
   const labels={'Verde E.D.S.':'Verde E.D.S. · identità principale','Smeraldo':'Un verde intenso ed elegante.','Menta':'Un tono fresco e luminoso.','Blu notte':'Un blu profondo e moderno.'};
   const draw=()=>'<div class="todoColorOptions">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i><span><strong>'+n+'</strong><small>'+labels[n]+'</small></span><b>'+(todoState().color===n?'✓':'')+'</b></button>').join('')+'</div>';
   openModal('Colore','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Personalizza i colori</strong><small>Scegli il colore principale della sezione Cose da fare.</small></div></div><div class="settingsSubTitle">SCEGLI IL COLORE PRINCIPALE</div>'+draw()+'<div class="todoColorPreview"><small>Anteprima</small><div><span class="todoPreviewDot"></span><strong>Pagare bolletta luce</strong><small>10 ott 2026</small><b>Segna come fatta</b></div></div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
-  $('modal').classList.add('fullSettings');
+  $('modal').classList.add('fullSettings','todoSettingsModal');
   let selected=todoState().color;
   document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{
     selected=b.dataset.tcolor;todoState().color=selected;applyTodoColor();
@@ -5224,14 +5232,15 @@ function openTodoThemeSettings(){
   const options=[['light','Chiaro','Interfaccia chiara e luminosa, per un’esperienza più piacevole.','☀'],['dark','Scuro','Interfaccia scura per ridurre l’affaticamento degli occhi.','◐'],['system','Segui il sistema','L’aspetto cambia in base alle impostazioni del dispositivo.','◉']];
   const draw=()=>'<div class="todoThemeOptions">'+options.map(([id,title,copy,icon])=>'<button class="todoThemeOption '+(selected===id?'active':'')+'" data-ttheme="'+id+'"><span class="todoThemeIcon">'+icon+'</span><span><strong>'+title+'</strong><small>'+copy+'</small></span><span class="todoThemeRadio">'+(selected===id?'✓':'')+'</span></button>').join('')+'</div>';
   openModal('Tema','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Scegli l’aspetto</strong><small>Segui il tema del dispositivo o scegli un aspetto fisso.</small></div></div>'+draw()+'<div class="modalBtns"><button id="todoThemeCancel" class="btn secondary">Annulla</button><button id="todoThemeSave" class="btn">Salva</button></div>');
-  $('modal').classList.add('fullSettings');
+  $('modal').classList.add('fullSettings','todoSettingsModal');
   document.querySelectorAll('[data-ttheme]').forEach(b=>b.onclick=()=>{selected=b.dataset.ttheme;todoState().theme=selected;applyTodoTheme();document.querySelectorAll('[data-ttheme]').forEach(x=>{x.classList.toggle('active',x===b);x.querySelector('.todoThemeRadio').textContent=x===b?'✓':''})});
   $('todoThemeCancel').onclick=()=>{todoState().theme=original;applyTodoTheme();closeModal()};
   $('todoThemeSave').onclick=()=>{todoState().theme=selected;save();applyTodoTheme();closeModal()};
 }
 function openTodoNotificationSettings(){
   const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'};
-  openModal('Notifiche Cose da fare','<label class="settingsSubRow"><span class="settingsRowIcon iOrange">🔔</span><span><strong>Notifiche generali</strong><small>Puoi spegnerle senza perdere le scelte delle singole voci</small></span><input id="todoGlobalNotify" class="settingToggle" type="checkbox" '+(n.enabled?'checked':'')+'></label>'+notificationRuleFields('todoGlobalRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoGlobalCancel" class="btn secondary">Annulla</button><button id="todoGlobalSave" class="btn">Salva</button></div>');
+  openModal('Notifiche','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Resta sempre in ordine</strong><small>Ricevi promemoria per le attività che vuoi tenere sotto controllo.</small></div></div><label class="settingsSubRow"><span class="settingsRowIcon iOrange">🔔</span><span><strong>Notifiche generali</strong><small>Puoi spegnerle senza perdere le scelte delle singole voci</small></span><input id="todoGlobalNotify" class="settingToggle" type="checkbox" '+(n.enabled?'checked':'')+'></label>'+notificationRuleFields('todoGlobalRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoGlobalCancel" class="btn secondary">Annulla</button><button id="todoGlobalSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings','todoSettingsModal');
   bindNotificationRuleFields('todoGlobalRule',rule);
   $('todoGlobalCancel').onclick=closeModal;$('todoGlobalSave').onclick=async()=>{n.enabled=$('todoGlobalNotify').checked;n.rule=readNotificationRuleFields('todoGlobalRule');save();closeModal();renderTodoSettings();if(n.enabled)await requestNotificationPermission()};
 }
@@ -5309,7 +5318,7 @@ $('todoSettingTheme').onclick=openTodoThemeSettings;
 $('todoSettingColor').onclick=openTodoColorSettings;
 $('todoSettingNotifications').onclick=openTodoNotificationSettings;
 $('todoSettingBackup').onclick=openBackupSettings;
-$('todoSettingPrivacy').onclick=openSecuritySettings;
+$('todoSettingPrivacy').onclick=()=>{openSecuritySettings();$('modal').classList.add('todoSettingsModal','todoPrivacyModal');$('modalTitle').textContent='Privacy';$('modalBody').insertAdjacentHTML('afterbegin','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>La tua privacy è importante</strong><small>Gestisci le impostazioni di sicurezza e proteggi i tuoi dati nella sezione Cose da fare.</small></div></div>')};
 $('todoSettingInfo').onclick=openAppInformation;
 $('todoSettingName').onclick=openTodoNameSettings;
 $('todoDeletePending').onclick=()=>confirmTodoDelete('pending');

@@ -77,11 +77,27 @@ jobs:
             await page.click('#settingsInfo');await shot('26-informazioni');await page.click('#modalClose');
             await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');await page.click('#homeBackLanding');await page.waitForSelector('#landing:not(.hidden)');
             await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
-            const todoRow=page.locator('#todoSetupRows .todoSetupRow').first();
-            await todoRow.locator('.todoDescInput').fill('Pagare bolletta luce');
-            await todoRow.locator('.todoDateInput').fill('10 ottobre novembre dicembre');
+            const todoRows=page.locator('#todoSetupRows .todoSetupRow');
+            const todoSamples=[
+              ['Pagare bolletta luce','10 ottobre novembre dicembre'],
+              ['Rinnovare documento','15 ottobre una volta'],
+              ['Prenotare visita medica','20 ottobre una volta'],
+              ['Fare revisione auto','21 ottobre una volta']
+            ];
+            for(let i=0;i<todoSamples.length;i++){
+              const row=todoRows.nth(i);
+              await row.locator('.todoDescInput').fill(todoSamples[i][0]);
+              await row.locator('.todoDateInput').fill(todoSamples[i][1]);
+            }
+            await page.click('#todoSetupAdd');
+            const fifth=todoRows.nth(4);
+            await fifth.locator('.todoDescInput').fill('Inviare documenti E.D.S.');
+            await fifth.locator('.todoDateInput').fill('24 ottobre una volta');
             await shot('15-todo-inserimento');
-            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
+            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+            await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+            await page.locator('.todoCompleteBtn').first().click();await page.locator('.todoCompleteBtn').first().click();
+            await page.click('#todoActiveBack');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
             await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('17-todo-in-scadenza');
             await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await shot('18-todo-cose-gia-fatte');
             await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');await shot('20-todo-impostazioni');
