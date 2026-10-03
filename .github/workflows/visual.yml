@@ -36,22 +36,26 @@ jobs:
             await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');await shot('02-saldo');
             await page.fill('#startBalance','1000');await page.click('#startBtn');await page.waitForSelector('#setupIncome:not(.hidden)');await shot('03-entrate-primo-inserimento');
             await page.click('#skipIncomeSetup');await page.waitForSelector('#setupExpense:not(.hidden)');await shot('04-pagamenti-primo-inserimento');
-            await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');await shot('05-home');
+            await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
 
             const today=new Date().toISOString().slice(0,10),ym=today.slice(0,7),day=Number(today.slice(8,10));
-            await page.evaluate(({today,ym,day})=>{
+            const dateFor=d=>ym+'-'+String(d).padStart(2,'0');
+            await page.evaluate(({today,ym,dateFor})=>{
               const key='inOrdineContiV1',s=JSON.parse(localStorage.getItem(key));
+              const entry=(id,type,name,amount,day,category)=>({id,type,name,amount,day,dateSpec:{kind:'day',iso:dateFor(day)},recurrence:{kind:'monthly',startMonth:ym},category,notify:false,note:'',notifyRule:null});
               s.entries=[
-                {id:'i1',type:'income',name:'Stipendio',amount:1400,day,dateSpec:{kind:'day',iso:today},recurrence:{kind:'monthly',startMonth:ym},category:'Lavoro',notify:false,note:'',notifyRule:null},
-                {id:'e1',type:'expense',name:'Mutuo',amount:387.03,day,dateSpec:{kind:'day',iso:today},recurrence:{kind:'monthly',startMonth:ym},category:'Casa',notify:false,note:'',notifyRule:null}
+                entry('i1','income','Stipendio',1500,1,'Lavoro'),entry('i2','income','Rimborso spese',320,15,'Rimborsi'),
+                entry('i3','income','Affitto immobile',750,20,'Affitti'),entry('i4','income','Interessi bancari',45,31,'Altro'),
+                entry('e1','expense','Fornitore Rossi S.r.l.',450,5,'Casa'),entry('e2','expense','Utenza Energia',128.5,10,'Bollette'),
+                entry('e3','expense','Affitto Sede',750,10,'Casa'),entry('e4','expense','Servizi Internet',89,10,'Bollette')
               ];
-              s.history=[
-                {id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1400,date:today,month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''},
-                {id:'h2',entryId:'e1',type:'expense',name:'Mutuo',amount:387.03,date:today,month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Casa',note:''}
-              ];
+              s.history=[{id:'h1',entryId:'i1',type:'income',name:'Stipendio',amount:1500,date:dateFor(1),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Lavoro',note:''}];
+              s.customCategories={income:['Interessi'],expense:['Spesa','Trasporti','Svago']};
+              s.budgets={Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80};
+              s.budgetPlans=[{effectiveMonth:ym,total:1600,limits:{Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80}}];
               s.balance=2012.97;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
-            },{today,ym,day});
-            await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('06-home-con-dati');
+            },{today,ym,dateFor});
+            await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('05-home');await shot('06-home-con-dati');
             await page.click('#homeIncome');await shot('07-elenco-entrate');await shot('06-elenco-entrate-master');
             await page.click('#flowAdd');await shot('08-aggiungi-entrata');await shot('08-nuova-entrata-master');await page.click('#modalClose');
             await page.click('#flowBack');await page.click('#homeExpense');await page.waitForSelector('.flowExpense .flowBanner[data-asset-loaded="1"]',{timeout:15000});await shot('09-elenco-pagamenti');await shot('07-elenco-pagamenti-master');
