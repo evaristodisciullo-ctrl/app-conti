@@ -2420,6 +2420,22 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 .setupSimple .setupContinue{height:52px!important;margin-top:8px!important;border-radius:999px!important;background:linear-gradient(135deg,#1085ff,#087bf5)!important;color:#fff!important;font-size:16px!important;font-weight:850!important;box-shadow:0 8px 17px rgba(8,123,245,.2)!important}
 .setupSimple .setupSkip{padding:6px!important;color:#3872a6!important;font-size:11px!important}
 
+
+.todoColorIntro{display:flex;align-items:center;gap:13px;padding:13px!important;background:linear-gradient(135deg,#fff,#effbf4)!important}
+.todoColorIntro img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none}
+.todoColorOptions{display:grid;gap:7px}
+.todoColorChoice{display:grid;grid-template-columns:40px minmax(0,1fr) 24px;gap:10px;align-items:center;text-align:left;min-height:59px;padding:8px 11px;border:1px solid #dbeae1;border-radius:14px;background:#fff;color:#18352a}
+.todoColorChoice i{width:34px;height:34px;border:0;box-shadow:0 0 0 4px #f1f8f4}
+.todoColorChoice strong{display:block;font-size:13px}.todoColorChoice small{display:block;margin-top:2px;color:#748278;font-size:10px}
+.todoColorChoice b{width:22px;height:22px;display:grid;place-items:center;border:1px solid #a9c7b7;border-radius:50%;font-size:13px;color:#fff}
+.todoColorChoice.active{border-color:#18a66c;background:#f2fbf5;outline:none}
+.todoColorChoice.active b{background:#129967;border-color:#129967}
+.todoColorPreview{margin-top:13px;padding:10px;border:1px solid #dbeae1;border-radius:14px;background:#f7fcf9}
+.todoColorPreview>small{display:block;margin-bottom:7px;color:#728278;font-size:10px;font-weight:800}
+.todoColorPreview>div{display:grid;grid-template-columns:12px 1fr auto;gap:5px;align-items:center;padding:9px;border:1px solid #e0eee6;border-radius:12px;background:#fff;font-size:10px}
+.todoColorPreview strong{color:#172c23}.todoColorPreview>div>small{color:#758278}.todoColorPreview b{grid-column:2/4;justify-self:end;border:1px solid var(--todoBorder);border-radius:12px;background:var(--todoSoft);color:var(--todoDeep);padding:5px 8px;font-size:9px}
+.todoPreviewDot{width:10px;height:10px;border-radius:50%;background:var(--todoAccent)}
+
 </style>
 </head>
 <body>
@@ -5190,34 +5206,24 @@ function renderTodoSettings(){
 }
 function openTodoColorSettings(){
   const choices=Object.entries(TODO_COLORS),original=todoState().color;
-  openModal('Colore dell’app','<div class="hint">Scegli il colore che preferisci per la sezione Cose da fare. Il colore cambia subito così puoi vedere l’anteprima.</div><div id="todoColorDots" class="todoColorDots">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i>'+n+'</button>').join('')+'</div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
+  const labels={'Verde E.D.S.':'Verde E.D.S. · identità principale','Smeraldo':'Un verde intenso ed elegante.','Menta':'Un tono fresco e luminoso.','Blu notte':'Un blu profondo e moderno.'};
+  const draw=()=>'<div class="todoColorOptions">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i><span><strong>'+n+'</strong><small>'+labels[n]+'</small></span><b>'+(todoState().color===n?'✓':'')+'</b></button>').join('')+'</div>';
+  openModal('Colore','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Personalizza i colori</strong><small>Scegli il colore principale della sezione Cose da fare.</small></div></div><div class="settingsSubTitle">SCEGLI IL COLORE PRINCIPALE</div>'+draw()+'<div class="todoColorPreview"><small>Anteprima</small><div><span class="todoPreviewDot"></span><strong>Pagare bolletta luce</strong><small>10 ott 2026</small><b>Segna come fatta</b></div></div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
+  $('modal').classList.add('fullSettings');
   let selected=todoState().color;
   document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{
-    selected=b.dataset.tcolor;
-    todoState().color=selected;
-    applyTodoColor();
-    document.querySelectorAll('[data-tcolor]').forEach(x=>x.classList.toggle('active',x===b));
+    selected=b.dataset.tcolor;todoState().color=selected;applyTodoColor();
+    document.querySelectorAll('[data-tcolor]').forEach(x=>{x.classList.toggle('active',x===b);x.querySelector('b').textContent=x===b?'✓':''});
     if($('todoColorSummary'))$('todoColorSummary').textContent='Colore scelto: '+selected;
   });
-  $('todoColorCancel').onclick=()=>{
-    todoState().color=original;
-    applyTodoColor();
-    closeModal();
-    renderTodoSettings();
-  };
-  $('todoColorSave').onclick=()=>{
-    todoState().color=selected;
-    save();
-    applyTodoColor();
-    closeModal();
-    renderTodoSettings();
-  };
+  $('todoColorCancel').onclick=()=>{todoState().color=original;applyTodoColor();closeModal();renderTodoSettings()};
+  $('todoColorSave').onclick=()=>{todoState().color=selected;save();applyTodoColor();closeModal();renderTodoSettings()};
 }
 function openTodoThemeSettings(){
   const original=todoState().theme||'light';let selected=original;
   const options=[['light','Chiaro','Interfaccia chiara e luminosa, per un’esperienza più piacevole.','☀'],['dark','Scuro','Interfaccia scura per ridurre l’affaticamento degli occhi.','◐'],['system','Segui il sistema','L’aspetto cambia in base alle impostazioni del dispositivo.','◉']];
   const draw=()=>'<div class="todoThemeOptions">'+options.map(([id,title,copy,icon])=>'<button class="todoThemeOption '+(selected===id?'active':'')+'" data-ttheme="'+id+'"><span class="todoThemeIcon">'+icon+'</span><span><strong>'+title+'</strong><small>'+copy+'</small></span><span class="todoThemeRadio">'+(selected===id?'✓':'')+'</span></button>').join('')+'</div>';
-  openModal('Tema','<div class="todoThemeIntro"><strong>Scegli l’aspetto dell’app</strong><small>Puoi seguire il tema del dispositivo o scegliere un aspetto fisso.</small></div>'+draw()+'<div class="modalBtns"><button id="todoThemeCancel" class="btn secondary">Annulla</button><button id="todoThemeSave" class="btn">Salva</button></div>');
+  openModal('Tema','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Scegli l’aspetto</strong><small>Segui il tema del dispositivo o scegli un aspetto fisso.</small></div></div>'+draw()+'<div class="modalBtns"><button id="todoThemeCancel" class="btn secondary">Annulla</button><button id="todoThemeSave" class="btn">Salva</button></div>');
   $('modal').classList.add('fullSettings');
   document.querySelectorAll('[data-ttheme]').forEach(b=>b.onclick=()=>{selected=b.dataset.ttheme;todoState().theme=selected;applyTodoTheme();document.querySelectorAll('[data-ttheme]').forEach(x=>{x.classList.toggle('active',x===b);x.querySelector('.todoThemeRadio').textContent=x===b?'✓':''})});
   $('todoThemeCancel').onclick=()=>{todoState().theme=original;applyTodoTheme();closeModal()};
