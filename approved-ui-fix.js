@@ -56,6 +56,14 @@
     card.classList.add('masterOnboardCard');section.classList.add('masterSetupReady');
   }
 
+  function patchFinanceSettingsMaster(){
+    const section=$('settings');if(!section||section.querySelector('.financeSettingsHero'))return;
+    const header=section.querySelector('.pageHeader');if(!header)return;
+    const hero=document.createElement('div');hero.className='financeSettingsHero';
+    hero.innerHTML='<img src="assets/eds-blue.webp" alt=""><span><strong>Personalizza la tua esperienza</strong><small>Gestisci le impostazioni della sezione Conti economici.</small></span>';
+    header.insertAdjacentElement('afterend',hero);
+  }
+
   function ensureGreetingCompatibility(){
     const setup=$('todoSetup');if(!setup)return;
     const s=readState(),name=((s.profile&&s.profile.fullName)||'Evaristo').trim()||'Evaristo';
@@ -141,16 +149,17 @@
     patchSaldoMaster();
     patchSetupMaster('setupIncome','.setupWalletArt');
     patchSetupMaster('setupExpense','.setupPiggyArt');
+    patchFinanceSettingsMaster();
     patchStaticTexts();patchSetupRows();patchSubpage();
   }
 
   function init(){
     apply();setTimeout(apply,0);
-    ['setup','setupIncome','setupExpense','todoSetup','todoHub','todoActive','todoDone','todoSettings'].map(id=>$(id)).filter(Boolean).forEach(root=>{
+    ['setup','setupIncome','setupExpense','settings','notifications','todoSetup','todoHub','todoActive','todoDone','todoSettings'].map(id=>$(id)).filter(Boolean).forEach(root=>{
       new MutationObserver(()=>setTimeout(apply,0)).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
     });
     const modal=$('modal');if(modal)new MutationObserver(()=>setTimeout(apply,0)).observe(modal,{attributes:true,attributeFilter:['class'],childList:true,subtree:true});
-    ['landingConti','startBtn','incomeSetupBack','saveIncomeSetup','skipIncomeSetup','landingTodo','todoHubPending','todoHubDone','todoHubSettings','todoGoSettings','todoDoneSettings','todoSettingName','todoSettingColor','todoSettingNotifications','todoDeletePending','todoDeleteDone','todoResetAll'].forEach(id=>{
+    ['landingConti','startBtn','incomeSetupBack','saveIncomeSetup','skipIncomeSetup','landingTodo','todoHubPending','todoHubDone','todoHubSettings','todoGoSettings','todoDoneSettings','todoSettingName','todoSettingColor','todoSettingNotifications','todoDeletePending','todoDeleteDone','todoResetAll','homeSettingsCard'].forEach(id=>{
       const b=$(id);if(b)b.addEventListener('click',()=>setTimeout(apply,0));
     });
   }
