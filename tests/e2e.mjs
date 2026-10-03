@@ -76,15 +76,15 @@ async function testApprovedOnboarding(browser){
   const inc=page.locator('#incomeRows .entryRow').first();
   assert.equal(await inc.locator('.rName').getAttribute('placeholder'),'Es. Stipendio');
   assert.equal(await inc.locator('.rAmount').getAttribute('placeholder'),'Es. 1.400 €');
-  assert.equal(await inc.locator('.rDateText').getAttribute('placeholder'),'Es. 10 del mese');
+  assert.equal(await inc.locator('.rDateText').getAttribute('placeholder'),'01/10/2026');
   await inc.locator('.rName').fill('Stipendio');await inc.locator('.rAmount').fill('1400');await inc.locator('.rDateText').fill('10 del mese');await inc.locator('.rDateText').blur();
   await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
-  assert.match(await page.locator('#setupExpense').innerText(),/Scrivi i tuoi pagamenti/);
+  assert.match(await page.locator('#setupExpense').innerText(),/Gestisci i tuoi pagamenti/);
   const exp=page.locator('#expenseRows .entryRow').first();
   assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Es. Mutuo');
   assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'Es. 387,03 €');
-  assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'Es. 1 del mese');
+  assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'05/10/2026');
   await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
