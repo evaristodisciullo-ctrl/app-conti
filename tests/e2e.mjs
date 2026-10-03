@@ -386,7 +386,7 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     assert.ok(card.borderTopWidth>=1,'Ogni card deve avere una cornice E.D.S.');
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
-    assert.match(card.backgroundImage,/eds-blue\.webp/,'Ogni card deve usare il logo E.D.S blu');
+    assert.match(card.backgroundImage,/eds-blue-approved\.png/,'Ogni card deve usare il logo E.D.S blu');
     assert.equal(card.textAlign,'center');
   }
   await context.close();
