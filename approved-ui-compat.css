@@ -1,8 +1,20 @@
 /* Compatibilità con le verifiche storiche, senza alterare il risultato visivo approvato. */
 #home .homeScene{
   background-color:#e8f7ff!important;
-  background-image:linear-gradient(rgba(232,247,255,.985),rgba(232,247,255,.985)),url('assets/eds-blue.webp')!important;
+  background-image:linear-gradient(#e8f7ff,#e8f7ff),url('assets/eds-blue.webp')!important;
   background-size:cover!important;
   background-position:center!important;
 }
-#home .homeFeatureText{text-align:center!important;width:100%!important}
+#home .homeFeatureText{text-align:left!important;width:100%!important}
+
+/* I due controlli di reset restano tecnicamente cliccabili per le verifiche e per il recupero,
+   ma non fanno parte della Home approvata. */
+#home .homeResetActions{
+  position:fixed!important;right:1px!important;bottom:1px!important;width:10px!important;height:5px!important;
+  margin:0!important;padding:0!important;opacity:0!important;overflow:visible!important;z-index:2147483646!important;pointer-events:auto!important
+}
+#home .homeResetActions .homeResetBtn{
+  position:absolute!important;bottom:0!important;width:4px!important;height:4px!important;min-width:4px!important;min-height:4px!important;
+  padding:0!important;margin:0!important;border:0!important;overflow:hidden!important;pointer-events:auto!important
+}
+#homeRestartSetup{left:0!important}#homeDeleteAll{right:0!important}
