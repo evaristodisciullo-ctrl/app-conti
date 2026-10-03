@@ -534,7 +534,7 @@ async function testTodoSection(browser){
   await page.waitForSelector('#modal:not(.hidden)');
   const beforeTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    page:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
     hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
     card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
     pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,
@@ -544,7 +544,7 @@ async function testTodoSection(browser){
   await page.click('[data-tcolor="Menta"]');
   const previewTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
-    page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
+    page:getComputedStyle(document.documentElement).getPropertyValue('--todoBg').trim(),
     hero:getComputedStyle(document.querySelector('#todoSettings .todoHero.settings')).backgroundImage,
     card:getComputedStyle(document.getElementById('todoSettingName')).backgroundColor,
     pending:getComputedStyle(document.getElementById('todoHubPending')).backgroundImage,

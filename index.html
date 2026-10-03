@@ -2320,9 +2320,9 @@ button{ -webkit-tap-highlight-color:transparent }
 .todoPage{background:
  radial-gradient(circle at 92% 2%,rgba(61,203,147,.09) 0 100px,transparent 101px),
  linear-gradient(155deg,transparent 0 16%,rgba(49,193,132,.045) 17% 22%,transparent 23% 48%,rgba(49,193,132,.04) 49% 54%,transparent 55%),
- linear-gradient(180deg,#fcfffd,#f4fbf7)!important}
+ linear-gradient(180deg,#fcfffd,var(--todoBg,#f4fbf7))!important}
 .todoTop h1{color:#102c21!important}.todoBack{color:#167857!important}
-.todoHero{border:1px solid #c6ead7!important;background:linear-gradient(180deg,#fff,#f0fbf5)!important;box-shadow:0 5px 14px rgba(18,112,74,.045)!important}
+.todoHero{border:1px solid #c6ead7!important;background:linear-gradient(180deg,#fff,var(--todoBg,#f0fbf5))!important;box-shadow:0 5px 14px rgba(18,112,74,.045)!important}
 .todoHero.setup,.todoHero.settings{padding-right:86px!important}
 .todoHero.setup strong,.todoHero.settings strong,.todoHero.active strong,.todoHero.done strong{color:#102c21!important}
 .todoHero.active,.todoHero.done{padding-left:20px!important}
@@ -2330,8 +2330,8 @@ button{ -webkit-tap-highlight-color:transparent }
 .todoHeroArt{width:46px!important;height:46px!important;right:13px!important;top:13px!important;border-radius:10px!important}
 .todoHeroArt img{width:46px!important;height:46px!important;object-fit:cover!important;border-radius:10px!important}
 .todoHubGrid{grid-template-columns:1fr 1fr!important;gap:12px!important}
-.todoHubCard{border:1px solid #bce8d2!important;background:#fff!important;box-shadow:0 5px 15px rgba(18,112,74,.045)!important;color:#142d50!important}
-.todoHubCard.pending,.todoHubCard.completed{grid-column:auto!important;min-height:170px!important;display:block!important;padding:14px!important;background:linear-gradient(155deg,#fff,#f0fbf5)!important}
+.todoHubCard{border:1px solid var(--todoBorder,#bce8d2)!important;background:var(--todoSurface,#fff)!important;box-shadow:0 5px 15px rgba(18,112,74,.045)!important;color:#142d50!important}
+.todoHubCard.pending,.todoHubCard.completed{grid-column:auto!important;min-height:170px!important;display:block!important;padding:14px!important;background:linear-gradient(155deg,#fff,var(--todoBg,#f0fbf5))!important}
 .todoHubCard.pending:before,.todoHubCard.completed:before{content:none!important;display:none!important}
 .todoHubCard.pending>span:first-child,.todoHubCard.completed>span:first-child{display:block!important;padding:67px 0 0!important;text-align:left!important}
 .todoHubCard strong{color:#142d50!important;font-size:16px!important}
@@ -2356,7 +2356,7 @@ button{ -webkit-tap-highlight-color:transparent }
 .todoBigBtn.add{background:#f0ebff!important;color:#5945a8!important}
 .todoBigBtn.save{background:#e8f6ee!important;color:#24533c!important}
 .todoDoneStatus{background:#def4e6!important;color:#17804b!important}
-.todoSettingCard{background:#fff!important;border:1px solid #e2ede7!important;box-shadow:0 4px 12px rgba(30,82,58,.035)!important}
+.todoSettingCard{background:var(--todoSurface,#fff)!important;border:1px solid var(--todoBorder,#e2ede7)!important;box-shadow:0 4px 12px rgba(30,82,58,.035)!important}
 .todoSettingCard .i{background:#e9f4ff!important;color:#2081c2!important;border-radius:50%!important}
 .todoSettingCard:nth-child(1) .i{background:#f0ebff!important;color:#7756c6!important}
 .todoSettingCard:nth-child(2) .i{background:#e0f8f0!important;color:#149c76!important}
