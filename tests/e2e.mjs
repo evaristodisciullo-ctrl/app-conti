@@ -541,7 +541,7 @@ async function testTodoSection(browser){
     done:getComputedStyle(document.getElementById('todoHubDone')).backgroundImage,
     notify:getComputedStyle(document.getElementById('todoHubNotifications')).backgroundImage
   }));
-  await page.click('[data-tcolor="Viola"]');
+  await page.click('[data-tcolor="Menta"]');
   const previewTheme=await page.evaluate(()=>({
     accent:getComputedStyle(document.documentElement).getPropertyValue('--todoAccent').trim(),
     page:getComputedStyle(document.getElementById('todoSettings')).backgroundColor,
@@ -559,7 +559,7 @@ async function testTodoSection(browser){
   assert.equal(previewTheme.done,beforeTheme.done,'Cose già fatte deve mantenere il verde funzionale');
   assert.equal(previewTheme.notify,beforeTheme.notify,'Notifiche deve mantenere il rosa/rosso funzionale');
   await page.click('#todoColorSave');
-  assert.equal((await state(page)).todo.color,'Viola');
+  assert.equal((await state(page)).todo.color,'Menta');
 
   await context.close();
 }
@@ -797,6 +797,41 @@ async function testTodoMonthYearFilters(browser){
   await context.close();
 }
 
+async function testApprovedMasterRules(browser){
+  const {context,page}=await freshPage(browser);
+  await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+  const row=page.locator('#todoSetupRows .todoSetupRow').first();
+  await row.locator('.todoDescInput').fill('Pagare bolletta luce');
+  await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+  assert.match(await page.locator('#todoHubPendingArt img').getAttribute('src'),/eds-green-approved\.png$/);
+  const hubRules=await page.evaluate(()=>({
+    pending:getComputedStyle(document.querySelector('#todoHubPending'),'::before').content,
+    completed:getComputedStyle(document.querySelector('#todoHubDone'),'::before').content,
+    logos:[...document.querySelectorAll('#todoHubPendingArt img,#todoHubDoneArt img')].map(x=>x.getAttribute('src')),
+    personImages:[...document.querySelectorAll('#todoHub img')].filter(x=>/male|female|person/i.test(x.getAttribute('src')||'')).length
+  }));
+  assert.equal(hubRules.pending,'none');assert.equal(hubRules.completed,'none');
+  assert.equal(hubRules.personImages,0);assert.equal(hubRules.logos.length,2);
+  assert.ok(hubRules.logos.every(x=>x.endsWith('eds-green-approved.png')));
+
+  await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
+  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.color,'rgb(35, 75, 54)');assert.equal(completeStyle.shadow,'none');
+  assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
+  await page.locator('.todoCompleteBtn').first().click();
+  await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');
+  await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
+
+  await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');
+  await page.click('[data-ttheme="dark"]');await page.click('#todoThemeSave');
+  assert.equal((await state(page)).todo.theme,'dark');assert.equal(await page.locator('body').getAttribute('data-todo-theme'),'dark');
+  await page.click('#todoSettingBackup');await page.waitForSelector('#backupLocal');await page.click('#backupLocal');
+  const backup=await page.evaluate(k=>JSON.parse(localStorage.getItem(k+'_local_copy')),KEY);
+  assert.equal(backup.data.todo.theme,'dark');assert.equal(backup.data.todo.done.length,1);
+  await page.click('#modalClose');
+  await context.close();
+}
+
 async function testFlowBannerIsSingleCard(browser){
   const {context,page}=await freshPage(browser);
   await setup(page,1000);
@@ -871,6 +906,7 @@ try{
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
+  await testApprovedMasterRules(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
