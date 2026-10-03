@@ -1,4 +1,4 @@
-const CACHE='in-ordine-v33';
+const CACHE='in-ordine-v34';
 const CORE=[
   './','./index.html','./manifest.webmanifest','./icon.svg','./native-bridge.js',
   './approved-ui.css','./approved-ui-fix.css','./approved-ui-home-final.css','./approved-ui-compat.css','./approved-ui.js','./approved-ui-fix.js','./approved-ui-compat.js',
