@@ -42,3 +42,28 @@ const wire=()=>{if(document.documentElement.dataset.todoDecorators)return;docume
 const install=()=>{if(!document.getElementById('todoLockedStylePatch')){const s=document.createElement('style');s.id='todoLockedStylePatch';s.textContent=css;document.head.appendChild(s)}wire()};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
+
+(function(){
+const KEY='inOrdineContiV1';
+const q=id=>document.getElementById(id);
+const style=document.createElement('style');style.id='todoQuickFilterStyle';style.textContent=`
+#todoActive .todoFilterBar,#todoDone .todoFilterBar{display:flex!important;grid-template-columns:none!important;gap:7px!important;align-items:center!important}
+.todoQuickFilter{flex:1;min-height:38px;border:1px solid #cfe6da;border-radius:999px;background:#fff;color:#3f5e50;font-size:10.5px;font-weight:850;padding:7px 8px;white-space:nowrap}
+.todoQuickFilter.active{background:#168d61;color:#fff;border-color:#168d61}
+.todoAdvancedFilters{margin:2px 0 8px;border:0;background:transparent}.todoAdvancedFilters summary{list-style:none;text-align:right;color:#6d8177;font-size:10px;font-weight:800;cursor:pointer;padding:2px 5px}.todoAdvancedFilters summary::-webkit-details-marker{display:none}.todoAdvancedFilters summary:before{content:'＋ ';color:#168d61}.todoAdvancedFilters[open] summary:before{content:'− '}.todoAdvancedFilterInner{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px}.todoAdvancedFilterInner .todoFilterSelect{width:100%!important}
+#todoSetup:not(.hidden){scroll-margin-top:0}
+`;
+document.head.appendChild(style);
+const localDateISO=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return y+'-'+m+'-'+day};
+const monday=d=>{const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()),n=(x.getDay()+6)%7;x.setDate(x.getDate()-n);return x};
+const within=(iso,a,b)=>!!iso&&iso>=localDateISO(a)&&iso<=localDateISO(b);
+function data(kind){try{const s=JSON.parse(localStorage.getItem(KEY)||'{}');return kind==='active'?(s.todo?.tasks||[]):(s.todo?.done||[])}catch(e){return[]}}
+function rowName(row){return (row.querySelector('strong')?.textContent||'').trim()}
+function matchItem(kind,name){return data(kind).find(x=>(x.description||'').trim()===name)}
+function apply(kind,mode){const list=q(kind==='active'?'todoActiveList':'todoDoneList');if(!list)return;const now=new Date(),start=monday(now),end=new Date(start);end.setDate(end.getDate()+6);const monthStart=new Date(now.getFullYear(),now.getMonth(),1),monthEnd=new Date(now.getFullYear(),now.getMonth()+1,0);[...list.children].forEach(row=>{if(!row.classList.contains(kind==='active'?'todoTaskRow':'todoDoneRow'))return;const item=matchItem(kind,rowName(row));const iso=kind==='active'?item?.date:item?.completedAt;let show=true;if(mode==='today')show=iso===localDateISO(now);else if(mode==='week')show=within(iso,start,end);else if(mode==='month')show=within(iso,monthStart,monthEnd);row.style.display=show?'':'none'});const root=q(kind==='active'?'todoActive':'todoDone');root?.querySelectorAll('.todoQuickFilter').forEach(b=>b.classList.toggle('active',b.dataset.quick===mode))}
+function resetAdvanced(kind){const prefix=kind==='active'?'todoActive':'todoDone',m=q(prefix+'FilterMonth'),y=q(prefix+'FilterYear');if(m&&m.value!=='all'){m.value='all';m.dispatchEvent(new Event('change',{bubbles:true}))}if(y&&y.value!=='all'){y.value='all';y.dispatchEvent(new Event('change',{bubbles:true}))}}
+function decorate(kind){const prefix=kind==='active'?'todoActive':'todoDone',root=q(prefix.replace('Filter','')),bar=root?.querySelector('.todoFilterBar'),all=q(prefix+'FilterAll'),m=q(prefix+'FilterMonth'),y=q(prefix+'FilterYear');if(!root||!bar||!all||!m||!y||bar.dataset.quickReady)return;bar.dataset.quickReady='1';all.classList.add('todoQuickFilter');all.dataset.quick='all';all.textContent='Tutte';const labels=kind==='active'?[['today','Oggi'],['week','Questa settimana']]:[['today','Oggi'],['week','Questa settimana'],['month','Questo mese']];labels.forEach(([mode,label])=>{const b=document.createElement('button');b.className='todoQuickFilter';b.dataset.quick=mode;b.textContent=label;b.type='button';b.addEventListener('click',()=>{resetAdvanced(kind);setTimeout(()=>apply(kind,mode),0)});bar.appendChild(b)});all.addEventListener('click',()=>setTimeout(()=>apply(kind,'all'),0));const details=document.createElement('details');details.className='todoAdvancedFilters';details.innerHTML='<summary>Filtri mese e anno</summary><div class="todoAdvancedFilterInner"></div>';const inner=details.querySelector('div');inner.append(m,y);bar.after(details);const list=q(kind==='active'?'todoActiveList':'todoDoneList');if(list)new MutationObserver(()=>{const current=root.querySelector('.todoQuickFilter.active')?.dataset.quick||'all';apply(kind,current)}).observe(list,{childList:true});apply(kind,'all')}
+function onScreen(){['active','done'].forEach(decorate);const setup=q('todoSetup');if(setup&&!setup.classList.contains('hidden')){window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}}
+function start(){onScreen();['todoSetup','todoActive','todoDone'].forEach(id=>{const el=q(id);if(el)new MutationObserver(onScreen).observe(el,{attributes:true,attributeFilter:['class']})})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
