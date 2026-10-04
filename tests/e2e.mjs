@@ -170,9 +170,9 @@ async function testFinanceManualDatesAndMovements(browser){
   let s=await state(page);assert.equal(s.balance,1040);assert.equal(s.history.some(h=>h.type==='adjustment'),true);
 
   await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');
-  assert.equal(await page.locator('.movementQuickTab').count(),4);assert.equal(await page.locator('.movementRow').count(),3);
-  await page.locator('[data-movement-type="income"]').click();assert.equal(await page.locator('.movementRow').count(),1);
-  await page.locator('[data-movement-type="all"]').click();
+  assert.equal(await page.locator('.movementQuickTab:not(.movementAdvancedFilter)').count(),5);assert.equal(await page.locator('.movementRow').count(),3);
+  await page.locator('[data-movement-status="income-done"]').click();assert.equal(await page.locator('.movementRow').count(),1);
+  await page.locator('[data-movement-status="all"]').click();
   await page.click('#movementsFilters');await page.locator('#mfTypeChoices button[data-v="expense"]').click();await page.click('#mfApply');
   assert.equal(await page.locator('.movementRow').count(),1);assert.match(await page.locator('.movementRow').innerText(),/Test pagamento/);
 
