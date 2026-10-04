@@ -92,9 +92,9 @@ jobs:
             await shot('15-todo-inserimento');
             await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
             await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
-            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoActiveBack');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
+            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoActiveBack');await page.waitForSelector('#todoHub:not(.hidden)');await page.waitForTimeout(3200);await shot('16-todo-home');
             await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('17-todo-in-scadenza');
-            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await shot('18-todo-cose-gia-fatte');
+            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await page.waitForTimeout(3200);await shot('18-todo-cose-gia-fatte');
             await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
             await page.click('#todoSettingNotifications');await page.waitForSelector('#modal:not(.hidden)');await shot('19-todo-notifiche');await page.click('#modalClose');
             await shot('20-todo-impostazioni');
