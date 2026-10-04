@@ -2455,7 +2455,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #setupIncome .entryGridHead,#setupExpense .entryGridHead{grid-template-columns:minmax(0,1.55fr) .75fr .8fr!important;gap:6px!important}
 #setupIncome .entryRow,#setupExpense .entryRow{grid-template-columns:minmax(0,1.55fr) .75fr .8fr!important;gap:6px!important}
 #setupIncome .entryRow>*:nth-child(n+4),#setupExpense .entryRow>*:nth-child(n+4){grid-column:1/-1}
-#setupIncome .setupRecChoices,#setupExpense .setupRecChoices{display:none!important}
+#setupIncome .setupRecChoices,#setupExpense .setupRecChoices{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;margin:2px 0 6px!important}
 #setupIncome .setupAddRow,#setupExpense .setupAddRow{border:1px solid #bcdff5!important;background:#f7fcff!important;border-radius:12px!important;margin-top:8px!important}
 #setupIncome .setupContinue,#setupExpense .setupContinue{margin-top:8px!important}
 #setupIncome .setupSkip,#setupExpense .setupSkip{display:block!important;margin-top:18px!important;color:#5f7890!important;font-size:11px!important}
