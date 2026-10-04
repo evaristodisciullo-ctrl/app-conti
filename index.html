@@ -2556,6 +2556,13 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 .movementMasterStat.expense strong{color:#e82432}.movementListTitle{font-size:12px;font-weight:950;letter-spacing:1px;color:#4c6590;margin:4px 3px 8px}
 #movements #movementFilteredTotal{margin-top:9px!important;justify-content:space-between!important;border-radius:14px!important;padding:11px 14px!important;font-weight:950!important;background:#f6f3ff!important}
 #movements #movementFilteredTotal strong{font-size:18px;color:#087bf5}#movements #movementFilteredTotal strong.neg{color:#e82432}
+/* PR5 MOVEMENTS MASTER FILTERS */
+#movements .movementQuickTabs{grid-template-columns:repeat(5,1fr)!important;gap:6px!important}
+#movements .movementQuickTab{font-size:10.5px!important;padding:8px 3px!important;min-height:42px!important}
+#movements .movementAdvancedFilter{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;padding:0!important;border:0!important}
+#movements .movementMasterSummary{padding:10px!important}
+#movements .movementMasterStat{min-height:62px!important}
+#movements #allMovements .movementRow{min-height:68px!important;border-radius:15px!important}
 </style>
 </head>
 <body>
@@ -2827,10 +2834,12 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 <section id="movements" class="screen hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="movementsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Movimenti</h1></div></div>
   <div class="movementQuickTabs">
-    <button class="movementQuickTab active" data-movement-type="all">Tutte</button>
-    <button class="movementQuickTab" data-movement-type="income">Entrate</button>
-    <button class="movementQuickTab" data-movement-type="expense">Uscite</button>
-    <button id="movementsFilters" class="movementQuickTab">Filtra</button>
+    <button class="movementQuickTab active" data-movement-status="all">Tutte</button>
+    <button class="movementQuickTab" data-movement-status="income-pending">Da ricevere</button>
+    <button class="movementQuickTab" data-movement-status="income-done">Ricevute</button>
+    <button class="movementQuickTab" data-movement-status="expense-pending">Da pagare</button>
+    <button class="movementQuickTab" data-movement-status="expense-done">Pagati</button>
+    <button id="movementsFilters" class="movementQuickTab movementAdvancedFilter">Filtra</button>
   </div>
   <div id="movementFilterSummary" class="filterSummary"></div>
   <div class="movementMasterMonth"><button id="movementPrev" aria-label="Mese precedente">‹</button><strong id="movementMonth"></strong><button id="movementNext" aria-label="Mese successivo">›</button></div>
@@ -2942,6 +2951,7 @@ if(!state.todo.notifications.sent)state.todo.notifications.sent={};if(state.noti
 let currentFlow='income',flowFilter='all',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow();
 let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary',revisitSetupMode=false;
 let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};
+let movementStatus='all';
 let movementMonth=ymNow();let undoSnackTimer=null,undoSnackHistoryId=null;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62',Arancione:'#e58a2c'};
@@ -4667,7 +4677,13 @@ function movementFilterText(){
 }
 function renderMovements(){
   let arr=filteredMovements().filter(x=>x.month===movementMonth);
-  document.querySelectorAll('[data-movement-type]').forEach(b=>b.classList.toggle('active',b.dataset.movementType===movementFilters.type));
+  const entryFor=x=>state.entries.find(e=>e.id===x.entryId);
+  const isDone=x=>!!x.id;
+  if(movementStatus==='income-pending') arr=state.entries.filter(e=>e.type==='income').filter(e=>!state.history.some(h=>h.entryId===e.id&&h.month===movementMonth)).map(e=>({entryId:e.id,type:'income',name:e.name,amount:e.amount,date:(e.dateSpec?.iso||movementMonth+'-'+String(e.day||1).padStart(2,'0')),month:movementMonth,category:e.category,_pending:true}));
+  else if(movementStatus==='expense-pending') arr=state.entries.filter(e=>e.type==='expense').filter(e=>!state.history.some(h=>h.entryId===e.id&&h.month===movementMonth)).map(e=>({entryId:e.id,type:'expense',name:e.name,amount:e.amount,date:(e.dateSpec?.iso||movementMonth+'-'+String(e.day||1).padStart(2,'0')),month:movementMonth,category:e.category,_pending:true}));
+  else if(movementStatus==='income-done') arr=arr.filter(x=>x.type==='income'&&isDone(x));
+  else if(movementStatus==='expense-done') arr=arr.filter(x=>x.type==='expense'&&isDone(x));
+  document.querySelectorAll('[data-movement-status]').forEach(b=>b.classList.toggle('active',b.dataset.movementStatus===movementStatus));
   const advancedActive=movementFilters.category!=='all'||movementFilters.period!=='all';
   $('movementsFilters').classList.toggle('filterActive',advancedActive);
   $('movementFilterSummary').innerHTML='';
@@ -5496,6 +5512,7 @@ $('homeAllMovements').onclick=()=>{movementReturn='home';show('movements')};
 $('homeFilters').onclick=()=>{movementReturn='home';show('movements');openMovementFilters()};
 document.querySelectorAll('[data-movement-type]').forEach(b=>b.onclick=()=>{movementFilters.type=b.dataset.movementType;renderMovements()});
 $('movementsFilters').onclick=openMovementFilters;
+document.querySelectorAll('[data-movement-status]').forEach(b=>b.onclick=()=>{movementStatus=b.dataset.movementStatus;renderMovements()});
 $('movementPrev').onclick=()=>{movementMonth=shiftMonth(movementMonth,-1);renderMovements()};
 $('movementNext').onclick=()=>{movementMonth=shiftMonth(movementMonth,1);renderMovements()};
 $('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
