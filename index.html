@@ -2563,6 +2563,14 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #movements .movementMasterSummary{padding:10px!important}
 #movements .movementMasterStat{min-height:62px!important}
 #movements #allMovements .movementRow{min-height:68px!important;border-radius:15px!important}
+/* PR5 FINAL MASTER ALIGNMENT */
+#flow .flowBalanceCompat{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+#todoSettings .todoSettingCard:nth-child(1) .i{background:#f1e9ff!important;color:#7251b5!important}
+#todoSettings .todoSettingCard:nth-child(2) .i{background:#e1f8f2!important;color:#159b86!important}
+#todoSettings .todoSettingCard:nth-child(3) .i{background:#e7f2ff!important;color:#2379d8!important}
+#todoSettings .todoSettingCard:nth-child(4) .i{background:#eaf6ff!important;color:#2b83c6!important}
+#todoSettings .todoSettingCard:nth-child(5) .i{background:#eeeaff!important;color:#5145a8!important}
+#todoSettings .todoSettingCard:nth-child(6) .i{background:#edf1f5!important;color:#607080!important}
 </style>
 </head>
 <body>
@@ -2816,7 +2824,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
     <button id="flowAdd" class="flowBannerAdd">+ Aggiungi entrata</button>
     <span id="flowBannerIcon" class="flowBannerVisual" aria-hidden="true"></span>
   </div>
-  <div class="flowCurrentBalance"><span>SALDO ATTUALE</span><strong id="flowCurrentBalanceValue">€ 0,00</strong></div>
+  <div class="flowCurrentBalance flowBalanceCompat" aria-hidden="true"><span>SALDO ATTUALE</span><strong id="flowCurrentBalanceValue">€ 0,00</strong></div>
   <div class="flowMonthBar" aria-label="Seleziona mese">
     <button id="flowPrevMonth" class="flowMonthArrow" aria-label="Mese precedente">‹</button>
     <div id="flowMonthLabel" class="flowMonthLabel"></div>
