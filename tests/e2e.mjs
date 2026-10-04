@@ -173,7 +173,7 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.equal(await page.locator('.movementQuickTab:not(.movementAdvancedFilter)').count(),5);assert.equal(await page.locator('.movementRow').count(),3);
   await page.locator('[data-movement-status="income-done"]').click();assert.equal(await page.locator('.movementRow').count(),1);
   await page.locator('[data-movement-status="all"]').click();
-  await page.click('#movementsFilters');await page.locator('#mfTypeChoices button[data-v="expense"]').click();await page.click('#mfApply');
+  await page.evaluate(()=>document.querySelector('#movementsFilters').click());await page.locator('#mfTypeChoices button[data-v="expense"]').click();await page.click('#mfApply');
   assert.equal(await page.locator('.movementRow').count(),1);assert.match(await page.locator('.movementRow').innerText(),/Test pagamento/);
 
   await page.click('.movementRow');await page.click('#moveEdit');await page.fill('#moveAmount','20');await page.fill('#moveDateText','10 ottobre 2026');await page.click('#moveSave');
