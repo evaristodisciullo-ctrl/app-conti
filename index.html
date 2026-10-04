@@ -2799,6 +2799,14 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #notifications .notifyScopeOption.active .notifyRadio{background:#087cf0!important}
 #notifications .notifyScopeOption.active .notifyRadio:after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;right:2px;top:2px}
 
+
+#settings .settingsGroupTitle{display:none!important}
+#settings #settingsEditBalance,#settings #settingsIncome,#settings #settingsExpense,#settings #settingsCategories,#settings #settingsGuide,#settings #settingsOther{display:none!important}
+#settings .settingsGroup{margin:0!important}
+#settings .settingsMenu{box-shadow:none!important;background:transparent!important;display:grid!important;gap:7px!important;overflow:visible!important}
+#settings .settingsRow{border:0!important;background:#fff!important;box-shadow:0 4px 11px rgba(2,92,160,.07)!important;border-radius:14px!important}
+#settings #settingsNotifications{order:3}#settings #settingsColor{order:2}#settings #settingsThemeProxy{order:1}#settings #settingsBackup{order:4}#settings #settingsSecurity{order:5}#settings #settingsInfo{order:6}
+
 </style>
 </head>
 <body>
@@ -3130,12 +3138,12 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
     <div class="settingsGroupTitle">App</div>
     <div class="settingsMenu">
       <button class="settingsRow hidden" id="settingsProfile" data-search="profilo nome nickname"><span class="settingsRowIcon iIndigo">●</span><span class="settingsRowText"><strong>Profilo / Nome</strong><small>Modifica il nickname</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iBlue">●</span><span class="settingsRowText"><strong>Aspetto e colore</strong><small>Scegli il colore dell’app</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">🔒</span><span class="settingsRowText"><strong>Sicurezza</strong><small>PIN, Face ID e privacy</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iPurple">☁</span><span class="settingsRowText"><strong>Backup e dati</strong><small>Salva, ripristina e gestisci i dati</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow settingsThemeProxy" id="settingsThemeProxy" onclick="document.getElementById('settingsColor').click()"><span class="settingsRowIcon iPurple">◐</span><span class="settingsRowText"><strong>Tema</strong><small>Scegli l’aspetto dell’app</small></span><span class="settingsRowArrow">›</span></button><button class="settingsRow" id="settingsColor" data-search="aspetto colore app tema"><span class="settingsRowIcon iBlue">●</span><span class="settingsRowText"><strong>Colore</strong><small>Scegli il colore dell’app</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsSecurity" data-search="protezione sicurezza pin impronta viso biometria"><span class="settingsRowIcon iGray">🔒</span><span class="settingsRowText"><strong>Privacy</strong><small>Proteggi i tuoi dati sul dispositivo</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsBackup" data-search="backup ripristino dati"><span class="settingsRowIcon iPurple">☁</span><span class="settingsRowText"><strong>Backup</strong><small>Salva o ripristina i tuoi dati</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsOther" data-search="altre impostazioni lingua euro data preferenze"><span class="settingsRowIcon iGray">⚙</span><span class="settingsRowText"><strong>Altre impostazioni</strong><small>Impostazioni generali</small></span><span class="settingsRowArrow">›</span></button>
       <button class="settingsRow" id="settingsGuide" data-search="come funziona guida tutorial aiuto saldo entrate pagamenti date frequenza stati scadenze movimenti categorie notifiche"><span class="settingsRowIcon iYellow">▣</span><span class="settingsRowText"><strong>Tutorial dell’app</strong><small>Impara a usare Conti</small></span><span class="settingsRowArrow">›</span></button>
-      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iGray">i</span><span class="settingsRowText"><strong>Informazioni</strong><small>Versione app e contatti</small></span><span class="settingsRowArrow">›</span></button>
+      <button class="settingsRow" id="settingsInfo" data-search="informazioni app versione dati privacy"><span class="settingsRowIcon iGray">i</span><span class="settingsRowText"><strong>Versione app</strong><small>Informazioni su In Ordine</small></span><span class="settingsRowArrow">›</span></button>
     </div>
   </div>
 
