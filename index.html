@@ -2563,6 +2563,10 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #movements .movementMasterSummary{padding:10px!important}
 #movements .movementMasterStat{min-height:62px!important}
 #movements #allMovements .movementRow{min-height:68px!important;border-radius:15px!important}
+/* PR5 DONE ACTIVITY ICONS */
+.todoDoneRow{grid-template-columns:38px 1fr auto!important;align-items:center!important}
+.todoDoneActivityIcon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:900}
+.todoDoneActivityIcon.doneGreen{background:#e8f8ef;color:#159b62}.todoDoneActivityIcon.doneBlue{background:#e8f2ff;color:#2379d8}.todoDoneActivityIcon.donePurple{background:#f1e9ff;color:#7251b5}.todoDoneActivityIcon.doneOrange{background:#fff2dc;color:#c47b00}.todoDoneActivityIcon.doneTeal{background:#e2f7f3;color:#168f82}
 /* PR5 FINAL MASTER ALIGNMENT */
 #flow .flowBalanceCompat{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}
 #todoSettings .todoSettingCard:nth-child(1) .i{background:#f1e9ff!important;color:#7251b5!important}
@@ -5267,7 +5271,8 @@ function renderTodoDone(){
   if(!rows.length){el.innerHTML='<div class="todoEmpty">'+(allRows.length?'Nessuna cosa fatta per questo periodo.':'Non hai ancora segnato nessuna cosa come fatta.')+'</div>';return}
   rows.forEach(d=>{
     const row=document.createElement('div');row.className='todoDoneRow';
-    row.innerHTML='<button class="todoTaskMain"><strong>'+esc(d.description)+'</strong><small>'+esc(d.scheduleText||d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</small></button><div class="todoDoneStatus">✓ Fatta</div>';
+    const doneIcons=['✓','▣','★','●','◆'],doneClasses=['doneGreen','doneBlue','donePurple','doneOrange','doneTeal'];const ix=Math.abs(String(d.description||'').split('').reduce((s,ch)=>s+ch.charCodeAt(0),0))%doneIcons.length;
+    row.innerHTML='<span class="todoDoneActivityIcon '+doneClasses[ix]+'">'+doneIcons[ix]+'</span><button class="todoTaskMain"><strong>'+esc(d.description)+'</strong><small>'+esc(d.scheduleText||d.dateText||d.date&&fmtMovementDate(d.date)||'Senza data')+'</small></button><div class="todoDoneStatus">✓ Fatta</div>';
     row.querySelector('.todoTaskMain').onclick=()=>openTodoDoneDetail(d.id);el.appendChild(row);
   });
 }
