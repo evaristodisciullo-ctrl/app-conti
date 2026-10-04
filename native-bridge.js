@@ -35,7 +35,7 @@ window.InOrdineNative=window.InOrdineNative||null;
   #todoActive .todoNotifyBtn,#todoActive .todoNotifyToggle{background:#e7f4ff!important;color:#157fc5!important;border:1px solid #d1e8f7!important}
   #todoActive .todoNotifyBtn.on,#todoActive .todoNotifyToggle.on{background:#fff1d8!important;color:#c77d10!important;border-color:#f1dab0!important}
   #todoActive .todoCompleteBtn{
-    background:#fff!important;color:#294737!important;border:1px solid #cfe5d8!important;
+    background:#fff!important;color:#234b36!important;border:1px solid #cfe5d8!important;
     box-shadow:none!important;font-weight:800!important
   }
   #todoActive .todoCompleteCircle{border-color:#198857!important;background:#fff!important}
