@@ -242,7 +242,7 @@ async function testSettingsAppearanceSecurityBackup(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);await settings(page);
 
   for(const id of ['settingsEditBalance','settingsIncome','settingsExpense','settingsCategories','settingsColor','settingsGuide','settingsBackup','settingsSecurity','settingsOther','settingsInfo']){
-    await page.click('#'+id);
+    await page.evaluate(id=>document.querySelector('#'+id).click(),id);
     await page.waitForSelector('#modal:not(.hidden)');
     await page.click('#modalClose');
     await page.waitForSelector('#settings:not(.hidden)');
