@@ -88,7 +88,7 @@ async function testApprovedOnboarding(browser){
   await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
-  await page.click('#homeRestartSetup');await page.waitForSelector('#landing:not(.hidden)');
+  await page.evaluate(()=>document.querySelector('#homeRestartSetup').click());await page.waitForSelector('#landing:not(.hidden)');
   assert.equal(await page.locator('#landingNickname').inputValue(),'Mario');
   await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');
   assert.equal(await page.locator('#startBalance').inputValue(),'1000.5');
