@@ -2774,6 +2774,31 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #modal.fullSettings .settingsSubRow strong{font-size:12px!important;color:#063f2d!important}#modal.fullSettings .settingsSubRow small{font-size:8px!important}
 #modal.fullSettings .todoColorChoice{min-height:56px!important;border-radius:14px!important}
 
+
+/* master alignment refinement 2 */
+#landing .landingExactBrand,#landing .landingExactHero,#landing .landingExactNameCard,#landing .landingExactChoose,#landing .landingExactMainCard,#landing .landingExactNotify{position:relative!important;inset:auto!important;transform:none!important;width:auto!important;max-width:none!important}
+#landing .landingExactStage{height:auto!important;max-height:none!important;overflow:visible!important}
+#landing .landingExactMainCard{display:flex!important;visibility:visible!important;opacity:1!important}
+#landing .landingExactNotify{display:flex!important;visibility:visible!important;opacity:1!important}
+#landing .landingExactBubbles{display:none!important}
+#landing .landingExactHeroLogo.green{position:absolute!important;left:6px!important;bottom:4px!important}
+#landing .landingExactHeroLogo.blue{position:absolute!important;right:13px!important;top:9px!important}
+#settings .settingsMasterHero{min-height:88px;border:1.5px solid #18aee9;border-radius:18px;background:linear-gradient(145deg,#fff,#e9f8ff);display:grid;grid-template-columns:48px 1fr 48px;gap:10px;align-items:center;padding:11px 13px;margin-bottom:12px;box-shadow:0 5px 13px rgba(2,92,160,.08)}
+#settings .settingsMasterHeroIcon{width:45px;height:45px;border-radius:50%;display:grid;place-items:center;background:#e5f6ff;color:#087cf0;font-size:22px}
+#settings .settingsMasterHero strong{display:block;color:#05084f;font-size:15px;line-height:1.05}.settingsMasterHero small{display:block;color:#687a99;font-size:9px;margin-top:4px}
+#settings .settingsMasterHero img{width:46px;height:46px;object-fit:contain}
+#todoSettings .todoHero.settings{display:flex!important}
+#todoSettings .todoHero.settings strong{font-size:0!important}
+#todoSettings .todoHero.settings strong:after{content:"Personalizza la tua esperienza";font-size:16px}
+#todoSettings .todoHero.settings small{font-size:0!important}
+#todoSettings .todoHero.settings small:after{content:"Gestisci le tue attività come preferisci.";font-size:9px}
+#notifications .notifyHero h2{font-size:0!important}
+#notifications .notifyHero h2:before{content:"Resta sempre\\Ain ordine";white-space:pre;font-size:18px;line-height:1.05}
+#notifications .notifyHero h2:after{content:"Attiva le notifiche per non dimenticare le tue finanze.";display:block;font-size:10px;font-weight:500;color:#66799a;margin-top:5px}
+#notifications .notifyScopeOption .notifyRadio{margin-left:auto!important;order:3!important;width:42px!important;height:24px!important;border-radius:13px!important;background:#e5eef5!important;border:0!important;position:relative!important}
+#notifications .notifyScopeOption.active .notifyRadio{background:#087cf0!important}
+#notifications .notifyScopeOption.active .notifyRadio:after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;right:2px;top:2px}
+
 </style>
 </head>
 <body>
@@ -2867,7 +2892,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche Conti economici</h1></div></div>
+  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
   <div class="notifyHero">
     <div class="notifyBell" aria-hidden="true">🔔</div>
     <h2>Scegli cosa vuoi che l’app ti ricordi.</h2>
@@ -3080,7 +3105,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 
 <section id="settings" class="screen settingsPage hidden">
   <div class="pageHeader"><div class="pageTitleBlock"><button id="settingsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Impostazioni</h1></div></div>
-  <input id="settingsSearch" class="settingsSearch" placeholder="Cerca nelle impostazioni">
+  <div class="settingsMasterHero"><span class="settingsMasterHeroIcon">⚙</span><span><strong>Personalizza la tua esperienza</strong><small>Gestisci i tuoi conti come preferisci.</small></span><img src="assets/eds-blue-approved.png" alt=""></div><input id="settingsSearch" class="settingsSearch" placeholder="Cerca nelle impostazioni">
 
   <div class="settingsGroup" data-settings-group>
     <div class="settingsGroupTitle">Conti</div>
