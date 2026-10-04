@@ -38,10 +38,10 @@ jobs:
             await shot('01-in-ordine');
             await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');await shot('02-saldo-iniziale');
             await page.fill('#startBalance','1000');await page.click('#startBtn');await page.waitForSelector('#setupIncome:not(.hidden)');
-            { const rows=page.locator('#incomeRows .entryRow'); const samples=[['Stipendio','1500','1'],['Rimborso spese','320','15'],['Affitto immobile','750','20'],['Interessi bancari','45','28']]; for(let i=0;i<samples.length;i++){const row=rows.nth(i);await row.locator('.rName').fill(samples[i][0]);await row.locator('.rAmount').fill(samples[i][1]);await row.locator('.rDateText').fill(samples[i][2]);} }
+            { const rows=page.locator('#incomeRows .entryRow'); while(await rows.count()<4) await page.click('#addIncomeSetup'); const samples=[['Stipendio','1500','1'],['Rimborso spese','320','15'],['Affitto immobile','750','20'],['Interessi bancari','45','28']]; for(let i=0;i<samples.length;i++){const row=rows.nth(i);await row.locator('.rName').fill(samples[i][0]);await row.locator('.rAmount').fill(samples[i][1]);await row.locator('.rDateText').fill(samples[i][2]);} }
             await shot('03-entrate-primo-inserimento');
             await page.click('#skipIncomeSetup');await page.waitForSelector('#setupExpense:not(.hidden)');
-            { const rows=page.locator('#expenseRows .entryRow'); const samples=[['Affitto','750','1'],['Energia','128,50','10'],['Internet','89','10'],['Spesa','52,38','15']]; for(let i=0;i<samples.length;i++){const row=rows.nth(i);await row.locator('.rName').fill(samples[i][0]);await row.locator('.rAmount').fill(samples[i][1]);await row.locator('.rDateText').fill(samples[i][2]);} }
+            { const rows=page.locator('#expenseRows .entryRow'); while(await rows.count()<4) await page.click('#addExpenseSetup'); const samples=[['Affitto','750','1'],['Energia','128,50','10'],['Internet','89','10'],['Spesa','52,38','15']]; for(let i=0;i<samples.length;i++){const row=rows.nth(i);await row.locator('.rName').fill(samples[i][0]);await row.locator('.rAmount').fill(samples[i][1]);await row.locator('.rDateText').fill(samples[i][2]);} }
             await shot('04-pagamenti-primo-inserimento');
             await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
 
