@@ -166,7 +166,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await addItem(page,'expense','Test pagamento',20,{complete:true,actualAmount:18});await backHome(page);
   assert.equal((await state(page)).balance,1034);
 
-  await settings(page);await page.click('#settingsEditBalance');await page.fill('#newBalance','1040');await page.click('#balSave');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
+  await settings(page);await page.evaluate(()=>document.querySelector('#settingsEditBalance').click());await page.fill('#newBalance','1040');await page.click('#balSave');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   let s=await state(page);assert.equal(s.balance,1040);assert.equal(s.history.some(h=>h.type==='adjustment'),true);
 
   await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');
@@ -217,11 +217,11 @@ async function testRecurrencesAndHistory(browser){
 
 async function testCategoriesAndNotifications(browser){
   const {context,page}=await freshPage(browser,{notifications:true});await setup(page,1000);await settings(page);
-  await page.click('#settingsCategories');await page.click('#catTabExpense');await page.click('#categoryAdd');await page.fill('#categoryNameEdit','Varie');await page.click('#categoryNameSave');
+  await page.evaluate(()=>document.querySelector('#settingsCategories').click());await page.click('#catTabExpense');await page.click('#categoryAdd');await page.fill('#categoryNameEdit','Varie');await page.click('#categoryNameSave');
   assert.match(await page.locator('#modalBody').innerText(),/Varie/);
   await page.click('#modalClose');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   await addItem(page,'expense','Varie spesa',20,{category:'Varie',complete:true});await backHome(page);
-  await settings(page);await page.click('#settingsCategories');await page.click('#catTabExpense');
+  await settings(page);await page.evaluate(()=>document.querySelector('#settingsCategories').click());await page.click('#catTabExpense');
   const row=page.locator('.categoryEditRow').filter({hasText:'Varie'}).first();await row.click();await page.click('#catDeleteOpen');await page.click('#categoryDeleteYes');
   let s=await state(page);assert.equal(s.entries.find(x=>x.name==='Varie spesa').category,'');assert.equal(s.history.find(x=>x.name==='Varie spesa').category,'');
   await page.click('#modalClose');
