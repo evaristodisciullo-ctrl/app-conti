@@ -2540,6 +2540,22 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 .pageBack .arrow{font-size:22px!important;line-height:1!important}
 #setup .pageHeader,#summary .pageHeader,#budget .pageHeader,#settings .pageHeader{align-items:center!important}
 #summary .pageTitleBlock,#budget .pageTitleBlock,#settings .pageTitleBlock{gap:7px!important}
+/* PR5 MOVEMENTS MASTER */
+#movements .movementQuickTabs{grid-template-columns:repeat(4,1fr)!important}
+#movements .movementQuickTab{border-radius:999px!important;min-height:40px!important}
+#movements .filterSummary{display:none!important}
+.movementMasterMonth{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;background:#fff;border:1px solid #d8e8f3;border-radius:16px;padding:8px 10px;margin:10px 0}
+.movementMasterMonth button{width:38px;height:38px;border:0;border-radius:50%;background:#eef7ff;color:#087bf5;font-size:27px;font-weight:900}
+.movementMasterMonth strong{text-align:center;font-size:18px;color:#092855}
+.movementMasterSummary{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;border:1px solid #d8e8f3;border-radius:16px;padding:9px;margin-bottom:13px}
+.movementMasterStat{display:grid;grid-template-columns:42px 1fr;align-items:center;gap:8px;border-radius:13px;padding:9px}
+.movementMasterStat.income{background:#eef9ff}.movementMasterStat.expense{background:#fff8ec}
+.movementMasterStat .ico{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:25px;font-weight:950}
+.movementMasterStat.income .ico{background:#dff2ff;color:#087bf5}.movementMasterStat.expense .ico{background:#fff0d3;color:#f08a00}
+.movementMasterStat small{display:block;font-weight:850;color:#092855}.movementMasterStat strong{display:block;font-size:17px;margin-top:2px}
+.movementMasterStat.expense strong{color:#e82432}.movementListTitle{font-size:12px;font-weight:950;letter-spacing:1px;color:#4c6590;margin:4px 3px 8px}
+#movements #movementFilteredTotal{margin-top:9px!important;justify-content:space-between!important;border-radius:14px!important;padding:11px 14px!important;font-weight:950!important;background:#f6f3ff!important}
+#movements #movementFilteredTotal strong{font-size:18px;color:#087bf5}#movements #movementFilteredTotal strong.neg{color:#e82432}
 </style>
 </head>
 <body>
@@ -2817,8 +2833,11 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
     <button id="movementsFilters" class="movementQuickTab">Filtra</button>
   </div>
   <div id="movementFilterSummary" class="filterSummary"></div>
-  <div id="movementFilteredTotal" class="filteredTotal hidden"></div>
+  <div class="movementMasterMonth"><button id="movementPrev" aria-label="Mese precedente">‹</button><strong id="movementMonth"></strong><button id="movementNext" aria-label="Mese successivo">›</button></div>
+  <div id="movementMasterSummary" class="movementMasterSummary"></div>
+  <div class="movementListTitle">ELENCO MOVIMENTI</div>
   <div id="allMovements" class="list"></div>
+  <div id="movementFilteredTotal" class="filteredTotal hidden"></div>
 </section>
 
 <section id="summary" class="screen summaryPage hidden">
@@ -2922,7 +2941,8 @@ if(!state.todo.notifications.rule)state.todo.notifications.rule={timing:'same',t
 if(!state.todo.notifications.sent)state.todo.notifications.sent={};if(state.notifications.mode==='custom')state.entries.forEach(e=>e.notify=(state.notifications.selected||[]).includes(e.id));
 let currentFlow='income',flowFilter='all',flowMonth=ymNow(),summaryMonth=ymNow(),budgetMonth=ymNow();
 let flowReturn='home',movementReturn='home',notificationReturn='home',budgetReturn='summary',revisitSetupMode=false;
-let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};let undoSnackTimer=null,undoSnackHistoryId=null;
+let movementFilters={type:'all',name:'all',category:'all',period:'all',customFrom:'',customTo:''};
+let movementMonth=ymNow();let undoSnackTimer=null,undoSnackHistoryId=null;
 
 const APP_COLORS={Blu:'#2479d8',Azzurro:'#27a9e8',Viola:'#7856c8',Lilla:'#9b76d5',Rosa:'#d85f91',Magenta:'#c33b86',Indaco:'#4d5cc5',Antracite:'#4d5963',Verde:'#1a8c62',Arancione:'#e58a2c'};
 function applyAppColor(name){const v=APP_COLORS[name]||APP_COLORS.Blu;document.documentElement.style.setProperty('--accent',v)}
@@ -4646,13 +4666,17 @@ function movementFilterText(){
   return parts.length?parts.join(' · '):'Tutti i movimenti';
 }
 function renderMovements(){
-  const arr=filteredMovements();
+  let arr=filteredMovements().filter(x=>x.month===movementMonth);
   document.querySelectorAll('[data-movement-type]').forEach(b=>b.classList.toggle('active',b.dataset.movementType===movementFilters.type));
   const advancedActive=movementFilters.category!=='all'||movementFilters.period!=='all';
   $('movementsFilters').classList.toggle('filterActive',advancedActive);
-  $('movementFilterSummary').innerHTML='<strong>Visualizzazione:</strong> '+esc(movementFilterText())+' · '+arr.length+' moviment'+(arr.length===1?'o':'i');
-  $('movementFilteredTotal').classList.add('hidden');
-  $('movementFilteredTotal').innerHTML='';
+  $('movementFilterSummary').innerHTML='';
+  $('movementMonth').textContent=monthName(movementMonth);
+  const income=arr.filter(x=>x.type==='income').reduce((s,x)=>s+Number(x.amount||0),0);
+  const expense=arr.filter(x=>x.type==='expense').reduce((s,x)=>s+Number(x.amount||0),0);
+  $('movementMasterSummary').innerHTML='<div class="movementMasterStat income"><span class="ico">↑</span><span><small>Entrate</small><strong>'+money(income)+'</strong></span></div><div class="movementMasterStat expense"><span class="ico">↓</span><span><small>Uscite</small><strong>-'+money(expense)+'</strong></span></div>';
+  $('movementFilteredTotal').classList.remove('hidden');
+  $('movementFilteredTotal').innerHTML='<span>TOTALE MESE</span><strong class="'+(income-expense<0?'neg':'')+'">'+money(income-expense)+'</strong>';
   renderMovementList($('allMovements'),arr);
 }
 function openMovementFilters(){
@@ -5472,6 +5496,8 @@ $('homeAllMovements').onclick=()=>{movementReturn='home';show('movements')};
 $('homeFilters').onclick=()=>{movementReturn='home';show('movements');openMovementFilters()};
 document.querySelectorAll('[data-movement-type]').forEach(b=>b.onclick=()=>{movementFilters.type=b.dataset.movementType;renderMovements()});
 $('movementsFilters').onclick=openMovementFilters;
+$('movementPrev').onclick=()=>{movementMonth=shiftMonth(movementMonth,-1);renderMovements()};
+$('movementNext').onclick=()=>{movementMonth=shiftMonth(movementMonth,1);renderMovements()};
 $('homeProjection').onclick=()=>{summaryMonth=ymNow();show('summary')};
 $('flowBack').onclick=()=>show(flowReturn);
 $('flowPrevMonth').onclick=()=>{flowMonth=addMonths(flowMonth,-1);flowFilter='all';renderFlow()};
