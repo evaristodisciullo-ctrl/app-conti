@@ -2510,6 +2510,30 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 .todoSettingsModal .btn:not(.secondary),.todoSettingsModal .modalBtns .btn:last-child{background:#159b62!important}
 .todoSettingsModal .btn.secondary{background:#fff!important;color:#315b4a!important;border:1px solid #cfe6da!important}
 
+
+/* PR5 MASTER PASS 2 */
+.homeScene.coupleScene{display:flex!important;align-items:center!important;justify-content:center!important;background:linear-gradient(180deg,#f4fbff,#e8f6ff)!important}
+.homeScene.coupleScene img{display:block!important;width:52px!important;height:52px!important;object-fit:contain!important}
+#home .homeFeatureGrid{gap:10px!important}
+#home .homeFeatureCard{min-height:158px!important;background:#fff!important;border:1px solid #d8eaf7!important;border-radius:18px!important;box-shadow:0 5px 16px rgba(20,98,156,.06)!important}
+#home .homeSummaryCard{background:#fff!important;border:1px solid #dcebf6!important;box-shadow:0 5px 16px rgba(20,98,156,.05)!important}
+#todoActive .todoFilterBar,#todoDone .todoFilterBar{display:grid!important;grid-template-columns:auto 1fr 1fr!important;gap:6px!important}
+#todoActive .todoFilterAll,#todoDone .todoFilterAll{background:#159b62!important;color:#fff!important;border-color:#159b62!important}
+#todoActive .todoFilterSelect,#todoDone .todoFilterSelect{background:#fff!important;color:#48645a!important;border:1px solid #cfe5d9!important}
+#todoActive .todoFilterSummary,#todoDone .todoFilterSummary{font-size:11px!important;color:#688078!important;padding:5px 2px 7px!important}
+#todoActive .todoPanel,#todoDone .todoPanel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+#todoActive .todoTaskRow,#todoDone .todoDoneRow{background:#fff!important;border:1px solid #d9eee3!important;border-radius:15px!important;box-shadow:0 4px 12px rgba(26,107,72,.045)!important;margin-bottom:8px!important}
+#todoActive .todoTaskEditCard{background:#fff!important}
+#todoActive .todoTaskRow.overdue,#todoActive .todoTaskEditCard.overdue{border-color:#efc8c8!important}
+#todoActive .todoActions,#todoDone .todoActions{gap:7px!important}
+#todoActive .todoBigBtn,#todoDone .todoBigBtn{min-height:44px!important}
+#todoHub .todoHubGrid{gap:10px!important}
+#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{min-height:132px!important}
+#todoHub .todoHubCard.pending .todoHubPerson,#todoHub .todoHubCard.completed .todoHubPerson{width:54px!important;height:54px!important;background:url('assets/eds-green-approved.png') center/contain no-repeat!important}
+#todoHub .todoHubCard.pending .todoHubPerson:before,#todoHub .todoHubCard.pending .todoHubPerson:after,#todoHub .todoHubCard.completed .todoHubPerson:before,#todoHub .todoHubCard.completed .todoHubPerson:after{display:none!important}
+#todoSetup .todoHeroArt,#todoActive .todoHeroArt,#todoDone .todoHeroArt,#todoSettings .todoHeroArt{background:url('assets/eds-green-approved.png') center/contain no-repeat!important}
+#todoSetup .todoHeroArt:before,#todoSetup .todoHeroArt:after,#todoActive .todoHeroArt:before,#todoActive .todoHeroArt:after,#todoDone .todoHeroArt:before,#todoDone .todoHeroArt:after,#todoSettings .todoHeroArt:before,#todoSettings .todoHeroArt:after{display:none!important}
+
 </style>
 </head>
 <body>
@@ -2704,16 +2728,10 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 
   <div class="homeFeatureGrid">
     <button id="homeIncome" class="homeFeatureCard incomeFeature">
-      <span class="homeScene coupleScene incomeScene" aria-hidden="true">
-        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↑</span><span class="sceneCoin">€</span>
-      </span>
-      <span class="homeFeatureText"><strong>Entrate</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
+      <span class="homeScene coupleScene incomeScene" aria-hidden="true"><img src="assets/eds-blue-approved.png" alt=""></span><span class="homeFeatureText"><strong>Entrate</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
     <button id="homeExpense" class="homeFeatureCard expenseFeature">
-      <span class="homeScene coupleScene expenseScene" aria-hidden="true">
-        <span class="miniPerson one"><i></i><b></b></span><span class="miniPerson two"><i></i><b></b></span><span class="sceneMark">↓</span><span class="sceneWallet">€</span>
-      </span>
-      <span class="homeFeatureText"><strong>Pagamenti</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
+      <span class="homeScene coupleScene expenseScene" aria-hidden="true"><img src="assets/eds-blue-approved.png" alt=""></span><span class="homeFeatureText"><strong>Pagamenti</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
     </button>
   </div>
 
