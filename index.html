@@ -2701,6 +2701,23 @@ body{background:#eef9ff}
 .todoSettingCard .i{background:#dff7ec;color:#0d9a68;border-radius:50%}
 .todoManageDetails{display:none!important}
 
+
+/* Riduce i controlli secondari nelle schermate iniziali; restano visibili sulla riga in modifica. */
+#incomeRows .entryRow .rowMeta,#expenseRows .entryRow .rowMeta{display:none}
+#incomeRows .entryRow:focus-within .rowMeta,#expenseRows .entryRow:focus-within .rowMeta{display:block}
+#todoSetupRows .todoRecArea,#todoSetupRows .todoRowDelete{display:none}
+#todoSetupRows .todoSetupRow:focus-within .todoRecArea{display:block}
+#todoSetupRows .todoSetupRow:focus-within .todoRowDelete{display:block}
+#todoSetup .todoPanel{padding:8px 10px}
+#todoSetup .todoSetupHead{padding:0 3px 5px;font-size:10px}
+#todoSetup .todoSetupRow{padding:5px 3px;grid-template-columns:minmax(0,1.4fr) minmax(72px,.82fr) 38px;gap:6px}
+#todoSetup .todoDescInput,#todoSetup .todoDateInput{min-height:38px;height:38px;padding:7px 8px;font-size:11px;border-radius:10px}
+#todoSetup .todoNotifyToggle{width:32px;height:32px;margin:3px auto 0}
+#todoSetup .todoActions{gap:7px;margin-top:8px}
+#todoSetup .todoBigBtn{min-height:43px;border-radius:14px;font-size:14px}
+#todoSetup .todoHero.setup{min-height:74px;padding-top:10px;padding-bottom:10px}
+#todoSetup .todoHero.setup strong{font-size:15px!important;max-width:250px}
+
 </style>
 </head>
 <body>
@@ -2809,7 +2826,7 @@ body{background:#eef9ff}
 
 <section id="todoSetup" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoSetupBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose da fare</h1></div>
-  <div class="todoHero setup"><strong id="todoSetupGreeting">Ciao</strong><small>Inserisci tutte le cose che hai da fare</small><span id="todoSetupArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
+  <div class="todoHero setup"><strong id="todoSetupGreeting">Inserisci tutte le cose che hai da fare</strong><small>Descrizione, data e notifiche in un solo posto.</small><span id="todoSetupArt" class="todoHeroArt" data-todo-scene="hub" aria-hidden="true"></span></div>
   <div class="todoPanel">
     <div class="todoSetupHead"><span>Descrizione</span><span>Data</span><span>Attiva<br>notifiche</span></div>
     <div id="todoSetupRows"></div>
@@ -2849,7 +2866,7 @@ body{background:#eef9ff}
 
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose già fatte</h1></div>
-  <div class="todoHero done"><strong>Cose già fatte</strong><small id="todoDoneHeroCount" class="todoHeroCount">0 attività completate</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
+  <div class="todoHero done"><strong>Ben fatto!</strong><small id="todoDoneHeroCount" class="todoHeroCount">Qui trovi tutte le attività che hai completato.</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
   <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button><button type="button" class="todoQuickStatic" data-todo-quick="month">Questo mese</button></div><details id="todoDoneAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
   <div id="todoDoneFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
@@ -5018,8 +5035,8 @@ function setTodoIllustrations(){
   [['todoSetupArt','hub'],['todoHubArt','hub'],['todoActiveArt','active'],['todoDoneArt','done'],['todoSettingsArt','hub'],['todoHubPendingArt','active'],['todoHubDoneArt','done']].forEach(([id,scene])=>setTodoPersonArt($(id),scene));
 }
 function setTodoGreetings(){
-  const txt='Ciao '+todoDisplayName();
-  ['todoSetupGreeting','todoHubGreeting','todoSettingsGreeting'].forEach(id=>{const el=$(id);if(el)el.textContent=txt});
+  const copy={todoSetupGreeting:'Inserisci tutte le cose che hai da fare',todoHubGreeting:'Cose da fare',todoSettingsGreeting:'Personalizza la tua esperienza'};
+  Object.entries(copy).forEach(([id,txt])=>{const el=$(id);if(el)el.textContent=txt});
   setTodoIllustrations();
 }
 function openTodoFromLanding(){
@@ -5244,8 +5261,8 @@ function saveTodoInitialSetup(){
 function renderTodoHub(){
   applyTodoColor();setTodoGreetings();
   const pending=todoState().tasks.length,done=todoState().done.length;
-  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent=pending+' '+(pending===1?'attività da completare':'attività da completare');
-  if($('todoHubDoneCount'))$('todoHubDoneCount').textContent=done+' '+(done===1?'attività completata':'attività completate');
+  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent='Qui trovi le attività con la scadenza più vicina.';
+  if($('todoHubDoneCount'))$('todoHubDoneCount').textContent='Qui trovi tutte le attività che hai completato.';
 }
 function todoSortTasks(arr){
   return [...arr].sort((a,b)=>{
@@ -5304,7 +5321,7 @@ function todoFilterDescription(kind,count,total){
 function renderTodoActive(){
   applyTodoColor();setTodoGreetings();renderTodoFilterBar('active');
   const el=$('todoActiveList'),allTasks=todoSortTasks(todoState().tasks),tasks=applyTodoFilter(allTasks,'active');el.innerHTML='';
-  if($('todoActiveHeroCount'))$('todoActiveHeroCount').textContent=allTasks.length+' '+(allTasks.length===1?'attività da completare':'attività da completare');
+  if($('todoActiveHeroCount'))$('todoActiveHeroCount').textContent='Qui trovi le attività con la scadenza più vicina.';
   $('todoActiveFilterSummary').textContent=todoFilterDescription('active',tasks.length,allTasks.length);
   if(!tasks.length){el.innerHTML='<div class="todoEmpty">'+(allTasks.length?'Nessuna cosa da fare per questo periodo.':'Nessuna cosa da fare.<br>Puoi aggiungerne una quando vuoi.')+'</div>';return}
   tasks.forEach(t=>{
@@ -5356,7 +5373,7 @@ function undoTodoCompletion(){
 function renderTodoDone(){
   applyTodoColor();setTodoGreetings();renderTodoFilterBar('done');
   const el=$('todoDoneList'),allRows=[...todoState().done].sort((a,b)=>Number(b.completedTs||0)-Number(a.completedTs||0)),rows=applyTodoFilter(allRows,'done');el.innerHTML='';
-  if($('todoDoneHeroCount'))$('todoDoneHeroCount').textContent=allRows.length+' '+(allRows.length===1?'attività completata':'attività completate');
+  if($('todoDoneHeroCount'))$('todoDoneHeroCount').textContent='Qui trovi tutte le attività che hai completato.';
   $('todoDoneFilterSummary').textContent=todoFilterDescription('done',rows.length,allRows.length);
   if(!rows.length){el.innerHTML='<div class="todoEmpty">'+(allRows.length?'Nessuna cosa fatta per questo periodo.':'Non hai ancora segnato nessuna cosa come fatta.')+'</div>';return}
   rows.forEach(d=>{
@@ -5447,7 +5464,7 @@ function renderTodoSettings(){
 }
 function openTodoColorSettings(){
   const choices=Object.entries(TODO_COLORS),original=todoState().color;
-  const labels={'Verde E.D.S.':'Verde E.D.S. · identità principale','Smeraldo':'Un verde intenso ed elegante.','Menta':'Un tono fresco e luminoso.','Blu notte':'Un blu profondo e moderno.'};
+  const labels={'Verde E.D.S.':'Il colore originale dell’app.','Smeraldo':'Un verde intenso ed elegante.','Menta':'Un tono fresco e luminoso.','Blu notte':'Un blu raffinato e moderno.'};
   const draw=()=>'<div class="todoColorOptions">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i><span><strong>'+n+'</strong><small>'+labels[n]+'</small></span><b>'+(todoState().color===n?'✓':'')+'</b></button>').join('')+'</div>';
   openModal('Colore','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Personalizza i colori</strong><small>Scegli il colore principale della sezione Cose da fare.</small></div></div><div class="settingsSubTitle">SCEGLI IL COLORE PRINCIPALE</div>'+draw()+'<div class="todoColorPreview"><small>Anteprima</small><div><span class="todoPreviewDot"></span><strong>Pagare bolletta luce</strong><small>10 ott 2026</small><b>Segna come fatta</b></div></div><div class="modalBtns"><button id="todoColorCancel" class="btn secondary">Annulla</button><button id="todoColorSave" class="btn">Salva</button></div>');
   $('modal').classList.add('fullSettings','todoSettingsModal');
