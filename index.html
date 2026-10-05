@@ -2613,6 +2613,75 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #home .homeResetActions{display:none!important}
 @media(max-width:390px){#home .homeFeatureCard{min-height:188px;padding:14px}#home .homeMasterIcon{width:54px;height:54px;font-size:34px}#home .homeMasterLogo{width:46px;height:46px}#home .homeFeatureText strong{font-size:21px}#home .homeSummaryValue{font-size:17px}}
 
+
+/* 24 MASTER ALIGNMENT — clean priority layer */
+body{background:#eef9ff}
+.screen{max-width:430px;margin:0 auto}
+#landing{padding:0;min-height:100vh;background:#eef9ff}
+#landing .landingExactStage{min-height:780px;background:linear-gradient(150deg,#fff 0%,#f4fbff 70%,#e8f8ff 100%);border-radius:0;padding:18px 16px 34px}
+#landing .landingExactBrand{left:18px;top:18px}
+#landing .landingExactTitle{font-size:42px;line-height:.72}
+#landing .landingExactHero{right:14px;top:18px;width:168px;height:120px}
+#landing .landingExactHeroLogo{width:82px;height:82px;border-radius:18px}
+#landing .landingExactNameCard{top:210px;left:16px;right:16px}
+#landing .landingExactChoose{top:310px}
+#landing .landingExactMainCard{top:350px;height:210px;width:calc(50% - 24px)}
+#landing .landingExactMainCard.conti{left:16px}#landing .landingExactMainCard.todo{right:16px}
+#landing .landingExactMainCard img{width:72px;height:72px;border-radius:15px}
+#landing .landingExactNotify{top:585px;height:100px;width:calc(50% - 24px)}
+#landing .landingExactNotify.blue{left:16px}#landing .landingExactNotify.green{right:16px}
+#setup{background:linear-gradient(160deg,#fff,#eff9ff);min-height:100vh;padding:12px}
+#setup .pageBack span:not(.arrow){display:none}
+#setup .balanceSetupIntro{border:2px solid #6acced;border-radius:16px;background:#f8fdff}
+#setup .balanceSetupIntro img{width:54px;height:54px;border-radius:11px}
+#setup .balanceSetupCard{margin-top:20px;text-align:center;background:#fff;border-radius:16px;padding:26px 16px}
+#setup .balanceSetupIcon{margin:auto;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#e6f6ff;color:#158ee9;font-size:34px;font-weight:900}
+#setup .moneyInput{margin:16px auto;max-width:310px}
+#setup .moneyInput input{text-align:center;font-size:30px;font-weight:900}
+.setupSimple{background:linear-gradient(160deg,#fff,#eff9ff);min-height:100vh;padding:12px}
+.setupSimple .setupSimpleTitle{display:flex;align-items:center;gap:8px}.setupSimple .setupSimpleTitle h1{font-size:28px;color:#07184d}
+.setupSimple .setupSimpleHero{border:2px solid #64c8e8;border-radius:16px;background:#f7fcff;padding:12px;display:grid;grid-template-columns:52px 1fr 52px;align-items:center}
+.setupSimple .setupSimpleHero img{width:48px;height:48px;border-radius:10px}
+.setupSimple .setupHeroSymbol{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#e6f6ff;color:#118de8;font-size:30px;font-weight:900}
+.setupSimple .onboardCard{background:#fff;border-radius:16px;padding:10px}
+.setupSimple .setupSkip{display:none}
+.flowPage,.summaryPage,#movements,#budget,.settingsPage,.notificationsPage{background:linear-gradient(160deg,#fff,#eef9ff);min-height:100vh;padding:12px}
+.pageBack span:not(.arrow){display:none}
+.pageTitleBlock h1{color:#07184d;font-size:28px}
+.flowPage .flowBanner{border:2px solid #67cbe9;background:#f7fcff}
+.flowPage .flowCurrentBalance{display:none!important}
+.flowPage .flowTab{border-radius:999px}.flowPage .flowTab.active{background:#118eea;color:#fff}
+.flowPage .flowUnifiedRow{border-radius:14px}
+#movements .movementQuickTabs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+#movements .movementAdvancedFilter{display:none}
+#movements .movementQuickTab{font-size:10px;padding:8px 3px;border-radius:999px}
+#summary .summaryBalanceCard{border:2px solid #67cbe9;background:#f5fbff}
+#budget .budgetList{display:flex;flex-direction:column;gap:8px}
+.settingsPage .settingsSearch{display:none}
+.settingsPage .settingsMasterHero{border:2px solid #67cbe9;background:#f5fbff}
+.settingsPage .settingsGroupTitle{display:none}
+.settingsPage .settingsRow{min-height:58px;border-radius:14px;margin:7px 0;background:#f3faff}
+.notifyMasterHero{display:grid;grid-template-columns:58px 1fr 52px;gap:10px;align-items:center;border:2px solid #67cbe9;border-radius:16px;background:#f5fbff;padding:12px}
+.notifyMasterHero img{width:50px;height:50px;border-radius:10px}.notifyMasterHero strong{font-size:18px;color:#07184d}.notifyMasterHero small{display:block;color:#60718b;font-size:11px;margin-top:3px}
+.notifyMasterIcon{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#e4f4ff;color:#0e8eea}
+.notifyMasterList{margin-top:12px}.notifyMasterRow{width:100%;display:grid;grid-template-columns:44px 1fr auto auto;gap:9px;align-items:center;text-align:left;border:0;border-radius:14px;background:#f3faff;margin:7px 0;padding:10px;color:#07184d}.notifyMasterRowIcon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#e3f4ff;color:#0e8eea}.notifyMasterRow small{display:block;color:#60718b;font-size:10px}.masterSwitch{width:39px;height:22px;border-radius:999px;background:#11a8ea;position:relative}.masterSwitch:after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:white;right:2px;top:2px}.rowChev{font-size:23px}.rowValue{font-size:10px}.notifyRecentTitle{font-weight:900;color:#52677c;margin:16px 5px 6px}.notifyRecentList>div{display:grid;grid-template-columns:35px 1fr auto;grid-template-areas:"icon title chev" "icon sub chev";background:#f5faff;border-radius:12px;padding:9px;margin:6px 0}.notifyRecentList span{grid-area:icon}.notifyRecentList b{grid-area:title}.notifyRecentList small{grid-area:sub}.notifyRecentList i{grid-area:chev}
+.todoPage{background:linear-gradient(155deg,#fff 0%,#f4fff9 65%,#e8fff4 100%);min-height:100vh;padding:12px}
+.todoTop h1{color:#083d2d;font-size:28px}.todoBack{color:#138c65}
+.todoHero{border:2px solid #6bd7b0;background:#f1fff8;border-radius:16px;min-height:92px}
+.todoHeroArt[data-todo-scene],.todoHubPerson{background-image:url('assets/eds-green-approved.png')!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}
+.todoHeroArt[data-todo-scene]>* ,.todoHubPerson>*{display:none!important}
+.todoHubGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.todoHubCard{border:1px solid #b9ead7;background:#f4fff9;border-radius:18px}
+.todoHubCard.pending,.todoHubCard.completed{min-height:190px}
+.todoHubCard.compact{grid-column:1/-1;min-height:72px}
+.todoHubCard.reopen{grid-column:1/-1}
+.todoQuickMaster{display:flex;gap:7px;overflow:visible}.todoQuickMaster button{flex:1;border:1px solid #b8e6d5;background:#fff;border-radius:999px;padding:9px 5px;color:#176f55;font-weight:800;font-size:11px}.todoQuickMaster .active{background:#16a36f;color:#fff}.masterHiddenFilter{display:none!important}
+.todoActions{display:none!important}
+.todoListPanel{background:transparent;border:0;box-shadow:none;padding:0}
+.todoSettingCard{background:#effcf5;border:1px solid #bde9d8;border-radius:14px;min-height:62px}
+.todoSettingCard .i{background:#dff7ec;color:#0d9a68;border-radius:50%}
+.todoManageDetails{display:none!important}
+
 </style>
 </head>
 <body>
@@ -2706,18 +2775,16 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 </section>
 
 <section id="notifications" class="screen notificationsPage hidden">
-  <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Notifiche</h1></div></div>
-  <div class="notifyHero">
-    <div class="notifyBell" aria-hidden="true">🔔</div>
-    <h2>Scegli cosa vuoi che l’app ti ricordi.</h2>
-  </div>
-  <div id="notifyScopeChoices" class="notifyScopeChoices">
-    <button type="button" class="notifyScopeOption" data-scope="all"><span class="notifyRadio"></span><span><strong>Tutto</strong><small>Entrate e pagamenti</small></span></button>
-    <button type="button" class="notifyScopeOption" data-scope="income"><span class="notifyRadio"></span><span><strong>Solo Entrate</strong><small>Solo le tue entrate ricorrenti e occasionali</small></span></button>
-    <button type="button" class="notifyScopeOption" data-scope="expense"><span class="notifyRadio"></span><span><strong>Solo Pagamenti</strong><small>Solo i tuoi pagamenti</small></span></button>
-    <button type="button" class="notifyScopeOption" data-scope="custom"><span class="notifyRadio"></span><span><strong>Scegli le singole voci</strong><small>Attiva le notifiche solo per alcune voci</small></span></button>
-  </div>
-  <button id="notificationsConfirm" class="btn notifyConfirm">Conferma</button>
+ <div class="pageHeader"><div class="pageTitleBlock"><button id="notificationsBack" class="pageBack" aria-label="Indietro"><span class="arrow">←</span></button><h1>Notifiche</h1></div></div>
+ <div class="notifyMasterHero"><span class="notifyMasterIcon">♟</span><span><strong>Resta sempre<br>in ordine</strong><small>Attiva le notifiche per non dimenticare le tue attività.</small></span><img src="assets/eds-blue-approved.png" alt=""></div>
+ <div id="notifyScopeChoices" class="notifyMasterList">
+  <button type="button" class="notifyMasterRow" data-scope="all"><span class="notifyMasterRowIcon blue">♟</span><span><strong>Notifiche attive</strong><small>Ricevi promemoria per i tuoi conti</small></span><span class="masterSwitch on"></span></button>
+  <button type="button" class="notifyMasterRow" data-scope="income"><span class="notifyMasterRowIcon blue">▣</span><span><strong>Promemoria del giorno</strong><small>Ricevi un riepilogo delle entrate e uscite del giorno</small></span><span class="masterSwitch on"></span></button>
+  <button type="button" class="notifyMasterRow" data-scope="expense"><span class="notifyMasterRowIcon blue">♪</span><span><strong>Suono</strong><small>Scegli il suono delle notifiche</small></span><span class="rowChev">›</span></button>
+  <button type="button" class="notifyMasterRow" data-scope="custom"><span class="notifyMasterRowIcon blue">◷</span><span><strong>Anticipo promemoria</strong><small>Ricevi la notifica prima della scadenza</small></span><b class="rowValue">10 minuti</b><span class="rowChev">›</span></button>
+ </div>
+ <div class="notifyRecentTitle">Promemoria recenti</div><div class="notifyRecentList"><div><span>▤</span><b>Stipendio</b><small>Oggi, 08:00</small><i>›</i></div><div><span>▤</span><b>Fattura energia</b><small>18 ott.</small><i>›</i></div><div><span>⌂</span><b>Affitto ufficio</b><small>23 ott.</small><i>›</i></div></div>
+ <button id="notificationsConfirm" class="hidden" aria-hidden="true">Conferma</button>
 </section>
 
 
@@ -2749,11 +2816,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 <section id="todoActive" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>In scadenza</h1></div>
   <div class="todoHero active"><strong>Attività in scadenza</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
-  <div class="todoFilterBar">
-    <button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button>
-    <select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
-    <select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select>
-  </div>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic">Oggi</button><button type="button" class="todoQuickStatic">Questa settimana</button><select id="todoActiveFilterMonth" class="todoFilterSelect masterHiddenFilter" aria-label="Filtra per mese"></select><select id="todoActiveFilterYear" class="todoFilterSelect masterHiddenFilter" aria-label="Filtra per anno"></select></div>
   <div id="todoActiveFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoActiveList"></div>
@@ -2768,11 +2831,7 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose già fatte</h1></div>
   <div class="todoHero done"><strong>Cose già fatte</strong><small id="todoDoneHeroCount" class="todoHeroCount">0 attività completate</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
-  <div class="todoFilterBar">
-    <button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button>
-    <select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select>
-    <select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select>
-  </div>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic">Oggi</button><button type="button" class="todoQuickStatic">Questa settimana</button><button type="button" class="todoQuickStatic">Questo mese</button><select id="todoDoneFilterMonth" class="todoFilterSelect masterHiddenFilter" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect masterHiddenFilter" aria-label="Filtra per anno"></select></div>
   <div id="todoDoneFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoDoneList"></div>
