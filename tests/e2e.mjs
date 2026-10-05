@@ -799,6 +799,17 @@ async function testTodoMonthYearFilters(browser){
   await context.close();
 }
 
+async function testTodoQuickFilters(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();await first.locator('.todoDescInput').fill('Voce iniziale');await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+  await page.evaluate(k=>{const st=JSON.parse(localStorage.getItem(k));const now=new Date(),iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),tom=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);st.todo.tasks=[{id:'today',description:'Oggi',date:iso(now),dateText:iso(now),createdAt:1},{id:'tom',description:'Domani',date:iso(tom),dateText:iso(tom),createdAt:2}];localStorage.setItem(k,JSON.stringify(st))},KEY);
+  await page.reload();await page.click('#landingTodo');await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+  await page.locator('#todoActive [data-todo-quick="today"]').click();assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),1);assert.equal(await page.locator('#todoActiveList').getByText('Oggi',{exact:true}).count(),1);
+  await page.click('#todoActiveFilterAll');assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),2);
+  await context.close();
+}
+
 async function testApprovedMasterRules(browser){
   const {context,page}=await freshPage(browser);
   await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
@@ -907,7 +918,7 @@ try{
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
-  await testApprovedMasterRules(browser);
+  await testTodoQuickFilters(browser);\nawait testApprovedMasterRules(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
