@@ -828,6 +828,8 @@ async function testApprovedMasterRules(browser){
   assert.ok(hubRules.logos.every(x=>x.endsWith('eds-green-approved.png')));
 
   await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+  await page.click('#todoActiveFilterAll');
+  await page.waitForSelector('.todoCompleteBtn');
   const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
   assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.color,'rgb(35, 75, 54)');assert.equal(completeStyle.shadow,'none');
   assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
