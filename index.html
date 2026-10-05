@@ -2835,7 +2835,7 @@ body{background:#eef9ff}
 <section id="todoActive" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>In scadenza</h1></div>
   <div class="todoHero active"><strong>Attività in scadenza</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
-  <div class="todoFilterBar todoQuickMaster"><button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic">Oggi</button><button type="button" class="todoQuickStatic">Questa settimana</button></div><details id="todoActiveAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button></div><details id="todoActiveAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
   <div id="todoActiveFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoActiveList"></div>
@@ -2850,7 +2850,7 @@ body{background:#eef9ff}
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose già fatte</h1></div>
   <div class="todoHero done"><strong>Cose già fatte</strong><small id="todoDoneHeroCount" class="todoHeroCount">0 attività completate</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
-  <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic">Oggi</button><button type="button" class="todoQuickStatic">Questa settimana</button><button type="button" class="todoQuickStatic">Questo mese</button></div><details id="todoDoneAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button><button type="button" class="todoQuickStatic" data-todo-quick="month">Questo mese</button></div><details id="todoDoneAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
   <div id="todoDoneFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoDoneList"></div>
@@ -5267,16 +5267,26 @@ function renderTodoFilterBar(kind){
   month.innerHTML='<option value="all">Tutti i mesi</option>'+TODO_MONTH_LABELS.map((m,i)=>'<option value="'+String(i+1).padStart(2,'0')+'">'+m+'</option>').join('');
   year.innerHTML='<option value="all">Tutti gli anni</option>'+todoFilterYears(kind).map(y=>'<option value="'+y+'">'+y+'</option>').join('');
   month.value=filter.month;year.value=filter.year;
-  all.classList.toggle('active',filter.month==='all'&&filter.year==='all');
   const rerender=kind==='active'?renderTodoActive:renderTodoDone;
-  all.onclick=()=>{filter.month='all';filter.year='all';rerender()};
-  month.onchange=()=>{filter.month=month.value;rerender()};
-  year.onchange=()=>{filter.year=year.value;rerender()};
+  const scope=$(kind==='active'?'todoActive':'todoDone');
+  const quickButtons=[...scope.querySelectorAll('[data-todo-quick]')];
+  all.classList.toggle('active',filter.month==='all'&&filter.year==='all'&&filter.quick==='all');
+  quickButtons.forEach(btn=>{btn.classList.toggle('active',filter.quick===btn.dataset.todoQuick);btn.onclick=()=>{filter.quick=btn.dataset.todoQuick;filter.month='all';filter.year='all';rerender()}});
+  all.onclick=()=>{filter.month='all';filter.year='all';filter.quick='all';rerender()};
+  month.onchange=()=>{filter.month=month.value;filter.quick='all';rerender()};
+  year.onchange=()=>{filter.year=year.value;filter.quick='all';rerender()};
 }
 function applyTodoFilter(items,kind){
   const f=todoFilters[kind];
   return items.filter(x=>{
     const d=todoFilterDate(x,kind);
+    if(f.quick!=='all'){
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;
+      const now=todayISO();
+      if(f.quick==='today')return d===now;
+      if(f.quick==='week'){const end=addDaysISO(now,6);return d>=now&&d<=end}
+      if(f.quick==='month')return d.slice(0,7)===ymNow();
+    }
     if(f.month==='all'&&f.year==='all')return true;
     if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return false;
     if(f.month!=='all'&&d.slice(5,7)!==f.month)return false;
@@ -5286,9 +5296,10 @@ function applyTodoFilter(items,kind){
 }
 function todoFilterDescription(kind,count,total){
   const f=todoFilters[kind],parts=[];
+  if(f.quick==='today')parts.push('Oggi');else if(f.quick==='week')parts.push('Questa settimana');else if(f.quick==='month')parts.push('Questo mese');
   if(f.month!=='all')parts.push(TODO_MONTH_LABELS[Number(f.month)-1]);
   if(f.year!=='all')parts.push(f.year);
-  return (f.month==='all'&&f.year==='all'?'Tutte le voci':parts.join(' · '))+' — '+count+' di '+total;
+  return (f.month==='all'&&f.year==='all'&&f.quick==='all'?'Tutte le voci':parts.join(' · '))+' — '+count+' di '+total;
 }
 function renderTodoActive(){
   applyTodoColor();setTodoGreetings();renderTodoFilterBar('active');
