@@ -416,6 +416,8 @@ async function testTodoSection(browser){
   await first.locator('.todoDateInput').focus();
   assert.equal(await first.locator('.todoRecArea').isVisible(),true,'Le opzioni di ricorrenza restano accessibili sulla riga attiva.');
   await page.click('#todoSetupSave');
+  await page.waitForTimeout(500);
+  if(!(await page.locator('#todoHub').isVisible())) console.log('TODO_SAVE_DIAGNOSTIC:'+JSON.stringify(await page.locator('#modal').innerText()));
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
