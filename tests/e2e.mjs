@@ -398,7 +398,7 @@ async function testTodoSection(browser){
   await page.click('#landingTodo');
   await page.waitForSelector('#todoSetup:not(.hidden)');
 
-  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Evaristo/);
+  assert.match(await page.locator('#todoSetup').innerText(),/Inserisci tutte le cose che hai da fare/);
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>t.includes('Stato')),false);
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>/\bFatto\b/.test(t)),false);
   assert.equal(await page.locator('#todoSetupRows .todoSetupRow').count(),4);
@@ -411,12 +411,18 @@ async function testTodoSection(browser){
   await first.locator('.todoDateInput').fill('domani');
   await first.locator('.todoDateInput').dispatchEvent('input');
   await first.locator('[data-tr="single"]').click();
+  await page.locator('body').click({position:{x:5,y:5}});
+  assert.equal(await first.locator('.todoRecArea').isVisible(),false,'I dettagli di ricorrenza si raccolgono quando si modifica la riga.');
+  await first.locator('.todoDateInput').focus();
+  assert.equal(await first.locator('.todoRecArea').isVisible(),true,'Le opzioni di ricorrenza restano accessibili sulla riga attiva.');
   await page.click('#todoSetupSave');
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/In scadenza/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
+  assert.equal(await page.locator('#todoHubPendingCount').innerText(),'Qui trovi le attività con la scadenza più vicina.');
+  assert.equal(await page.locator('#todoHubDoneCount').innerText(),'Qui trovi tutte le attività che hai completato.');
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
@@ -472,6 +478,7 @@ async function testTodoSection(browser){
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
+  assert.equal(await page.locator('#todoActiveHeroCount').innerText(),'Qui trovi le attività con la scadenza più vicina.');
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
@@ -502,6 +509,7 @@ async function testTodoSection(browser){
   await row.locator('.todoCompleteBtn').click();
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
+  assert.equal(await page.locator('#todoDoneHeroCount').innerText(),'Qui trovi tutte le attività che hai completato.');
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
