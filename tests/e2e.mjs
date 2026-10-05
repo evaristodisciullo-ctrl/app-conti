@@ -419,7 +419,7 @@ async function testTodoSection(browser){
   await page.evaluate(()=>{window.__saveClicks=0;document.addEventListener('click',e=>{if(e.target.closest('#todoSetupSave'))window.__saveClicks++},true)});
   await page.click('#todoSetupSave');
   await page.waitForTimeout(300);
-  console.log('SAVE_DIAG:'+JSON.stringify(await page.evaluate(()=>({clicks:window.__saveClicks,rect:document.getElementById('todoSetupSave').getBoundingClientRect().toJSON(),screen:[...document.querySelectorAll('.screen:not(.hidden)')].map(e=>e.id),modal:document.getElementById('modal').className,body:document.getElementById('modalBody').innerText,stored:Object.values(localStorage).map(x=>JSON.parse(x).todo?.setupDone)}))));
+  console.log('SAVE_DIAG:'+JSON.stringify(await page.evaluate(()=>({clicks:window.__saveClicks,rect:document.getElementById('todoSetupSave').getBoundingClientRect().toJSON(),hit:(()=>{const r=document.getElementById('todoSetupSave').getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.outerHTML?.slice(0,600)})(),screen:[...document.querySelectorAll('.screen:not(.hidden)')].map(e=>e.id),modal:document.getElementById('modal').className,body:document.getElementById('modalBody').innerText,stored:Object.values(localStorage).map(x=>JSON.parse(x).todo?.setupDone)}))));
   await page.waitForTimeout(500);
   await page.waitForSelector('#todoHub:not(.hidden)');
 
