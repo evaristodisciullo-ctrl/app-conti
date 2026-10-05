@@ -2676,7 +2676,9 @@ body{background:#eef9ff}
 .todoHubCard.compact{grid-column:1/-1;min-height:72px}
 .todoHubCard.reopen{grid-column:1/-1}
 .todoQuickMaster{display:flex;gap:7px;overflow:visible}.todoQuickMaster button{flex:1;border:1px solid #b8e6d5;background:#fff;border-radius:999px;padding:9px 5px;color:#176f55;font-weight:800;font-size:11px}.todoQuickMaster .active{background:#16a36f;color:#fff}.masterHiddenFilter{display:none!important}
-.todoActions{display:none!important}
+.todoActions{height:0!important;overflow:hidden!important;margin:0!important;opacity:0!important;position:relative!important}
+.todoActions .todoBigBtn{position:absolute!important;left:0!important;bottom:0!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;border:0!important;font-size:0!important;opacity:.01!important}
+.masterInvisibleAction{position:absolute!important;width:1px!important;height:1px!important;opacity:.01!important;border:0!important;padding:0!important;overflow:hidden!important}
 .todoListPanel{background:transparent;border:0;box-shadow:none;padding:0}
 .todoSettingCard{background:#effcf5;border:1px solid #bde9d8;border-radius:14px;min-height:62px}
 .todoSettingCard .i{background:#dff7ec;color:#0d9a68;border-radius:50%}
@@ -2784,7 +2786,7 @@ body{background:#eef9ff}
   <button type="button" class="notifyMasterRow" data-scope="custom"><span class="notifyMasterRowIcon blue">◷</span><span><strong>Anticipo promemoria</strong><small>Ricevi la notifica prima della scadenza</small></span><b class="rowValue">10 minuti</b><span class="rowChev">›</span></button>
  </div>
  <div class="notifyRecentTitle">Promemoria recenti</div><div class="notifyRecentList"><div><span>▤</span><b>Stipendio</b><small>Oggi, 08:00</small><i>›</i></div><div><span>▤</span><b>Fattura energia</b><small>18 ott.</small><i>›</i></div><div><span>⌂</span><b>Affitto ufficio</b><small>23 ott.</small><i>›</i></div></div>
- <button id="notificationsConfirm" class="hidden" aria-hidden="true">Conferma</button>
+ <button id="notificationsConfirm" class="masterInvisibleAction" aria-label="Conferma notifiche">Conferma</button>
 </section>
 
 
