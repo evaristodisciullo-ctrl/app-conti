@@ -2718,6 +2718,19 @@ body{background:#eef9ff}
 #todoSetup .todoHero.setup{min-height:74px;padding-top:10px;padding-bottom:10px}
 #todoSetup .todoHero.setup strong{font-size:15px!important;max-width:250px}
 
+/* Keep the initial Todo actions visible and usable. */
+#todoSetup .todoActions{
+  display:grid!important;height:auto!important;min-height:0!important;
+  overflow:visible!important;margin:8px 0 18px!important;opacity:1!important;
+  position:static!important;pointer-events:auto!important;
+}
+#todoSetup .todoActions .todoBigBtn{
+  position:relative!important;left:auto!important;top:auto!important;
+  width:100%!important;height:auto!important;min-height:43px!important;
+  padding:0 13px!important;border:0!important;font-size:14px!important;
+  opacity:1!important;pointer-events:auto!important;
+}
+
 </style>
 </head>
 <body>
