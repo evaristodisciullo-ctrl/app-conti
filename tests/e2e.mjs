@@ -918,7 +918,8 @@ try{
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
-  await testTodoQuickFilters(browser);\nawait testApprovedMasterRules(browser);
+  await testTodoQuickFilters(browser);
+  await testApprovedMasterRules(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
 }finally{await browser.close()}
