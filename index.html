@@ -2576,6 +2576,43 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #todoSettings .todoSettingCard:nth-child(5) .i{background:#eeeaff!important;color:#5145a8!important}
 #todoSettings .todoSettingCard:nth-child(6) .i{background:#edf1f5!important;color:#607080!important}
 
+
+/* HOME CONTI — rebuilt from approved master 05 */
+#home{padding:8px 10px 28px;background:linear-gradient(160deg,#fff 0%,#f7fcff 62%,#eaf8ff 100%)}
+#home .homeTopLine{margin:0 0 14px;gap:12px}
+#home .homeLandingBack{border:0;background:transparent;color:#168bea;font-size:31px;padding:0 2px;line-height:1}
+#home .homeTopLine h1{font-size:29px;color:#071b52;letter-spacing:-1px}
+#home .homeFeatureGrid{gap:12px}
+#home .homeFeatureCard{min-height:202px;padding:17px 16px;border:2px solid #58c7e4;border-radius:19px;background:rgba(255,255,255,.76);box-shadow:0 5px 12px rgba(28,119,173,.10);overflow:hidden}
+#home .homeMasterIcon{position:absolute;left:16px;top:18px;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#e7f5ff;color:#168bea;font-size:39px;font-weight:950}
+#home .homeExpenseIcon{font-size:22px}
+#home .homeMasterLogo{position:absolute;right:15px;top:17px;width:50px;height:50px;object-fit:cover;border-radius:10px}
+#home .homeFeatureText{position:absolute;left:16px;right:14px;bottom:47px}
+#home .homeFeatureText strong{display:block;font-size:24px;line-height:1.05;color:#06164a}
+#home .homeFeatureText small{font-size:14px;line-height:1.25;color:#526a87;margin-top:5px}
+#home .homeFeatureArrow{right:15px;bottom:13px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#0d91ef;color:white;font-size:27px;font-weight:900}
+#home .homeSummaryTitle{margin:18px 3px 7px;color:#52677c;font-size:13px}
+#home .homeSummaryCard{padding:5px;border:0;border-radius:18px;background:rgba(255,255,255,.72)}
+#home .homeSummaryRow{position:relative;display:grid;grid-template-columns:52px minmax(0,1fr) auto 15px;grid-template-areas:"icon copy value chev";gap:9px;min-height:72px;padding:8px 10px;border:0;border-radius:14px;margin:5px 0;background:#edf7ff}
+#home .homeSummaryRow:nth-child(2){background:#fff5e8}
+#home .homeSummaryRow:nth-child(3){background:#ebfbf2}
+#home .homeSummaryRow.totalRow{margin:5px 0;padding:8px 10px;background:#f1efff}
+#home .homeSummaryIcon{grid-area:icon;width:48px;height:48px;border-radius:50%;font-size:22px}
+#home .homeSummaryCopy{grid-area:copy;align-self:center;min-width:0}
+#home .homeSummaryCopy b{display:block;font-size:13px;color:#07184d}
+#home .homeSummaryCopy small{display:block;margin-top:3px;font-size:11px;color:#60718b}
+#home .homeSummaryValue{grid-area:value;align-self:center;font-size:20px;color:#087bd8}
+#home .homeSummaryValue.expenseValue{color:#e4262d}
+#home .homeSummaryValue.incomeValue{color:#07955c}
+#home .homeSummaryChevron{grid-area:chev;align-self:center;font-size:27px;color:#43637d}
+#home .homeSummaryEdit{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#home .homeActionCard{min-height:82px;margin-top:11px;padding:11px 14px;grid-template-columns:58px minmax(0,1fr) 18px;border:0;border-radius:16px;background:rgba(255,255,255,.86)}
+#home .homeActionIcon{width:54px;height:54px;border-radius:50%;font-size:29px;background:#e8f6ff;color:#0d91ef}
+#home .homeActionCard strong{font-size:19px;color:#07184d}
+#home .homeActionCard small{font-size:12px;line-height:1.25;color:#60718b}
+#home .homeResetActions{display:none!important}
+@media(max-width:390px){#home .homeFeatureCard{min-height:188px;padding:14px}#home .homeMasterIcon{width:54px;height:54px;font-size:34px}#home .homeMasterLogo{width:46px;height:46px}#home .homeFeatureText strong{font-size:21px}#home .homeSummaryValue{font-size:17px}}
+
 </style>
 </head>
 <body>
@@ -2766,59 +2803,22 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 </section>
 
 <section id="home" class="screen hidden">
-  <div class="homeTopLine"><button id="homeBackLanding" class="homeLandingBack">←</button><h1>Conti economici</h1></div>
-
+  <div class="homeTopLine"><button id="homeBackLanding" class="homeLandingBack" aria-label="Indietro">←</button><h1>Conti economici</h1></div>
   <div class="homeFeatureGrid">
-    <button id="homeIncome" class="homeFeatureCard incomeFeature">
-      <span class="homeScene coupleScene incomeScene" aria-hidden="true"><img src="assets/eds-blue-approved.png" alt=""></span><span class="homeFeatureText"><strong>Entrate</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
-    </button>
-    <button id="homeExpense" class="homeFeatureCard expenseFeature">
-      <span class="homeScene coupleScene expenseScene" aria-hidden="true"><img src="assets/eds-blue-approved.png" alt=""></span><span class="homeFeatureText"><strong>Pagamenti</strong><small>Vedi tutte</small></span><span class="homeFeatureArrow">›</span>
-    </button>
+    <button id="homeIncome" class="homeFeatureCard incomeFeature"><span class="homeMasterIcon homeIncomeIcon">↑</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Entrate</strong><small>Registra e gestisci<br>tutte le tue entrate.</small></span><span class="homeFeatureArrow">→</span></button>
+    <button id="homeExpense" class="homeFeatureCard expenseFeature"><span class="homeMasterIcon homeExpenseIcon">▣€</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Pagamenti</strong><small>Gestisci e monitora<br>tutti i tuoi pagamenti.</small></span><span class="homeFeatureArrow">→</span></button>
   </div>
-
   <div class="homeSummaryTitle">RIEPILOGO CONTI</div>
   <div class="homeSummaryCard">
-    <div class="homeSummaryRow">
-      <span class="homeSummaryIcon iBlue">€</span>
-      <span class="homeSummaryLabel">SALDO ATTUALE</span>
-      <strong id="homeBalance" class="homeSummaryValue">€ 0,00</strong>
-      <button id="editBalance" class="homeSummaryEdit">Modifica saldo</button>
-    </div>
-    <div class="homeSummaryRow">
-      <span class="homeSummaryIcon iOrange">↓</span>
-      <span class="homeSummaryLabel">DA PAGARE</span>
-      <strong id="homeExpenseTotal" class="homeSummaryValue">€ 0,00</strong>
-    </div>
-    <div class="homeSummaryRow">
-      <span class="homeSummaryIcon iGreen">↑</span>
-      <span class="homeSummaryLabel">DA RICEVERE</span>
-      <strong id="homeIncomeTotal" class="homeSummaryValue">€ 0,00</strong>
-    </div>
-    <div class="homeSummaryRow totalRow" id="homeProjection">
-      <span class="homeSummaryIcon iIndigo">▥</span>
-      <span class="homeSummaryLabel">SALDO FINE MESE</span>
-      <strong id="homeProjectionValue" class="homeSummaryValue">€ 0,00</strong>
-    </div>
+    <div class="homeSummaryRow"><span class="homeSummaryIcon iBlue">▣</span><span class="homeSummaryCopy"><b>SALDO ATTUALE</b><small>Il tuo saldo disponibile</small></span><strong id="homeBalance" class="homeSummaryValue">€ 0,00</strong><span class="homeSummaryChevron">›</span><button id="editBalance" class="homeSummaryEdit" aria-label="Modifica saldo"></button></div>
+    <div class="homeSummaryRow"><span class="homeSummaryIcon iOrange">▤</span><span class="homeSummaryCopy"><b>DA PAGARE</b><small>Totale pagamenti in sospeso</small></span><strong id="homeExpenseTotal" class="homeSummaryValue expenseValue">€ 0,00</strong><span class="homeSummaryChevron">›</span></div>
+    <div class="homeSummaryRow"><span class="homeSummaryIcon iGreen">↓</span><span class="homeSummaryCopy"><b>DA RICEVERE</b><small>Totale entrate in sospeso</small></span><strong id="homeIncomeTotal" class="homeSummaryValue incomeValue">€ 0,00</strong><span class="homeSummaryChevron">›</span></div>
+    <div class="homeSummaryRow totalRow" id="homeProjection"><span class="homeSummaryIcon iIndigo">▥</span><span class="homeSummaryCopy"><b>SALDO FINE MESE</b><small>Stima del saldo a fine mese</small></span><strong id="homeProjectionValue" class="homeSummaryValue">€ 0,00</strong><span class="homeSummaryChevron">›</span></div>
   </div>
-
-  <button id="homeAllMovements" class="homeActionCard">
-    <span class="homeActionIcon iPurple">↕</span>
-    <span><strong>Movimenti</strong><small>Vedi elenco e filtri</small></span><span class="homeActionArrow">›</span>
-  </button>
-
-  <button id="homeSettingsCard" class="homeActionCard">
-    <span class="homeActionIcon iBlue">⚙</span>
-    <span><strong>Impostazioni</strong><small>Notifiche, colore e preferenze</small></span><span class="homeActionArrow">›</span>
-  </button>
-
-  <div class="homeResetActions">
-    <button id="homeRestartSetup" class="homeResetBtn">↩ <span>Torna all’inizio</span></button>
-    <button id="homeDeleteAll" class="homeResetBtn danger">× <span>Cancella tutto</span></button>
-  </div>
-
-  <div id="homeMovements" class="hidden"></div>
-  <button id="homeFilters" class="hidden" aria-hidden="true"></button>
+  <button id="homeAllMovements" class="homeActionCard"><span class="homeActionIcon iBlue">↕</span><span><strong>Movimenti</strong><small>Visualizza tutti i movimenti<br>dei tuoi conti.</small></span><span class="homeActionArrow">›</span></button>
+  <button id="homeSettingsCard" class="homeActionCard"><span class="homeActionIcon iBlue">⚙</span><span><strong>Impostazioni</strong><small>Personalizza la gestione<br>dei tuoi conti economici.</small></span><span class="homeActionArrow">›</span></button>
+  <div class="homeResetActions" aria-hidden="true"><button id="homeRestartSetup" class="homeResetBtn" tabindex="-1">Torna all’inizio</button><button id="homeDeleteAll" class="homeResetBtn danger" tabindex="-1">Cancella tutto</button></div>
+  <div id="homeMovements" class="hidden"></div><button id="homeFilters" class="hidden" aria-hidden="true"></button>
 </section>
 
 <section id="flow" class="screen flowPage hidden">
