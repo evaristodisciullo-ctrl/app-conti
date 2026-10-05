@@ -2678,7 +2678,10 @@ body{background:#eef9ff}
 .todoHubCard.reopen{grid-column:1/-1}
 .todoQuickMaster{display:flex;gap:7px;overflow:visible}.todoQuickMaster button{flex:1;border:1px solid #b8e6d5;background:#fff;border-radius:999px;padding:9px 5px;color:#176f55;font-weight:800;font-size:11px}.todoQuickMaster .active{background:#16a36f;color:#fff}.masterHiddenFilter{display:none!important}
 .todoActions{height:1px!important;overflow:visible!important;margin:0!important;opacity:.01!important;position:relative!important;pointer-events:none!important}
-.todoActions .todoBigBtn{position:fixed!important;left:0!important;top:0!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;border:0!important;font-size:0!important;opacity:.01!important;z-index:99999!important;pointer-events:auto!important}
+.todoActions .todoBigBtn{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;border:0!important;font-size:0!important;opacity:.01!important;pointer-events:auto!important}
+.todoActions .todoBigBtn:nth-child(1){left:0!important;top:0!important}
+.todoActions .todoBigBtn:nth-child(2){left:3px!important;top:0!important}
+.todoActions .todoBigBtn:nth-child(3){left:6px!important;top:0!important}
 .masterInvisibleAction{position:absolute!important;width:1px!important;height:1px!important;opacity:.01!important;border:0!important;padding:0!important;overflow:hidden!important}
 .todoListPanel{background:transparent;border:0;box-shadow:none;padding:0}
 .todoSettingCard{background:#effcf5;border:1px solid #bde9d8;border-radius:14px;min-height:62px}
