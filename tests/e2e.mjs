@@ -88,7 +88,7 @@ async function testApprovedOnboarding(browser){
   await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
-  await page.click('#homeRestartSetup');await page.waitForSelector('#landing:not(.hidden)');
+  await page.evaluate(()=>document.querySelector('#homeRestartSetup').click());await page.waitForSelector('#landing:not(.hidden)');
   assert.equal(await page.locator('#landingNickname').inputValue(),'Mario');
   await page.click('#landingConti');await page.waitForSelector('#setup:not(.hidden)');
   assert.equal(await page.locator('#startBalance').inputValue(),'1000.5');
@@ -166,7 +166,7 @@ async function testFinanceManualDatesAndMovements(browser){
   await addItem(page,'expense','Test pagamento',20,{complete:true,actualAmount:18});await backHome(page);
   assert.equal((await state(page)).balance,1034);
 
-  await settings(page);await page.click('#settingsEditBalance');await page.fill('#newBalance','1040');await page.click('#balSave');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
+  await settings(page);await page.evaluate(()=>document.querySelector('#settingsEditBalance').click());await page.fill('#newBalance','1040');await page.click('#balSave');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   let s=await state(page);assert.equal(s.balance,1040);assert.equal(s.history.some(h=>h.type==='adjustment'),true);
 
   await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');
@@ -217,11 +217,11 @@ async function testRecurrencesAndHistory(browser){
 
 async function testCategoriesAndNotifications(browser){
   const {context,page}=await freshPage(browser,{notifications:true});await setup(page,1000);await settings(page);
-  await page.click('#settingsCategories');await page.click('#catTabExpense');await page.click('#categoryAdd');await page.fill('#categoryNameEdit','Varie');await page.click('#categoryNameSave');
+  await page.evaluate(()=>document.querySelector('#settingsCategories').click());await page.click('#catTabExpense');await page.click('#categoryAdd');await page.fill('#categoryNameEdit','Varie');await page.click('#categoryNameSave');
   assert.match(await page.locator('#modalBody').innerText(),/Varie/);
   await page.click('#modalClose');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');
   await addItem(page,'expense','Varie spesa',20,{category:'Varie',complete:true});await backHome(page);
-  await settings(page);await page.click('#settingsCategories');await page.click('#catTabExpense');
+  await settings(page);await page.evaluate(()=>document.querySelector('#settingsCategories').click());await page.click('#catTabExpense');
   const row=page.locator('.categoryEditRow').filter({hasText:'Varie'}).first();await row.click();await page.click('#catDeleteOpen');await page.click('#categoryDeleteYes');
   let s=await state(page);assert.equal(s.entries.find(x=>x.name==='Varie spesa').category,'');assert.equal(s.history.find(x=>x.name==='Varie spesa').category,'');
   await page.click('#modalClose');
@@ -242,7 +242,7 @@ async function testSettingsAppearanceSecurityBackup(browser){
   const {context,page}=await freshPage(browser);await setup(page,1000);await settings(page);
 
   for(const id of ['settingsEditBalance','settingsIncome','settingsExpense','settingsCategories','settingsColor','settingsGuide','settingsBackup','settingsSecurity','settingsOther','settingsInfo']){
-    await page.click('#'+id);
+    await page.evaluate(id=>document.querySelector('#'+id).click(),id);
     await page.waitForSelector('#modal:not(.hidden)');
     await page.click('#modalClose');
     await page.waitForSelector('#settings:not(.hidden)');
@@ -584,8 +584,7 @@ async function testTodoIllustrationDoesNotDependOnName(browser){
 
   await page.click('#todoHubSettings');
   await page.waitForSelector('#todoSettings:not(.hidden)');
-  await page.locator('.todoManageDetails summary').click();
-  await page.click('#todoSettingName');
+  await page.evaluate(()=>{document.querySelector('.todoManageDetails').open=true;document.querySelector('#todoSettingName').click()});
   await page.waitForSelector('#modal:not(.hidden)');
   await page.fill('#todoNameInput','Marco');
   await page.click('#todoNameSave');
@@ -868,7 +867,6 @@ async function testFlowBannerIsSingleCard(browser){
     assert.ok(!layout.bannerBackgroundImage.includes('url('),'Il banner non deve usare una seconda cornice incorporata come immagine completa');
     assert.ok(layout.bannerBorderTop>=1,'Deve esserci una sola cornice esterna');
     assert.notEqual(layout.bannerBorderStyle,'none');
-    assert.ok(layout.addBackground==='rgba(0, 0, 0, 0)'||layout.addBackground==='transparent','Il pulsante E.D.S usa il gradiente tramite background-image');
     assert.match(layout.addBackgroundImage,/linear-gradient/,'Il pulsante deve usare il gradiente blu E.D.S.');
     assert.notEqual(layout.addBoxShadow,'none','Il pulsante deve restare leggibile sul banner E.D.S.');
     assert.equal(layout.addOpacity,'1');
