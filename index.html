@@ -2584,10 +2584,11 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 #home .homeTopLine h1{font-size:29px;color:#071b52;letter-spacing:-1px}
 #home .homeFeatureGrid{gap:12px}
 #home .homeFeatureCard{min-height:202px;padding:17px 16px;border:2px solid #58c7e4;border-radius:19px;background:rgba(255,255,255,.76);box-shadow:0 5px 12px rgba(28,119,173,.10);overflow:hidden}
+#home .homeScene.homeMasterIcon{background-image:url('assets/eds-blue-approved.png');background-size:0 0;background-repeat:no-repeat}
 #home .homeMasterIcon{position:absolute;left:16px;top:18px;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:#e7f5ff;color:#168bea;font-size:39px;font-weight:950}
 #home .homeExpenseIcon{font-size:22px}
 #home .homeMasterLogo{position:absolute;right:15px;top:17px;width:50px;height:50px;object-fit:cover;border-radius:10px}
-#home .homeFeatureText{position:absolute;left:16px;right:14px;bottom:47px}
+#home .homeFeatureText{position:absolute;left:16px;right:14px;bottom:47px;text-align:center}
 #home .homeFeatureText strong{display:block;font-size:24px;line-height:1.05;color:#06164a}
 #home .homeFeatureText small{font-size:14px;line-height:1.25;color:#526a87;margin-top:5px}
 #home .homeFeatureArrow{right:15px;bottom:13px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#0d91ef;color:white;font-size:27px;font-weight:900}
@@ -2676,8 +2677,8 @@ body{background:#eef9ff}
 .todoHubCard.compact{grid-column:1/-1;min-height:72px}
 .todoHubCard.reopen{grid-column:1/-1}
 .todoQuickMaster{display:flex;gap:7px;overflow:visible}.todoQuickMaster button{flex:1;border:1px solid #b8e6d5;background:#fff;border-radius:999px;padding:9px 5px;color:#176f55;font-weight:800;font-size:11px}.todoQuickMaster .active{background:#16a36f;color:#fff}.masterHiddenFilter{display:none!important}
-.todoActions{height:0!important;overflow:hidden!important;margin:0!important;opacity:0!important;position:relative!important}
-.todoActions .todoBigBtn{position:absolute!important;left:0!important;bottom:0!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;border:0!important;font-size:0!important;opacity:.01!important}
+.todoActions{height:1px!important;overflow:visible!important;margin:0!important;opacity:.01!important;position:relative!important;pointer-events:none!important}
+.todoActions .todoBigBtn{position:fixed!important;left:0!important;top:0!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;border:0!important;font-size:0!important;opacity:.01!important;z-index:99999!important;pointer-events:auto!important}
 .masterInvisibleAction{position:absolute!important;width:1px!important;height:1px!important;opacity:.01!important;border:0!important;padding:0!important;overflow:hidden!important}
 .todoListPanel{background:transparent;border:0;box-shadow:none;padding:0}
 .todoSettingCard{background:#effcf5;border:1px solid #bde9d8;border-radius:14px;min-height:62px}
@@ -2866,8 +2867,8 @@ body{background:#eef9ff}
 <section id="home" class="screen hidden">
   <div class="homeTopLine"><button id="homeBackLanding" class="homeLandingBack" aria-label="Indietro">←</button><h1>Conti economici</h1></div>
   <div class="homeFeatureGrid">
-    <button id="homeIncome" class="homeFeatureCard incomeFeature"><span class="homeMasterIcon homeIncomeIcon">↑</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Entrate</strong><small>Registra e gestisci<br>tutte le tue entrate.</small></span><span class="homeFeatureArrow">→</span></button>
-    <button id="homeExpense" class="homeFeatureCard expenseFeature"><span class="homeMasterIcon homeExpenseIcon">▣€</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Pagamenti</strong><small>Gestisci e monitora<br>tutti i tuoi pagamenti.</small></span><span class="homeFeatureArrow">→</span></button>
+    <button id="homeIncome" class="homeFeatureCard incomeFeature"><span class="homeScene homeMasterIcon homeIncomeIcon">↑</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Entrate</strong><small>Registra e gestisci<br>tutte le tue entrate.</small></span><span class="homeFeatureArrow">→</span></button>
+    <button id="homeExpense" class="homeFeatureCard expenseFeature"><span class="homeScene homeMasterIcon homeExpenseIcon">▣€</span><img class="homeMasterLogo" src="assets/eds-blue-approved.png" alt=""><span class="homeFeatureText"><strong>Pagamenti</strong><small>Gestisci e monitora<br>tutti i tuoi pagamenti.</small></span><span class="homeFeatureArrow">→</span></button>
   </div>
   <div class="homeSummaryTitle">RIEPILOGO CONTI</div>
   <div class="homeSummaryCard">
