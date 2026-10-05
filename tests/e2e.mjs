@@ -394,7 +394,6 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
 
 async function testTodoSection(browser){
   const {context,page}=await freshPage(browser);
-  page.on('pageerror',e=>console.log('TODO_PAGE_ERROR:'+e.message+' '+e.stack));
   await page.fill('#landingNickname','Evaristo');
   await page.click('#landingTodo');
   await page.waitForSelector('#todoSetup:not(.hidden)');
@@ -416,10 +415,8 @@ async function testTodoSection(browser){
   assert.equal(await first.locator('.todoRecArea').isVisible(),false,'I dettagli di ricorrenza si raccolgono quando si modifica la riga.');
   await first.locator('.todoDateInput').focus();
   assert.equal(await first.locator('.todoRecArea').isVisible(),true,'Le opzioni di ricorrenza restano accessibili sulla riga attiva.');
-  await page.evaluate(()=>{window.__todoSaveClicks=0;document.addEventListener('click',e=>{if(e.target.closest('#todoSetupSave'))window.__todoSaveClicks++},true)});
-  await page.locator('#todoSetupSave').click({force:true});
+  await page.click('#todoSetupSave');
   await page.waitForTimeout(500);
-  if(!(await page.locator('#todoHub').isVisible())) console.log('TODO_SAVE_DIAGNOSTIC:'+JSON.stringify(await page.evaluate(()=>({visible:[...document.querySelectorAll('.screen:not(.hidden)')].map(e=>e.id),modal:{hidden:document.getElementById('modal').classList.contains('hidden'),title:document.getElementById('modalTitle').innerText,body:document.getElementById('modalBody').innerText},save:{disabled:document.getElementById('todoSetupSave').disabled,onclick:!!document.getElementById('todoSetupSave').onclick,clicks:window.__todoSaveClicks,rect:document.getElementById('todoSetupSave').getBoundingClientRect().toJSON(),center:document.elementFromPoint(...(()=>{const r=document.getElementById('todoSetupSave').getBoundingClientRect();return [r.x+r.width/2,r.y+r.height/2]})())?.outerHTML?.slice(0,400)},rows:[...document.querySelectorAll('#todoSetupRows .todoSetupRow')].map(r=>({description:r.querySelector('.todoDescInput').value,date:r.querySelector('.todoDateInput').value,recurrence:r.dataset.recurrence})),storage:Object.keys(localStorage).map(k=>({key:k,value:localStorage.getItem(k)})),handler:document.getElementById('todoSetupSave').onclick.toString()}))));
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
