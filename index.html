@@ -3057,6 +3057,8 @@ body{background:#eef9ff}
 
 .backupExtras{margin-top:8px;border-top:1px solid #e5ecef;padding-top:4px}.backupExtras>summary{padding:11px 4px;color:#496176;font-size:12px;font-weight:850;cursor:pointer;list-style:none}.backupExtras>summary::-webkit-details-marker{display:none}.backupExtras .settingsSubMenu{margin-top:4px}
 #todoHub .todoHubCard.pending::before,#todoHub .todoHubCard.completed::before{content:none!important;display:none!important;visibility:hidden!important;opacity:0!important;width:0!important;height:0!important;background:transparent!important;box-shadow:none!important}
+
+.mNote{font-size:10px;color:#617895;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mType.pending{background:#fff4d8;color:#9b6700}
 </style>
 </head>
 <body>
@@ -4242,12 +4244,17 @@ function renderMovementList(el,arr){
   clean.forEach(x=>{
     const r=document.createElement('div');
     r.className='movementRow';
-    const isAdjustment=x.type==='adjustment',isIncome=x.type==='income',label=isAdjustment?'Correzione saldo':(isIncome?'Entrata':'Pagamento'),sign=isAdjustment?(Number(x.delta||0)>=0?'+ ':'- '):(isIncome?'+ ':'- '),v=isAdjustment?{g:'±',cls:'purple'}:movementVisual(x);
+    const isAdjustment=x.type==='adjustment',isIncome=x.type==='income',isPending=x._pending===true;
+    const label=isAdjustment?'Correzione saldo':isPending?(isIncome?'Da ricevere':'Da pagare'):(isIncome?'Ricevuta':'Pagato');
+    const sign=isAdjustment?(Number(x.delta||0)>=0?'+ ':'- '):(isIncome?'+ ':'- ');
+    const v=isAdjustment?{g:'±',cls:'purple'}:movementVisual(x);
+    const note=x.note?'<div class="mNote">'+esc(x.note)+'</div>':'';
     r.innerHTML='<div class="mIcon '+v.cls+'">'+v.g+'</div>'+
-      '<div class="mMain"><div class="mName">'+esc(x.name||label)+'</div><div class="mDate">▣ &nbsp;'+fmtMovementDate(x.date)+'</div></div>'+
-      '<div class="mAmountWrap"><div class="mAmount '+(isAdjustment?'':x.type)+'">'+sign+money(isAdjustment?Math.abs(Number(x.delta||0)):Number(x.amount||0))+'</div><div class="mType '+(isAdjustment?'':x.type)+'">'+label+'</div></div>'+
+      '<div class="mMain"><div class="mName">'+esc(x.name||(isIncome?'Entrata':'Pagamento'))+'</div>'+note+'<div class="mDate">▣ &nbsp;'+fmtMovementDate(x.date)+'</div></div>'+
+      '<div class="mAmountWrap"><div class="mAmount '+(isAdjustment?'':x.type)+'">'+sign+money(isAdjustment?Math.abs(Number(x.delta||0)):Number(x.amount||0))+'</div><div class="mType '+(isAdjustment?'purple':isPending?'pending':x.type)+'">'+label+'</div></div>'+
       '<div class="mChevron">›</div>';
     if(x.id)r.onclick=()=>openMovementDetail(x.id);
+    else if(isPending)r.onclick=()=>{const entry=state.entries.find(e=>e.id===x.entryId);if(entry)openEntryEditor(entry,x.type)};
     el.appendChild(r);
   });
 }
@@ -4564,7 +4571,7 @@ function openEntryEditor(entry,type){
   const isNew=!entry,isIncome=type==='income';
   const title=entry?(isIncome?'Modifica entrata':'Modifica pagamento'):(isIncome?'Nuova entrata':'Nuovo pagamento');
   const rec=entry?entry.recurrence:null;
-  const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
+  const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):todayISO();
   const noteValue=entry&&entry.note?entry.note:'';
   const globalAll=state.notifications&&(state.notifications.mode==='all'||state.notifications.mode===type);
   const notifyDefault=entry?entry.notify===true:globalAll;
@@ -5143,12 +5150,12 @@ function movementFilterText(){
 }
 function renderMovements(){
   let arr=filteredMovements().filter(x=>x.month===movementMonth);
-  const entryFor=x=>state.entries.find(e=>e.id===x.entryId);
-  const isDone=x=>!!x.id;
-  if(movementStatus==='income-pending') arr=state.entries.filter(e=>e.type==='income').filter(e=>!state.history.some(h=>h.entryId===e.id&&h.month===movementMonth)).map(e=>({entryId:e.id,type:'income',name:e.name,amount:e.amount,date:(e.dateSpec?.iso||movementMonth+'-'+String(e.day||1).padStart(2,'0')),month:movementMonth,category:e.category,_pending:true}));
-  else if(movementStatus==='expense-pending') arr=state.entries.filter(e=>e.type==='expense').filter(e=>!state.history.some(h=>h.entryId===e.id&&h.month===movementMonth)).map(e=>({entryId:e.id,type:'expense',name:e.name,amount:e.amount,date:(e.dateSpec?.iso||movementMonth+'-'+String(e.day||1).padStart(2,'0')),month:movementMonth,category:e.category,_pending:true}));
-  else if(movementStatus==='income-done') arr=arr.filter(x=>x.type==='income'&&isDone(x));
-  else if(movementStatus==='expense-done') arr=arr.filter(x=>x.type==='expense'&&isDone(x));
+  const pendingFor=type=>state.entries.filter(e=>e.type===type).filter(e=>!state.history.some(h=>h.entryId===e.id&&h.month===movementMonth)).map(e=>({entryId:e.id,type:e.type,name:e.name,amount:e.amount,date:(e.dateSpec?.iso||movementMonth+'-'+String(e.day||1).padStart(2,'0')),month:movementMonth,category:e.category,note:e.note||'',_pending:true}));
+  if(movementStatus==='all') arr=[...arr,...pendingFor('income'),...pendingFor('expense')].sort((a,b)=>b.date.localeCompare(a.date));
+  else if(movementStatus==='income-pending') arr=pendingFor('income');
+  else if(movementStatus==='expense-pending') arr=pendingFor('expense');
+  else if(movementStatus==='income-done') arr=arr.filter(x=>x.type==='income');
+  else if(movementStatus==='expense-done') arr=arr.filter(x=>x.type==='expense');
   document.querySelectorAll('[data-movement-status]').forEach(b=>b.classList.toggle('active',b.dataset.movementStatus===movementStatus));
   const advancedActive=movementFilters.category!=='all'||movementFilters.period!=='all';
   $('movementsFilters').classList.toggle('filterActive',advancedActive);
