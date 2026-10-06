@@ -387,7 +387,7 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
     assert.match(card.backgroundImage,/eds-blue-approved\.png/,'Ogni card deve usare il logo E.D.S blu');
-    assert.equal(card.textAlign,'center');
+    assert.equal(card.textAlign,'left');
   }
   await context.close();
 }
