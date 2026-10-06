@@ -120,7 +120,7 @@ async function testSetupNaturalRecurrences(browser){
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
   await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1 ottobre 2026');await page.dispatchEvent('#editDateText','input');
   await page.locator('#editRecChoices button[data-kind="monthly"]').click();
-  assert.match(await page.locator('#editRecSummary').innerText(),/ogni mese/i);
+  assert.equal(await page.locator('#editRecKind').inputValue(),'monthly');
   await page.click('#modalClose');await context.close();
 }
 
