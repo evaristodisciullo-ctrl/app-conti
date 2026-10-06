@@ -4509,7 +4509,7 @@ function openEntryEditor(entry,type){
     else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,supplier:$('editSupplier').value.trim(),notify,notifyRule,note})}
     state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
     if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
-    if(entry&&desiredDone){
+    if(desiredDone){
       const e=state.entries.find(x=>x.id===id),start=entryStartMonth(e),occ=e&&e.recurrence&&e.recurrence.kind==='custom'?customOccurrenceObjects(e,start)[0]:effectiveOccurrence(e,start);
       if(occ&&!historyFor(id,occ.occurrenceKey||occ.month)){
         const actualDate=todayISO(),h={id:'h'+Date.now()+Math.random(),entryId:id,type,name,amount,date:actualDate,month:actualDate.slice(0,7),occurrenceMonth:occ.month,occurrenceKey:occ.occurrenceKey||occ.month,category,note};
