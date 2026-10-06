@@ -850,7 +850,7 @@ async function testApprovedMasterRules(browser){
   await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');
   await page.click('[data-ttheme="dark"]');await page.click('#todoThemeSave');
   assert.equal((await state(page)).todo.theme,'dark');assert.equal(await page.locator('body').getAttribute('data-todo-theme'),'dark');
-  await page.click('#todoSettingBackup');await page.waitForSelector('#backupLocal');await page.locator('#backupExtras summary').click();await page.click('#backupLocal');
+  await page.click('#todoSettingBackup');await page.waitForSelector('#backupExtras summary');await page.locator('#backupExtras summary').click();await page.waitForSelector('#backupLocal',{state:'visible'});await page.click('#backupLocal');
   const backup=await page.evaluate(k=>JSON.parse(localStorage.getItem(k+'_local_copy')),KEY);
   assert.equal(backup.data.todo.theme,'dark');assert.equal(backup.data.todo.done.length,1);
   await page.click('#modalClose');

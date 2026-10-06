@@ -118,7 +118,7 @@ jobs:
             await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
             await page.click('#todoSettingNotifications');await page.waitForSelector('#modal:not(.hidden)');await shot('19-todo-notifiche');await page.click('#modalClose');
             await shot('20-todo-impostazioni');
-            await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');await shot('21-todo-tema');await page.click('#modalClose');
+            await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');await page.click('[data-ttheme="system"]');await shot('21-todo-tema');await page.click('#modalClose');
             await page.click('#todoSettingColor');await page.waitForSelector('#modal:not(.hidden)');await shot('22-todo-colore');await page.click('#modalClose');
             await page.evaluate(()=>localStorage.setItem('inOrdineContiV1_backup_last','2025-03-12T18:42:00.000Z'));await page.click('#todoSettingBackup');await page.waitForSelector('#modal:not(.hidden)');console.log('TODO_BACKUP_DIAG',JSON.stringify(await page.evaluate(()=>({title:document.querySelector('#modalTitle')?.textContent,body:document.querySelector('#modalBody')?.innerText,html:document.querySelector('#modalBody')?.innerHTML,details:Array.from(document.querySelectorAll('#modalBody details')).map(d=>({id:d.id,open:d.open}))}))));await shot('23-todo-backup');await page.click('#modalClose');
             await page.click('#todoSettingPrivacy');await page.waitForSelector('#modal:not(.hidden)');await shot('24-todo-privacy');await page.click('#modalClose');

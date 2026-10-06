@@ -2632,18 +2632,19 @@ body[data-todo-theme="dark"] .todoHero small,body[data-todo-theme="dark"] .todoH
 body{background:#eef9ff}
 .screen{max-width:430px;margin:0 auto}
 #landing{padding:0;min-height:100vh;background:#eef9ff}
-#landing .landingExactStage{min-height:780px;background:linear-gradient(150deg,#fff 0%,#f4fbff 70%,#e8f8ff 100%);border-radius:0;padding:18px 16px 34px}
-#landing .landingExactBrand{left:18px;top:18px}
-#landing .landingExactTitle{font-size:42px;line-height:.72}
-#landing .landingExactHero{right:14px;top:18px;width:168px;height:120px}
-#landing .landingExactHeroLogo{width:82px;height:82px;border-radius:18px}
-#landing .landingExactNameCard{top:210px;left:16px;right:16px}
-#landing .landingExactChoose{top:310px}
-#landing .landingExactMainCard{top:350px;height:210px;width:calc(50% - 24px)}
-#landing .landingExactMainCard.conti{left:16px}#landing .landingExactMainCard.todo{right:16px}
-#landing .landingExactMainCard img{width:72px;height:72px;border-radius:15px}
-#landing .landingExactNotify{top:585px;height:100px;width:calc(50% - 24px)}
-#landing .landingExactNotify.blue{left:16px}#landing .landingExactNotify.green{right:16px}
+/* Keep the approved 01 master responsive: its proportions match the PDF screen. */
+#landing .landingExactStage{min-height:0!important;padding:0!important;border-radius:0!important;aspect-ratio:691/1228!important}
+#landing .landingExactBrand{width:49%!important}
+#landing .landingExactSubtitle{font-size:clamp(12px,3.25vw,15px)!important}
+#landing .landingExactBrand{left:6.2%!important;top:6.8%!important}
+#landing .landingExactHero{right:3.8%!important;top:6%!important;width:50%!important;height:25%!important}
+#landing .landingExactNameCard{top:30.7%!important;left:4.6%!important;right:auto!important;width:90.8%!important;height:11.1%!important}
+#landing .landingExactChoose{top:43.1%!important}
+#landing .landingExactMainCard{top:47.1%!important;height:31.5%!important;width:44.3%!important}
+#landing .landingExactMainCard.conti{left:4.4%!important}#landing .landingExactMainCard.todo{right:4.4%!important}
+#landing .landingExactMainCard img{width:47%!important;height:auto!important;border-radius:16%!important}
+#landing .landingExactNotify{top:82.55%!important;height:12.45%!important;width:44.3%!important}
+#landing .landingExactNotify.blue{left:4.4%!important}#landing .landingExactNotify.green{right:4.4%!important}
 #setup{background:linear-gradient(160deg,#fff,#eff9ff);min-height:100vh;padding:12px}
 #setup .pageBack span:not(.arrow){display:none}
 #setup .balanceSetupIntro{border:2px solid #6acced;border-radius:16px;background:#f8fdff}
