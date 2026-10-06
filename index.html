@@ -3150,6 +3150,156 @@ body{background:#eef9ff}
 #todoSetup .todoSetupRow .todoDescInput,#todoSetup .todoSetupRow .todoDateInput{border-radius:8px!important}
 #todoSetup .todoBigBtn.save{background:#0d9860!important;color:#fff!important}
 #todoSetup .todoBigBtn.add{background:#f4fff8!important;border:1px solid #78d8ad!important;color:#118154!important}
+
+/* 01–05 FINAL MASTER ALIGNMENT 2026-10-07 */
+/* Scoped only to master screens 01–05. No finance calculations or later screens are touched. */
+
+/* 01 — retain the approved proportional stage, but strengthen the original blue/cyan atmosphere. */
+#landing .landingExactStage{
+  background:
+    radial-gradient(ellipse at 70% 13%,rgba(42,177,245,.20) 0 8%,transparent 8.5%),
+    radial-gradient(ellipse at 82% 18%,rgba(36,204,177,.10) 0 13%,transparent 13.5%),
+    radial-gradient(circle at 39% 12%,rgba(74,183,244,.20) 0 2.2%,transparent 2.5%),
+    linear-gradient(145deg,transparent 0 8%,rgba(67,179,240,.12) 8.4% 13%,transparent 13.5% 24%,rgba(58,174,238,.08) 24.4% 29%,transparent 29.5%),
+    linear-gradient(180deg,#fbfeff 0%,#f6fcff 61%,#edf9ff 100%)!important;
+}
+#landing .landingExactNameCard{box-shadow:0 8px 19px rgba(30,96,145,.11)!important}
+#landing .landingExactMainCard{box-shadow:0 7px 17px rgba(39,96,136,.08)!important}
+#landing .landingExactNotify{box-shadow:0 6px 15px rgba(34,92,135,.07)!important}
+
+/* 02 — Saldo iniziale: master has a taller illustrated banner and a much more substantial balance card. */
+#setup.setupCanonical{padding-top:2px!important}
+#setup .balanceSetup{padding:8px 4px 22px!important}
+#setup .balanceSetup .pageHeader{min-height:48px!important;margin:0 0 10px!important;gap:10px!important}
+#setup .balanceSetup .pageHeader h1{font-size:27px!important;letter-spacing:-.35px!important}
+#setup .balanceSetup .pageBack{font-size:0!important;width:30px!important;padding:0!important}
+#setup .balanceSetup .pageBack .arrow{font-size:28px!important;color:#168be8!important}
+#setup .balanceSetupIntro{
+  position:relative!important;min-height:142px!important;padding:18px 72px 18px 88px!important;
+  border:1.6px solid #13b9e8!important;border-radius:18px!important;
+  background:
+    linear-gradient(160deg,transparent 0 45%,rgba(44,177,236,.12) 46% 54%,transparent 55%),
+    linear-gradient(180deg,#fbfeff,#eaf8ff)!important;
+  overflow:hidden!important
+}
+#setup .balanceSetupIntro:before{
+  content:"€";position:absolute;left:20px;top:43px;width:58px;height:58px;border-radius:50%;
+  display:grid;place-items:center;background:#fff;color:#087bf5;font-size:38px;font-weight:900;
+  box-shadow:0 6px 16px rgba(8,123,245,.14)
+}
+#setup .balanceSetupIntro:after{
+  content:"";position:absolute;left:12px;top:24px;width:38px;height:28px;
+  background:linear-gradient(72deg,transparent 0 16%,#087bf5 17% 28%,transparent 29% 45%,#087bf5 46% 57%,transparent 58%);
+  transform:rotate(-20deg)
+}
+#setup .balanceSetupIntro img{position:absolute!important;right:14px!important;top:14px!important;width:54px!important;height:54px!important}
+#setup .balanceSetupIntro strong{font-size:20px!important;line-height:1.08!important}
+#setup .balanceSetupIntro small{font-size:13px!important;line-height:1.3!important;margin-top:6px!important}
+#setup .balanceSetupCard{
+  margin-top:14px!important;min-height:304px!important;padding:28px 18px 24px!important;
+  border-radius:20px!important;display:flex!important;flex-direction:column!important;align-items:center!important
+}
+#setup .balanceSetupIcon{width:72px!important;height:72px!important;margin:0 auto 12px!important;font-size:42px!important}
+#setup .balanceSetupCard>strong{font-size:20px!important}
+#setup .balanceSetupCard .moneyInput{
+  order:3!important;width:100%!important;max-width:none!important;height:72px!important;margin:17px auto 0!important;
+  border-color:#bcdff2!important;border-radius:14px!important;background:#fbfdff!important
+}
+#setup .balanceSetupCard .moneyInput span{font-size:0!important;padding-left:0!important;width:0!important}
+#setup .balanceSetupCard .moneyInput input{
+  height:70px!important;min-height:70px!important;text-align:center!important;font-size:34px!important;font-weight:900!important;padding:0 16px!important
+}
+#setup .balanceSetupCard>label{order:4!important;margin:18px 0 0!important;font-size:13px!important}
+#setup #setupError{order:5!important}
+#setup #startBtn{
+  min-height:58px!important;margin-top:14px!important;border-radius:999px!important;
+  font-size:17px!important;box-shadow:0 8px 18px rgba(8,123,245,.18)!important
+}
+
+/* 03–04 — first-entry forms: match the taller master hero, table rows and CTA rhythm. */
+#setupIncome.setupSimple,#setupExpense.setupSimple{padding:4px 0 24px!important}
+#setupIncome .setupSimpleTitle,#setupExpense .setupSimpleTitle{height:58px!important;padding:0 5px!important;gap:10px!important}
+#setupIncome .setupSimpleTitle h1,#setupExpense .setupSimpleTitle h1{font-size:29px!important;letter-spacing:-.4px!important}
+#setupIncome .setupSimpleTitle .backText,#setupExpense .setupSimpleTitle .backText{font-size:30px!important}
+#setupIncome .setupSimpleHero,#setupExpense .setupSimpleHero{
+  min-height:132px!important;padding:16px 70px 16px 82px!important;display:block!important;
+  border:1.6px solid #13b9e8!important;border-radius:18px!important
+}
+#setupIncome .setupSimpleHero:before,#setupExpense .setupSimpleHero:before{
+  content:"";position:absolute;left:13px;top:23px;width:38px;height:28px;z-index:2;
+  background:linear-gradient(72deg,transparent 0 16%,#087bf5 17% 28%,transparent 29% 45%,#087bf5 46% 57%,transparent 58%);
+  transform:rotate(-20deg)
+}
+#setupIncome .setupHeroSymbol,#setupExpense .setupHeroSymbol{
+  position:absolute!important;left:22px!important;top:48px!important;width:56px!important;height:56px!important;
+  font-size:38px!important;background:#fff!important;box-shadow:0 6px 16px rgba(8,123,245,.14)!important
+}
+#setupIncome .setupSimpleHero>div,#setupExpense .setupSimpleHero>div{position:relative!important;top:28px!important}
+#setupIncome .setupSimpleHero strong,#setupExpense .setupSimpleHero strong{font-size:19px!important;line-height:1.08!important}
+#setupIncome .setupSimpleHero small,#setupExpense .setupSimpleHero small{font-size:12px!important;line-height:1.3!important;margin-top:5px!important}
+#setupIncome .setupSimpleHero img,#setupExpense .setupSimpleHero img{
+  position:absolute!important;right:13px!important;top:15px!important;width:50px!important;height:50px!important
+}
+#setupIncome .onboardCard,#setupExpense .onboardCard{margin-top:12px!important;padding:12px 9px 13px!important;border-radius:18px!important}
+#setupIncome .entryGridHead,#setupExpense .entryGridHead{
+  min-height:52px!important;padding:5px 7px!important;border-radius:13px!important;font-size:11px!important
+}
+#setupIncome .entryHeadIcon,#setupExpense .entryHeadIcon{width:25px!important;height:25px!important;font-size:17px!important}
+#setupIncome .entryRow,#setupExpense .entryRow{margin-top:8px!important;gap:6px!important}
+#setupIncome .entryRow input,#setupExpense .entryRow input{
+  height:48px!important;border-radius:10px!important;font-size:11px!important;padding:0 9px!important
+}
+#setupIncome .setupAddRow,#setupExpense .setupAddRow{
+  min-height:49px!important;margin-top:11px!important;border-radius:999px!important;font-size:14px!important
+}
+#setupIncome .setupContinue,#setupExpense .setupContinue{
+  height:52px!important;min-height:52px!important;margin-top:9px!important;border-radius:999px!important;font-size:15px!important
+}
+#setupIncome .setupSkip,#setupExpense .setupSkip{display:none!important}
+
+/* 05 — Home Conti: the approved master uses larger feature, summary and action cards. */
+#home{padding-top:1px!important}
+#home .homeTopLine{min-height:58px!important;margin:0 0 10px!important;display:flex!important;align-items:center!important;gap:10px!important}
+#home .homeTopLine h1{font-size:29px!important;letter-spacing:-.5px!important;margin:0!important}
+#home .homeLandingBack{width:30px!important;font-size:28px!important;padding:0!important}
+#home .homeFeatureGrid{gap:10px!important;margin-bottom:12px!important}
+#home .homeFeatureCard{
+  min-height:208px!important;height:208px!important;padding:14px 12px!important;border-radius:18px!important;position:relative!important
+}
+#home .homeMasterIcon{
+  display:grid!important;position:absolute!important;left:14px!important;top:18px!important;width:54px!important;height:54px!important;
+  border-radius:50%!important;place-items:center!important;background:#e7f6ff!important;color:#087bf5!important;
+  font-size:36px!important;font-weight:900!important
+}
+#home .homeMasterLogo{
+  position:absolute!important;display:block!important;right:12px!important;top:13px!important;width:48px!important;height:48px!important;
+  object-fit:cover!important;border-radius:10px!important;box-shadow:0 4px 10px rgba(4,42,91,.10)!important
+}
+#home .homeFeatureText{
+  position:absolute!important;left:14px!important;right:12px!important;bottom:42px!important;padding:0!important;text-align:left!important
+}
+#home .homeFeatureText strong{display:block!important;font-size:19px!important;line-height:1.05!important}
+#home .homeFeatureText small{display:block!important;font-size:11px!important;line-height:1.18!important;margin-top:5px!important}
+#home .homeFeatureArrow{right:12px!important;bottom:11px!important;width:34px!important;height:34px!important;font-size:20px!important}
+#home .homeSummaryTitle{margin:13px 1px 7px!important;font-size:11px!important;letter-spacing:.35px!important}
+#home .homeSummaryCard{display:flex!important;flex-direction:column!important;gap:6px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#home .homeSummaryRow{
+  min-height:64px!important;padding:8px 10px!important;border-radius:13px!important;border:1px solid rgba(220,235,245,.82)!important;
+  box-shadow:0 4px 10px rgba(35,92,138,.045)!important
+}
+#home .homeSummaryIcon{width:38px!important;height:38px!important;font-size:21px!important}
+#home .homeSummaryCopy b{font-size:11px!important}
+#home .homeSummaryCopy small{font-size:8.5px!important;margin-top:2px!important}
+#home .homeSummaryValue{font-size:17px!important}
+#home .homeActionCard{
+  min-height:78px!important;margin-top:7px!important;padding:9px 12px!important;border-radius:14px!important;
+  border:1px solid #dceaf4!important;box-shadow:0 4px 11px rgba(35,92,138,.045)!important
+}
+#home .homeActionIcon{width:48px!important;height:48px!important;font-size:27px!important}
+#home .homeActionCard strong{font-size:13px!important}
+#home .homeActionCard small{font-size:9px!important;line-height:1.18!important;margin-top:3px!important}
+#home .homeActionArrow{font-size:22px!important}
+
 </style>
 </head>
 <body>
