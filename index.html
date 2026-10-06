@@ -2987,6 +2987,40 @@ body{background:#eef9ff}
 #todoActive .todoCompleteBtn{width:100%!important;min-height:38px!important;padding:4px 5px!important;border-radius:20px!important}
 #todoActive .todoCompleteBtn span:first-child{font-size:8px!important}
 #todoActive .todoListPanel{padding:8px!important}
+
+.todoNotificationsModal .modalCard{padding:10px 13px 80px!important}
+.todoNotificationsModal .modalHead{margin-bottom:8px!important}
+.todoNotifyMasterHero{min-height:84px;border:1.5px solid #18afe9;border-radius:16px;background:linear-gradient(145deg,#fff,#eaf8ff);display:grid;grid-template-columns:50px 1fr;gap:10px;align-items:center;padding:10px;margin-bottom:9px}
+.todoNotifyMasterHero img{width:46px;height:46px;object-fit:contain}
+.todoNotifyMasterHero strong{display:block;font-size:14px;color:#102a50}
+.todoNotifyMasterHero small{display:block;font-size:9px;color:#71859a;margin-top:4px}
+.todoNotifyMasterRows{display:grid;gap:6px}
+.todoNotifyMasterRow{width:100%;min-height:49px;border:1px solid #e1eaf0;border-radius:13px;background:#fff;padding:6px 9px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;color:#17324a}
+.todoNotifyMasterIcon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#e8f6ff;color:#087cf0;font-size:16px}
+.todoNotifyMasterRow strong{display:block;font-size:10px;color:#102a50}
+.todoNotifyMasterRow small{display:block;font-size:8px;color:#75899d;margin-top:2px}
+.todoNotifyMasterRow input{appearance:none;width:38px;height:23px;border-radius:99px;background:#cbd7e2;position:relative;margin:0}
+.todoNotifyMasterRow input:after{content:"";position:absolute;left:3px;top:3px;width:17px;height:17px;background:#fff;border-radius:50%;box-shadow:0 1px 3px #61758a}
+.todoNotifyMasterRow input:checked{background:#087cf0}
+.todoNotifyMasterRow input:checked:after{left:18px}
+.todoNotifyMasterRow b{font-size:14px;color:#287db4}
+.todoNotifyRecentHead{display:flex;justify-content:space-between;align-items:center;margin:11px 5px 4px;color:#102a50;font-size:11px}
+.todoNotifyRecent{display:grid}
+.todoNotifyRecentRow{width:100%;min-height:43px;border:0;border-bottom:1px solid #e6edf2;background:transparent;display:grid;grid-template-columns:30px 1fr auto;gap:8px;align-items:center;text-align:left;color:#17324a;padding:5px 4px}
+.todoNotifyRecentIcon{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#e8f8ef;color:#14845f}
+.todoNotifyRecentRow strong{display:block;font-size:9px}
+.todoNotifyRecentRow small{display:block;font-size:8px;color:#788b9c;margin-top:2px}
+.todoNotifyRecentRow b{font-size:16px;color:#287db4}
+#todoSettings .todoHero{display:flex!important;min-height:78px!important;margin:0 0 8px!important;padding:10px 90px 10px 13px!important;align-items:center}
+#todoSettings .todoHero strong{font-size:13px!important}
+#todoSettings .todoHero small{font-size:9px!important;margin-top:3px!important}
+#todoSettings .todoHeroArt{width:68px!important;height:68px!important}
+#todoSettings .todoSettingsStack{gap:6px!important}
+#todoSettings .todoSettingCard{min-height:48px!important;padding:6px 9px!important;grid-template-columns:35px 1fr 16px!important}
+#todoSettings .todoSettingCard .i{width:31px!important;height:31px!important}
+#todoSettings .todoSettingCard strong{font-size:10px!important}
+#todoSettings .todoSettingCard small{font-size:8px!important}
+#todoDone #todoDoneAdvancedFilters,#todoDone #todoDoneFilterSummary,#todoActive #todoActiveAdvancedFilters,#todoActive #todoActiveFilterSummary{display:none!important}
 </style>
 </head>
 <body>
@@ -5787,25 +5821,27 @@ function confirmTodoDelete(kind){
   };
 }
 function openTodoNotificationPicker(){
-  if(!todoState().setupDone||!todoState().tasks.length){openModal('Notifiche Cose da fare','<div class="note">Prima inserisci almeno una cosa da fare. Poi potrai scegliere le notifiche voce per voce.</div>');return}
+  if(!todoState().setupDone||!todoState().tasks.length){openModal('Notifiche','<div class="note">Prima inserisci almeno una cosa da fare. Poi potrai scegliere le notifiche voce per voce.</div>');return}
   const n=todoState().notifications,rule=n.rule||{timing:'same',time:'09:00',overdue:'none'},tasks=todoSortTasks(todoState().tasks),allOn=tasks.length>0&&tasks.every(t=>t.notify);
-  openModal('Notifiche Cose da fare',
-    '<div class="hint">Scegli quali cose vuoi che l’app ti ricordi.</div>'+
-    '<div class="notifyList"><label class="notifyToggle" style="background:#fff5cf"><span><b>Attiva tutte</b><small>Ricevi le notifiche per tutte le cose da fare</small></span><input id="todoNotifyAll" type="checkbox" '+(allOn?'checked':'')+'></label></div>'+
-    '<div id="todoNotifyPick" class="notifyList">'+tasks.map(t=>'<label class="notifyToggle"><span><b>'+esc(t.description)+'</b><small>'+esc(todoDateLabel(t))+'</small></span><input type="checkbox" value="'+escAttr(t.id)+'" '+(t.notify?'checked':'')+'></label>').join('')+'</div>'+
-    notificationRuleFields('todoPickRule',rule,'Quando avvisare')+
-    '<div class="modalBtns"><button id="todoPickCancel" class="btn secondary">Annulla</button><button id="todoPickSave" class="btn">Conferma</button></div>');
-  bindNotificationRuleFields('todoPickRule',rule);
+  const recent=tasks.slice(0,3);
+  const hiddenChecks='<div id="todoNotifyPick" class="hidden">'+tasks.map(t=>'<input type="checkbox" value="'+escAttr(t.id)+'" '+(t.notify?'checked':'')+'>').join('')+'</div>';
+  openModal('Notifiche',
+    '<div class="todoNotifyMasterHero"><img src="assets/eds-green-approved.png" alt=""><span><strong>Resta sempre in ordine</strong><small>Attiva le notifiche per non dimenticare le tue attività.</small></span></div>'+
+    '<div class="todoNotifyMasterRows">'+
+      '<label class="todoNotifyMasterRow"><span class="todoNotifyMasterIcon">♟</span><span><strong>Notifiche attive</strong><small>Ricevi promemoria per le tue attività</small></span><input id="todoNotifyAll" type="checkbox" '+(allOn?'checked':'')+'></label>'+
+      '<label class="todoNotifyMasterRow"><span class="todoNotifyMasterIcon">▣</span><span><strong>Promemoria del giorno</strong><small>Ricevi un riepilogo delle attività del giorno</small></span><input id="todoDailySummary" type="checkbox" '+(n.dailySummary!==false?'checked':'')+'></label>'+
+      '<button type="button" id="todoSoundRow" class="todoNotifyMasterRow"><span class="todoNotifyMasterIcon">♪</span><span><strong>Suono</strong><small>Scegli il suono delle notifiche</small></span><b>›</b></button>'+
+      '<button type="button" id="todoTimingRow" class="todoNotifyMasterRow"><span class="todoNotifyMasterIcon">◷</span><span><strong>Anticipo promemoria</strong><small>Ricevi la notifica prima della scadenza</small></span><b>'+(rule.timing==='before'?'1 giorno':'10 minuti')+'　›</b></button>'+
+    '</div>'+
+    '<div class="todoNotifyRecentHead"><strong>Promemoria recenti</strong><span>›</span></div>'+
+    '<div class="todoNotifyRecent">'+recent.map(t=>'<button type="button" class="todoNotifyRecentRow" data-todo-id="'+escAttr(t.id)+'"><span class="todoNotifyRecentIcon">▤</span><span><strong>'+esc(t.description)+'</strong><small>'+esc(todoDateLabel(t))+'</small></span><b>›</b></button>').join('')+'</div>'+hiddenChecks);
+  $('modal').classList.add('fullSettings','todoNotificationsModal');
   const all=$('todoNotifyAll'),boxes=()=>Array.from(document.querySelectorAll('#todoNotifyPick input[type="checkbox"]'));
-  all.onchange=()=>boxes().forEach(x=>x.checked=all.checked);
-  boxes().forEach(x=>x.onchange=()=>{all.checked=boxes().length>0&&boxes().every(b=>b.checked)});
-  $('todoPickCancel').onclick=closeModal;
-  $('todoPickSave').onclick=async()=>{
-    const ids=new Set(boxes().filter(x=>x.checked).map(x=>x.value));
-    todoState().tasks.forEach(t=>t.notify=ids.has(t.id));
-    n.rule=readNotificationRuleFields('todoPickRule');n.enabled=ids.size>0;save();closeModal();
-    if(n.enabled)await requestNotificationPermission();
-  };
+  all.onchange=async()=>{boxes().forEach(x=>{x.checked=all.checked;const task=todoState().tasks.find(t=>t.id===x.value);if(task)task.notify=x.checked});n.enabled=all.checked;save();if(all.checked)await requestNotificationPermission()};
+  $('todoDailySummary').onchange=()=>{n.dailySummary=$('todoDailySummary').checked;save()};
+  $('todoSoundRow').onclick=()=>{const sounds=['Predefinito','Campanella','Silenzioso'];openModal('Suono','<div class="settingsSubMenu">'+sounds.map(x=>'<button class="settingsSubRow" data-todo-sound="'+x+'"><span><strong>'+x+'</strong></span><span class="settingsRowArrow">›</span></button>').join('')+'</div>');$('modal').classList.add('fullSettings');document.querySelectorAll('[data-todo-sound]').forEach(b=>b.onclick=()=>{n.sound=b.dataset.todoSound;save();openTodoNotificationPicker()})};
+  $('todoTimingRow').onclick=()=>{openModal('Anticipo promemoria',notificationRuleFields('todoPickRule',rule,'Quando avvisare')+'<div class="modalBtns"><button id="todoRuleCancel" class="btn secondary">Annulla</button><button id="todoRuleSave" class="btn">Salva</button></div>');$('modal').classList.add('fullSettings');bindNotificationRuleFields('todoPickRule',rule);$('todoRuleCancel').onclick=openTodoNotificationPicker;$('todoRuleSave').onclick=()=>{n.rule=readNotificationRuleFields('todoPickRule');save();openTodoNotificationPicker()}};
+  document.querySelectorAll('.todoNotifyRecentRow').forEach(b=>b.onclick=()=>{const task=todoState().tasks.find(t=>t.id===b.dataset.todoId);if(task)openTodoEditor(task.id)});
 }
 async function checkDueTodoNotifications(){
   if(nativeBridge()){queueNativeNotificationSync();return}
