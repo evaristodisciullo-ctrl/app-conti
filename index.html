@@ -4579,7 +4579,7 @@ function openEntryEditor(entry,type){
   );
   $('modal').classList.add('fullEditor');
   const hideEditorKeyboard=()=>{const a=document.activeElement;if(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))a.blur()};
-  $('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;hideEditorKeyboard()});
+  if($('entrySuggestions'))$('entrySuggestions').querySelectorAll('.suggestionChip').forEach(b=>b.onclick=()=>{if(b.dataset.name!=='Altro')$('editName').value=b.dataset.name;hideEditorKeyboard()});
   $('editName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editAmount').focus()}});
   $('editAmount').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('editDateText').focus()}});
   $('editDateText').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(syncDate(true))hideEditorKeyboard()}});
