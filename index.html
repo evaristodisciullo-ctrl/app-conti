@@ -3760,7 +3760,31 @@ body{background:#eef9ff}
 #modal.todoPrivacyModal .todoColorIntro{min-height:84px!important}#modal.todoPrivacyModal .todoColorIntro strong{font-size:14px!important;line-height:1.02!important}
 #modal.todoPrivacyModal .settingsSubMenu{gap:4px!important}#modal.todoPrivacyModal .settingsSubRow{min-height:48px!important}
 #modal.todoPrivacyModal #securityChangePin{display:none!important}#modal.todoPrivacyModal label:has(#securityHideAmounts){display:none!important}#modal.todoPrivacyModal .note{display:none!important}
-\n</style>
+\n
+/* FINAL TARGETED FIXES: screen 17 + E2E edit hint */
+#todoActive .todoTaskRow{
+  grid-template-columns:40px minmax(0,1fr) 112px!important;
+  gap:9px!important;
+  min-height:72px!important;
+  padding:9px 11px!important;
+  align-items:center!important;
+}
+#todoActive .todoNotifyBtn{grid-column:1!important;grid-row:1!important;width:38px!important;height:38px!important;margin:0!important}
+#todoActive .todoTaskEditCard{grid-column:2!important;grid-row:1!important;min-width:0!important;width:100%!important;min-height:52px!important;padding:5px 0!important}
+#todoActive .todoTaskEditCard strong{font-size:11px!important;line-height:1.2!important;white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important}
+#todoActive .todoTaskEditCard small{font-size:9px!important;line-height:1.2!important;white-space:normal!important;overflow-wrap:normal!important;word-break:normal!important}
+#todoActive .todoCompleteBtn{grid-column:3!important;grid-row:1!important;width:100%!important;min-height:42px!important;height:auto!important;padding:5px 8px!important;border-radius:22px!important}
+#todoActive .todoCompleteBtn span:first-child{font-size:9px!important;line-height:1.08!important;white-space:normal!important;word-break:normal!important}
+#todoActive .todoTaskEditCard .todoEditHint{
+  display:block!important;
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;
+  white-space:nowrap!important;border:0!important;
+}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -4320,7 +4344,10 @@ function openBackupSettings(todoStyle=false){
       '</div></details>'+
     '</div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
   $('modal').classList.add('fullSettings');
-  if(todoStyle)$('modal').classList.add('todoSettingsModal');
+  if(todoStyle){
+    $('modal').classList.add('todoSettingsModal');
+    document.querySelectorAll('#modalBody .todoThemeIntro.todoColorIntro').forEach(el=>el.remove());
+  }
   $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto){localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));localStorage.setItem(KEY+'_backup_last',new Date().toISOString())}};
   $('backupCreate').onclick=async()=>{await downloadBackup();openBackupSettings();flashModal('Backup creato.')};
   $('backupExport').onclick=async()=>{await downloadBackup();};
