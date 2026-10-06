@@ -3600,12 +3600,13 @@ function normalizeRestoredState(data){
   if(!restored.todo.color)restored.todo.color='Verde E.D.S.';
   return restored;
 }
-function openBackupSettings(){
+function openBackupSettings(todoStyle=false){
   const lastRaw=localStorage.getItem(KEY+'_backup_last');
   const lastDate=lastRaw?new Date(lastRaw):null;
   const lastDay=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'Non ancora';
   const lastTime=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'Nessun salvataggio automatico';
-  openModal('Backup e dati',
+  openModal(todoStyle?'Backup':'Backup e dati',
+    (todoStyle?'<div class="todoThemeIntro todoBackupIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>I tuoi dati al sicuro</strong><small>Esegui il backup dei tuoi dati e ripristinali quando vuoi.</small></div></div>':'')+
     '<div class="settingsSubMenu">'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">☁</span><span><strong>Backup automatico</strong><small>Salva i dati automaticamente sul dispositivo</small></span><input id="backupAuto" class="settingToggle" type="checkbox" '+(state.backup&&state.backup.auto?'checked':'')+'></label>'+
       '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Scarica un file con tutte le tue attività</small></span><span class="settingsRowArrow">›</span></button>'+
@@ -3619,6 +3620,7 @@ function openBackupSettings(){
       '</div></details>'+
     '</div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
   $('modal').classList.add('fullSettings');
+  if(todoStyle)$('modal').classList.add('todoSettingsModal');
   $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto){localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));localStorage.setItem(KEY+'_backup_last',new Date().toISOString())}};
   $('backupCreate').onclick=async()=>{await downloadBackup();openBackupSettings();flashModal('Backup creato.')};
   $('backupExport').onclick=async()=>{await downloadBackup();};
@@ -5941,7 +5943,7 @@ $('todoSettingsBack').onclick=()=>show('todoHub');
 $('todoSettingTheme').onclick=openTodoThemeSettings;
 $('todoSettingColor').onclick=openTodoColorSettings;
 $('todoSettingNotifications').onclick=openTodoNotificationPicker;
-$('todoSettingBackup').onclick=openBackupSettings;
+$('todoSettingBackup').onclick=()=>openBackupSettings(true);
 $('todoSettingPrivacy').onclick=()=>{openSecuritySettings();$('modal').classList.add('todoSettingsModal','todoPrivacyModal');$('modalTitle').textContent='Privacy';$('modalBody').insertAdjacentHTML('afterbegin','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>La tua privacy è importante</strong><small>Gestisci le impostazioni di sicurezza e proteggi i tuoi dati nella sezione Cose da fare.</small></div></div>')};
 $('todoSettingInfo').onclick=openAppInformation;
 $('todoSettingName').onclick=openTodoNameSettings;
