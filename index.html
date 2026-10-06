@@ -3718,16 +3718,17 @@ function openResetPinAfterDevice(){
 }
 function openSecuritySettings(){
   const sec=state.security||(state.security={enabled:false,pinHash:'',credentialId:'',lastActivity:0,hideHomeAmounts:false,lockMinutes:10});
+  if(!Number.isFinite(Number(sec.lockMinutes))||Number(sec.lockMinutes)<1)sec.lockMinutes=10;
   openModal('Sicurezza',
     '<div class="settingsSubMenu">'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iBlue">🔒</span><span><strong>PIN dell’app</strong><small>Proteggi l’accesso ai tuoi dati</small></span><input id="securityPinToggle" class="settingToggle" type="checkbox" '+(sec.enabled?'checked':'')+'></label>'+
       '<button id="securityChangePin" class="settingsSubRow '+(!sec.enabled?'disabledRow':'')+'"><span class="settingsRowIcon iBlue">✎</span><span><strong>Modifica PIN</strong><small>Cambia il tuo PIN di accesso</small></span><span class="settingsRowArrow">›</span></button>'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iGreen">◉</span><span><strong>Face ID / Impronta</strong><small>Usa il riconoscimento biometrico</small></span><input id="securityDeviceToggle" class="settingToggle" type="checkbox" '+(sec.credentialId?'checked':'')+'></label>'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">◉</span><span><strong>Nascondi importi in Home</strong><small>Non mostrare gli importi nella Home</small></span><input id="securityHideAmounts" class="settingToggle" type="checkbox" '+(sec.hideHomeAmounts?'checked':'')+'></label>'+
-      '<div class="settingsSubRow"><span class="settingsRowIcon iOrange">◷</span><span><strong>Blocco automatico</strong><small>Dopo 10 minuti dall’ultimo sblocco</small></span><strong style="font-size:12px;color:#61778b">10 min</strong></div>'+
+      '<div class="settingsSubRow"><span class="settingsRowIcon iOrange">◷</span><span><strong>Blocco automatico</strong><small>Dopo '+esc(String(sec.lockMinutes))+' '+(Number(sec.lockMinutes)===1?'minuto':'minuti')+' dall’ultimo sblocco</small></span><strong style="font-size:12px;color:#61778b">'+esc(String(sec.lockMinutes))+' min</strong></div>'+
     '</div>'+
     '<div class="note" style="margin-top:13px">ⓘ &nbsp; La sicurezza protegge l’accesso alla sezione Conti economici e ai dati salvati sul dispositivo.</div>');
-  $('modal').classList.add('fullSettings');sec.lockMinutes=10;save();
+  $('modal').classList.add('fullSettings');save();
   $('securityHideAmounts').onchange=()=>{sec.hideHomeAmounts=$('securityHideAmounts').checked;save();renderHome()};
   $('securityDeviceToggle').onchange=async()=>{
     if($('securityDeviceToggle').checked){
@@ -5641,8 +5642,8 @@ function saveTodoInitialSetup(){
 function renderTodoHub(){
   applyTodoColor();setTodoGreetings();
   const pending=todoState().tasks.length,done=todoState().done.length;
-  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent='Qui trovi le attività con la scadenza più vicina.';
-  if($('todoHubDoneCount'))$('todoHubDoneCount').textContent='Qui trovi tutte le attività che hai completato.';
+  if($('todoHubPendingCount'))$('todoHubPendingCount').textContent=pending+' attività da completare';
+  if($('todoHubDoneCount'))$('todoHubDoneCount').textContent=done+' attività completate';
 }
 function todoSortTasks(arr){
   return [...arr].sort((a,b)=>{
