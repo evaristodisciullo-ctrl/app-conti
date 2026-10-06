@@ -3619,7 +3619,6 @@ function openBackupSettings(todoStyle=false){
   const lastDay=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'Non ancora';
   const lastTime=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'Nessun salvataggio automatico';
   openModal(todoStyle?'Backup':'Backup e dati',
-    (todoStyle?'<div class="todoThemeIntro todoBackupIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>I tuoi dati al sicuro</strong><small>Esegui il backup dei tuoi dati e ripristinali quando vuoi.</small></div></div>':'')+
     '<div class="settingsSubMenu">'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">☁</span><span><strong>Backup automatico</strong><small>Salva i dati automaticamente sul dispositivo</small></span><input id="backupAuto" class="settingToggle" type="checkbox" '+(state.backup&&state.backup.auto?'checked':'')+'></label>'+
       '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Scarica un file con tutte le tue attività</small></span><span class="settingsRowArrow">›</span></button>'+
