@@ -4377,7 +4377,7 @@ function confirmDeleteCategory(type,name){
 function entryStartMonth(entry){const r=entry&&entry.recurrence;if(entry&&entry.dateSpec&&entry.dateSpec.kind==='year'&&r&&r.kind==='single')return String(entry.dateSpec.year)+'-01';if(!r)return ymNow();if(r.kind==='custom'&&r.startDate)return r.startDate.slice(0,7);return r.startMonth||r.month||(Array.isArray(r.months)&&r.months[0])||ymNow()}
 function openEntryEditor(entry,type){
   const isNew=!entry,isIncome=type==='income';
-  const title=entry?(isIncome?'Modifica entrata':'Modifica pagamento'):(isIncome?'Aggiungi entrata':'Aggiungi pagamento');
+  const title=entry?(isIncome?'Modifica entrata':'Modifica pagamento'):(isIncome?'Nuova entrata':'Nuovo pagamento');
   const rec=entry?entry.recurrence:null;
   const dateValue=entry?(entry.dateSpec?specDeadline(entry.dateSpec):isoFor(entryStartMonth(entry),entry.day)):'';
   const noteValue=entry&&entry.note?entry.note:'';
@@ -4480,6 +4480,8 @@ function openEntryEditor(entry,type){
   });
   paintRec();
   let desiredDone=false;
+  $('editMarkDone').checked=false;
+  $('editMarkDone').onchange=()=>{desiredDone=$('editMarkDone').checked};
   if(entry&&$('editStateOpen')){
     const paintState=()=>{$('editStateOpen').classList.toggle('active',!desiredDone&&!editIsOverdue);$('editStateDone').classList.toggle('active',desiredDone);$('editStateOverdue').classList.toggle('overdue',!desiredDone&&editIsOverdue)};
     $('editStateOpen').onclick=()=>{desiredDone=false;paintState()};$('editStateDone').onclick=()=>{desiredDone=true;paintState()};paintState();
@@ -4503,8 +4505,8 @@ function openEntryEditor(entry,type){
     const note=$('editNote').value.trim();
     if(!name||!Number.isFinite(amount)||amount<=0||!dateOk||!date||day<1||day>31||!validRecurrence(r))return flashModal('Completa nome, importo e data.');
     let id;
-    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
-    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,notify,notifyRule,note})}
+    if(entry){entry.name=name;entry.amount=amount;entry.day=day;entry.dateSpec=editorDateSpec;entry.recurrence=r;entry.category=category;entry.supplier=$('editSupplier').value.trim();entry.notify=notify;entry.notifyRule=notifyRule;entry.note=note;id=entry.id}
+    else{id='e'+Date.now()+Math.random();state.entries.push({id,type,name,amount,day,dateSpec:editorDateSpec,recurrence:r,category,supplier:$('editSupplier').value.trim(),notify,notifyRule,note})}
     state.notifications.selected=(state.notifications.selected||[]).filter(x=>x!==id);
     if(notify){state.notifications.selected.push(id);if(state.notifications.mode==='off')state.notifications.mode='custom';requestNotificationPermission()}
     if(entry&&desiredDone){
