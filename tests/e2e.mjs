@@ -119,9 +119,7 @@ async function testSetupNaturalRecurrences(browser){
   if(await page.locator('#modal:not(.hidden)').count()){console.log('DEBUG_MODAL_AFTER_SETUP',await page.locator('#modalTitle').innerText(),await page.locator('#modalBody').innerText());await page.click('#modalClose')}
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
   await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1 ottobre 2026');await page.dispatchEvent('#editDateText','input');
-  console.log('REC_BEFORE',await page.locator('#editRecKind').inputValue(),await page.locator('#editRecChoices').evaluate(el=>({html:el.outerHTML,display:getComputedStyle(el).display,handler:!!el.onclick})));
   await page.locator('#editRecChoices button[data-kind="monthly"]').click();
-  console.log('REC_AFTER',await page.locator('#editRecKind').inputValue(),await page.locator('#editRecChoices').evaluate(el=>({html:el.outerHTML,display:getComputedStyle(el).display})));
   assert.equal(await page.locator('#editRecKind').inputValue(),'monthly');
   await page.click('#modalClose');await context.close();
 }
