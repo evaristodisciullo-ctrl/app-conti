@@ -2732,6 +2732,17 @@ body{background:#eef9ff}
   opacity:1!important;pointer-events:auto!important;
 }
 
+
+/* Master 03-04: descrizione, importo e data restano sulla stessa riga. */
+#setupIncome .entryGridHead,#setupExpense .entryGridHead,
+#incomeRows .entryRow,#expenseRows .entryRow{
+  grid-template-columns:minmax(0,1.2fr) minmax(0,.88fr) minmax(0,1fr) 28px!important;
+  gap:6px!important;
+}
+#incomeRows .entryRow input[type="hidden"],#expenseRows .entryRow input[type="hidden"]{display:none!important}
+#incomeRows .entryRow .rDateText,#expenseRows .entryRow .rDateText{grid-column:3!important;min-width:0!important;width:100%!important}
+#incomeRows .entryRow .rDelete,#expenseRows .entryRow .rDelete{grid-column:4!important;visibility:hidden!important}
+#incomeRows .entryRow:focus-within .rDelete,#expenseRows .entryRow:focus-within .rDelete{visibility:visible!important}
 </style>
 </head>
 <body>
