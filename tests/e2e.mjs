@@ -566,8 +566,10 @@ async function testTodoSection(browser){
   assert.equal(previewTheme.pending,beforeTheme.pending,'In scadenza deve mantenere il giallo funzionale');
   assert.equal(previewTheme.done,beforeTheme.done,'Cose già fatte deve mantenere il verde funzionale');
   assert.equal(previewTheme.notify,beforeTheme.notify,'Notifiche deve mantenere il rosa/rosso funzionale');
-  await page.click('#todoColorSave');
-  assert.equal((await state(page)).todo.color,'Menta');
+  assert.equal((await state(page)).todo.color,'Menta','La scelta colore deve essere persistita al tocco');
+  assert.equal(await page.locator('#todoColorSave').count(),0,'La schermata approvata non ha un pulsante Salva');
+  await page.click('#todoColorBack');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
 
   await context.close();
 }
@@ -848,8 +850,9 @@ async function testApprovedMasterRules(browser){
   await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
 
   await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');
-  await page.click('[data-ttheme="dark"]');await page.click('#todoThemeSave');
+  await page.click('[data-ttheme="dark"]');
   assert.equal((await state(page)).todo.theme,'dark');assert.equal(await page.locator('body').getAttribute('data-todo-theme'),'dark');
+  assert.equal(await page.locator('#todoThemeSave').count(),0,'La schermata approvata non ha pulsanti Salva/Annulla');await page.click('#modalClose');
   await page.click('#todoSettingBackup');await page.waitForSelector('#backupExtras summary');await page.locator('#backupExtras summary').click();await page.waitForSelector('#backupLocal',{state:'visible'});await page.click('#backupLocal');
   const backup=await page.evaluate(k=>JSON.parse(localStorage.getItem(k+'_local_copy')),KEY);
   assert.equal(backup.data.todo.theme,'dark');assert.equal(backup.data.todo.done.length,1);
