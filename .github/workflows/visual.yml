@@ -112,7 +112,7 @@ jobs:
               const row=todoRows.nth(i);await row.locator('.todoDescInput').fill(todoSamples[i][0]);await row.locator('.todoDateInput').fill(todoSamples[i][1]);
             }
             await page.evaluate(()=>document.activeElement.blur());await shot('15-todo-inserimento');
-            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
+            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');console.log('TODO_HOME_DIAG',JSON.stringify(await page.evaluate(()=>{const e=document.querySelector('#todoHub .todoHubCard.pending'),s=getComputedStyle(e,'::before'),p=e.querySelector('.todoHubPerson');return{content:s.content,display:s.display,visibility:s.visibility,bg:s.backgroundColor,width:s.width,personBg:getComputedStyle(p).backgroundImage,html:e.outerHTML}})));await shot('16-todo-home');
             await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('17-todo-in-scadenza');
             await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await page.waitForSelector('#undoSnack',{state:'hidden'});await shot('18-todo-cose-gia-fatte');
             await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
@@ -120,7 +120,7 @@ jobs:
             await shot('20-todo-impostazioni');
             await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');await shot('21-todo-tema');await page.click('#modalClose');
             await page.click('#todoSettingColor');await page.waitForSelector('#modal:not(.hidden)');await shot('22-todo-colore');await page.click('#modalClose');
-            await page.evaluate(()=>localStorage.setItem('inOrdineContiV1_backup_last','2025-03-12T18:42:00.000Z'));await page.click('#todoSettingBackup');await page.waitForSelector('#modal:not(.hidden)');await shot('23-todo-backup');await page.click('#modalClose');
+            await page.evaluate(()=>localStorage.setItem('inOrdineContiV1_backup_last','2025-03-12T18:42:00.000Z'));await page.click('#todoSettingBackup');await page.waitForSelector('#modal:not(.hidden)');console.log('TODO_BACKUP_DIAG',JSON.stringify(await page.evaluate(()=>({title:document.querySelector('#modalTitle')?.textContent,body:document.querySelector('#modalBody')?.innerText,html:document.querySelector('#modalBody')?.innerHTML,details:Array.from(document.querySelectorAll('#modalBody details')).map(d=>({id:d.id,open:d.open}))}))));await shot('23-todo-backup');await page.click('#modalClose');
             await page.click('#todoSettingPrivacy');await page.waitForSelector('#modal:not(.hidden)');await shot('24-todo-privacy');await page.click('#modalClose');
 
             const files=require('fs').readdirSync('visual').filter(f=>f.endsWith('.png'));
