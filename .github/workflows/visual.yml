@@ -28,7 +28,7 @@ jobs:
           const { chromium } = require('playwright');
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            const page=await browser.newPage({viewport:{width:390,height:694},deviceScaleFactor:1});
+            const page=await browser.newPage({viewport:{width:430,height:764},deviceScaleFactor:1672/764});
             await page.clock.setFixedTime(new Date('2026-10-06T12:00:00.000Z'));
             const shot=async(name)=>{await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'visual/'+name+'.png',fullPage:false,animations:'disabled'})};
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
@@ -134,6 +134,8 @@ jobs:
 
             const files=require('fs').readdirSync('visual').filter(f=>f.endsWith('.png'));
             if(files.length!==24)throw new Error('Visual review deve contenere esattamente 24 screenshot runtime, trovati: '+files.length);
+            const firstPng=require('fs').readFileSync('visual/01-in-ordine.png');
+            if(firstPng.readUInt32BE(16)!==941||firstPng.readUInt32BE(20)!==1672)throw new Error('La cattura deve usare la stessa risoluzione dei master: 941x1672 px');
             if(files.some(f=>f.includes('-master')))throw new Error('Non sono ammessi file master come sostituti degli screenshot runtime');
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
