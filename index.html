@@ -3036,7 +3036,7 @@ body{background:#eef9ff}
 .modal.fullEditor .editorRecRow{min-height:54px!important}
 
 #todoActive .todoQuickMaster button:nth-child(n+4),#todoDone .todoQuickMaster button:nth-child(n+5){display:none!important}
-#todoActive #todoActiveAdvancedFilters,#todoDone #todoDoneAdvancedFilters{display:none!important;position:absolute!important;width:0!important;height:0!important;overflow:hidden!important}
+
 #todoHub .todoHubCard.pending:before,#todoHub .todoHubCard.completed:before,#todoHub .todoHubCard.pending:after,#todoHub .todoHubCard.completed:after{content:none!important;display:none!important;width:0!important;height:0!important;opacity:0!important}
 
 .modal.fullEditor .modalHead{display:block!important;position:relative!important;min-height:36px!important;padding:1px 0 0!important;margin:0 0 8px!important}
@@ -3181,7 +3181,7 @@ body{background:#eef9ff}
 <section id="todoActive" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoActiveBack" class="todoBack" aria-label="Indietro">←</button><h1>In scadenza</h1></div>
   <div class="todoHero active"><strong>Attività in scadenza</strong><small id="todoActiveHeroCount" class="todoHeroCount">0 attività da completare</small><span id="todoActiveArt" class="todoHeroArt" data-todo-scene="active" aria-hidden="true"></span></div>
-  <div class="todoFilterBar todoQuickMaster"><button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button></div><details id="todoActiveAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoActiveFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button></div><details id="todoActiveAdvancedFilters" class="hidden"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoActiveFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoActiveFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
   <div id="todoActiveFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoActiveList"></div>
@@ -3196,7 +3196,7 @@ body{background:#eef9ff}
 <section id="todoDone" class="screen todoPage hidden">
   <div class="todoTop"><button id="todoDoneBack" class="todoBack" aria-label="Indietro">←</button><h1>Cose già fatte</h1></div>
   <div class="todoHero done"><strong>Ben fatto!</strong><small id="todoDoneHeroCount" class="todoHeroCount">Qui trovi tutte le attività che hai completato.</small><span id="todoDoneArt" class="todoHeroArt" data-todo-scene="done" aria-hidden="true"></span></div>
-  <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button><button type="button" class="todoQuickStatic" data-todo-quick="month">Questo mese</button></div><details id="todoDoneAdvancedFilters"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
+  <div class="todoFilterBar todoQuickMaster"><button id="todoDoneFilterAll" class="todoFilterAll active">Tutte</button><button type="button" class="todoQuickStatic" data-todo-quick="today">Oggi</button><button type="button" class="todoQuickStatic" data-todo-quick="week">Questa settimana</button><button type="button" class="todoQuickStatic" data-todo-quick="month">Questo mese</button></div><details id="todoDoneAdvancedFilters" class="hidden"><summary>Filtri mese e anno</summary><div class="todoAdvancedFilterFields"><select id="todoDoneFilterMonth" class="todoFilterSelect" aria-label="Filtra per mese"></select><select id="todoDoneFilterYear" class="todoFilterSelect" aria-label="Filtra per anno"></select></div></details>
   <div id="todoDoneFilterSummary" class="todoFilterSummary"></div>
   <div class="todoPanel todoListPanel">
     <div id="todoDoneList"></div>
