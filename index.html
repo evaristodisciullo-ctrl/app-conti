@@ -2773,6 +2773,39 @@ body{background:#eef9ff}
 #setup .balanceSetupCard .moneyInput input{font-size:28px!important;text-align:center!important}
 #setup .balanceSetupCard>label{margin:7px 0 0!important}
 #setup #startBtn{display:block!important;width:100%!important;max-width:none!important;height:48px!important;margin:15px 0 0!important;border-radius:24px!important;background:linear-gradient(135deg,#1296ff,#087bf5)!important}
+
+/* Master 05: due riquadri compatti e riepilogo leggibile senza scorrimento iniziale. */
+#home .homeFeatureGrid{gap:9px!important;margin:0 0 8px!important}
+#home .homeFeatureCard{
+  position:relative!important;display:block!important;min-height:160px!important;height:160px!important;
+  padding:10px!important;border-radius:17px!important;overflow:hidden!important
+}
+#home .homeScene.homeMasterIcon{
+  position:absolute!important;left:12px!important;right:auto!important;top:12px!important;
+  width:48px!important;height:48px!important;border-radius:50%!important;font-size:0!important
+}
+#home .homeIncomeIcon:after{font-size:30px!important}
+#home .homeExpenseIcon:after{font-size:18px!important}
+#home .homeMasterLogo{position:absolute!important;right:11px!important;top:11px!important;width:38px!important;height:38px!important;border-radius:8px!important;object-fit:contain!important}
+#home .homeFeatureText{position:absolute!important;left:12px!important;right:8px!important;bottom:39px!important;text-align:left!important}
+#home .homeFeatureText strong{font-size:17px!important;line-height:1.05!important}
+#home .homeFeatureText small{font-size:10px!important;line-height:1.2!important;margin-top:3px!important}
+#home .homeFeatureArrow{position:absolute!important;right:10px!important;bottom:9px!important;width:27px!important;height:27px!important;font-size:18px!important}
+#home .homeSummaryTitle{margin:10px 3px 5px!important;font-size:10px!important}
+#home .homeSummaryCard{padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+#home .homeSummaryRow{
+  grid-template-columns:36px minmax(0,1fr) auto 12px!important;gap:6px!important;
+  min-height:53px!important;padding:5px 8px!important;margin:4px 0!important;border-radius:12px!important
+}
+#home .homeSummaryIcon{width:30px!important;height:30px!important;font-size:15px!important}
+#home .homeSummaryCopy b{font-size:10px!important}
+#home .homeSummaryCopy small{font-size:8px!important}
+#home .homeSummaryValue{font-size:13px!important}
+#home .homeSummaryChevron{font-size:18px!important}
+#home .homeActionCard{min-height:58px!important;margin-top:7px!important;padding:7px 9px!important;grid-template-columns:39px minmax(0,1fr) 14px!important}
+#home .homeActionIcon{width:32px!important;height:32px!important;font-size:19px!important}
+#home .homeActionCard strong{font-size:11px!important}
+#home .homeActionCard small{font-size:8px!important}
 </style>
 </head>
 <body>
