@@ -3599,6 +3599,111 @@ body{background:#eef9ff}
 #todoSetup .todoBigBtn.add{border:1px solid #20b77d!important;background:#fff!important;color:#13855d!important}
 #todoSetup .todoBigBtn.save{background:#05a96d!important;color:#fff!important}
 #todoSetup .todoBigBtn .round{font-size:14px!important}
+\n
+/* 16–20 FINAL MASTER ALIGNMENT 2026-10-07 */
+/* Scoped only to approved Todo masters 16–20. */
+#todoHub,#todoActive,#todoDone,#todoSettings{padding:7px 10px 22px!important;background:linear-gradient(155deg,#fff 0%,#f5fff9 62%,#eafff4 100%)!important}
+#todoHub .todoTop,#todoActive .todoTop,#todoDone .todoTop,#todoSettings .todoTop{min-height:47px!important;margin:0 0 6px!important;padding:0 2px!important}
+#todoHub .todoTop h1,#todoActive .todoTop h1,#todoDone .todoTop h1,#todoSettings .todoTop h1{font-size:26px!important;letter-spacing:-.45px!important;color:#0c392d!important}
+#todoHub .todoBack,#todoActive .todoBack,#todoDone .todoBack,#todoSettings .todoBack{width:28px!important;height:34px!important;font-size:24px!important;color:#148862!important}
+
+/* 16 — Home Cose da fare */
+#todoHub .todoHubGrid{margin-top:0!important;gap:8px!important}
+#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{
+ min-height:150px!important;height:150px!important;padding:9px 10px 34px!important;border-radius:13px!important;
+ background:linear-gradient(155deg,#fff,#eafff3)!important;border:1px solid #58d7aa!important;box-shadow:0 4px 10px rgba(21,139,94,.05)!important
+}
+#todoHub .todoHubCard.pending>span:first-child,#todoHub .todoHubCard.completed>span:first-child{left:10px!important;right:8px!important;bottom:11px!important;text-align:center!important}
+#todoHub .todoHubCard.pending strong,#todoHub .todoHubCard.completed strong{font-size:12.5px!important;color:#103b2e!important}
+#todoHub .todoHubCard.pending small,#todoHub .todoHubCard.completed small{font-size:8px!important;line-height:1.15!important;margin-top:2px!important;color:#617d71!important}
+#todoHub .todoHubPerson{right:9px!important;top:8px!important;width:41px!important;height:41px!important}
+#todoHub .todoHubPerson>img{width:41px!important;height:41px!important}
+#todoHub .todoHubCard.pending .chev,#todoHub .todoHubCard.completed .chev{right:9px!important;bottom:8px!important;width:25px!important;height:25px!important;font-size:17px!important;background:#06a96d!important;color:#fff!important}
+#todoHub .todoHubCard.pending:after,#todoHub .todoHubCard.completed:after{display:block!important;content:""!important;position:absolute!important;left:10px!important;top:11px!important;width:43px!important;height:43px!important;border-radius:50%!important;background:#e3faef!important;opacity:1!important}
+#todoHub .todoHubCard.pending:before{display:block!important;content:"◷"!important;position:absolute!important;left:17px!important;top:17px!important;z-index:2!important;color:#159565!important;font-size:26px!important;opacity:1!important;width:auto!important;height:auto!important}
+#todoHub .todoHubCard.completed:before{display:block!important;content:"✓"!important;position:absolute!important;left:20px!important;top:16px!important;z-index:2!important;color:#159565!important;font-size:28px!important;font-weight:900!important;opacity:1!important;width:auto!important;height:auto!important}
+#todoHub .todoHubCard.compact{grid-column:1/-1!important;min-height:49px!important;height:49px!important;padding:6px 9px!important;border-radius:11px!important;background:#effdf5!important;border:0!important;grid-template-columns:36px 1fr 25px!important;gap:7px!important}
+#todoHub .todoHubCard.compact .icon{width:32px!important;height:32px!important;font-size:19px!important;background:#dff8ec!important;color:#0a9564!important}
+#todoHub .todoHubCard.compact strong{font-size:11.5px!important;color:#103b2e!important}
+#todoHub .todoHubCard.compact .chev{width:24px!important;height:24px!important;font-size:17px!important;background:#dff8ec!important;color:#147d5c!important}
+
+/* 17 — In scadenza */
+#todoActive .todoHero{min-height:73px!important;margin:0 0 6px!important;padding:7px 54px 7px 52px!important;border-radius:11px!important;border:1px solid #5edbb0!important}
+#todoActive .todoHero:before{content:"◷"!important;display:grid!important;position:absolute!important;left:9px!important;top:16px!important;width:36px!important;height:36px!important;border-radius:50%!important;place-items:center!important;background:#e2faee!important;color:#159565!important;font-size:23px!important}
+#todoActive .todoHero strong{font-size:10.5px!important}
+#todoActive .todoHero small{font-size:7.5px!important;line-height:1.15!important;margin-top:2px!important}
+#todoActive .todoHeroArt{width:40px!important;height:40px!important;right:8px!important;top:8px!important;background:url('assets/eds-green-approved.png') center/contain no-repeat!important}
+#todoActive .todoQuickMaster{gap:4px!important;margin:0 0 5px!important}
+#todoActive .todoQuickMaster button{height:30px!important;padding:3px 5px!important;font-size:7.5px!important;border:0!important;background:#f2fcf7!important}
+#todoActive .todoQuickMaster .active{background:#079e66!important;color:#fff!important}
+#todoActive .todoListPanel{padding:0!important}
+#todoActive #todoActiveList{display:grid!important;gap:4px!important}
+#todoActive .todoTaskRow{grid-template-columns:minmax(0,1fr) 30px 75px!important;gap:4px!important;min-height:44px!important;padding:2px 4px!important;border-radius:10px!important;background:#effcf5!important}
+#todoActive .todoTaskEditCard{min-height:40px!important;padding:5px 6px 5px 38px!important;border-radius:9px!important;background:transparent!important;position:relative!important}
+#todoActive .todoTaskEditCard:before{content:"♟"!important;position:absolute!important;left:3px!important;top:6px!important;width:28px!important;height:28px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:#dff8ec!important;color:#0b9a67!important;font-size:14px!important}
+#todoActive .todoTaskEditCard strong{font-size:8.5px!important;color:#153b30!important}
+#todoActive .todoTaskEditCard small{font-size:6.8px!important;color:#5e7e70!important}
+#todoActive .todoEditHint{display:none!important}
+#todoActive .todoNotifyBtn{width:27px!important;height:27px!important;margin:auto!important;background:#dff8ec!important;color:#0a9866!important}
+#todoActive .todoCompleteBtn{min-height:29px!important;height:29px!important;padding:3px 5px!important;border-radius:999px!important;background:#079e66!important;color:#fff!important}
+#todoActive .todoCompleteBtn span:first-child{font-size:6.5px!important;line-height:1.05!important}
+#todoActive .todoCompleteCircle{width:13px!important;height:13px!important}
+
+/* 18 — Cose già fatte */
+#todoDone .todoHero{min-height:62px!important;margin:0 0 5px!important;padding:7px 9px 7px 56px!important;border-radius:11px!important;border:1px solid #bfead7!important}
+#todoDone .todoHeroArt{left:8px!important;right:auto!important;top:8px!important;width:41px!important;height:41px!important;background:url('assets/eds-green-approved.png') center/contain no-repeat!important}
+#todoDone .todoHero strong{font-size:11px!important}
+#todoDone .todoHero small{font-size:7.5px!important;margin-top:2px!important}
+#todoDone .todoQuickMaster{gap:4px!important;margin:0 0 5px!important}
+#todoDone .todoQuickMaster button{height:29px!important;padding:3px 3px!important;font-size:7px!important;border:1px solid #ccecdf!important;background:#fff!important}
+#todoDone .todoQuickMaster .active{background:#079e66!important;color:#fff!important;border-color:#079e66!important}
+#todoDone .todoListPanel{padding:0!important}
+#todoDone #todoDoneList{display:grid!important;gap:4px!important}
+#todoDone .todoDoneRow{min-height:43px!important;padding:4px 7px!important;grid-template-columns:30px minmax(0,1fr) 48px!important;gap:6px!important;border-radius:9px!important;background:#effcf5!important;border:0!important}
+#todoDone .todoDoneActivityIcon{width:27px!important;height:27px!important;font-size:13px!important;background:#dff8ec!important;color:#0a9564!important}
+#todoDone .todoTaskMain strong{font-size:8.5px!important;color:#153b30!important}
+#todoDone .todoTaskMain small{font-size:6.8px!important;color:#657e74!important}
+#todoDone .todoDoneStatus{font-size:7px!important;padding:4px 6px!important;border-radius:999px!important;background:#e1faed!important;color:#0a8b5e!important}
+
+/* 19 — Notifiche Todo modal */
+.modal.todoNotificationsModal{background:linear-gradient(155deg,#fff,#effcf5)!important}
+.modal.todoNotificationsModal .modalCard{padding:7px 10px 16px!important;background:linear-gradient(155deg,#fff,#effcf5)!important}
+.modal.todoNotificationsModal .modalHead{min-height:45px!important;margin:0 0 5px!important}
+.modal.todoNotificationsModal .modalTitle{font-size:25px!important;color:#0c392d!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero{min-height:74px!important;margin:0 0 5px!important;padding:7px 9px!important;grid-template-columns:minmax(0,1fr) 43px!important;gap:7px!important;border:0!important;border-radius:11px!important;background:#effcf5!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero img{grid-column:2!important;grid-row:1!important;width:40px!important;height:40px!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero span{grid-column:1!important;grid-row:1!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero strong{font-size:11px!important;color:#143b2d!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero small{font-size:7.5px!important;line-height:1.15!important;margin-top:2px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRows{gap:4px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow{min-height:43px!important;padding:4px 7px!important;grid-template-columns:29px minmax(0,1fr) auto!important;gap:6px!important;border:0!important;border-radius:9px!important;background:#effcf5!important}
+.modal.todoNotificationsModal .todoNotifyMasterIcon{width:27px!important;height:27px!important;font-size:13px!important;background:#dff8ec!important;color:#0a9564!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow strong{font-size:8.5px!important;color:#153b30!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow small{font-size:6.8px!important;color:#657e74!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow input{width:34px!important;height:20px!important;background:#b9d8ca!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow input:after{width:14px!important;height:14px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow input:checked{background:#079e66!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow input:checked:after{left:17px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow b{font-size:8px!important;color:#176f55!important}
+.modal.todoNotificationsModal .todoNotifyRecentHead{margin:7px 4px 2px!important;font-size:9.5px!important;color:#153b30!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow{min-height:36px!important;padding:3px 4px!important;grid-template-columns:26px 1fr auto!important;gap:5px!important;border-bottom:1px solid #dceee5!important}
+.modal.todoNotificationsModal .todoNotifyRecentIcon{width:24px!important;height:24px!important;font-size:12px!important;background:#dff8ec!important;color:#0a9564!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow strong{font-size:8px!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow small{font-size:6.5px!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow b{font-size:14px!important;color:#147d5c!important}
+
+/* 20 — Impostazioni Todo */
+#todoSettings .todoHero{min-height:66px!important;margin:0 0 6px!important;padding:7px 9px 7px 56px!important;border-radius:11px!important;border:1px solid #62dbae!important}
+#todoSettings .todoHeroArt{left:8px!important;right:auto!important;top:8px!important;width:41px!important;height:41px!important;background:url('assets/eds-green-approved.png') center/contain no-repeat!important}
+#todoSettings .todoHero strong{font-size:10.5px!important;color:#153b30!important}
+#todoSettings .todoHero small{font-size:7.5px!important;line-height:1.15!important;margin-top:2px!important}
+#todoSettings .todoSettingsStack{gap:5px!important}
+#todoSettings .todoSettingCard{min-height:45px!important;padding:5px 8px!important;grid-template-columns:31px minmax(0,1fr) 22px!important;gap:7px!important;border:0!important;border-radius:10px!important;background:#effcf5!important}
+#todoSettings .todoSettingCard .i{width:28px!important;height:28px!important;font-size:14px!important;background:#dff8ec!important;color:#0a9564!important}
+#todoSettings .todoSettingCard .i svg{width:16px!important;height:16px!important}
+#todoSettings .todoSettingCard strong{font-size:9.5px!important;color:#153b30!important}
+#todoSettings .todoSettingCard small{display:none!important}
+#todoSettings .todoSettingCard .a{width:23px!important;height:23px!important;border-radius:50%!important;background:#dff8ec!important;color:#147d5c!important;display:grid!important;place-items:center!important;font-size:17px!important}
 \n</style>
 </head>
 <body>
