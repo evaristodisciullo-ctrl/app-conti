@@ -2880,6 +2880,61 @@ body{background:#eef9ff}
 .modal.fullEditor .editorSaveOnly{margin:10px 0 0!important}
 .modal.fullEditor .editorSaveOnly .btn{min-height:45px!important;border-radius:12px!important}
 @media(max-height:760px){.modal.fullEditor .modalCard{padding-bottom:8px!important}.editorMasterHero{min-height:78px}.editorMasterRow{min-height:52px;padding:5px 8px}.editorMasterRow>i{width:34px;height:34px}.editorMasterRows{gap:5px}.editorMasterToggle{min-height:43px}}
+
+/* Screens 11–14: align settings, notifications, summary and budgets to masters */
+#notifications .notifyMasterHero{min-height:98px;display:grid;grid-template-columns:48px minmax(0,1fr) 52px;gap:9px;align-items:center;text-align:left;margin:0 0 10px;padding:10px 12px;border:1.5px solid #19afe9;border-radius:16px;background:linear-gradient(145deg,#fff,#eaf8ff);box-shadow:0 4px 11px rgba(15,123,185,.06)}
+#notifications .notifyMasterIcon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e8f6ff;color:#087cf0;font-size:25px}
+#notifications .notifyMasterHero strong{display:block;color:#07104f;font-size:15px;line-height:1.1}
+#notifications .notifyMasterHero small{display:block;color:#657c9a;font-size:10px;line-height:1.3;margin-top:4px}
+#notifications .notifyMasterHero img{width:48px;height:48px;object-fit:contain}
+#notifications .notifyMasterList{display:grid;gap:7px}
+#notifications .notifyMasterRow{min-height:51px;border:1px solid #e2edf4;border-radius:13px;background:#fff;padding:7px 10px;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:9px;align-items:center;text-align:left}
+#notifications .notifyMasterRowIcon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#eaf6ff;color:#087cf0;font-size:17px}
+#notifications .notifyMasterRow strong{font-size:11px;color:#07104f}
+#notifications .notifyMasterRow small{display:block;font-size:9px;color:#74899d;line-height:1.25;margin-top:2px}
+#notifications .notifyMasterRow .masterSwitch{width:39px;height:23px}
+#notifications .notifyMasterRow .rowChev{width:29px;height:29px;border-radius:50%;background:#eaf6ff;color:#087cf0;display:grid;place-items:center;font-size:20px}
+#notifications .notifyRecentTitle{min-height:36px;margin:7px 2px 0;font-size:13px}
+#notifications .notifyRecentItem{min-height:46px;padding:6px 8px}
+#settings .settingsMasterHero{min-height:92px;display:grid;grid-template-columns:51px minmax(0,1fr) 51px;gap:10px;align-items:center;margin:0 0 10px;padding:10px 12px;border:1.5px solid #16ade9;border-radius:15px;background:linear-gradient(145deg,#fff,#eaf8ff);box-shadow:0 4px 11px rgba(15,123,185,.06);overflow:hidden}
+#settings .settingsMasterHeroIcon{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#e8f6ff;color:#087cf0;font-size:24px}
+#settings .settingsMasterHero strong{display:block;font-size:13px;color:#07104f;line-height:1.2}
+#settings .settingsMasterHero small{display:block;font-size:10px;color:#657c9a;line-height:1.3;margin-top:3px}
+#settings .settingsMasterHero img{width:49px;height:49px;object-fit:contain}
+#settings .settingsMenu{display:grid;gap:6px}
+#settings .settingsRow{min-height:48px;padding:6px 9px!important;grid-template-columns:35px minmax(0,1fr) 16px;gap:8px}
+#settings .settingsRowIcon{width:32px!important;height:32px!important}
+#settings .settingsRowText strong{font-size:11px!important}
+#settings .settingsRowText small{font-size:9px!important}
+#summary .summaryBalanceCard{min-height:80px!important;display:grid!important;grid-template-columns:46px minmax(0,1fr) auto;gap:9px;align-items:center;padding:10px!important}
+#summary .summaryBalanceCard:before{content:"▥";width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e5f5ff;color:#087cf0;font-size:23px;font-weight:900}
+#summary .summaryBalanceCard .label{font-size:11px!important;color:#07104f!important}
+#summary .summaryBalanceCard .value{font-size:20px!important;white-space:nowrap}
+#summary .card{padding:9px!important;margin-bottom:7px!important}
+#summary .settingsTitle{font-size:11px!important}
+#summary .sumGroup{margin:4px 0!important;padding-top:4px!important}
+#summary .sumGroupTitle{font-size:10px!important;margin:3px 0!important}
+#summary .sumLine{min-height:22px!important;padding:3px 4px!important;font-size:9px!important}
+#summary .sumLine strong{font-size:10px!important}
+#summary .categoryList .categoryRow{min-height:24px!important}
+#summary .manageBudgetBtn{min-height:49px!important;margin-top:7px!important;padding:7px 10px!important}
+#summary .manageBudgetBtn strong{font-size:11px!important}#summary .manageBudgetBtn small{font-size:9px!important}
+#budget .hint{min-height:64px;display:flex;align-items:center;border:1.5px solid #18afe9;border-radius:14px;padding:9px 12px 9px 55px!important;margin:1px 0 8px!important;background:linear-gradient(145deg,#fff,#eaf8ff);color:#142e50;font-size:10px!important;position:relative}
+#budget .hint:before{content:"◔";position:absolute;left:11px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#e4f5ff;color:#087cf0;font-size:23px;font-weight:900}
+#budget .monthBar{height:39px!important;margin:0 0 8px!important}
+#budget .budgetList{display:grid!important;gap:6px!important}
+#budget .budgetItem{padding:7px 9px!important;border:1px solid #e2edf4!important;border-radius:13px!important;background:#fff!important;box-shadow:0 4px 10px rgba(36,86,121,.045)!important}
+#budget .budgetTop{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center!important;gap:8px!important;margin:0 0 4px!important}
+#budget .budgetName{display:flex!important;align-items:center;gap:7px;font-size:11px!important}
+#budget .budgetIcon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#e8f6ff;color:#087cf0;font-style:normal;font-size:17px}
+#budget .budgetPercent{min-width:34px;padding:4px 7px;border-radius:99px;background:#e7f5ff;color:#087cf0;text-align:center;font-size:9px;font-weight:900}
+#budget .budgetMetrics{display:grid;grid-template-columns:1fr 1fr;margin-left:37px}
+#budget .budgetMetrics span{display:block;border-right:1px solid #dce7ef;padding:0 7px}
+#budget .budgetMetrics span:last-child{border:0}
+#budget .budgetMetrics small{display:block;color:#72869a;font-size:8px}
+#budget .budgetMetrics strong{font-size:10px;color:#142b4c}
+#budget .budgetBar{height:7px!important;margin:5px 0 0 37px!important}
+#budget .budgetFoot{display:none!important}
 </style>
 </head>
 <body>
@@ -5066,7 +5121,7 @@ function renderBudget(){
   for(const [name,limit] of Object.entries(plan.limits||{})){if(name==='Senza categoria'||Number(limit)<=0)continue;rows.push({key:name,name,spent:Number(spentMap[name]||0),limit:Number(limit),total:false})}
   const el=$('budgetList');
   if(!rows.length){el.innerHTML='<div class="card empty">Non hai ancora impostato budget per questo mese.</div>';return}
-  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=Math.min(Math.max(pct,0),100);return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName">'+esc(x.name)+'</span><span class="budgetNumbers">'+money(x.spent)+' / '+money(x.limit)+'</span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+pct+'% del budget</span>'+(current?'<button class="budgetEdit" data-budget="'+escAttr(x.key)+'">Modifica</button>':'<span>Storico</span>')+'</div></div>'}).join('');
+  el.innerHTML=rows.map(x=>{const pct=x.limit>0?Math.round(x.spent/x.limit*100):0,fill=Math.min(Math.max(pct,0),100),icon=x.total?'€':({'Casa':'⌂','Bollette':'ϟ','Utenze':'ϟ','Spesa':'🛒','Trasporti':'▣','Servizi':'⚙','Svago':'♡'}[x.name]||'€');return '<div class="budgetItem"><div class="budgetTop"><span class="budgetName"><i class="budgetIcon">'+icon+'</i>'+esc(x.name)+'</span><span class="budgetPercent">'+pct+'%</span></div><div class="budgetMetrics"><span><small>Speso</small><strong>'+money(x.spent)+'</strong></span><span><small>Budget</small><strong>'+money(x.limit)+'</strong></span></div><div class="budgetBar"><div class="budgetFill '+(pct>100?'over':'')+'" style="width:'+fill+'%"></div></div><div class="budgetFoot"><span>'+pct+'% del budget</span>'+(current?'<button class="budgetEdit" data-budget="'+escAttr(x.key)+'">Modifica</button>':'<span>Storico</span>')+'</div></div>'}).join('');
   if(current)el.querySelectorAll('.budgetEdit').forEach(b=>b.onclick=()=>openBudgetEditor(b.dataset.budget));
 }
 function budgetNotifyConfig(key){
