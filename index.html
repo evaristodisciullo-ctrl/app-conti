@@ -3030,6 +3030,10 @@ body{background:#eef9ff}
 #todoHub .todoTop h1{display:block!important;visibility:visible!important;color:#123d31!important;font-size:26px!important}
 #todoHub .todoHubCard *:before,#todoHub .todoHubCard *:after{display:none!important;content:none!important}
 #todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{background:#f0fff5!important;border:1px solid #bcebd2!important}
+
+.modal.fullEditor #editRecurrenceBlock{display:block!important;visibility:visible!important}
+.modal.fullEditor #editRecChoices{display:grid!important;visibility:visible!important}
+.modal.fullEditor .editorRecRow{min-height:54px!important}
 </style>
 </head>
 <body>
@@ -4625,7 +4629,7 @@ function openEntryEditor(entry,type){
         renderEditRecExtra(cfg);paintRec()
       });return;
     }
-    if(!syncDate())return flashModal('Completa la data per usare questa scelta.');
+    syncDate();
     $('editRecKind').value=b.dataset.kind;delete $('editRecKind').dataset.custom;renderEditRecExtra(null);paintRec();
   });
   paintRec();
