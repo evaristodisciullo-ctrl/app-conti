@@ -2708,6 +2708,7 @@ body{background:#eef9ff}
 #todoSetupRows .todoRecArea,#todoSetupRows .todoRowDelete{display:none}
 #todoSetupRows .todoSetupRow:focus-within .todoRecArea{display:block}
 #todoSetupRows .todoSetupRow:focus-within .todoRowDelete{display:block}
+#todoSetupRows .todoSetupRow.todoPointerHold .todoRecArea,#todoSetupRows .todoSetupRow.todoPointerHold .todoRowDelete{display:block}
 #todoSetup .todoPanel{padding:8px 10px}
 #todoSetup .todoSetupHead{padding:0 3px 5px;font-size:10px}
 #todoSetup .todoSetupRow{padding:5px 3px;grid-template-columns:minmax(0,1.4fr) minmax(72px,.82fr) 38px;gap:6px}
@@ -5561,6 +5562,13 @@ async function checkDueTodoNotifications(){
 
 // Todo navigation/event wiring.
 $('todoSetupBack').onclick=()=>{const back=todoSetupRevisit?'todoHub':'landing';todoSetupRevisit=false;show(back)};
+document.addEventListener('pointerdown',event=>{
+  if(!event.target.closest('#todoSetup .todoActions'))return;
+  const row=document.activeElement&&document.activeElement.closest('#todoSetupRows .todoSetupRow');
+  if(!row)return;
+  row.classList.add('todoPointerHold');
+  setTimeout(()=>row.classList.remove('todoPointerHold'),1000);
+},true);
 $('todoSetupAdd').onclick=()=>addTodoSetupRow(false);
 $('todoSetupSave').onclick=saveTodoInitialSetup;
 $('todoHubBack').onclick=()=>show('landing');
