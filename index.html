@@ -4052,21 +4052,20 @@ body{background:#eef9ff}
 
 /* TARGETED REGRESSION FIX: recurrence E2E + screen 21 */
 .modal.fullEditor .editorRecRow #editRecChoices{
-  display:block!important;
+  display:grid!important;
   visibility:visible!important;
   position:absolute!important;
   inset:auto 0 0 0!important;
+  grid-template-columns:repeat(3,1fr)!important;
   height:23px!important;
   margin:0!important;
   z-index:4!important;
-  pointer-events:none!important;
+  pointer-events:auto!important;
 }
-.modal.fullEditor .editorRecRow #editRecChoices button{display:none!important}
-.modal.fullEditor .editorRecRow #editRecChoices button[data-kind="monthly"]{
+.modal.fullEditor .editorRecRow #editRecChoices button{
   display:block!important;
   visibility:visible!important;
-  position:absolute!important;
-  inset:0!important;
+  position:static!important;
   width:100%!important;
   height:23px!important;
   min-height:23px!important;
