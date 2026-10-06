@@ -3054,6 +3054,9 @@ body{background:#eef9ff}
 #todoHub .todoHubCard.pending::before,
 #todoHub .todoHubCard.completed::before{content:none!important;display:none!important}
 #todoHub .todoHubPerson img{object-fit:contain!important;box-shadow:none!important}
+
+.backupExtras{margin-top:8px;border-top:1px solid #e5ecef;padding-top:4px}.backupExtras>summary{padding:11px 4px;color:#496176;font-size:12px;font-weight:850;cursor:pointer;list-style:none}.backupExtras>summary::-webkit-details-marker{display:none}.backupExtras .settingsSubMenu{margin-top:4px}
+#todoHub .todoHubCard.pending::before,#todoHub .todoHubCard.completed::before{content:none!important;display:none!important;visibility:hidden!important;opacity:0!important;width:0!important;height:0!important;background:transparent!important;box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -3572,10 +3575,10 @@ async function downloadBackup(payload){
   const data=payload||backupPayload(),text=JSON.stringify(data,null,2),filename='in-ordine-backup-'+todayISO()+'.json';
   if(nativeBridge()&&nativeBridge().saveBackupFile){
     const ok=await nativeBridge().saveBackupFile(text,filename);
-    if(ok)return true;
+    if(ok){localStorage.setItem(KEY+'_backup_last',new Date().toISOString());return true;}
   }
   const blob=new Blob([text],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
-  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);return true;
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);localStorage.setItem(KEY+'_backup_last',new Date().toISOString());return true;
 }
 function normalizeRestoredState(data){
   const base=blank(),restored=Object.assign(base,data||{});
@@ -3596,19 +3599,26 @@ function normalizeRestoredState(data){
   return restored;
 }
 function openBackupSettings(){
+  const lastRaw=localStorage.getItem(KEY+'_backup_last');
+  const lastDate=lastRaw?new Date(lastRaw):null;
+  const lastDay=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'}):'Non ancora';
+  const lastTime=lastDate&&!Number.isNaN(lastDate.getTime())?lastDate.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'Nessun salvataggio automatico';
   openModal('Backup e dati',
     '<div class="settingsSubMenu">'+
       '<label class="settingsSubRow"><span class="settingsRowIcon iPurple">☁</span><span><strong>Backup automatico</strong><small>Salva i dati automaticamente sul dispositivo</small></span><input id="backupAuto" class="settingToggle" type="checkbox" '+(state.backup&&state.backup.auto?'checked':'')+'></label>'+
-      '<button id="backupCreate" class="settingsSubRow"><span class="settingsRowIcon iBlue">↻</span><span><strong>Crea backup adesso</strong><small>Salva subito una copia dei tuoi dati</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="backupRestore" class="settingsSubRow"><span class="settingsRowIcon iGreen">↥</span><span><strong>Ripristina backup</strong><small>Ripristina da un backup precedente</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Esporta i dati in un file</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="backupImport" class="settingsSubRow"><span class="settingsRowIcon iOrange">⇩</span><span><strong>Importa dati</strong><small>Importa dati da un file</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="backupLocal" class="settingsSubRow"><span class="settingsRowIcon iYellow">▣</span><span><strong>Scarica copia locale</strong><small>Salva una copia sul tuo dispositivo</small></span><span class="settingsRowArrow">›</span></button>'+
-      '<button id="backupDeleteAll" class="settingsSubRow"><span class="settingsRowIcon iRed">×</span><span><strong>Elimina tutti i dati</strong><small>Cancella definitivamente tutti i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupExport" class="settingsSubRow"><span class="settingsRowIcon iBlue">⇧</span><span><strong>Esporta dati</strong><small>Scarica un file con tutte le tue attività</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<button id="backupImport" class="settingsSubRow"><span class="settingsRowIcon iOrange">⇩</span><span><strong>Importa backup</strong><small>Ripristina le tue attività da un file di backup</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<div class="settingsSubRow backupLastRow"><span class="settingsRowIcon iBlue">▣</span><span><strong>Ultimo backup</strong><small>'+esc(lastDay)+' · '+esc(lastTime)+'</small></span></div>'+
+      '<button id="backupRestore" class="settingsSubRow"><span class="settingsRowIcon iGreen">↥</span><span><strong>Ripristina dati</strong><small>Ripristina tutte le attività dal backup più recente</small></span><span class="settingsRowArrow">›</span></button>'+
+      '<details id="backupExtras" class="backupExtras"><summary>Strumenti aggiuntivi</summary><div class="settingsSubMenu">'+
+        '<button id="backupCreate" class="settingsSubRow"><span class="settingsRowIcon iBlue">↻</span><span><strong>Crea backup adesso</strong><small>Salva subito una copia dei tuoi dati</small></span><span class="settingsRowArrow">›</span></button>'+
+        '<button id="backupLocal" class="settingsSubRow"><span class="settingsRowIcon iYellow">▣</span><span><strong>Scarica copia locale</strong><small>Salva una copia sul tuo dispositivo</small></span><span class="settingsRowArrow">›</span></button>'+
+        '<button id="backupDeleteAll" class="settingsSubRow"><span class="settingsRowIcon iRed">×</span><span><strong>Elimina tutti i dati</strong><small>Cancella definitivamente tutti i dati dei conti</small></span><span class="settingsRowArrow">›</span></button>'+
+      '</div></details>'+
     '</div><input id="backupFile" type="file" accept="application/json,.json" class="hidden">');
   $('modal').classList.add('fullSettings');
-  $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto)localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()))};
-  $('backupCreate').onclick=async()=>{await downloadBackup();flashModal('Backup creato.')};
+  $('backupAuto').onchange=()=>{state.backup.auto=$('backupAuto').checked;save();if(state.backup.auto){localStorage.setItem(KEY+'_auto_backup',JSON.stringify(backupPayload()));localStorage.setItem(KEY+'_backup_last',new Date().toISOString())}};
+  $('backupCreate').onclick=async()=>{await downloadBackup();openBackupSettings();flashModal('Backup creato.')};
   $('backupExport').onclick=async()=>{await downloadBackup();};
   $('backupLocal').onclick=()=>{localStorage.setItem(KEY+'_local_copy',JSON.stringify(backupPayload()));flashModal('Copia locale salvata sul dispositivo.')};
   const choose=()=>$('backupFile').click();$('backupRestore').onclick=choose;$('backupImport').onclick=choose;
@@ -3627,6 +3637,7 @@ function openBackupSettings(){
     $('backupDeleteYes').onclick=()=>{const profile=state.profile,appColor=state.appColor,security=state.security,preferences=state.preferences;localStorage.removeItem(KEY);state=blank();state.profile=profile;state.appColor=appColor;state.security=security;state.preferences=preferences;save();closeModal();show('landing')};
   };
 }
+
 function bytesToB64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64urlToBytes(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
 async function hashPin(pin){const data=new TextEncoder().encode('in-ordine|'+pin);return bytesToB64url(await crypto.subtle.digest('SHA-256',data))}
