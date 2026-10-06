@@ -421,8 +421,8 @@ async function testTodoSection(browser){
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/In scadenza/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
-  assert.equal(await page.locator('#todoHubPendingCount').innerText(),'Qui trovi le attività con la scadenza più vicina.');
-  assert.equal(await page.locator('#todoHubDoneCount').innerText(),'Qui trovi tutte le attività che hai completato.');
+  assert.equal(await page.locator('#todoHubPendingCount').innerText(),'1 attività da completare');
+  assert.equal(await page.locator('#todoHubDoneCount').innerText(),'0 attività completate');
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
