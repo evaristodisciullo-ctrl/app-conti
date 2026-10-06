@@ -3119,6 +3119,37 @@ body{background:#eef9ff}
 .todoThemeOption>.todoThemeThumb{position:static!important;inset:auto!important;transform:none!important;flex:0 0 100px!important;width:100px!important;max-width:100px!important;height:100px!important;margin:0 12px 0 0!important;grid-column:auto!important;grid-row:auto!important;align-self:center!important}
 .todoThemeOption>span:nth-child(2){position:static!important;inset:auto!important;transform:none!important;display:block!important;flex:1 1 0!important;min-width:0!important;margin:0!important;grid-column:auto!important;grid-row:auto!important}
 .todoThemeOption>.todoThemeRadio{position:static!important;inset:auto!important;transform:none!important;flex:0 0 28px!important;width:28px!important;height:28px!important;margin:0 0 0 8px!important;grid-column:auto!important;grid-row:auto!important}
+
+/* Match the approved Todo list hierarchy and remove the replaced home-card artwork. */
+#todoHub button#todoHubPending::before,#todoHub button#todoHubPending::after,#todoHub button#todoHubDone::before,#todoHub button#todoHubDone::after{content:none!important;display:none!important;visibility:hidden!important;width:0!important;height:0!important;background:none!important;box-shadow:none!important}
+#todoHub button#todoHubPending,#todoHub button#todoHubDone{background:#f1fff6!important;border:1px solid #bfe8d2!important}
+#todoHub .todoHubPerson,#todoHub .todoHubPerson>img{background:none!important;background-image:none!important;box-shadow:none!important}
+#todoActive .todoTaskRow{grid-template-columns:40px minmax(0,1fr) 92px!important;gap:9px!important;min-height:72px!important;padding:9px 11px!important;background:#effbf5!important;border-color:#ccebdd!important}
+#todoActive .todoNotifyBtn{grid-column:1!important;grid-row:1!important;width:38px!important;height:38px!important;background:#def5e8!important;color:#13885a!important}
+#todoActive .todoTaskEditCard{grid-column:2!important;grid-row:1!important;min-height:52px!important;padding:5px 0!important}
+#todoActive .todoTaskEditCard strong{font-size:11px!important}
+#todoActive .todoTaskEditCard small{font-size:9px!important;margin-top:4px!important}
+#todoActive .todoTaskEditCard .todoEditHint{display:none!important}
+#todoActive .todoCompleteBtn{grid-column:3!important;grid-row:1!important;min-height:42px!important;border-radius:22px!important;background:#0c8b58!important;color:#fff!important;padding:4px 6px!important}
+#todoActive .todoCompleteBtn span:first-child{font-size:9px!important}
+#todoDone .todoDoneRow{grid-template-columns:36px minmax(0,1fr) 78px!important;min-height:58px!important;padding:7px 9px!important;margin-bottom:7px!important;background:#effbf5!important;border-color:#ccebdd!important}
+#todoDone .todoDoneActivityIcon{width:30px!important;height:30px!important}
+#todoDone .todoTaskMain{font-size:11px!important}
+#todoDone .todoTaskMain small{font-size:9px!important;margin-top:3px!important}
+#todoDone .todoDoneStatus{padding:7px 8px!important;font-size:9px!important}
+#todoSettings .todoHero{min-height:86px!important}
+#todoSettings .todoSettingCard{min-height:56px!important;padding:8px 10px!important;background:#f0fff7!important;border-color:#cfead9!important}
+#todoSettings .todoSettingCard .i{width:36px!important;height:36px!important}
+#todoSettings .todoSettingCard strong{font-size:11px!important}
+#todoSettings .todoSettingCard small{font-size:9px!important}
+#modal.todoNotificationsModal{background:#eefaf3!important}
+#modal.todoNotificationsModal .modalCard{background:#f4fff8!important}
+#modal.todoNotificationsModal .todoNotifyMasterRow{background:#f0fff6!important;border-color:#cfead9!important}
+#modal.todoNotificationsModal .todoNotifyMasterIcon{background:#dff5e8!important;color:#108456!important}
+#todoSetup .todoSetupRow{min-height:58px!important}
+#todoSetup .todoSetupRow .todoDescInput,#todoSetup .todoSetupRow .todoDateInput{border-radius:8px!important}
+#todoSetup .todoBigBtn.save{background:#0d9860!important;color:#fff!important}
+#todoSetup .todoBigBtn.add{background:#f4fff8!important;border:1px solid #78d8ad!important;color:#118154!important}
 </style>
 </head>
 <body>
