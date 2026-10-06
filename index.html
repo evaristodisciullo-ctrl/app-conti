@@ -2743,6 +2743,18 @@ body{background:#eef9ff}
 #incomeRows .entryRow .rDateText,#expenseRows .entryRow .rDateText{grid-column:3!important;min-width:0!important;width:100%!important}
 #incomeRows .entryRow .rDelete,#expenseRows .entryRow .rDelete{grid-column:4!important;visibility:hidden!important}
 #incomeRows .entryRow:focus-within .rDelete,#expenseRows .entryRow:focus-within .rDelete{visibility:visible!important}
+
+/* Master 03-04: lista dati e azioni sono gruppi distinti. */
+#setupIncome .onboardCard,#setupExpense .onboardCard{
+  background:transparent!important;border:0!important;box-shadow:none!important;
+  padding:0!important;margin:0!important;
+}
+#setupIncome .setupRowsCard,#setupExpense .setupRowsCard{
+  background:#fff!important;border:1px solid #dcebf5!important;border-radius:16px!important;
+  box-shadow:0 6px 16px rgba(39,91,135,.07)!important;padding:8px!important;margin:0 0 11px!important;
+}
+#setupIncome .setupContinue,#setupExpense .setupContinue{margin-top:8px!important}
+#setupIncome .setupSkip,#setupExpense .setupSkip{display:none!important}
 </style>
 </head>
 <body>
@@ -2815,8 +2827,10 @@ body{background:#eef9ff}
   <div class="setupSimpleTitle"><button class="backText" id="incomeSetupBack">‹</button><h1>Entrate</h1></div>
   <div class="setupSimpleHero"><span class="setupHeroSymbol" aria-hidden="true">↑</span><div><strong>Scrivi le tue entrate</strong><small>Inserisci le entrate che vuoi monitorare da subito.</small></div><img src="assets/eds-blue-approved.png" alt=""></div>
   <div class="onboardCard">
-    <div class="entryGridHead"><div><span class="entryHeadIcon">▤</span>Descrizione</div><div><span class="entryHeadIcon">€</span>Importo</div><div><span class="entryHeadIcon">▣</span>Data</div></div>
-    <div id="incomeRows"></div>
+    <div class="setupRowsCard">
+      <div class="entryGridHead"><div><span class="entryHeadIcon">▤</span>Descrizione</div><div><span class="entryHeadIcon">€</span>Importo</div><div><span class="entryHeadIcon">▣</span>Data</div></div>
+      <div id="incomeRows"></div>
+    </div>
     <button id="addIncomeSetup" class="setupAddRow">＋　Aggiungi entrata</button>
     <button id="saveIncomeSetup" class="btn setupContinue">Salva e continua　→</button>
     <button id="skipIncomeSetup" class="setupSkip">Aggiungi dopo</button>
@@ -2827,8 +2841,10 @@ body{background:#eef9ff}
   <div class="setupSimpleTitle"><button class="backText" id="expenseSetupBack">‹</button><h1>Pagamenti</h1></div>
   <div class="setupSimpleHero"><span class="setupHeroSymbol" aria-hidden="true">€</span><div><strong>Gestisci i tuoi pagamenti</strong><small>Inserisci i pagamenti che vuoi monitorare.</small></div><img src="assets/eds-blue-approved.png" alt=""></div>
   <div class="onboardCard">
-    <div class="entryGridHead"><div><span class="entryHeadIcon">▤</span>Descrizione</div><div><span class="entryHeadIcon">€</span>Importo</div><div><span class="entryHeadIcon">▣</span>Data</div></div>
-    <div id="expenseRows"></div>
+    <div class="setupRowsCard">
+      <div class="entryGridHead"><div><span class="entryHeadIcon">▤</span>Descrizione</div><div><span class="entryHeadIcon">€</span>Importo</div><div><span class="entryHeadIcon">▣</span>Data</div></div>
+      <div id="expenseRows"></div>
+    </div>
     <button id="addExpenseSetup" class="setupAddRow">＋　Aggiungi pagamento</button>
     <button id="saveExpenseSetup" class="btn setupContinue">Salva e continua　→</button>
     <button id="skipExpenseSetup" class="setupSkip">Aggiungi dopo</button>
