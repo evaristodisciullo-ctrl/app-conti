@@ -69,7 +69,7 @@ async function testApprovedOnboarding(browser){
   assert.equal(await page.locator('#landingTodo').isVisible(),true);
   await page.fill('#landingNickname','Mario');
   await page.click('#landingConti');
-  assert.match(await page.locator('#setup').innerText(),/Inserisci il tuo saldo attuale/);
+  assert.match(await page.locator('#setup').innerText(),/Inserisci il denaro reale che hai adesso/);
   await page.fill('#startBalance','1.000,50');await page.click('#startBtn');
   await page.waitForSelector('#setupIncome:not(.hidden)');
   assert.match(await page.locator('#setupIncome').innerText(),/Scrivi le tue entrate/);
