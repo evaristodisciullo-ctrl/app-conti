@@ -457,7 +457,7 @@ async function testTodoSection(browser){
   await page.click('#todoHubNotifications');
   await page.waitForSelector('#modal:not(.hidden)');
   assert.equal(await page.locator('#todoNotifyAll').count(),1);
-  assert.match(await page.locator('#modal').innerText(),/Attiva tutte/);
+  assert.match(await page.locator('#modal').innerText(),/Notifiche attive/);
   await page.check('#todoNotifyAll');
   const notifyBoxes=page.locator('#todoNotifyPick input[type="checkbox"]');
   assert.equal(await notifyBoxes.count(),1);
