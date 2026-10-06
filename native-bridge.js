@@ -38,6 +38,11 @@ const css=`
 .modal.todoNotificationsModal .todoNotifyMasterRow input[type=checkbox]:before{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .15s ease}
 .modal.todoNotificationsModal .todoNotifyMasterRow input[type=checkbox]:checked{background:#15935e!important}
 .modal.todoNotificationsModal .todoNotifyMasterRow input[type=checkbox]:checked:before{transform:translateX(20px)}
+#todoSetup .todoNotifyToggle{position:relative!important;width:44px!important;height:25px!important;margin:5px auto 0!important;border:0!important;border-radius:999px!important;background:#d6e3dc!important;color:transparent!important;box-shadow:none!important}
+#todoSetup .todoNotifyToggle .todoLineBell{width:18px!important;height:18px!important;opacity:0!important}
+#todoSetup .todoNotifyToggle:before{content:"";position:absolute;left:3px;top:3px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18);transition:transform .15s ease}
+#todoSetup .todoNotifyToggle.on{background:#15935e!important}
+#todoSetup .todoNotifyToggle.on:before{transform:translateX(19px)}
 `;
 const $=id=>document.getElementById(id);
 const hero=(title,copy)=>{const b=$('modalBody');if(!b||b.querySelector('.todoMasterHero'))return;const h=document.createElement('div');h.className='todoThemeIntro todoColorIntro todoMasterHero';h.innerHTML='<img src="assets/eds-green-approved.png" alt=""><div><strong>'+title+'</strong><small>'+copy+'</small></div>';b.prepend(h)};
