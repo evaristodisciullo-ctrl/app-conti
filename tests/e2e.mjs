@@ -840,8 +840,8 @@ async function testApprovedMasterRules(browser){
   await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
   await page.click('#todoActiveFilterAll');
   await page.waitForSelector('.todoCompleteBtn');
-  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
-  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.color,'rgb(35, 75, 54)');assert.equal(completeStyle.shadow,'none');
+  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,bgColor:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
+  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.bgColor,'rgb(16, 137, 84)');assert.equal(completeStyle.color,'rgb(255, 255, 255)');assert.equal(completeStyle.shadow,'none');
   assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
   await page.locator('.todoCompleteBtn').first().click();
   await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');
