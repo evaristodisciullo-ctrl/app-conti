@@ -29,6 +29,7 @@ jobs:
           (async()=>{
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:694},deviceScaleFactor:1});
+            await page.clock.setFixedTime(new Date('2026-10-06T12:00:00.000Z'));
             const shot=async(name)=>{await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'visual/'+name+'.png',fullPage:false})};
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
             await page.evaluate(()=>localStorage.clear());await page.reload();
@@ -63,26 +64,43 @@ jobs:
                 {id:'h3',entryId:'sample-fornitore',type:'expense',name:'Fornitore Rossi S.r.l.',amount:450,date:dateFor(2),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Casa',note:''},
                 {id:'h4',entryId:'sample-energia',type:'expense',name:'Utenza Energia',amount:128.5,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Bollette',note:''},
                 {id:'h5',entryId:'sample-spesa',type:'expense',name:'Spesa supermercato',amount:52.38,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Spesa',note:''},
-                {id:'h6',entryId:'sample-interessi',type:'income',name:'Interessi bancari',amount:45,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Altro',note:''}
+                {id:'h6',entryId:'sample-interessi',type:'income',name:'Interessi bancari',amount:45,date:dateFor(3),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Altro',note:''},
+                {id:'h7',entryId:'i3',type:'income',name:'Affitto immobile',amount:750,date:dateFor(20),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Affitti',note:''},
+                {id:'h8',entryId:'i4',type:'income',name:'Interessi bancari',amount:45,date:dateFor(28),month:ym,occurrenceMonth:ym,occurrenceKey:ym,category:'Altro',note:''}
               ];
               s.customCategories={income:['Interessi'],expense:['Spesa','Trasporti','Svago']};
               s.budgets={Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80};
               s.budgetPlans=[{effectiveMonth:ym,total:1600,limits:{Casa:750,Bollette:180,Spesa:300,Trasporti:120,Svago:100,Salute:80}}];
-              s.balance=2012.97;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
+              s.balance=1197.50;s.setupDone=true;s.setupStage='done';localStorage.setItem(key,JSON.stringify(s));
             },{ym});
             await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await shot('05-home-conti');
-            await page.click('#homeIncome');await page.waitForSelector('#flow:not(.hidden)');await shot('06-elenco-entrate');
+            await page.evaluate(()=>{const k='inOrdineContiV1',s=JSON.parse(localStorage.getItem(k));s.history=s.history.filter(x=>x.id!=='h8');localStorage.setItem(k,JSON.stringify(s))});
+            await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');await page.click('#homeIncome');await page.waitForSelector('#flow:not(.hidden)');await shot('06-elenco-entrate');
             await page.click('#flowBack');await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await shot('07-elenco-pagamenti');
-            await page.click('#flowBack');await page.click('#homeIncome');await page.click('#flowAdd');await page.waitForSelector('#modal:not(.hidden)');await shot('08-nuova-entrata');await page.click('#modalClose');
+            await page.click('#flowBack');await page.clock.setFixedTime(new Date('2025-03-13T12:00:00.000Z'));await page.click('#homeIncome');await page.click('#flowAdd');await page.waitForSelector('#modal:not(.hidden)');await page.locator('#editDateText').fill('25/03/2025');await page.evaluate(()=>document.activeElement.blur());await shot('08-nuova-entrata');await page.click('#modalClose');
             await page.click('#flowBack');await page.click('#homeExpense');await page.click('#flowAdd');await page.waitForSelector('#modal:not(.hidden)');await shot('09-nuovo-pagamento');await page.click('#modalClose');
-            await page.click('#flowBack');await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');await shot('10-movimenti');
-            await page.click('#movementsBack');await page.click('#homeProjection');await page.waitForSelector('#summary:not(.hidden)');await shot('11-riepilogo');
+            await page.click('#flowBack');
+            const octoberState=await page.evaluate(()=>localStorage.getItem('inOrdineContiV1'));
+            await page.evaluate(()=>{const k='inOrdineContiV1',s=JSON.parse(localStorage.getItem(k));s.entries=[
+              {id:'m-pending-income',type:'income',name:'Cliente Rossi',amount:349,day:10,dateSpec:{kind:'day',iso:'2025-03-10'},category:'Lavoro',recurrence:{kind:'single'},notify:false,note:''},
+              {id:'m-pending-expense',type:'expense',name:'Fattura n. 55/2025',amount:780,day:8,dateSpec:{kind:'day',iso:'2025-03-08'},category:'Utenze',recurrence:{kind:'single'},notify:false,note:''}
+            ];s.history=[
+              {id:'m1',entryId:'m-done-income-1',type:'income',name:'Fattura n. 123/2025',amount:1200,date:'2025-03-14',month:'2025-03',category:'Lavoro',note:''},
+              {id:'m2',entryId:'m-done-expense-1',type:'expense',name:'Fornitore Alpha Srl',amount:350,date:'2025-03-12',month:'2025-03',category:'Servizi',note:''},
+              {id:'m3',entryId:'m-done-income-2',type:'income',name:'Cliente Bianchi',amount:150,date:'2025-03-03',month:'2025-03',category:'Lavoro',note:''},
+              {id:'m4',entryId:'m-done-expense-2',type:'expense',name:'Spese utenze',amount:195,date:'2025-03-01',month:'2025-03',category:'Utenze',note:''}
+            ];localStorage.setItem(k,JSON.stringify(s))});
+            await page.clock.setFixedTime(new Date('2025-03-13T12:00:00.000Z'));await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');
+            await page.click('#homeAllMovements');await page.waitForSelector('#movements:not(.hidden)');await shot('10-movimenti');
+            const summaryState=await page.evaluate(raw=>{const k='inOrdineContiV1',s=JSON.parse(raw);s.balance=1577;return JSON.stringify(s)},octoberState);
+            await page.evaluate(raw=>localStorage.setItem('inOrdineContiV1',raw),summaryState);await page.clock.setFixedTime(new Date('2026-10-06T12:00:00.000Z'));await page.reload();await page.waitForSelector('#landing:not(.hidden)');await page.click('#landingConti');await page.waitForSelector('#home:not(.hidden)');
+            await page.click('#homeProjection');await page.waitForSelector('#summary:not(.hidden)');await shot('11-riepilogo');
             await page.click('#manageBudget');await page.waitForSelector('#budget:not(.hidden)');await shot('12-budget');
             await page.click('#budgetBack');await page.click('#summaryBack');await page.waitForSelector('#home:not(.hidden)');await page.click('#homeSettingsCard');await page.waitForSelector('#settings:not(.hidden)');await shot('13-impostazioni-conti');
             await page.click('#settingsNotifications');await page.waitForSelector('#notifications:not(.hidden)');await shot('14-notifiche-conti');
             await page.click('#notificationsBack');await page.waitForSelector('#settings:not(.hidden)');await page.click('#settingsBack');await page.waitForSelector('#home:not(.hidden)');await page.click('#homeBackLanding');await page.waitForSelector('#landing:not(.hidden)');
 
-            await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+            await page.clock.setFixedTime(new Date('2025-03-14T12:00:00.000Z'));await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
             const todoRows=page.locator('#todoSetupRows .todoSetupRow');
             const todoSamples=[
               ['Pagare bolletta luce','14 marzo 2025 una volta'],
@@ -94,9 +112,7 @@ jobs:
               const row=todoRows.nth(i);await row.locator('.todoDescInput').fill(todoSamples[i][0]);await row.locator('.todoDateInput').fill(todoSamples[i][1]);
             }
             await page.evaluate(()=>document.activeElement.blur());await shot('15-todo-inserimento');
-            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
-            await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
-            await page.locator('.todoCompleteBtn').first().click();await page.click('#todoActiveBack');await page.waitForSelector('#todoHub:not(.hidden)');await page.waitForSelector('#undoSnack',{state:'hidden'});await shot('16-todo-home');
+            await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');await shot('16-todo-home');
             await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');await shot('17-todo-in-scadenza');
             await page.locator('.todoCompleteBtn').first().click();await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');await page.waitForSelector('#undoSnack',{state:'hidden'});await shot('18-todo-cose-gia-fatte');
             await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
@@ -104,7 +120,7 @@ jobs:
             await shot('20-todo-impostazioni');
             await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');await shot('21-todo-tema');await page.click('#modalClose');
             await page.click('#todoSettingColor');await page.waitForSelector('#modal:not(.hidden)');await shot('22-todo-colore');await page.click('#modalClose');
-            await page.click('#todoSettingBackup');await page.waitForSelector('#modal:not(.hidden)');await shot('23-todo-backup');await page.click('#modalClose');
+            await page.evaluate(()=>localStorage.setItem('inOrdineContiV1_backup_last','2025-03-12T18:42:00.000Z'));await page.click('#todoSettingBackup');await page.waitForSelector('#modal:not(.hidden)');await shot('23-todo-backup');await page.click('#modalClose');
             await page.click('#todoSettingPrivacy');await page.waitForSelector('#modal:not(.hidden)');await shot('24-todo-privacy');await page.click('#modalClose');
 
             const files=require('fs').readdirSync('visual').filter(f=>f.endsWith('.png'));
