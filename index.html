@@ -3073,6 +3073,25 @@ body{background:#eef9ff}
 .todoBackupIntro strong{font-size:16px;color:#143b2b}
 .todoBackupIntro small{font-size:12px;line-height:1.35;color:#668073}
 
+
+/* Screen 21–22: image crops and header composition taken from the approved PDF masters. */
+.todoThemeMasterIntro{display:grid!important;grid-template-columns:84px minmax(0,1fr) 72px!important;gap:14px!important;align-items:center!important;min-height:132px!important;padding:14px 16px!important;border-radius:22px!important;background:linear-gradient(145deg,#fff,#effcf6)!important}
+.todoThemeMasterIntro .todoThemePalette{width:78px!important;height:78px!important;object-fit:cover!important;border-radius:50%!important}
+.todoThemeMasterIntro .todoThemeMasterLogo{width:70px!important;height:70px!important;object-fit:cover!important;border-radius:14px!important}
+.todoThemeMasterIntro strong{font-size:20px!important;line-height:1.08!important}
+.todoThemeMasterIntro small{font-size:14px!important;line-height:1.28!important}
+.todoThemeOptions{gap:10px!important}
+.todoThemeOption{grid-template-columns:112px minmax(0,1fr) 28px!important;min-height:136px!important;gap:12px!important;padding:12px!important;border-radius:20px!important;background:linear-gradient(145deg,#fff,#f7fcf9)!important}
+.todoThemeOption.active{background:linear-gradient(145deg,#fff,#eafbf3)!important;border-color:#25dca2!important;box-shadow:0 0 0 1px rgba(37,220,162,.18)!important}
+.todoThemeThumb{display:block;width:112px!important;height:112px!important;object-fit:cover!important;border-radius:18px!important}
+.todoThemeOption strong{font-size:19px!important;line-height:1.12!important;color:#10251d!important}
+.todoThemeOption small{font-size:14px!important;line-height:1.3!important;color:#637086!important}
+.todoThemeRadio{width:30px!important;height:30px!important;border-width:2px!important}
+.todoThemeOption.active .todoThemeRadio{background:#079d62!important;border-color:#079d62!important}
+#modalBody .todoColorIntro{flex-direction:row-reverse!important;justify-content:space-between!important;min-height:104px!important;padding:14px 16px!important;border-radius:18px!important}
+#modalBody .todoColorIntro img{width:72px!important;height:72px!important;border-radius:14px!important}
+#modalBody .todoColorIntro strong{font-size:19px!important}
+#modalBody .todoColorIntro small{font-size:13px!important}
 </style>
 </head>
 <body>
@@ -5859,8 +5878,8 @@ function openTodoColorSettings(){
 function openTodoThemeSettings(){
   let selected=todoState().theme||'light';
   const options=[['light','Chiaro','Interfaccia chiara e luminosa, per un’esperienza più piacevole.','☀'],['dark','Scuro','Interfaccia scura per ridurre l’affaticamento degli occhi.','◐'],['system','Segui il sistema','L’aspetto cambia in base alle impostazioni del dispositivo.','◉']];
-  const draw=()=>'<div class="todoThemeOptions">'+options.map(([id,title,copy,icon])=>'<button class="todoThemeOption '+(selected===id?'active':'')+'" data-ttheme="'+id+'"><span class="todoThemeIcon">'+icon+'</span><span><strong>'+title+'</strong><small>'+copy+'</small></span><span class="todoThemeRadio">'+(selected===id?'✓':'')+'</span></button>').join('')+'</div>';
-  openModal('Tema','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Scegli l’aspetto</strong><small>Segui il tema del dispositivo o scegli un aspetto fisso.</small></div></div>'+draw());
+  const draw=()=>'<div class="todoThemeOptions">'+options.map(([id,title,copy,icon])=>'<button class="todoThemeOption '+(selected===id?'active':'')+'" data-ttheme="'+id+'"><img class="todoThemeThumb" src="assets/todo-theme-'+id+'-approved.webp" alt=""><span><strong>'+title+'</strong><small>'+copy+'</small></span><span class="todoThemeRadio">'+(selected===id?'✓':'')+'</span></button>').join('')+'</div>';
+  openModal('Tema','<div class="todoThemeIntro todoThemeMasterIntro"><img class="todoThemePalette" src="assets/todo-theme-palette-approved.webp" alt=""><div><strong>Scegli l’aspetto dell’app</strong><small>Personalizza il tema dell’interfaccia in base alle tue preferenze.</small></div><img class="todoThemeMasterLogo" src="assets/eds-green-approved.png" alt=""></div>'+draw());
   $('modal').classList.add('fullSettings','todoSettingsModal');
   document.querySelectorAll('[data-ttheme]').forEach(b=>b.onclick=()=>{selected=b.dataset.ttheme;todoState().theme=selected;save();applyTodoTheme();document.querySelectorAll('[data-ttheme]').forEach(x=>{x.classList.toggle('active',x===b);x.querySelector('.todoThemeRadio').textContent=x===b?'✓':''})});
 }
