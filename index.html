@@ -3097,6 +3097,22 @@ body{background:#eef9ff}
 .todoThemeOption>.todoThemeThumb{grid-column:1!important;grid-row:1!important;justify-self:start!important}
 .todoThemeOption>span:not(.todoThemeRadio){display:block!important;grid-column:2!important;grid-row:1!important;min-width:0!important;position:static!important}
 .todoThemeOption>.todoThemeRadio{grid-column:3!important;grid-row:1!important;justify-self:center!important}
+
+/* Final pixel-review corrections from the approved PDF: Todo theme and color screens. */
+.todoThemeOption>.todoThemeIcon{grid-column:1!important;grid-row:1!important;justify-self:start!important;align-self:center!important;position:static!important;inset:auto!important;width:112px!important;height:112px!important;margin:0!important}
+.todoThemeOption>span:nth-child(2){display:block!important;grid-column:2!important;grid-row:1!important;min-width:0!important;position:static!important;inset:auto!important;transform:none!important;align-self:center!important}
+.todoThemeOption>.todoThemeRadio{grid-column:3!important;grid-row:1!important;justify-self:center!important;align-self:center!important}
+.todoColorHelper{margin:-5px 4px 8px;color:#637086;font-size:12px;line-height:1.3}
+.todoColorPreview{padding:10px!important;margin-top:8px!important;border-radius:16px!important}
+.todoColorPreviewMain{position:relative;display:grid!important;grid-template-columns:42px minmax(0,1fr) auto!important;grid-template-rows:auto auto!important;gap:2px 8px!important;align-items:center!important;min-height:52px!important;padding:4px 2px!important;background:transparent!important;border:0!important}
+.todoColorPreviewBell{grid-column:1;grid-row:1/3;width:40px;height:44px;object-fit:contain}
+.todoColorPreviewMain>strong{grid-column:2;grid-row:1;font-size:12px!important;line-height:1.2}
+.todoColorPreviewMain>small{grid-column:2;grid-row:2;font-size:10px!important;line-height:1.2}
+.todoColorPreviewMain>b{grid-column:3;grid-row:1/3;justify-self:end;white-space:nowrap;background:#087f4f!important;color:#fff!important;border-radius:999px;padding:7px 10px;font-size:9px!important}
+#todoColorBack{display:block;width:100%;min-height:44px;margin-top:7px;border:0;border-radius:999px;background:#087f4f;color:#fff;font-weight:900}
+.todoColorOptions{gap:7px!important}
+.todoColorChoice{min-height:57px!important;padding:7px 10px!important}
+.todoColorChoice>i{width:34px!important;height:34px!important}
 </style>
 </head>
 <body>
@@ -5871,7 +5887,7 @@ function openTodoColorSettings(){
   const choices=Object.entries(TODO_COLORS);
   const labels={'Verde E.D.S.':'Il colore originale dell’app.','Smeraldo':'Un verde intenso ed elegante.','Menta':'Un tono fresco e luminoso.','Blu notte':'Un blu raffinato e moderno.'};
   const draw=()=>'<div class="todoColorOptions">'+choices.map(([n,c])=>'<button class="todoColorChoice '+(todoState().color===n?'active':'')+'" data-tcolor="'+n+'"><i style="background:'+c.accent+'"></i><span><strong>'+n+'</strong><small>'+labels[n]+'</small></span><b>'+(todoState().color===n?'✓':'')+'</b></button>').join('')+'</div>';
-  openModal('Colore','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Personalizza i colori</strong><small>Scegli il colore principale della sezione Cose da fare.</small></div></div><div class="settingsSubTitle">SCEGLI IL COLORE PRINCIPALE</div>'+draw()+'<div class="todoColorPreview"><small>Anteprima</small><div><span class="todoPreviewDot"></span><strong>Pagare bolletta luce</strong><small>14 Mar 2025</small><b>Segna come fatta</b></div></div><button id="todoColorBack" style="width:100%;min-height:44px;margin-top:8px;border:0;border-radius:999px;background:#15935e;color:#fff;font-weight:900">＋ Torna all’inserimento</button>');
+  openModal('Colore','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>Personalizza i colori</strong><small>Scegli il colore principale della sezione Cose da fare.</small></div></div><div class="settingsSubTitle">SCEGLI IL COLORE PRINCIPALE</div>'+draw()+'<div class="todoColorPreview"><small>Anteprima</small><div class="todoColorPreviewMain"><img class="todoColorPreviewBell" src="assets/todo-color-preview-bell-approved.webp" alt=""><strong>Pagare bolletta luce</strong><small>Oggi, 14 Mar 2025</small><b>✓ Segna come fatta</b></div><button id="todoColorBack" type="button">＋ Torna all’inserimento</button></div>');
   $('modal').classList.add('fullSettings','todoSettingsModal');
   document.querySelectorAll('[data-tcolor]').forEach(b=>b.onclick=()=>{
     const selected=b.dataset.tcolor;todoState().color=selected;save();applyTodoColor();
