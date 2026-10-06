@@ -3059,6 +3059,19 @@ body{background:#eef9ff}
 #todoHub .todoHubCard.pending::before,#todoHub .todoHubCard.completed::before{content:none!important;display:none!important;visibility:hidden!important;opacity:0!important;width:0!important;height:0!important;background:transparent!important;box-shadow:none!important}
 
 .mNote{font-size:10px;color:#617895;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mType.pending{background:#fff4d8;color:#9b6700}
+
+/* Approved Todo home cards show only the small E.D.S. logo. */
+#todoHub .todoHubPerson{background:none!important;background-image:none!important;box-shadow:none!important}
+#todoHub .todoHubPerson>img{display:block!important;width:48px!important;height:48px!important;object-fit:contain!important;border:0!important;border-radius:0!important}
+#todoHub .todoHubPerson:before,#todoHub .todoHubPerson:after{display:none!important;content:none!important}
+.modal.fullSettings.todoSettingsModal{background:#f3fbf6!important}
+.modal.fullSettings.todoSettingsModal .modalCard{background:linear-gradient(180deg,#fbfffc,#effaf4)!important}
+.todoBackupIntro{margin:4px 0 12px!important;padding:14px!important;border:1px solid #bfe8d2!important;border-radius:16px!important;background:linear-gradient(135deg,#f7fff9,#eaf8ef)!important}
+.todoBackupIntro img{width:50px;height:50px;object-fit:contain;border-radius:12px}
+.todoBackupIntro>div{display:flex;flex-direction:column;gap:4px}
+.todoBackupIntro strong{font-size:16px;color:#143b2b}
+.todoBackupIntro small{font-size:12px;line-height:1.35;color:#668073}
+
 </style>
 </head>
 <body>
