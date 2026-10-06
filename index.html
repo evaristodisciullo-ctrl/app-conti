@@ -3021,6 +3021,15 @@ body{background:#eef9ff}
 #todoSettings .todoSettingCard strong{font-size:10px!important}
 #todoSettings .todoSettingCard small{font-size:8px!important}
 #todoDone #todoDoneAdvancedFilters,#todoDone #todoDoneFilterSummary,#todoActive #todoActiveAdvancedFilters,#todoActive #todoActiveFilterSummary{display:none!important}
+
+#todoSetup .todoSetupRow:nth-child(1):before{content:"🛒";background:#e9f9ef;color:#078b58}
+#todoSetup .todoSetupRow:nth-child(2):before{content:"♥";background:#fff0f1;color:#dc5a62}
+#todoSetup .todoSetupRow:nth-child(3):before{content:"▣";background:#eaf4ff;color:#087cf0}
+#todoSetup .todoSetupRow:nth-child(4):before{content:"▤";background:#f0eaff;color:#7e55ca}
+#todoHub .todoTop{display:flex!important;min-height:48px!important;margin:2px 0 12px!important;padding:0 3px!important}
+#todoHub .todoTop h1{display:block!important;visibility:visible!important;color:#123d31!important;font-size:26px!important}
+#todoHub .todoHubCard *:before,#todoHub .todoHubCard *:after{display:none!important;content:none!important}
+#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{background:#f0fff5!important;border:1px solid #bcebd2!important}
 </style>
 </head>
 <body>
@@ -5888,7 +5897,7 @@ $('todoDoneSettings').onclick=()=>show('todoSettings');
 $('todoSettingsBack').onclick=()=>show('todoHub');
 $('todoSettingTheme').onclick=openTodoThemeSettings;
 $('todoSettingColor').onclick=openTodoColorSettings;
-$('todoSettingNotifications').onclick=openTodoNotificationSettings;
+$('todoSettingNotifications').onclick=openTodoNotificationPicker;
 $('todoSettingBackup').onclick=openBackupSettings;
 $('todoSettingPrivacy').onclick=()=>{openSecuritySettings();$('modal').classList.add('todoSettingsModal','todoPrivacyModal');$('modalTitle').textContent='Privacy';$('modalBody').insertAdjacentHTML('afterbegin','<div class="todoThemeIntro todoColorIntro"><img src="assets/eds-green-approved.png" alt=""><div><strong>La tua privacy è importante</strong><small>Gestisci le impostazioni di sicurezza e proteggi i tuoi dati nella sezione Cose da fare.</small></div></div>')};
 $('todoSettingInfo').onclick=openAppInformation;
