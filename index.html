@@ -3949,6 +3949,53 @@ body{background:#eef9ff}
 #todoActive .todoCompleteBtn span:first-child br{display:none!important}
 #todoActive .todoCompleteCircle{width:11px!important;height:11px!important;flex:0 0 11px!important}
 
+
+/* TARGETED MASTER FIX 18-20 — 2026-10-07 */
+#todoDone .todoHero{min-height:64px!important;padding:7px 9px 7px 60px!important;background:linear-gradient(150deg,#fff 5%,#eafff3 100%)!important}
+#todoDone #todoDoneList{gap:5px!important}
+#todoDone .todoDoneRow{min-height:48px!important;height:48px!important;padding:4px 8px!important;grid-template-columns:38px minmax(0,1fr) 52px!important;gap:7px!important;border:0!important;border-left:0!important;box-shadow:none!important;background:linear-gradient(155deg,#f7fff9 0%,#e6faef 100%)!important;position:relative!important;overflow:hidden!important}
+#todoDone .todoDoneRow:before{content:none!important;display:none!important;border:0!important;width:0!important}
+#todoDone .todoDoneActivityIcon{width:34px!important;height:34px!important;border-radius:50%!important;font-size:18px!important;background:#dff8ec!important;color:#079e66!important;border:0!important;box-shadow:none!important}
+#todoDone .todoDoneActivityIcon.doneGreen,#todoDone .todoDoneActivityIcon.doneBlue,#todoDone .todoDoneActivityIcon.donePurple,#todoDone .todoDoneActivityIcon.doneOrange,#todoDone .todoDoneActivityIcon.doneTeal{background:#dff8ec!important;color:#079e66!important}
+#todoDone .todoTaskMain{padding:0!important}
+#todoDone .todoTaskMain strong{font-size:9.5px!important;line-height:1.08!important}
+#todoDone .todoTaskMain small{font-size:7px!important;line-height:1.1!important;margin-top:2px!important}
+#todoDone .todoDoneStatus{font-size:7px!important;padding:4px 7px!important;min-width:48px!important;background:#dff8ec!important;color:#07885b!important}
+
+/* 19 Notifiche */
+.modal.todoNotificationsModal .modalCard{background:linear-gradient(155deg,#fff 0%,#f4fff8 65%,#e8fff2 100%)!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero{min-height:70px!important;padding:8px 58px 8px 10px!important;display:flex!important;align-items:center!important;position:relative!important;border:0!important;border-radius:11px!important;background:linear-gradient(165deg,#f7fff9 0%,#e5faef 58%,#d9f7e9 100%)!important;overflow:hidden!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero:after{content:"";position:absolute;left:-10%;right:-10%;bottom:-20px;height:42px;border-radius:50%;border-top:7px solid rgba(52,210,158,.11);transform:rotate(-4deg)}
+.modal.todoNotificationsModal .todoNotifyMasterHero img{position:absolute!important;right:9px!important;top:14px!important;width:42px!important;height:42px!important;z-index:2}
+.modal.todoNotificationsModal .todoNotifyMasterHero span{z-index:2}
+.modal.todoNotificationsModal .todoNotifyMasterHero strong{font-size:11px!important;line-height:1.05!important}
+.modal.todoNotificationsModal .todoNotifyMasterHero small{font-size:7.5px!important;line-height:1.12!important;max-width:180px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRows{gap:5px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow{min-height:47px!important;padding:5px 8px!important;grid-template-columns:38px minmax(0,1fr) auto!important;gap:7px!important;border:0!important;border-radius:10px!important;background:linear-gradient(160deg,#f8fffa 0%,#e6faef 100%)!important;position:relative!important;overflow:hidden!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow:after{content:"";position:absolute;left:24%;right:-10%;bottom:-16px;height:30px;border-radius:50%;border-top:5px solid rgba(46,205,150,.09);pointer-events:none}
+.modal.todoNotificationsModal .todoNotifyMasterIcon{width:34px!important;height:34px!important;border-radius:50%!important;font-size:18px!important;background:#dff8ec!important;color:#079e66!important;z-index:2}
+.modal.todoNotificationsModal .todoNotifyMasterRow>span:nth-child(2),.modal.todoNotificationsModal .todoNotifyMasterRow>input,.modal.todoNotificationsModal .todoNotifyMasterRow>b{z-index:2}
+.modal.todoNotificationsModal .todoNotifyMasterRow strong{font-size:9px!important}
+.modal.todoNotificationsModal .todoNotifyMasterRow small{font-size:6.8px!important}
+.modal.todoNotificationsModal .todoNotifyRecentHead{margin:7px 5px 2px!important;font-size:9.5px!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow{min-height:38px!important;padding:3px 7px!important;grid-template-columns:34px minmax(0,1fr) 18px!important;gap:6px!important;border:0!important;background:linear-gradient(160deg,#f8fffa 0%,#eafbf2 100%)!important;position:relative!important;overflow:hidden!important}
+.modal.todoNotificationsModal .todoNotifyRecentRow:after{content:"";position:absolute;left:30%;right:-10%;bottom:-18px;height:30px;border-radius:50%;border-top:5px solid rgba(46,205,150,.08);pointer-events:none}
+.modal.todoNotificationsModal .todoNotifyRecentIcon{width:29px!important;height:29px!important;border-radius:50%!important;font-size:15px!important;background:#dff8ec!important;color:#079e66!important;z-index:2}
+.modal.todoNotificationsModal .todoNotifyRecentRow>span:nth-child(2),.modal.todoNotificationsModal .todoNotifyRecentRow>b{z-index:2}
+
+/* 20 Impostazioni */
+#todoSettings .todoHero{min-height:68px!important;background:linear-gradient(155deg,#fff 0%,#e8fbf1 100%)!important}
+#todoSettings .todoSettingsStack{gap:6px!important}
+#todoSettings .todoSettingCard{min-height:51px!important;height:51px!important;padding:5px 9px!important;grid-template-columns:40px minmax(0,1fr) 28px!important;gap:8px!important;border:0!important;border-radius:11px!important;background:linear-gradient(160deg,#f8fffa 0%,#e5faef 100%)!important;position:relative!important;overflow:hidden!important}
+#todoSettings .todoSettingCard:after{content:"";position:absolute;left:22%;right:-12%;bottom:-19px;height:35px;border-radius:50%;border-top:6px solid rgba(46,205,150,.10);pointer-events:none}
+#todoSettings .todoSettingCard .i{width:36px!important;height:36px!important;border-radius:50%!important;font-size:19px!important;background:#dff8ec!important;color:#079e66!important;z-index:2}
+#todoSettings .todoSettingCard .i svg{width:20px!important;height:20px!important}
+#todoSettings .todoSettingCard>span:nth-child(2){z-index:2}
+#todoSettings .todoSettingCard strong{font-size:11px!important;line-height:1.05!important}
+#todoSettings .todoSettingCard small{display:none!important}
+#todoSettings .todoSettingCard .a{width:27px!important;height:27px!important;background:#dff8ec!important;color:#126f53!important;font-size:18px!important;z-index:2}
+#todoSettings .todoManageDetails{display:none!important}
+
 </style>
 </head>
 <body>
