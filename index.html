@@ -6790,7 +6790,7 @@ function renderTodoActive(){
   tasks.forEach(t=>{
     const row=document.createElement('div');row.className='todoTaskRow';
     const overdue=!!(t.date&&t.date<todayISO());
-    row.innerHTML='<button class="todoTaskEditCard '+(overdue?'overdue':'')+'" aria-label="Modifica '+escAttr(t.description)+'"><strong>'+esc(t.description)+'</strong><small><span>'+esc(overdue?'Scaduta · '+todoDateLabel(t):todoDateLabel(t))+'</span><span class="todoEditHint">Modifica ›</span></small></button><button class="todoNotifyBtn '+(t.notify?'on':'')+'" aria-label="Notifica">'+todoBellSvg()+'</button><button class="todoCompleteBtn"><span>Segna<br>come fatta</span><span class="todoCompleteCircle"></span></button>';
+    row.innerHTML='<button class="todoTaskEditCard '+(overdue?'overdue':'')+'" aria-label="Modifica '+escAttr(t.description)+'"><strong>'+esc(t.description)+'</strong><small><span>'+esc(overdue?'Scaduta · '+todoDateLabel(t):todoDateLabel(t))+'</span><span class="todoEditHint">Modifica ›</span></small></button><button class="todoNotifyBtn '+(t.notify?'on':'')+'" aria-label="Notifica">'+todoBellSvg()+'</button><button class="todoCompleteBtn"><span>Segna come fatta</span><span class="todoCompleteCircle"></span></button>';
     row.querySelector('.todoTaskEditCard').onclick=()=>openTodoEditor(t.id);
     row.querySelector('.todoNotifyBtn').onclick=()=>toggleTodoNotify(t.id);
     row.querySelector('.todoCompleteBtn').onclick=()=>completeTodoTask(t.id);
