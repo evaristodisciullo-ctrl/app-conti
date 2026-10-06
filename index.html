@@ -2838,6 +2838,48 @@ body{background:#eef9ff}
   padding:4px 3px!important;border-radius:999px!important;font-size:8px!important;
   line-height:1.05!important;white-space:normal!important
 }
+
+/* Master screens 08–09: data entry as compact icon cards */
+.modal.fullEditor .modalCard{padding:8px 14px 18px!important}
+.modal.fullEditor .modalHead{padding:7px 0 10px!important;margin-bottom:7px!important}
+.modal.fullEditor .modalTitle{font-size:24px!important}
+.editorMasterHero{min-height:88px;border:1.5px solid #08aaf0;border-radius:17px;background:linear-gradient(140deg,#fff,#eaf8ff);display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:center;padding:10px 13px;margin:1px 0 12px;box-shadow:0 5px 13px rgba(20,132,187,.08)}
+.editorMasterHero img{width:58px;height:58px;object-fit:contain}
+.editorMasterHero strong{display:block;color:#07104f;font-size:16px;line-height:1.12;font-weight:950}
+.editorMasterHero small{display:block;color:#657c9a;font-size:10.5px;line-height:1.3;margin-top:5px}
+.editorMasterRows{display:grid;gap:7px}
+.editorMasterRow{min-height:57px;border:1px solid #e2edf4;border-radius:14px;background:#fff;display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:7px 9px;box-shadow:0 4px 11px rgba(36,86,121,.045)}
+.editorMasterRow>i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#e9f6ff;color:#087cf0;font-style:normal;font-size:19px;font-weight:900}
+.editorMasterRow>div{min-width:0}
+.editorMasterRow label{display:block;color:#07104f;font-size:11px;font-weight:900;margin:0 0 3px;text-transform:none}
+.editorMasterRow input,.editorMasterRow select{width:100%;min-height:28px!important;height:29px!important;padding:2px 8px!important;border:1px solid #d5e3ef!important;border-radius:8px!important;background:#fff!important;color:#10284b!important;font-size:11px!important;box-shadow:none!important}
+.editorAmountWrap{position:relative}
+.editorAmountWrap input{padding-right:34px!important}
+.editorAmountWrap span{position:absolute;right:10px;top:6px;color:#60758c;font-weight:900;font-size:12px}
+.editorRecRow{align-items:start;padding-top:9px}
+.editorRecRow>i{margin-top:2px}
+.editorRecRow #editRecurrenceBlock{margin:0!important}
+.editorRecRow .recChoiceGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px!important}
+.editorRecRow .recChoiceGrid button{min-height:29px!important;border:1px solid #d5e3ef!important;border-radius:8px!important;background:#fff!important;color:#243d5c!important;font-size:9px!important;padding:4px!important}
+.editorRecRow .recChoiceGrid button.active{border-color:#168cf0!important;background:#edf7ff!important;color:#126fbd!important}
+.editorRecRow .editorInfo{display:none!important}
+.editorMasterToggle{min-height:48px;background:#fff;border:1px solid #e2edf4;border-radius:14px;display:grid;grid-template-columns:34px 1fr 40px;gap:8px;align-items:center;padding:6px 10px;color:#10284b}
+.editorToggleIcon{width:29px;height:29px;border-radius:50%;background:#e8f6ff;color:#087cf0;display:grid;place-items:center;font-size:15px;font-weight:900}
+.editorMasterToggle strong{display:block;font-size:11px;color:#07104f}
+.editorMasterToggle small{display:block;font-size:9px;color:#75899d;margin-top:2px}
+.editorMasterToggle input{appearance:none;width:40px;height:24px;border-radius:99px;background:#cbd7e2;position:relative;margin:0;cursor:pointer}
+.editorMasterToggle input:after{content:"";position:absolute;width:18px;height:18px;top:3px;left:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #59718a}
+.editorMasterToggle input:checked{background:#087cf0}
+.editorMasterToggle input:checked:after{left:19px}
+.modal.fullEditor .suggestionLabel,.modal.fullEditor .suggestionChips{display:none!important}
+.modal.fullEditor .editorMore{margin:6px 0 0!important;background:transparent!important}
+.modal.fullEditor .editorMore summary{padding:7px 4px!important;font-size:10px!important}
+.modal.fullEditor .editorMore:not([open]) .editorMoreBody{display:none}
+.modal.fullEditor .editorMoreBody{padding:3px 10px 9px!important;border:1px solid #e2edf4;border-radius:12px}
+.modal.fullEditor #editStateOpen,.modal.fullEditor #editStateDone,.modal.fullEditor #editStateOverdue{display:none!important}
+.modal.fullEditor .editorSaveOnly{margin:10px 0 0!important}
+.modal.fullEditor .editorSaveOnly .btn{min-height:45px!important;border-radius:12px!important}
+@media(max-height:760px){.modal.fullEditor .modalCard{padding-bottom:8px!important}.editorMasterHero{min-height:78px}.editorMasterRow{min-height:52px;padding:5px 8px}.editorMasterRow>i{width:34px;height:34px}.editorMasterRows{gap:5px}.editorMasterToggle{min-height:43px}}
 </style>
 </head>
 <body>
@@ -4349,17 +4391,20 @@ function openEntryEditor(entry,type){
   const stateField=entry?'<div class="field"><label>Stato</label><div class="stateChoiceGrid"><button type="button" id="editStateOpen" class="'+(!editIsOverdue?'active':'')+'">'+(isIncome?'DA RICEVERE':'DA PAGARE')+'</button><button type="button" id="editStateDone">'+(isIncome?'RICEVUTA':'PAGATO')+'</button><button type="button" id="editStateOverdue" class="'+(editIsOverdue?'overdue':'')+'" disabled>'+(isIncome?'SCADUTA':'SCADUTO')+'</button></div></div>':'';
   const deleteLine=entry?'<button id="editDelete" class="dangerEditorRow">Elimina '+(isIncome?'entrata':'pagamento')+'</button>':'<button id="editDelete" class="hidden"></button>';
   openModal(title,
-    '<div class="field"><label>Nome *</label><input id="editName" enterkeyhint="next" placeholder="Scrivi qua" value="'+escAttr(entry?entry.name:'')+'"></div>'+
-    suggestions+
-    '<div class="field"><label>Importo *</label><div style="position:relative"><input id="editAmount" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="es. 1000 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span style="position:absolute;right:14px;top:14px;font-weight:900;color:#61778b">€</span></div></div>'+
-    '<div class="field"><label>Data *</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="es. 10/10/2026 o 10 ottobre 2026" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div>'+
-    '<div id="editRecurrenceBlock" class="field '+(dateValue?'':'hidden')+'"><label>Come vuoi registrarla?</label><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">○ &nbsp; Una sola volta</button><button type="button" data-kind="monthly">○ &nbsp; Ogni mese</button><button type="button" data-kind="custom">○ &nbsp; Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div>'+
-    '<div id="editRecExtra"></div>'+stateField+
-    '<details class="editorMore" open><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
-      '<div class="field"><label>Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div>'+
+    '<div class="editorMasterHero"><img src="assets/eds-blue-approved.png" alt=""><span><strong>Registra una nuova '+(isIncome?'entrata':'pagamento')+'</strong><small>Inserisci i dettagli del '+(isIncome?'entrata':'pagamento')+' per aggiornare i tuoi conti.</small></span></div>'+
+    '<div class="editorMasterRows">'+
+      '<div class="editorMasterRow"><i>▤</i><div><label for="editName">'+(isIncome?'Nome entrata':'Nome pagamento')+'</label><input id="editName" enterkeyhint="next" placeholder="'+(isIncome?'Es. Stipendio, Rimborso, Vendita...':'Es. Fattura luce')+'" value="'+escAttr(entry?entry.name:'')+'"></div></div>'+
+      '<div class="editorMasterRow"><i>€</i><div><label for="editAmount">Importo</label><div class="editorAmountWrap"><input id="editAmount" type="text" inputmode="decimal" enterkeyhint="next" autocomplete="off" placeholder="0,00 €" value="'+escAttr(entry?String(entry.amount):'')+'"><span>€</span></div></div></div>'+
+      '<div class="editorMasterRow"><i>▦</i><div><label for="editCategory">Categoria</label><select id="editCategory">'+categoryOptions(type,entry&&entry.category||'')+'</select><div id="newCategoryWrap" class="newCategoryWrap hidden"><input id="newCategory" placeholder="Scrivi qua"></div></div></div>'+
+      '<div class="editorMasterRow"><i>▣</i><div><label for="editDateText">Data</label><input id="editDateText" type="text" inputmode="text" enterkeyhint="done" autocomplete="off" placeholder="gg/mm/aaaa" value="'+escAttr(dateValue?manualDateText({kind:'day',iso:dateValue}):'')+'"><input id="editDate" type="hidden" value="'+escAttr(dateValue)+'"><div id="editDateError" class="dateFieldError hidden">Controlla la data inserita</div></div></div>'+
+      '<div class="editorMasterRow"><i>▤</i><div><label for="editSupplier">Fornitore (facoltativo)</label><input id="editSupplier" placeholder="Es. Azienda, Cliente, Ente..." value="'+escAttr(entry&&(entry.supplier||entry.counterparty)||'')+'"></div></div>'+
+      '<div class="editorMasterRow editorRecRow"><i>↻</i><div><label>Ricorrenza</label><div id="editRecurrenceBlock" class="'+(dateValue?'':'hidden')+'"><select id="editRecKind" class="hidden">'+recurrenceOptions()+'</select><div id="editRecChoices" class="recChoiceGrid"><button type="button" data-kind="single">Una volta</button><button type="button" data-kind="monthly">Ogni mese</button><button type="button" data-kind="custom">Altro</button></div><div id="editRecSummary" class="editorInfo"></div></div><div id="editRecExtra"></div></div></div>'+
+      '<label class="editorMasterToggle"><span class="editorToggleIcon">✓</span><span><strong>'+(isIncome?'Entrata ricevuta':'Segna come pagato')+'</strong>'+(isIncome?'<small>Segna come già incassata</small>':'<small>Il pagamento verrà registrato come già saldato</small>')+'</span><input id="editMarkDone" type="checkbox"></label>'+
+    '</div>'+
+    '<details class="editorMore"><summary>Altre opzioni (facoltative)</summary><div class="editorMoreBody">'+
       '<div class="field"><label>Nota</label><textarea id="editNote" placeholder="Scrivi una nota (facoltativo)">'+esc(noteValue)+'</textarea></div>'+
       '<div class="field"><label>Notifica</label><select id="editNotifyMode"><option value="off">Nessuna</option><option value="general">Usa impostazioni generali</option><option value="custom">Personalizzata</option></select><input id="editNotify" type="checkbox" class="hidden"></div>'+
-      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+notificationRuleFields('entryNotify',effectiveRule,'')+'</div>'+deleteLine+
+      '<div id="entryNotifyRules" class="notifyRuleBox hidden">'+notificationRuleFields('entryNotify',effectiveRule,'')+'</div>'+stateField+deleteLine+
     '</div></details>'+
     '<div class="modalBtns editorSaveOnly"><button id="editCancel" class="btn secondary">Annulla</button><button id="editSave" class="btn">Salva</button></div>'
   );
