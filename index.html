@@ -3034,6 +3034,10 @@ body{background:#eef9ff}
 .modal.fullEditor #editRecurrenceBlock{display:block!important;visibility:visible!important}
 .modal.fullEditor #editRecChoices{display:grid!important;visibility:visible!important}
 .modal.fullEditor .editorRecRow{min-height:54px!important}
+
+#todoActive .todoQuickMaster button:nth-child(n+4),#todoDone .todoQuickMaster button:nth-child(n+5){display:none!important}
+#todoActive #todoActiveAdvancedFilters,#todoDone #todoDoneAdvancedFilters{display:none!important;position:absolute!important;width:0!important;height:0!important;overflow:hidden!important}
+#todoHub .todoHubCard.pending:before,#todoHub .todoHubCard.completed:before,#todoHub .todoHubCard.pending:after,#todoHub .todoHubCard.completed:after{content:none!important;display:none!important;width:0!important;height:0!important;opacity:0!important}
 </style>
 </head>
 <body>
@@ -4618,7 +4622,8 @@ function openEntryEditor(entry,type){
     const explicitInline=/(?:\bogni\s+mese\b|\bdel\s+mese\b|\buna\s+volta\b|\bsolo\s+una\s+volta\b|\bper\s+\d+\s+mesi?\b)/.test(rawLower);
     if(syncDate(false)&&raw.trim()&&!explicitInline)$('editDateText').value=manualDateText(editorDateSpec);
   });
-  document.querySelectorAll('#editRecChoices button').forEach(b=>b.onclick=()=>{
+  $('editRecChoices').addEventListener('click',event=>{
+    const b=event.target.closest('button[data-kind]');if(!b)return;
     hideEditorKeyboard();
     if(b.dataset.kind==='custom'){
       syncDate();
