@@ -27,9 +27,9 @@ async function setup(page,balance=1000){
   await page.fill('#startBalance',String(balance));
   await page.click('#startBtn');
   await page.waitForSelector('#setupIncome:not(.hidden)');
-  await page.click('#skipIncomeSetup');
+  await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
-  await page.click('#skipExpenseSetup');
+  await page.click('#saveExpenseSetup');
   await page.waitForSelector('#home:not(.hidden)');
 }
 async function state(page){return page.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY)}
@@ -85,7 +85,7 @@ async function testApprovedOnboarding(browser){
   assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Affitto sede');
   assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'950,00 €');
   assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'05/10/2026');
-  await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
+  await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
   await page.evaluate(()=>document.querySelector('#homeRestartSetup').click());await page.waitForSelector('#landing:not(.hidden)');
@@ -98,7 +98,7 @@ async function testApprovedOnboarding(browser){
 async function testSetupNaturalRecurrences(browser){
   const {context,page}=await freshPage(browser);
   await page.click('#landingConti');await page.fill('#startBalance','1000');await page.click('#startBtn');
-  await page.waitForSelector('#setupIncome:not(.hidden)');await page.click('#skipIncomeSetup');
+  await page.waitForSelector('#setupIncome:not(.hidden)');await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
   const rows=page.locator('#expenseRows .entryRow');
   const r1=rows.first();
