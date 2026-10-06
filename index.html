@@ -3996,6 +3996,59 @@ body{background:#eef9ff}
 #todoSettings .todoSettingCard .a{width:27px!important;height:27px!important;background:#dff8ec!important;color:#126f53!important;font-size:18px!important;z-index:2}
 #todoSettings .todoManageDetails{display:none!important}
 
+
+/* TARGETED MASTER FIX 21-24 — 2026-10-07 */
+.modal.fullSettings.todoSettingsModal .modalHead .close{font-size:0!important;width:30px!important;height:34px!important;left:0!important;background:transparent!important}
+.modal.fullSettings.todoSettingsModal .modalHead .close:before{content:"←"!important;font-size:25px!important;line-height:30px!important;color:#168760!important}
+.modal.fullSettings.todoSettingsModal .modalTitle{left:40px!important}
+
+/* 21 Tema */
+.todoSettingsModal .todoThemeMasterIntro{background:linear-gradient(160deg,#fff 0%,#e7fbf1 100%)!important;position:relative!important;overflow:hidden!important}
+.todoSettingsModal .todoThemeMasterIntro:after,.todoSettingsModal .todoThemeOption:after{content:"";position:absolute;left:20%;right:-12%;bottom:-20px;height:38px;border-radius:50%;border-top:6px solid rgba(43,211,151,.10);pointer-events:none}
+.todoSettingsModal .todoThemeOption{grid-template-columns:94px minmax(0,1fr) 30px!important;gap:10px!important;min-height:92px!important;height:92px!important;padding:7px 10px!important;position:relative!important;background:linear-gradient(160deg,#f9fffb 0%,#e8fbf1 100%)!important}
+.todoSettingsModal .todoThemeThumb{width:88px!important;height:78px!important;max-width:88px!important;border-radius:9px!important;z-index:2}
+.todoSettingsModal .todoThemeOption>span:not(.todoThemeRadio){z-index:2}
+.todoSettingsModal .todoThemeOption strong{font-size:11px!important}
+.todoSettingsModal .todoThemeOption small{font-size:7.7px!important;line-height:1.14!important}
+.todoSettingsModal .todoThemeRadio{width:27px!important;height:27px!important;z-index:2}
+
+/* 22 Colore */
+.todoSettingsModal .todoColorIntro,.todoSettingsModal .todoColorChoice,.todoSettingsModal .todoColorPreview{position:relative!important;overflow:hidden!important;background:linear-gradient(160deg,#fff 0%,#e9fbf2 100%)!important}
+.todoSettingsModal .todoColorIntro:after,.todoSettingsModal .todoColorChoice:after,.todoSettingsModal .todoColorPreview:after{content:"";position:absolute;left:22%;right:-12%;bottom:-18px;height:34px;border-radius:50%;border-top:6px solid rgba(43,211,151,.09);pointer-events:none}
+.todoSettingsModal .todoColorChoice>*{position:relative;z-index:2}
+.todoSettingsModal .todoColorPreview{margin-top:6px!important;padding:6px 8px 7px!important}
+.todoSettingsModal .todoColorPreview>*{position:relative;z-index:2}
+.todoSettingsModal .todoColorPreviewMain{grid-template-columns:34px minmax(0,1fr) 91px!important;min-height:47px!important;padding:5px 6px!important;background:linear-gradient(160deg,#f8fffa,#e4faee)!important}
+.todoSettingsModal .todoColorPreviewBell{width:32px!important;height:32px!important}
+.todoSettingsModal .todoColorPreviewMain strong{font-size:8.8px!important}
+.todoSettingsModal .todoColorPreviewMain small{font-size:6.8px!important}
+.todoSettingsModal .todoColorPreviewMain b{padding:6px 5px!important;font-size:6.2px!important}
+.todoSettingsModal #todoColorBack{min-height:33px!important;font-size:7.5px!important}
+
+/* 23 Backup */
+.todoSettingsModal .todoBackupIntro{position:relative!important;overflow:hidden!important;background:linear-gradient(160deg,#fff 0%,#e7fbf1 100%)!important}
+.todoSettingsModal .todoBackupIntro:after{content:"";position:absolute;left:20%;right:-12%;bottom:-20px;height:38px;border-radius:50%;border-top:6px solid rgba(43,211,151,.10);pointer-events:none}
+.todoSettingsModal .todoBackupIntro>*{position:relative;z-index:2}
+.todoSettingsModal .settingsSubMenu{gap:5px!important}
+.todoSettingsModal .settingsSubRow{min-height:52px!important;padding:5px 9px!important;grid-template-columns:42px minmax(0,1fr) auto!important;gap:8px!important;border-radius:10px!important;position:relative!important;overflow:hidden!important;background:linear-gradient(160deg,#f9fffb 0%,#e7faef 100%)!important}
+.todoSettingsModal .settingsSubRow:after{content:"";position:absolute;left:24%;right:-12%;bottom:-18px;height:34px;border-radius:50%;border-top:6px solid rgba(43,211,151,.09);pointer-events:none}
+.todoSettingsModal .settingsSubRow>*{position:relative;z-index:2}
+.todoSettingsModal .settingsSubRow .settingsRowIcon{width:37px!important;height:37px!important;border-radius:50%!important;font-size:20px!important}
+.todoSettingsModal .settingsSubRow strong{font-size:9.5px!important}
+.todoSettingsModal .settingsSubRow small{font-size:7px!important}
+.todoSettingsModal .backupLastRow{min-height:54px!important}
+.todoSettingsModal #backupAuto{width:39px!important;height:23px!important}
+
+/* 24 Privacy */
+#modal.todoPrivacyModal .todoColorIntro{position:relative!important;overflow:hidden!important;background:linear-gradient(160deg,#fff 0%,#e5faef 100%)!important}
+#modal.todoPrivacyModal .todoColorIntro:after{content:"";position:absolute;left:18%;right:-12%;bottom:-22px;height:42px;border-radius:50%;border-top:7px solid rgba(43,211,151,.10);pointer-events:none}
+#modal.todoPrivacyModal .todoColorIntro>*{position:relative;z-index:2}
+#modal.todoPrivacyModal .settingsSubRow{min-height:55px!important;grid-template-columns:43px minmax(0,1fr) auto!important;padding:6px 9px!important;background:linear-gradient(160deg,#f9fffb 0%,#e6faef 100%)!important}
+#modal.todoPrivacyModal .settingsSubRow .settingsRowIcon{width:38px!important;height:38px!important;border-radius:50%!important;font-size:20px!important}
+#modal.todoPrivacyModal .settingsSubRow strong{font-size:9.8px!important}
+#modal.todoPrivacyModal .settingsSubRow small{font-size:7px!important}
+#modal.todoPrivacyModal .settingToggle{width:39px!important;height:23px!important}
+
 </style>
 </head>
 <body>
