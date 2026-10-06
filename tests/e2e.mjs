@@ -131,9 +131,9 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata in/);
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
-  assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'es. 1000 €');
+  assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'0,00 €');
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editName');
-  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   await page.click('#editDateText');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
   await page.fill('#editDateText','1');
