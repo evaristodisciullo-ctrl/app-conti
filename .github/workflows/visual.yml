@@ -30,7 +30,7 @@ jobs:
             const browser=await chromium.launch({headless:true});
             const page=await browser.newPage({viewport:{width:390,height:694},deviceScaleFactor:1});
             await page.clock.setFixedTime(new Date('2026-10-06T12:00:00.000Z'));
-            const shot=async(name)=>{await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'visual/'+name+'.png',fullPage:false})};
+            const shot=async(name)=>{await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'visual/'+name+'.png',fullPage:false,animations:'disabled'})};
             await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
             await page.evaluate(()=>localStorage.clear());await page.reload();
             await page.waitForSelector('#landing:not(.hidden)');
