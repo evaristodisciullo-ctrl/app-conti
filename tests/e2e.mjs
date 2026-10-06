@@ -415,11 +415,7 @@ async function testTodoSection(browser){
   assert.equal(await first.locator('.todoRecArea').isVisible(),false,'I dettagli di ricorrenza si raccolgono quando si modifica la riga.');
   await first.locator('.todoDateInput').focus();
   assert.equal(await first.locator('.todoRecArea').isVisible(),true,'Le opzioni di ricorrenza restano accessibili sulla riga attiva.');
-  const saveHit=await page.locator('#todoSetupSave').evaluate(el=>{const r=el.getBoundingClientRect(),x=r.x+r.width/2,y=r.y+r.height/2,hit=document.elementFromPoint(x,y);return {rect:{x:r.x,y:r.y,w:r.width,h:r.height},hit:hit?.outerHTML?.slice(0,240),hitPath:hit?(()=>{const a=[];for(let n=hit;n&&a.length<6;n=n.parentElement)a.push(n.tagName+'#'+n.id+'.'+String(n.className).replace(/\\s+/g,'.'));return a})():[],buttonPointer:getComputedStyle(el).pointerEvents,parentPointer:getComputedStyle(el.parentElement).pointerEvents}});console.log('TODO_SAVE_HIT_TRACE',JSON.stringify(saveHit));
-  await page.evaluate(()=>{window.__todoSaveEvents=[];for(const type of ['pointerdown','click'])document.addEventListener(type,e=>{if(e.target.closest?.('#todoSetupSave'))window.__todoSaveEvents.push(type+':'+e.target.id+'.'+e.target.className)},true)});
   await page.click('#todoSetupSave');
-  console.log('TODO_SAVE_EVENT_TRACE',JSON.stringify(await page.evaluate(()=>window.__todoSaveEvents)));
-  await page.waitForTimeout(500);
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
