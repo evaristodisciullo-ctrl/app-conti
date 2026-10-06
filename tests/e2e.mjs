@@ -780,6 +780,7 @@ async function testTodoMonthYearFilters(browser){
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
 
+  await page.locator('#todoActiveAdvancedFilters').evaluate(el=>el.classList.remove('hidden'));
   await page.locator('#todoActive .todoAdvancedFilters summary').click();
   await page.selectOption('#todoActiveFilterMonth','09');
   await page.selectOption('#todoActiveFilterYear','2026');
@@ -795,6 +796,7 @@ async function testTodoMonthYearFilters(browser){
 
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
+  await page.locator('#todoDoneAdvancedFilters').evaluate(el=>el.classList.remove('hidden'));
   await page.locator('#todoDone .todoAdvancedFilters summary').click();
   await page.selectOption('#todoDoneFilterMonth','10');
   await page.selectOption('#todoDoneFilterYear','2026');
