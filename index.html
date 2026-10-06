@@ -2935,6 +2935,58 @@ body{background:#eef9ff}
 #budget .budgetMetrics strong{font-size:10px;color:#142b4c}
 #budget .budgetBar{height:7px!important;margin:5px 0 0 37px!important}
 #budget .budgetFoot{display:none!important}
+
+/* Todo masters 15–17 */
+.modal.fullEditor .modalHead{position:relative!important;display:grid!important;grid-template-columns:36px minmax(0,1fr)!important;align-items:center!important;width:100%!important}
+.modal.fullEditor .modalHead .close{grid-column:1!important;grid-row:1!important;justify-self:start!important}
+.modal.fullEditor .modalTitle{grid-column:2!important;grid-row:1!important;min-width:0!important;margin:0!important;padding:0!important;font-size:22px!important;line-height:1.1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#todoSetup .todoHero{min-height:98px!important;padding:14px 98px 12px 15px!important;margin-bottom:9px!important}
+#todoSetup .todoHero strong{font-size:17px!important}
+#todoSetup .todoHero small{font-size:9px!important;margin-top:4px!important}
+#todoSetup .todoPanel{padding:9px 8px!important;border-radius:18px!important}
+#todoSetup .todoSetupHead{grid-template-columns:26px minmax(0,1.45fr) minmax(65px,.8fr) 29px 21px!important;gap:4px!important;padding:1px 2px 6px!important;font-size:8px!important}
+#todoSetup .todoSetupHead:before{content:""}
+#todoSetup .todoSetupHead span:first-child{grid-column:2}
+#todoSetup .todoSetupHead span:nth-child(2){grid-column:3}
+#todoSetup .todoSetupHead span:nth-child(3){grid-column:4}
+#todoSetup .todoSetupHead span:nth-child(3){text-align:center}
+#todoSetup .todoSetupRow{position:relative;grid-template-columns:26px minmax(0,1.45fr) minmax(65px,.8fr) 29px 21px!important;gap:4px!important;padding:7px 2px!important;min-height:54px}
+#todoSetup .todoSetupRow:before{content:"✓";grid-column:1;grid-row:1;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#e5f7ed;color:#138a5f;font-size:13px;font-weight:900}
+#todoSetup .todoDescInput{grid-column:2;grid-row:1;min-height:39px!important;height:39px!important;padding:7px!important;border-radius:8px!important;font-size:9px!important}
+#todoSetup .todoDateInput{grid-column:3;grid-row:1;height:39px!important;padding:0 5px!important;border-radius:8px!important;font-size:8px!important}
+#todoSetup .todoNotifyToggle{grid-column:4;grid-row:1;width:27px;height:27px;margin:5px auto 0}
+#todoSetup .todoNotifyToggle .todoLineBell{width:18px;height:18px}
+#todoSetup .todoRecArea{grid-column:2/6!important;grid-row:2}
+#todoSetup .todoRowDelete{grid-column:5!important;grid-row:1!important;width:21px;height:26px;min-height:26px!important;margin:5px 0 0;padding:0!important;overflow:hidden;font-size:0!important;border:0!important;background:transparent!important;color:#71859a!important}
+#todoSetup .todoRowDelete:after{content:"▤";font-size:14px}
+#todoSetup .todoActions{gap:6px!important;margin-top:8px!important}
+#todoSetup .todoBigBtn{min-height:39px!important;border-radius:11px!important;font-size:11px!important}
+#todoHub .todoTop{display:flex!important}
+#todoHub .todoHero{display:none!important}
+#todoHub .todoHubGrid{margin-top:4px!important;gap:9px!important}
+#todoHub .todoHubCard{position:relative;overflow:hidden}
+#todoHub .todoHubCard:before,#todoHub .todoHubCard:after{display:none!important;content:none!important}
+#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{min-height:174px!important;padding:12px 12px 36px!important;border-radius:18px!important;background:linear-gradient(155deg,#fff,#effbf4)!important}
+#todoHub .todoHubCard.pending>span:first-child,#todoHub .todoHubCard.completed>span:first-child{position:absolute;left:12px;right:10px;bottom:14px;z-index:2}
+#todoHub .todoHubCard.pending strong,#todoHub .todoHubCard.completed strong{font-size:14px!important}
+#todoHub .todoHubCard.pending small,#todoHub .todoHubCard.completed small{font-size:9px!important;line-height:1.25!important}
+#todoHub .todoHubPerson{position:absolute!important;right:12px!important;top:10px!important;left:auto!important;bottom:auto!important;width:44px!important;height:44px!important;background:none!important;box-shadow:none!important}
+#todoHub .todoHubPerson img{width:44px!important;height:44px!important;object-fit:contain!important}
+#todoHub .todoHubCard .chev{position:absolute;right:10px;bottom:9px;width:25px;height:25px}
+#todoHub .todoHubCard.compact{min-height:51px!important;border-radius:13px!important}
+#todoHub .todoHubCard.reopen{display:grid!important;grid-template-columns:36px 1fr 26px!important}
+#todoHub .todoHubCard .icon{width:34px;height:34px}
+#todoActive .todoQuickMaster{gap:6px!important;margin:0 0 5px!important}
+#todoActive .todoQuickMaster button{height:34px!important;padding:4px 5px!important;font-size:9px!important}
+#todoActive #todoActiveFilterSummary{font-size:8px!important;margin:0 3px 5px!important}
+#todoActive .todoTaskRow{grid-template-columns:minmax(0,1fr) 36px 82px!important;gap:6px!important;align-items:center!important}
+#todoActive .todoTaskEditCard{min-height:58px!important;padding:8px 9px!important;border-radius:12px!important}
+#todoActive .todoTaskEditCard strong{font-size:10px!important}
+#todoActive .todoTaskEditCard small{font-size:8px!important}
+#todoActive .todoNotifyBtn{width:32px!important;height:32px!important}
+#todoActive .todoCompleteBtn{width:100%!important;min-height:38px!important;padding:4px 5px!important;border-radius:20px!important}
+#todoActive .todoCompleteBtn span:first-child{font-size:8px!important}
+#todoActive .todoListPanel{padding:8px!important}
 </style>
 </head>
 <body>
