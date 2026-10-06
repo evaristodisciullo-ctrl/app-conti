@@ -135,7 +135,7 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editName');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   await page.click('#editDateText');
-  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   await page.fill('#editDateText','1');
   await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
