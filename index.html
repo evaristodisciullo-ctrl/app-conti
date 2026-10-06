@@ -2755,6 +2755,24 @@ body{background:#eef9ff}
 }
 #setupIncome .setupContinue,#setupExpense .setupContinue{margin-top:8px!important}
 #setupIncome .setupSkip,#setupExpense .setupSkip{display:none!important}
+
+/* Master 02: icona e logo incorniciano l'introduzione; CTA sotto la scheda saldo. */
+#setup .balanceSetupIntro{
+  display:grid!important;grid-template-columns:58px minmax(0,1fr) 54px!important;
+  gap:10px!important;align-items:center!important;min-height:132px!important;padding:14px!important;
+}
+#setup .balanceSetupIntro:before{
+  content:"€";grid-column:1;grid-row:1;width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;background:#e6f6ff;color:#168bea;font-size:31px;font-weight:900;
+}
+#setup .balanceSetupIntro>div{grid-column:2;grid-row:1}
+#setup .balanceSetupIntro img{grid-column:3;grid-row:1;width:50px!important;height:50px!important;object-fit:contain!important}
+#setup .balanceSetupIntro strong{font-size:17px!important;line-height:1.15!important}
+#setup .balanceSetupCard{margin-top:16px!important;padding:22px 14px 18px!important}
+#setup .balanceSetupCard .moneyInput{height:62px!important;margin:14px auto 8px!important;max-width:100%!important}
+#setup .balanceSetupCard .moneyInput input{font-size:28px!important;text-align:center!important}
+#setup .balanceSetupCard>label{margin:7px 0 0!important}
+#setup #startBtn{display:block!important;width:100%!important;max-width:none!important;height:48px!important;margin:15px 0 0!important;border-radius:24px!important;background:linear-gradient(135deg,#1296ff,#087bf5)!important}
 </style>
 </head>
 <body>
@@ -2819,7 +2837,8 @@ body{background:#eef9ff}
   <div class="balanceSetup">
     <div class="pageHeader"><button id="balanceBack" class="pageBack"><span class="arrow">←</span><span>Indietro</span></button><h1>Saldo iniziale</h1></div>
     <div class="balanceSetupIntro"><img src="assets/eds-blue-approved.png" alt=""><div><strong>Imposta il tuo saldo attuale</strong><small>Da qui parte il conteggio dei tuoi conti.</small></div></div>
-    <div class="balanceSetupCard"><div class="balanceSetupIcon">€</div><strong>Saldo attuale</strong><label for="startBalance">Inserisci il tuo saldo attuale.</label><div class="moneyInput"><span>€</span><input id="startBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Importo"></div><div id="setupError" class="setupError hidden"></div><button id="startBtn" class="btn">Continua</button></div>
+    <div class="balanceSetupCard"><div class="balanceSetupIcon">€</div><strong>Saldo attuale</strong><div class="moneyInput"><span>€</span><input id="startBalance" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" aria-label="Importo"></div><label for="startBalance">Inserisci il denaro reale che hai adesso.</label><div id="setupError" class="setupError hidden"></div></div>
+    <button id="startBtn" class="btn">Continua</button>
   </div>
 </section>
 
