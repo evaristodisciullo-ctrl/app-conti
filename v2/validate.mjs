@@ -16,7 +16,11 @@ const checks = [
   ['todo persistence exists', app.includes('state.todo.tasks.push(base)')],
   ['native notification sync exists', app.includes('syncTodoNotifications')],
   ['backup export exists', app.includes('exportBackup')],
-  ['month-end recurrence helper exists', app.includes('shiftDateSafe')]
+  ['month-end recurrence helper exists', app.includes('shiftDateSafe')],
+  ['income/payment filters are wired', app.includes("closest('[data-money-filter]')")],
+  ['backup restore screen is reachable', app.includes("name==='backup'") && app.includes('id=\"importBackup\"')],
+  ['theme and app colors are applied', app.includes('dataset.appTheme') && app.includes('dataset.appColor')],
+  ['Capacitor Preferences plugin is imported', (await readFile(new URL('./platform.js', import.meta.url), 'utf8')).includes("@capacitor/preferences")]
 ];
 
 let failed = 0;
@@ -26,7 +30,7 @@ for (const [name, ok] of checks) {
 }
 
 // Syntax check after stripping the single ES import line; top-level await is wrapped.
-const syntaxSource = app.replace(/^import .*?;\s*/s, '');
+const syntaxSource = app.replace(/^import .*?;\s*/gm, '');
 try {
   new vm.Script('(async()=>{'+syntaxSource+'\n})()');
   console.log('PASS JavaScript syntax');

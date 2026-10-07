@@ -1,25 +1,24 @@
-name: Test app flows
+name: V2 Android-first validation
 on:
   push:
-    branches: [main, rebuild-conti-economici, visual-allineamento-grafiche]
+    branches: [rebuild/v2-clean-android]
   pull_request:
-    branches: [main]
+    branches: [rebuild/v2-clean-android]
   workflow_dispatch:
 jobs:
-  e2e:
+  v2:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Playwright
-        run: |
-          npm install playwright@1.55.0 --no-save
-          npx playwright install --with-deps chromium
-      - name: Start app
-        run: |
-          python3 -m http.server 4173 >/tmp/inordine-server.log 2>&1 &
-          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 1; done
-      - name: Run regression tests
-        run: node tests/e2e.mjs
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:v2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: in-ordine-v2-preview
+          path: /tmp/in-ordine-v2-preview/*.png
+          if-no-files-found: error

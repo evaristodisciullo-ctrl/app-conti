@@ -1,14 +1,16 @@
+import { Capacitor, Preferences } from './platform.js';
+
 const STORAGE_KEY = 'inOrdineV2State';
 const LEGACY_KEY = 'inOrdineContiV1';
 
 function nativePreferences() {
-  return globalThis.Capacitor?.Plugins?.Preferences || null;
+  return Capacitor.isNativePlatform() ? Preferences : null;
 }
 
 async function readRaw(key) {
   const prefs = nativePreferences();
   if (prefs) return (await prefs.get({ key })).value;
-  return localStorage.getItem(key);
+  return globalThis.localStorage.getItem(key);
 }
 
 async function writeRaw(key, value) {
@@ -17,7 +19,7 @@ async function writeRaw(key, value) {
     await prefs.set({ key, value });
     return;
   }
-  localStorage.setItem(key, value);
+  globalThis.localStorage.setItem(key, value);
 }
 
 export function createEmptyState() {
@@ -70,7 +72,7 @@ function normalize(candidate) {
 export async function loadState() {
   let raw = await readRaw(STORAGE_KEY);
   if (!raw) {
-    const legacy = localStorage.getItem(LEGACY_KEY);
+    const legacy = globalThis.localStorage?.getItem(LEGACY_KEY);
     if (legacy) raw = legacy;
   }
   if (!raw) return createEmptyState();
