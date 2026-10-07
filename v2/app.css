@@ -27,3 +27,8 @@ body{background:radial-gradient(ellipse at 4% 1%,rgba(154,220,255,.48),transpare
 @media(max-width:380px){.home-art{height:52%;bottom:27px}}
 @media(min-width:381px){.home-art{height:49%;bottom:25px}}
 @media(max-width:380px){.home-art{height:44%;bottom:24px}}
+
+/* Small color lift requested for the approved Home artwork */
+body{background:radial-gradient(ellipse at 5% 0%,rgba(85,195,255,.42),transparent 27rem),radial-gradient(ellipse at 100% 16%,rgba(83,229,185,.32),transparent 27rem),radial-gradient(ellipse at 50% 100%,rgba(173,198,255,.22),transparent 32rem),linear-gradient(180deg,#f5fbff 0%,#effaff 48%,#f3fbff 100%)}
+.home-area.money{border-color:#52c5f3;background:linear-gradient(145deg,#c8f0ff 0%,#9edcff 52%,#c4d8ff 100%);box-shadow:0 9px 22px rgba(27,152,213,.20),inset 0 0 0 1px rgba(255,255,255,.64)}
+.home-area.todo{border-color:#55dca9;background:linear-gradient(145deg,#d4ffe5 0%,#a3f3ce 52%,#c8ffeb 100%);box-shadow:0 9px 22px rgba(31,171,126,.18),inset 0 0 0 1px rgba(255,255,255,.66)}
