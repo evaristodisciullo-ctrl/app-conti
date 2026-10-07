@@ -96,3 +96,85 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
 /* 07/10/2026 — final cohesive UI pass; structure and behavior unchanged. */
 (function(){const s=document.createElement('style');s.id='inOrdineFinalCohesiveUi';s.textContent=":root{--io-radius:18px;--io-radius-sm:14px;--io-shadow:0 8px 24px rgba(23,50,74,.07);--io-border:#dfe9e4;--io-blue:#2379d8;--io-green:#168b5d}\nbody{background:#f5f8f7!important}.app{max-width:560px!important;padding-left:14px!important;padding-right:14px!important}\n.card,.list,.onboardCard,.notifyCard{box-shadow:var(--io-shadow)!important}.btn,.addBtn{border-radius:var(--io-radius-sm)!important}\n.pageHeader h1,.homeBrand,.onboardTitle{letter-spacing:-.02em!important}\n#landingConti,#setup:not(.hidden),#setupIncome:not(.hidden),#setupExpense:not(.hidden),#home:not(.hidden),#flow:not(.hidden){--green:var(--io-blue)!important}\n#home .homeHero{background:linear-gradient(135deg,#176bc5,#2f8ee8)!important}\n#home .balanceCard,#home .navTile,#home .projection,#home .homeMovementsCard{border-radius:var(--io-radius)!important;box-shadow:var(--io-shadow)!important}\n#home .mainTiles{gap:10px!important}#home .navTile{min-height:92px!important;padding:12px!important}#home .projection{min-height:96px!important}\n#flow .flowBanner{border-radius:var(--io-radius)!important;box-shadow:var(--io-shadow)!important}\n\n#todoHub .todoHubCard,#todoActive .todoTaskRow,#todoDone .todoDoneRow,#todoSettings .todoSettingCard{border-radius:var(--io-radius)!important;border-color:var(--io-border)!important;box-shadow:var(--io-shadow)!important}\n#todoHub .todoHubCard.pending,#todoHub .todoHubCard.completed{min-height:184px!important;background:linear-gradient(155deg,#fff 0 62%,#edf9f3 63% 100%)!important}\n#todoHub .todoHubCard.notify,#todoHub .todoHubCard.config,#todoHub .todoHubCard.reopen{background:#fff!important}\n#todoActive .todoTaskRow{grid-template-columns:48px minmax(0,1fr) 112px!important;min-height:72px!important;padding:8px 10px!important;gap:9px!important;background:#fff!important}\n#todoActive .todoNotifyBtn{width:40px!important;height:40px!important}\n#todoActive .todoCompleteBtn{min-height:40px!important;height:40px!important;padding:0 10px!important;font-size:10.5px!important;white-space:nowrap!important}\n#todoActive .todoCompleteBtn span:first-child{font-size:0!important}\n#todoActive .todoCompleteBtn span:first-child:before{content:\"✓  Segna come fatta\"!important;font-size:10.5px!important}\n#todoDone .todoDoneRow{min-height:62px!important;padding:8px 10px!important}\n#todoSettings .todoSettingsStack{gap:9px!important}#todoSettings .todoSettingCard{min-height:66px!important;padding:10px 12px!important;background:var(--todoSurface,#fff)!important}\n.modal.todoSettingsModal .modalCard{border-radius:24px!important;background:linear-gradient(180deg,#fff,#f5fbf8)!important}\n.modal.todoSettingsModal .close{border-radius:50%!important}.todoThemeOption,.todoColorOption,.settingsSubRow{border-radius:var(--io-radius-sm)!important}\n@media(max-width:410px){#todoActive .todoTaskRow{grid-template-columns:44px minmax(0,1fr) 104px!important}#todoActive .todoCompleteBtn{font-size:10px!important;padding:0 7px!important}#todoActive .todoCompleteBtn span:first-child:before{font-size:10px!important}}";document.head.appendChild(s)})();
+
+
+/* 07/10/2026 — welcoming visual redesign. Functional layout and state logic stay unchanged. */
+(function(){
+  if(document.getElementById('inOrdineWelcomingRedesign'))return;
+  const s=document.createElement('style');s.id='inOrdineWelcomingRedesign';s.textContent=\`
+:root{
+  --io-blue:#3478f6;--io-cyan:#5bc8f5;--io-violet:#8267e8;--io-peach:#ffb68d;
+  --io-green:#20a875;--io-mint:#7eddb5;--io-yellow:#ffd66b;--io-pink:#ff9fb7;
+  --io-ink:#17324a;--io-soft-shadow:0 12px 32px rgba(35,74,112,.10);
+}
+body{background:
+ radial-gradient(circle at 8% 4%,rgba(91,200,245,.20),transparent 24%),
+ radial-gradient(circle at 94% 13%,rgba(130,103,232,.12),transparent 22%),
+ linear-gradient(180deg,#f7fbff 0%,#f7faf8 48%,#fffaf7 100%)!important;color:var(--io-ink)}
+.app{position:relative}
+.app:before{content:"";position:fixed;z-index:-1;width:180px;height:180px;border-radius:50%;right:-90px;bottom:8%;background:rgba(255,182,141,.13);filter:blur(1px)}
+.card,.list,.onboardCard,.notifyCard,.balanceCard,.navTile,.projection,.homeMovementsCard{border:1px solid rgba(93,133,164,.13)!important;box-shadow:var(--io-soft-shadow)!important}
+.edsLogo,.brandLogo,.todoPersonArt img,.todoHero img{filter:drop-shadow(0 5px 10px rgba(24,72,104,.12))}
+
+/* Finance — airy blue, cyan, violet and warm accents */
+#landingConti:not(.hidden),#setup:not(.hidden),#setupIncome:not(.hidden),#setupExpense:not(.hidden),#home:not(.hidden),#flow:not(.hidden){
+  background:linear-gradient(155deg,rgba(233,247,255,.88),rgba(248,246,255,.78) 52%,rgba(255,247,241,.72))!important;
+  border-radius:26px!important;padding-top:10px!important;padding-bottom:16px!important
+}
+#home .homeHero{position:relative;overflow:hidden;background:linear-gradient(135deg,#2f73ed 0%,#478ee9 46%,#7569df 100%)!important;border-radius:26px!important;box-shadow:0 16px 34px rgba(55,104,205,.24)!important}
+#home .homeHero:after{content:"";position:absolute;width:145px;height:145px;border-radius:50%;right:-42px;top:-70px;background:rgba(255,255,255,.16)}
+#home .balanceCard{background:linear-gradient(145deg,#ffffff,#edf8ff)!important}
+#home .navTile:nth-child(1){background:linear-gradient(145deg,#eaf8ff,#f7fcff)!important;border-color:#c8eafa!important}
+#home .navTile:nth-child(2){background:linear-gradient(145deg,#fff0ea,#fff9f5)!important;border-color:#ffd8c8!important}
+#home .navTile:nth-child(3){background:linear-gradient(145deg,#f0edff,#faf9ff)!important;border-color:#dcd4ff!important}
+#home .navTile:nth-child(4){background:linear-gradient(145deg,#eafaf4,#f8fffc)!important;border-color:#c9eee0!important}
+#home .projection{background:linear-gradient(135deg,#fff8df,#fffdf4)!important;border-color:#f7e3a6!important}
+#home .homeMovementsCard{background:linear-gradient(145deg,#fff,#f4f9ff)!important}
+#flow .flowBanner{background:linear-gradient(135deg,#3478f6,#5aa9ef 58%,#8267e8)!important;color:#fff!important;box-shadow:0 14px 30px rgba(52,120,246,.20)!important}
+#flow .flowBanner *{color:inherit}
+#flow .card,#flow .list{background:rgba(255,255,255,.93)!important}
+.addBtn,.btn.primary{box-shadow:0 8px 18px rgba(52,120,246,.18)!important}
+
+/* Todo — colorful, friendly cards while retaining semantic colors */
+#todoSetup:not(.hidden),#todoHub:not(.hidden),#todoActive:not(.hidden),#todoDone:not(.hidden),#todoSettings:not(.hidden){
+  background:
+    radial-gradient(circle at 95% 4%,color-mix(in srgb,var(--todoSoft) 70%,transparent),transparent 23%),
+    linear-gradient(160deg,var(--todoBg) 0%,#fffaf7 100%)!important;
+  border-radius:26px!important;padding-top:10px!important;padding-bottom:16px!important
+}
+#todoHub .todoHubCard{overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease}
+#todoHub .todoHubCard:active{transform:scale(.985)}
+#todoHub .todoHubCard.pending{background:linear-gradient(145deg,#fff5c9 0%,#fffaf0 70%)!important;border-color:#f4dda0!important}
+#todoHub .todoHubCard.completed{background:linear-gradient(145deg,#dff8eb 0%,#f5fff9 70%)!important;border-color:#bfe8d2!important}
+#todoHub .todoHubCard.notify{background:linear-gradient(145deg,#ffe7ee,#fff8fa)!important;border-color:#f7cad6!important}
+#todoHub .todoHubCard.config{background:linear-gradient(145deg,#e8efff,#f8faff)!important;border-color:#ccd9fa!important}
+#todoHub .todoHubCard.reopen{background:linear-gradient(145deg,#eee9ff,#fbfaff)!important;border-color:#d8cff9!important}
+#todoHub .todoHubCard.pending:after,#todoHub .todoHubCard.completed:after{content:"";position:absolute;width:95px;height:95px;border-radius:50%;right:-30px;bottom:-38px;background:rgba(255,255,255,.48)}
+#todoActive .todoTaskRow{background:linear-gradient(135deg,#fff,#effbf5)!important;border-color:#cfeadd!important}
+#todoDone .todoDoneRow{background:linear-gradient(135deg,#fff,#f0fbf6)!important;border-color:#cce9da!important}
+#todoSettings .todoSettingCard{background:linear-gradient(135deg,var(--todoSurface),color-mix(in srgb,var(--todoSoft) 34%,white))!important;border-color:var(--todoBorder)!important}
+#todoSettings .todoSettingCard:nth-of-type(1){border-left:4px solid #8267e8!important}
+#todoSettings .todoSettingCard:nth-of-type(2){border-left:4px solid #20a875!important}
+#todoSettings .todoSettingCard:nth-of-type(3){border-left:4px solid #5aa9ef!important}
+#todoSettings .todoSettingCard:nth-of-type(4){border-left:4px solid #f2a548!important}
+#todoSettings .todoSettingCard:nth-of-type(5){border-left:4px solid #9a75e8!important}
+#todoSettings .todoSettingCard:nth-of-type(6){border-left:4px solid #55a6e8!important}
+#todoActive .todoCompleteBtn{background:linear-gradient(135deg,var(--todoAccent),color-mix(in srgb,var(--todoAccent) 72%,#1c7656))!important;box-shadow:0 7px 15px color-mix(in srgb,var(--todoAccent) 20%,transparent)!important}
+#todoActive .todoNotifyBtn{background:linear-gradient(145deg,#fff1b8,#fff8dc)!important;color:#ad7a00!important}
+.todoQuickFilter{background:rgba(255,255,255,.88)!important;box-shadow:0 4px 12px rgba(42,89,66,.06)}
+.todoQuickFilter.active{background:linear-gradient(135deg,var(--todoAccent),color-mix(in srgb,var(--todoAccent) 76%,#176f52))!important;color:#fff!important}
+
+/* Friendly modal surfaces */
+.modal.todoSettingsModal .modalCard{background:
+ radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--todoSoft) 72%,transparent),transparent 28%),
+ linear-gradient(180deg,#fff,#f7fbf9)!important;box-shadow:0 22px 55px rgba(31,68,54,.18)!important}
+.todoThemeOption,.todoColorOption,.settingsSubRow{background:rgba(255,255,255,.90)!important;box-shadow:0 5px 14px rgba(42,78,63,.06)!important}
+
+/* Keep the E.D.S identity visible and crisp wherever the existing logo artwork is used. */
+img[src*="eds-"]{object-fit:contain!important;filter:drop-shadow(0 5px 9px rgba(31,76,105,.13))!important}
+@media(max-width:410px){
+  #landingConti:not(.hidden),#setup:not(.hidden),#setupIncome:not(.hidden),#setupExpense:not(.hidden),#home:not(.hidden),#flow:not(.hidden),
+  #todoSetup:not(.hidden),#todoHub:not(.hidden),#todoActive:not(.hidden),#todoDone:not(.hidden),#todoSettings:not(.hidden){border-radius:20px!important}
+}
+\`;document.head.appendChild(s);
+})();
