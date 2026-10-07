@@ -1,10 +1,10 @@
-name: Build Android
+name: Android APK
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 jobs:
-  android:
+  build-apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,38 +14,27 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
-      - name: Install dependencies
+          java-version: '21'
+      - name: Install app dependencies
         run: npm install
-      - name: Prepare web app
+      - name: Prepare web bundle
         run: |
           rm -rf www
           mkdir -p www
-          cp index.html manifest.webmanifest sw.js icon.svg www/
-          cp -r assets www/
-          npx esbuild native-bridge-src.js --bundle --format=iife --platform=browser --outfile=www/native-bridge.js
+          cp index.html native-bridge.js www/
+          cp -R assets www/assets
       - name: Create Android project
         run: |
           rm -rf android
           npx cap add android
           npx cap sync android
-      - name: Enable exact notification scheduling
-        shell: python
-        run: |
-          from pathlib import Path
-          p=Path("android/app/src/main/AndroidManifest.xml")
-          s=p.read_text()
-          perm='<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />'
-          if perm not in s:
-              s=s.replace('<manifest xmlns:android="http://schemas.android.com/apk/res/android">','<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    '+perm)
-          p.write_text(s)
       - name: Build debug APK
-        run: |
-          chmod +x android/gradlew
-          cd android
-          ./gradlew assembleDebug --no-daemon
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Verify APK
+        run: test -s android/app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: In-Ordine-Android
+          name: in-ordine-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

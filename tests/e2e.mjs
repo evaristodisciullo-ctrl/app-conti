@@ -27,9 +27,9 @@ async function setup(page,balance=1000){
   await page.fill('#startBalance',String(balance));
   await page.click('#startBtn');
   await page.waitForSelector('#setupIncome:not(.hidden)');
-  await page.click('#skipIncomeSetup');
+  await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
-  await page.click('#skipExpenseSetup');
+  await page.click('#saveExpenseSetup');
   await page.waitForSelector('#home:not(.hidden)');
 }
 async function state(page){return page.evaluate(k=>JSON.parse(localStorage.getItem(k)),KEY)}
@@ -69,7 +69,7 @@ async function testApprovedOnboarding(browser){
   assert.equal(await page.locator('#landingTodo').isVisible(),true);
   await page.fill('#landingNickname','Mario');
   await page.click('#landingConti');
-  assert.match(await page.locator('#setup').innerText(),/Inserisci il tuo saldo attuale/);
+  assert.match(await page.locator('#setup').innerText(),/Inserisci il denaro reale che hai adesso/);
   await page.fill('#startBalance','1.000,50');await page.click('#startBtn');
   await page.waitForSelector('#setupIncome:not(.hidden)');
   assert.match(await page.locator('#setupIncome').innerText(),/Scrivi le tue entrate/);
@@ -85,7 +85,7 @@ async function testApprovedOnboarding(browser){
   assert.equal(await exp.locator('.rName').getAttribute('placeholder'),'Affitto sede');
   assert.equal(await exp.locator('.rAmount').getAttribute('placeholder'),'950,00 €');
   assert.equal(await exp.locator('.rDateText').getAttribute('placeholder'),'05/10/2026');
-  await page.click('#skipExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
+  await page.click('#saveExpenseSetup');await page.waitForSelector('#home:not(.hidden)');
   const s=await state(page),salary=s.entries.find(e=>e.name==='Stipendio');
   assert.equal(s.profile.fullName,'Mario');assert.equal(s.balance,1000.5);assert.equal(salary.recurrence.kind,'monthly');assert.equal(salary.day,10);
   await page.evaluate(()=>document.querySelector('#homeRestartSetup').click());await page.waitForSelector('#landing:not(.hidden)');
@@ -98,7 +98,7 @@ async function testApprovedOnboarding(browser){
 async function testSetupNaturalRecurrences(browser){
   const {context,page}=await freshPage(browser);
   await page.click('#landingConti');await page.fill('#startBalance','1000');await page.click('#startBtn');
-  await page.waitForSelector('#setupIncome:not(.hidden)');await page.click('#skipIncomeSetup');
+  await page.waitForSelector('#setupIncome:not(.hidden)');await page.click('#saveIncomeSetup');
   await page.waitForSelector('#setupExpense:not(.hidden)');
   const rows=page.locator('#expenseRows .entryRow');
   const r1=rows.first();
@@ -118,9 +118,9 @@ async function testSetupNaturalRecurrences(browser){
   assert.equal(three.recurrence.kind,'custom');assert.equal(three.recurrence.unit,'month');assert.equal(three.recurrence.every,1);assert.equal(three.recurrence.endMode,'count');assert.equal(three.recurrence.count,3);
   if(await page.locator('#modal:not(.hidden)').count()){console.log('DEBUG_MODAL_AFTER_SETUP',await page.locator('#modalTitle').innerText(),await page.locator('#modalBody').innerText());await page.click('#modalClose')}
   await page.click('#homeExpense');await page.waitForSelector('#flow:not(.hidden)');await page.click('#flowAdd');
-  await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1');await page.dispatchEvent('#editDateText','input');
-  await page.locator('#editRecChoices button[data-kind="custom"]').click();await page.fill('#editorRecText','settembre, ottobre, novembre');await page.click('#editorRecSave');
-  assert.match(await page.locator('#editRecSummary').innerText(),/mesi selezionati/);
+  await page.fill('#editName','Test naturale');await page.fill('#editAmount','10');await page.fill('#editDateText','1 ottobre 2026');await page.dispatchEvent('#editDateText','input');
+  await page.locator('#editRecChoices button[data-kind="monthly"]').click();
+  assert.equal(await page.locator('#editRecKind').inputValue(),'monthly');
   await page.click('#modalClose');await context.close();
 }
 
@@ -131,12 +131,12 @@ async function testFinanceManualDatesAndMovements(browser){
   assert.match(await page.locator('#flowUnifiedList').innerText(),/Nessuna entrata in/);
   await page.click('#flowAdd');
   assert.equal(await page.locator('input[type="date"]').count(),0);
-  assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'es. 1000 €');
+  assert.equal(await page.locator('#editAmount').getAttribute('placeholder'),'0,00 €');
   assert.notEqual(await page.evaluate(()=>document.activeElement&&document.activeElement.id),'editName');
-  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   await page.click('#editDateText');
-  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),0);
-  await page.fill('#editDateText','1');
+  assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
+  await page.fill('#editDateText','1 ottobre 2026');
   await page.dispatchEvent('#editDateText','input');
   assert.equal(await page.locator('#editRecurrenceBlock:not(.hidden)').count(),1);
   assert.match(await page.locator('#editDate').inputValue(),/^\d{4}-\d{2}-01$/);
@@ -387,7 +387,7 @@ async function testHomeFeatureCardsAreSingleFrame(browser){
     assert.equal(card.overflow,'hidden');
     assert.equal(card.outlineStyle,'none');
     assert.match(card.backgroundImage,/eds-blue-approved\.png/,'Ogni card deve usare il logo E.D.S blu');
-    assert.equal(card.textAlign,'center');
+    assert.equal(card.textAlign,'left');
   }
   await context.close();
 }
@@ -398,7 +398,7 @@ async function testTodoSection(browser){
   await page.click('#landingTodo');
   await page.waitForSelector('#todoSetup:not(.hidden)');
 
-  assert.match(await page.locator('#todoSetup').innerText(),/Ciao Evaristo/);
+  assert.match(await page.locator('#todoSetup').innerText(),/Inserisci tutte le cose che hai da fare/);
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>t.includes('Stato')),false);
   assert.equal(await page.locator('#todoSetup').innerText().then(t=>/\bFatto\b/.test(t)),false);
   assert.equal(await page.locator('#todoSetupRows .todoSetupRow').count(),4);
@@ -411,12 +411,18 @@ async function testTodoSection(browser){
   await first.locator('.todoDateInput').fill('domani');
   await first.locator('.todoDateInput').dispatchEvent('input');
   await first.locator('[data-tr="single"]').click();
+  await page.locator('body').click({position:{x:5,y:5}});
+  assert.equal(await first.locator('.todoRecArea').isVisible(),false,'I dettagli di ricorrenza si raccolgono quando si modifica la riga.');
+  await first.locator('.todoDateInput').focus();
+  assert.equal(await first.locator('.todoRecArea').isVisible(),true,'Le opzioni di ricorrenza restano accessibili sulla riga attiva.');
   await page.click('#todoSetupSave');
   await page.waitForSelector('#todoHub:not(.hidden)');
 
   assert.equal(await page.locator('#todoHub .todoHubCard').count(),5);
   assert.match(await page.locator('#todoHub').innerText(),/In scadenza/);
   assert.match(await page.locator('#todoHub').innerText(),/Cose già fatte/);
+  assert.equal(await page.locator('#todoHubPendingCount').innerText(),'1 attività da completare');
+  assert.equal(await page.locator('#todoHubDoneCount').innerText(),'0 attività completate');
   assert.match(await page.locator('#todoHub').innerText(),/Notifiche/);
   assert.match(await page.locator('#todoHub').innerText(),/Impostazioni/);
   assert.equal(await page.locator('#todoHubSetup').isVisible(),true);
@@ -451,12 +457,12 @@ async function testTodoSection(browser){
   await page.click('#todoHubNotifications');
   await page.waitForSelector('#modal:not(.hidden)');
   assert.equal(await page.locator('#todoNotifyAll').count(),1);
-  assert.match(await page.locator('#modal').innerText(),/Attiva tutte/);
+  assert.match(await page.locator('#modal').innerText(),/Notifiche attive/);
   await page.check('#todoNotifyAll');
   const notifyBoxes=page.locator('#todoNotifyPick input[type="checkbox"]');
   assert.equal(await notifyBoxes.count(),1);
   assert.equal(await notifyBoxes.first().isChecked(),true);
-  await page.click('#todoPickCancel');
+  await page.click('#modalClose');
   await page.waitForSelector('#modal',{state:'hidden'});
 
   const firstSavedId=(await state(page)).todo.tasks[0].id;
@@ -472,6 +478,7 @@ async function testTodoSection(browser){
 
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
+  assert.equal(await page.locator('#todoActiveHeroCount').innerText(),'Qui trovi le attività con la scadenza più vicina.');
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoActiveArt').getAttribute('data-scene'),'active');
   assert.equal(await page.locator('#todoActiveArt img').count(),1);
@@ -502,6 +509,7 @@ async function testTodoSection(browser){
   await row.locator('.todoCompleteBtn').click();
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
+  assert.equal(await page.locator('#todoDoneHeroCount').innerText(),'Qui trovi tutte le attività che hai completato.');
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-gender'),null);
   assert.equal(await page.locator('#todoDoneArt').getAttribute('data-scene'),'done');
   assert.equal(await page.locator('#todoDoneArt img').count(),1);
@@ -558,8 +566,10 @@ async function testTodoSection(browser){
   assert.equal(previewTheme.pending,beforeTheme.pending,'In scadenza deve mantenere il giallo funzionale');
   assert.equal(previewTheme.done,beforeTheme.done,'Cose già fatte deve mantenere il verde funzionale');
   assert.equal(previewTheme.notify,beforeTheme.notify,'Notifiche deve mantenere il rosa/rosso funzionale');
-  await page.click('#todoColorSave');
-  assert.equal((await state(page)).todo.color,'Menta');
+  assert.equal((await state(page)).todo.color,'Menta','La scelta colore deve essere persistita al tocco');
+  assert.equal(await page.locator('#todoColorSave').count(),0,'La schermata approvata non ha un pulsante Salva');
+  await page.click('#todoColorBack');
+  await page.waitForSelector('#todoSetup:not(.hidden)');
 
   await context.close();
 }
@@ -772,6 +782,7 @@ async function testTodoMonthYearFilters(browser){
   await page.click('#todoHubPending');
   await page.waitForSelector('#todoActive:not(.hidden)');
 
+  await page.locator('#todoActiveAdvancedFilters').evaluate(el=>el.classList.remove('hidden'));
   await page.locator('#todoActive .todoAdvancedFilters summary').click();
   await page.selectOption('#todoActiveFilterMonth','09');
   await page.selectOption('#todoActiveFilterYear','2026');
@@ -787,6 +798,7 @@ async function testTodoMonthYearFilters(browser){
 
   await page.click('#todoGoDone');
   await page.waitForSelector('#todoDone:not(.hidden)');
+  await page.locator('#todoDoneAdvancedFilters').evaluate(el=>el.classList.remove('hidden'));
   await page.locator('#todoDone .todoAdvancedFilters summary').click();
   await page.selectOption('#todoDoneFilterMonth','10');
   await page.selectOption('#todoDoneFilterYear','2026');
@@ -796,6 +808,17 @@ async function testTodoMonthYearFilters(browser){
   await page.click('#todoDoneFilterAll');
   assert.equal(await page.locator('#todoDoneList .todoDoneRow').count(),2);
 
+  await context.close();
+}
+
+async function testTodoQuickFilters(browser){
+  const {context,page}=await freshPage(browser);
+  await page.fill('#landingNickname','Evaristo');await page.click('#landingTodo');await page.waitForSelector('#todoSetup:not(.hidden)');
+  const first=page.locator('#todoSetupRows .todoSetupRow').first();await first.locator('.todoDescInput').fill('Voce iniziale');await page.click('#todoSetupSave');await page.waitForSelector('#todoHub:not(.hidden)');
+  await page.evaluate(k=>{const st=JSON.parse(localStorage.getItem(k));const now=new Date(),iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),tom=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);st.todo.tasks=[{id:'today',description:'Oggi',date:iso(now),dateText:iso(now),createdAt:1},{id:'tom',description:'Domani',date:iso(tom),dateText:iso(tom),createdAt:2}];localStorage.setItem(k,JSON.stringify(st))},KEY);
+  await page.reload();await page.click('#landingTodo');await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
+  await page.locator('#todoActive [data-todo-quick="today"]').click();assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),1);assert.equal(await page.locator('#todoActiveList').getByText('Oggi',{exact:true}).count(),1);
+  await page.click('#todoActiveFilterAll');assert.equal(await page.locator('#todoActiveList .todoTaskRow').count(),2);
   await context.close();
 }
 
@@ -817,17 +840,20 @@ async function testApprovedMasterRules(browser){
   assert.ok(hubRules.logos.every(x=>x.endsWith('eds-green-approved.png')));
 
   await page.click('#todoHubPending');await page.waitForSelector('#todoActive:not(.hidden)');
-  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
-  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.color,'rgb(35, 75, 54)');assert.equal(completeStyle.shadow,'none');
+  await page.click('#todoActiveFilterAll');
+  await page.waitForSelector('.todoCompleteBtn');
+  const completeStyle=await page.locator('.todoCompleteBtn').first().evaluate(el=>({bg:getComputedStyle(el).backgroundImage,bgColor:getComputedStyle(el).backgroundColor,color:getComputedStyle(el).color,shadow:getComputedStyle(el).boxShadow}));
+  assert.equal(completeStyle.bg,'none');assert.equal(completeStyle.bgColor,'rgb(16, 137, 84)');assert.equal(completeStyle.color,'rgb(255, 255, 255)');assert.equal(completeStyle.shadow,'none');
   assert.match(await page.locator('#todoActiveArt img').getAttribute('src'),/eds-green-approved\.png$/);
   await page.locator('.todoCompleteBtn').first().click();
   await page.click('#todoGoDone');await page.waitForSelector('#todoDone:not(.hidden)');
   await page.click('#todoDoneSettings');await page.waitForSelector('#todoSettings:not(.hidden)');
 
   await page.click('#todoSettingTheme');await page.waitForSelector('#modal:not(.hidden)');
-  await page.click('[data-ttheme="dark"]');await page.click('#todoThemeSave');
+  await page.click('[data-ttheme="dark"]');
   assert.equal((await state(page)).todo.theme,'dark');assert.equal(await page.locator('body').getAttribute('data-todo-theme'),'dark');
-  await page.click('#todoSettingBackup');await page.waitForSelector('#backupLocal');await page.click('#backupLocal');
+  assert.equal(await page.locator('#todoThemeSave').count(),0,'La schermata approvata non ha pulsanti Salva/Annulla');await page.click('#modalClose');
+  await page.click('#todoSettingBackup');await page.waitForSelector('#backupExtras summary');await page.locator('#backupExtras summary').click();await page.waitForSelector('#backupLocal',{state:'visible'});await page.click('#backupLocal');
   const backup=await page.evaluate(k=>JSON.parse(localStorage.getItem(k+'_local_copy')),KEY);
   assert.equal(backup.data.todo.theme,'dark');assert.equal(backup.data.todo.done.length,1);
   await page.click('#modalClose');
@@ -907,6 +933,7 @@ try{
   await testTodoInlineDateRecurrences(browser);
   await testTodoSortsImpreciseDatesChronologically(browser);
   await testTodoMonthYearFilters(browser);
+  await testTodoQuickFilters(browser);
   await testApprovedMasterRules(browser);
   await testPwaOffline(browser);
   console.log('All In Ordine regression tests passed');
