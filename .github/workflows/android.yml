@@ -21,7 +21,7 @@ jobs:
         run: |
           rm -rf www
           mkdir -p www
-          cp index.html styles.css app.js native-bridge.js www/
+          cp index.html native-bridge.js www/
           cp -R assets www/assets
       - name: Create Android project
         run: |
