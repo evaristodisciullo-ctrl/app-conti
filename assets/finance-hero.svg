@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 240" fill="none">
+ <defs><linearGradient id="bg" x1="40" y1="25" x2="470" y2="240" gradientUnits="userSpaceOnUse"><stop stop-color="#CFE5FF"/><stop offset=".55" stop-color="#D8D2FF"/><stop offset="1" stop-color="#F1DFFF"/></linearGradient><linearGradient id="wallet" x1="100" y1="98" x2="404" y2="203" gradientUnits="userSpaceOnUse"><stop stop-color="#2B70DB"/><stop offset="1" stop-color="#7653D9"/></linearGradient></defs>
+ <path d="M28 173C41 99 100 47 178 52c41-44 119-43 164-1 65-1 129 34 147 91 19 58-19 91-91 94H107c-52-1-89-20-79-63Z" fill="url(#bg)"/>
+ <circle cx="107" cy="88" r="24" fill="#fff"/><path d="M98 88h18m-9-9v18" stroke="#4F7CE1" stroke-width="4" stroke-linecap="round"/>
+ <circle cx="414" cy="79" r="18" fill="#FFE18B"/><path d="m406 79 6 6 11-13" stroke="#7653D9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+ <rect x="113" y="92" width="289" height="119" rx="26" fill="url(#wallet)"/>
+ <path d="M361 125h69v53h-69c-15 0-27-12-27-26s12-27 27-27Z" fill="#F8F9FF"/>
+ <circle cx="366" cy="151" r="6" fill="#7456D8"/>
+ <path d="M143 120h127" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".42"/><path d="M143 145h74" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".26"/>
+ <circle cx="294" cy="173" r="24" fill="#FFD568"/><path d="M294 160v27m-8-19c0-6 16-6 16 0 0 8-16 5-16 13 0 6 16 6 16 0" stroke="#8C5A19" stroke-width="3" stroke-linecap="round"/>
+ <path d="M65 201h58m294-8h34" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 310" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="60" y1="10" x2="450" y2="310" gradientUnits="userSpaceOnUse"><stop stop-color="#D8EBFF"/><stop offset="1" stop-color="#EDE1FF"/></linearGradient>
+    <linearGradient id="shirt1" x1="100" y1="120" x2="240" y2="270" gradientUnits="userSpaceOnUse"><stop stop-color="#386FE8"/><stop offset="1" stop-color="#7655D9"/></linearGradient>
+    <linearGradient id="shirt2" x1="325" y1="130" x2="455" y2="280" gradientUnits="userSpaceOnUse"><stop stop-color="#FF9A7A"/><stop offset="1" stop-color="#F06C96"/></linearGradient>
+  </defs>
+  <path d="M44 223C22 152 72 75 147 61c40-53 129-56 178-15 68-15 128 20 145 78 47 40 39 117-8 156H79c-20-14-31-34-35-57Z" fill="url(#sky)"/>
+  <circle cx="91" cy="108" r="22" fill="#FFD66E"/><circle cx="425" cy="86" r="12" fill="#fff" opacity=".85"/>
+  <path d="m76 171 14-13 14 13-14 13-14-13Zm344 33 12-11 12 11-12 12-12-12Z" fill="#fff" opacity=".9"/>
+  <path d="M111 259c8-58 39-91 83-91s76 33 84 91" fill="url(#shirt1)"/>
+  <path d="M329 260c6-58 37-92 81-92 45 0 77 34 84 92" fill="url(#shirt2)"/>
+  <path d="M154 135c0-38 19-65 48-65 31 0 51 26 51 64 0 30-20 52-49 52-30 0-50-21-50-51Z" fill="#C98761"/>
+  <path d="M151 122c0-39 18-68 52-68 31 0 49 22 50 56-14-5-23-15-27-29-15 20-40 31-75 33Z" fill="#26324A"/>
+  <path d="M374 135c0-39 19-66 48-66 31 0 50 27 50 65 0 30-20 52-49 52s-49-21-49-51Z" fill="#F0B58E"/>
+  <path d="M370 124c0-39 20-65 53-65 31 0 51 24 51 58-9-6-16-15-19-27-15 17-40 27-84 34Z" fill="#4B3441"/>
+  <path d="M194 170c17 7 33 4 46-8l42-40c9-9 22 4 13 13l-43 48c-18 20-43 26-65 19" fill="#C98761"/>
+  <path d="M385 171c-13 4-24 1-35-8l-44-39c-9-8-21 5-12 14l43 46c18 19 41 25 61 17" fill="#F0B58E"/>
+  <path d="M272 126c8-9 16-17 23-20 5-3 11-2 15 2l7 7c5 5 4 12-1 17l-15 14" stroke="#C98761" stroke-width="13" stroke-linecap="round"/>
+  <path d="m276 107 12 9m-6-17 12 9" stroke="#F0B58E" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="281" cy="37" r="21" fill="#FFF"/><path d="m281 25 3.7 7.4 8.2 1.2-5.9 5.8 1.4 8.2-7.4-3.9-7.4 3.9 1.4-8.2-5.9-5.8 8.2-1.2 3.7-7.4Z" fill="#F7BD43"/>
+  <circle cx="123" cy="225" r="16" fill="#fff"/><path d="M116 225h14m-7-7v14" stroke="#4D7CE5" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="442" cy="148" r="17" fill="#fff"/><path d="m434 148 5 5 10-11" stroke="#36AC83" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

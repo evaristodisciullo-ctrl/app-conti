@@ -20,11 +20,13 @@ await page.evaluate(()=>localStorage.clear());
 await page.reload();
 await page.waitForSelector('.brand-logo');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');
+await page.waitForFunction(()=>{const i=document.querySelector('.home-art');return i?.complete&&i.naturalWidth>0});
 await page.screenshot({path:`${previewDir}/01-home.png`});
 
 // Establish a real starting balance and a future income, then receive it.
 page.once('dialog',d=>d.accept('1000'));
 await page.getByRole('button',{name:'Conti economici'}).click();
+await page.waitForFunction(()=>{const i=document.querySelector('.finance-art');return i?.complete&&i.naturalWidth>0});
 await page.locator('#setBalance').click();
 await page.locator('[data-go="income"]').click();
 await page.locator('[data-add-money="income"]').click();
@@ -92,6 +94,7 @@ await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-g
 // Todo create, recurring instances, completion and restore.
 await page.locator('[data-go="landing"]').click();
 await page.locator('[data-go="todo"]').click();
+await page.waitForFunction(()=>{const i=document.querySelector('.todo-art');return i?.complete&&i.naturalWidth>0});
 await page.screenshot({path:`${previewDir}/07-cose-da-fare.png`});
 await page.locator('[data-go="todo-add"]').click();
 await page.locator('#todoDescription').fill('Chiamare dentista');
