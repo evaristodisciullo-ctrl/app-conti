@@ -21,11 +21,18 @@ await page.reload();
 await page.waitForSelector('.brand-logo');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');
 await page.waitForFunction(()=>{const i=document.querySelector('.home-art');return i?.complete&&i.naturalWidth>0});
+assert.equal(await page.locator('.home-pair').count(),2,'Home separates finance and Todo areas');
+assert.equal(await page.locator('.home-pair .home-area + .home-pair-notice').count(),2,'each notification button sits below its own Home card');
 await page.screenshot({path:`${previewDir}/01-home.png`});
 
 // Establish a real starting balance and a future income, then receive it.
 await page.locator('[data-go="money"]').click();
 await page.waitForFunction(()=>{const i=document.querySelector('.finance-art');return i?.complete&&i.naturalWidth>0});
+assert.equal(await page.locator('.balance #setBalance').count(),1,'real-balance button stays inside the real-balance card');
+assert.equal(await page.locator('.balance + .finance-metrics-separated').count(),1,'monthly finance metrics stay in a separate card');
+assert.equal(await page.locator('.balance .finance-summary-metrics').count(),0,'monthly metrics do not merge into the real-balance card');
+const financeLogo=await page.locator('.page-header .eds-logo').evaluate(el=>parseFloat(getComputedStyle(el).width));assert.ok(financeLogo>=44,'finance header E.D.S. logo is enlarged for compact phone layouts');
+await page.screenshot({path:previewDir+'/02-conti-overview.png'});
 await page.locator('#setBalance').click();await page.locator('#balanceValue').fill('1000');await page.locator('#balanceForm button[type=submit]').click();
 await page.locator('[data-go="landing"]').click();await page.locator('[data-go="finance-notifications"]').click();await page.locator('#financeNotificationsEnabled').check();await page.locator('#financeNotificationsForm button[type=submit]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
 await page.locator('[data-add-money="income"]').click();
