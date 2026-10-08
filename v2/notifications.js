@@ -22,7 +22,7 @@ function reminderDate(item, kind, state) {
   if (reminder.mode === 'custom' || reminder.customAt) return parseLocalDateTime(reminder.customAt || reminder.at);
   if (!item.date) return null;
   const precision = item.datePrecision || (item.date.length === 7 ? 'month' : 'day');
-  if (precision !== 'day' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(item.date)) return null;
+  if (precision !== 'day' || !/^\d{4}-\d{2}-\d{2}$/.test(item.date)) return null;
   const due = item.date;
   const [year, month, day] = due.split('-').map(Number);
   const at = new Date(year, month - 1, day, 9, 0, 0, 0);

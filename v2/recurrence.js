@@ -142,12 +142,12 @@ export function dateValueFromForm(prefix, documentRef = document) {
  return value&&validPartial(value,mode)?{date:value,datePrecision:mode}:{date:'',datePrecision:'none'};
 }
 function validPartial(value,mode){
- if(mode==='day')return /^\\d{4}-\\d{2}-\\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'));
- if(mode==='month')return /^\\d{4}-(0[1-9]|1[0-2])$/.test(value);
- if(mode==='year')return /^\\d{4}$/.test(value);
+ if(mode==='day')return /^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'));
+ if(mode==='month')return /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
+ if(mode==='year')return /^\d{4}$/.test(value);
  if(mode==='monthOnly')return /^(0[1-9]|1[0-2])$/.test(value);
- if(mode==='dayOnly')return /^(0[1-9]|[12]\\d|3[01])$/.test(value);
- if(mode==='dayMonth'){const [m,d]=value.split('-').map(Number);return /^\\d{2}-\\d{2}$/.test(value)&&m>=1&&m<=12&&d>=1&&d<=new Date(Date.UTC(2000,m,0)).getUTCDate()}
+ if(mode==='dayOnly')return /^(0[1-9]|[12]\d|3[01])$/.test(value);
+ if(mode==='dayMonth'){const [m,d]=value.split('-').map(Number);return /^\d{2}-\d{2}$/.test(value)&&m>=1&&m<=12&&d>=1&&d<=new Date(Date.UTC(2000,m,0)).getUTCDate()}
  return false;
 }
 export function restoreDateForm(prefix,item,documentRef=document){
@@ -161,4 +161,4 @@ export function restoreDateForm(prefix,item,documentRef=document){
  else if(precision==='monthOnly')set('MonthPart',item.date);
  else if(precision==='dayMonth'){const [m,d]=item.date.split('-');set('DayMonthMonth',m);set('DayMonthPart',Number(d))}
 }
-function inferPrecision(value){if(!value)return'none';if(/^\\d{4}-\\d{2}-\\d{2}$/.test(value))return'day';if(/^\\d{4}-\\d{2}$/.test(value))return'month';if(/^\\d{4}$/.test(value))return'year';if(/^\\d{2}$/.test(value))return'dayOnly';if(/^\\d{2}-\\d{2}$/.test(value))return'dayMonth';return'none';}
+function inferPrecision(value){if(!value)return'none';if(/^\d{4}-\d{2}-\d{2}$/.test(value))return'day';if(/^\d{4}-\d{2}$/.test(value))return'month';if(/^\d{4}$/.test(value))return'year';if(/^\d{2}$/.test(value))return'dayOnly';if(/^\d{2}-\d{2}$/.test(value))return'dayMonth';return'none';}
