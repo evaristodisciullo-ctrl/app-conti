@@ -198,3 +198,9 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
  .todo-home-screen .todo-art-frame{height:170px;grid-template-rows:minmax(0,1fr)}
  .todo-home-screen .todo-art{height:100%;max-height:100%;min-height:0}
 }
+
+/* Keep the approved E.D.S. logo entirely inside the landing hero, including narrow phones. */
+.brand.card{position:relative;overflow:hidden}
+.brand.card .brand-top{position:static;overflow:visible;min-height:58px;padding-right:100px}
+.brand.card .brand-logo{position:absolute!important;top:16px!important;right:16px!important;left:auto!important;bottom:auto!important;display:block!important;width:78px!important;height:78px!important;max-width:calc(100% - 32px)!important;object-fit:contain!important;transform:none!important;clip-path:none!important;opacity:1!important;visibility:visible!important;z-index:20!important}
+@media(max-width:380px){.brand.card .brand-logo{width:68px!important;height:68px!important;top:14px!important;right:14px!important}.brand.card .brand-top{padding-right:80px}}
