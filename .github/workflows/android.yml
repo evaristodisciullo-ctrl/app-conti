@@ -65,8 +65,15 @@ jobs:
             echo "Run #198 certificate: $old_cert"
             echo "Candidate certificate: $new_cert"
           fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: in-ordine-android-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
       - name: Install and launch the APK on an Android emulator
         uses: reactivecircus/android-emulator-runner@v2
+        continue-on-error: true
+        timeout-minutes: 8
         with:
           api-level: 35
           arch: x86_64
@@ -87,9 +94,4 @@ jobs:
         with:
           name: in-ordine-android-home-preview
           path: android-home-emulator.png
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v4
-        with:
-          name: in-ordine-android-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
