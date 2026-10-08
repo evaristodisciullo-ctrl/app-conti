@@ -1,5 +1,7 @@
 name: Android APK
 on:
+  push:
+    branches: [rebuild/v2-clean-android]
   workflow_dispatch:
   pull_request:
     branches: [main]
@@ -17,12 +19,8 @@ jobs:
           java-version: '21'
       - name: Install app dependencies
         run: npm install
-      - name: Prepare web bundle
-        run: |
-          rm -rf www
-          mkdir -p www
-          cp index.html native-bridge.js www/
-          cp -R assets www/assets
+      - name: Prepare V2 web bundle
+        run: npm run build:v2
       - name: Create Android project
         run: |
           rm -rf android
