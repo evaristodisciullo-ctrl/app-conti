@@ -41,7 +41,7 @@ function startSpeech(button){
  if(!Speech){speechMessage('Il riconoscimento vocale non è disponibile su questo dispositivo. Puoi continuare a scrivere.');return}
  const recognition=new Speech();activeRecognition=recognition;recognition.lang='it-IT';recognition.interimResults=false;recognition.maxAlternatives=1;button.dataset.listening='true';button.setAttribute('aria-label','Annulla dettatura');
  recognition.onresult=event=>{const transcript=event.results?.[0]?.[0]?.transcript||'';if(transcript)applyVoiceText(button,transcript)};
- recognition.onerror=event=>{const messages={not-allowed:'Permesso microfono negato. Abilitalo nelle impostazioni Android.','no-speech':'Non ho sentito parole. Riprova.','audio-capture':'Microfono non disponibile.','network':'Servizio vocale non raggiungibile.'};speechMessage(messages[event.error]||'Dettatura interrotta. Puoi riprovare o scrivere.');};
+ recognition.onerror=event=>{const messages={'not-allowed':'Permesso microfono negato. Abilitalo nelle impostazioni Android.','no-speech':'Non ho sentito parole. Riprova.','audio-capture':'Microfono non disponibile.','network':'Servizio vocale non raggiungibile.'};speechMessage(messages[event.error]||'Dettatura interrotta. Puoi riprovare o scrivere.');};
  recognition.onend=()=>{if(activeRecognition===recognition)activeRecognition=null;button.dataset.listening='false';button.setAttribute('aria-label','Avvia dettatura')};
  try{recognition.start()}catch{activeRecognition=null;button.dataset.listening='false';speechMessage('Non riesco ad avviare il microfono. Riprova o continua a scrivere.')}
 }
