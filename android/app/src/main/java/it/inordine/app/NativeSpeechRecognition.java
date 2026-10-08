@@ -151,6 +151,8 @@ public class NativeSpeechRecognition extends Plugin {
             case SpeechRecognizer.ERROR_NO_MATCH: return "NO_MATCH";
             case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: return "NO_SPEECH";
             case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "PERMISSION_DENIED";
+            case SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED: return "LANGUAGE_NOT_SUPPORTED";
+            case SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE: return "LANGUAGE_UNAVAILABLE";
             default: return "RECOGNITION_ERROR";
         }
     }
