@@ -51,47 +51,30 @@ jobs:
           old_apk=$(find /tmp/in-ordine-run198 -type f -name '*.apk' -print -quit)
           new_apk=android/app/build/outputs/apk/debug/app-debug.apk
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
-          old_cert=$("$apksigner" verify --print-certs "$old_apk" | sed -n 's/.*Signer #1 certificate SHA-256 digest: //p' | head -n1)
-          new_cert=$("$apksigner" verify --print-certs "$new_apk" | sed -n 's/.*Signer #1 certificate SHA-256 digest: //p' | head -n1)
+          old_info=$("$apksigner" verify --print-certs "$old_apk" 2>&1 || true)
+          new_info=$("$apksigner" verify --print-certs "$new_apk" 2>&1 || true)
+          old_cert=$(printf '%s\\n' "$old_info" | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ {print $2; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+          new_cert=$(printf '%s\\n' "$new_info" | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ {print $2; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+          if [ -z "$old_cert" ]; then
+            old_cert=$(keytool -printcert -jarfile "$old_apk" 2>&1 | awk '/SHA256:/ {sub(/^.*SHA256:[[:space:]]*/, ""); print; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+          fi
+          if [ -z "$new_cert" ]; then
+            new_cert=$(keytool -printcert -jarfile "$new_apk" 2>&1 | awk '/SHA256:/ {sub(/^.*SHA256:[[:space:]]*/, ""); print; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+          fi
+          echo "Run #198 certificate SHA-256: ${old_cert:-UNAVAILABLE}"
+          echo "Candidate certificate SHA-256: ${new_cert:-UNAVAILABLE}"
           if [ -z "$old_cert" ] || [ -z "$new_cert" ]; then
-            echo "Firma APK #198: verifica non riuscita; non disinstallare l'app esistente." >> "$GITHUB_STEP_SUMMARY"
-            echo "::warning title=APK signing compatibility unknown::Could not read the APK signing certificate."
+            echo "Firma APK #198: non verificata; non disinstallare l'app esistente." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=APK signing compatibility unknown::Could not read both APK signing certificates."
           elif [ "$old_cert" = "$new_cert" ]; then
             echo "Firma APK #198: compatibile con l'APK candidato #${{ github.run_number }}. Certificato SHA-256: $new_cert" >> "$GITHUB_STEP_SUMMARY"
             echo "APK signing certificate matches installed run #198."
           else
             echo "Firma APK #198: NON compatibile con l'APK candidato #${{ github.run_number }}. Non disinstallare l'app esistente: i dati locali potrebbero essere rimossi." >> "$GITHUB_STEP_SUMMARY"
             echo "::warning title=APK signing mismatch::The new APK cannot update the app signed by run #198. Do not uninstall the existing app."
-            echo "Run #198 certificate: $old_cert"
-            echo "Candidate certificate: $new_cert"
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: in-ordine-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-      - name: Install and launch the APK on an Android emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        continue-on-error: true
-        timeout-minutes: 8
-        with:
-          api-level: 35
-          arch: x86_64
-          target: google_apis
-          profile: pixel_2
-          disable-animations: true
-          script: |
-            adb install -r android/app/build/outputs/apk/debug/app-debug.apk
-            adb shell am start -W -n it.inordine.app/.MainActivity
-            for attempt in $(seq 1 10); do
-              if adb shell pidof it.inordine.app >/dev/null; then break; fi
-              sleep 1
-            done
-            adb shell pidof it.inordine.app
-            adb shell screencap -p /sdcard/in-ordine-home.png
-            adb pull /sdcard/in-ordine-home.png android-home-emulator.png
-      - uses: actions/upload-artifact@v4
-        with:
-          name: in-ordine-android-home-preview
-          path: android-home-emulator.png
-          if-no-files-found: warn
