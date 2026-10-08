@@ -112,6 +112,8 @@ await page.locator('#todoRecurrence').selectOption('monthly');
 await page.locator('#todoNotify').check();
 await page.locator('#todoForm button[type="submit"]').click();
 assert.equal(await page.locator('[data-edit-task]').count(),25,'monthly todo recurrence creates the configured future instances');
+assert.equal(await page.locator('.search-field').evaluate(el=>getComputedStyle(el).display),'flex','Todo search field is styled as a compact control');
+assert.ok(parseFloat(await page.locator('.search-field input').evaluate(el=>getComputedStyle(el).height))>=40,'Todo search input keeps a usable touch height');
 await page.screenshot({path:`${previewDir}/08-attivita.png`});
 await page.locator('[data-complete]').first().click();
 await page.locator('[data-go="todo"]').click();

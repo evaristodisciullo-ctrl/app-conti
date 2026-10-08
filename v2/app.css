@@ -57,3 +57,9 @@ body{background:radial-gradient(ellipse at 5% 0%,rgba(85,195,255,.42),transparen
 .form-card .recurrence-options{padding:9px;margin-bottom:10px}
 .form-card .recurrence-options label{margin-bottom:7px!important}
 @media(max-width:380px){.page-header .eds-logo{width:44px;height:44px}.form-card{padding:13px!important}}
+
+.search-field{display:flex;align-items:center;gap:9px;width:100%;margin:0 0 11px;padding:7px 10px;border:1px solid rgba(255,255,255,.92);border-radius:16px;background:#fff;color:#65728c;font-size:13px;font-weight:750;box-shadow:var(--soft-shadow)}
+.search-field input{flex:1;min-width:0;width:100%;height:40px;padding:5px 9px;border:0;border-radius:10px;background:#f4f7ff;color:var(--ink);font-size:14px;box-shadow:none}
+.search-field input:focus-visible{outline:2px solid rgba(54,119,239,.42);outline-offset:-2px}
+html[data-app-theme="dark"] .search-field{background:#232d3c;color:#edf1f8;border-color:#303a4c}
+html[data-app-theme="dark"] .search-field input{background:#1a2230;color:#f2f5fa}
