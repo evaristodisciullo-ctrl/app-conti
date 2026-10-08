@@ -52,15 +52,15 @@ assert.equal(monthEndBalance(recurrence,'2026-11'),30);
 
 assert.equal(formatDateValue('2026-10-09','day'),'9 ottobre 2026');
 assert.equal(formatDateValue('10','monthOnly'),'ottobre');
-assert.equal(formatDateValue('09-10','dayMonth'),'9 ottobre');
+assert.equal(formatDateValue('10-09','dayMonth'),'9 ottobre');
 assert.equal(formatDateValue('2026','year'),'2026');
 assert.equal(matchesMonth({date:'10',datePrecision:'monthOnly'},'2026-10'),true);
 assert.equal(matchesMonth({date:'2026',datePrecision:'year'},'2026-10'),true);
 assert.equal(matchesMonth({date:'2026-11',datePrecision:'month'},'2026-10'),false);
-assert.equal(matchesDateFilter({date:'09-10',datePrecision:'dayMonth'},'10','2026'),true);
+assert.equal(matchesDateFilter({date:'10-09',datePrecision:'dayMonth'},'10','2026'),true);
 assert.equal(matchesDateFilter({date:'10',datePrecision:'monthOnly'},'09','2026'),false);
 assert.ok(dateSortKey({date:'2026-10-09',datePrecision:'day'})>dateSortKey({date:'2026-10',datePrecision:'month'}));
 assert.deepEqual(generateOccurrenceDates('2026','year',{unit:'year',interval:1,end:'count',count:3}),[{date:'2026',index:0},{date:'2027',index:1},{date:'2028',index:2}]);
 assert.deepEqual(generateOccurrenceDates('10-09','dayMonth',{unit:'year',interval:1,end:'count',count:3}),[{date:'10-09',index:0}]);
-const partialNotify={financeNotifications:{enabled:true},entries:[{id:'partial',kind:'income',date:'2026-10',datePrecision:'month',reminder:{enabled:true}},{id:'exact',kind:'income',date:'2026-10-09',datePrecision:'day',reminder:{enabled:true}}],todo:{notifications:{enabled:true},tasks:[{id:'partialTask',date:'09-10',datePrecision:'dayMonth',reminder:{enabled:true}}]}};
+const partialNotify={financeNotifications:{enabled:true},entries:[{id:'partial',kind:'income',date:'2026-10',datePrecision:'month',reminder:{enabled:true}},{id:'exact',kind:'income',date:'2026-10-09',datePrecision:'day',reminder:{enabled:true}}],todo:{notifications:{enabled:true},tasks:[{id:'partialTask',date:'10-09',datePrecision:'dayMonth',reminder:{enabled:true}}]}};
 assert.deepEqual(collectNotificationPlan(partialNotify,new Date('2026-10-01T00:00:00')).map(x=>x.extra.itemId),['exact']);
