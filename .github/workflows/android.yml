@@ -51,15 +51,20 @@ jobs:
           old_apk=$(find /tmp/in-ordine-run198 -type f -name '*.apk' -print -quit)
           new_apk=android/app/build/outputs/apk/debug/app-debug.apk
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
+          echo "Downloaded prior APK path: ${old_apk:-UNAVAILABLE}"
+          echo "Candidate APK path: $new_apk"
+          echo "apksigner path: $apksigner"
           old_info=$("$apksigner" verify --print-certs "$old_apk" 2>&1 || true)
           new_info=$("$apksigner" verify --print-certs "$new_apk" 2>&1 || true)
-          old_cert=$(printf '%s\\n' "$old_info" | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ {print $2; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
-          new_cert=$(printf '%s\\n' "$new_info" | awk -F': ' '/Signer #1 certificate SHA-256 digest:/ {print $2; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+          printf 'Run #198 apksigner output:\\n%s\\n' "$old_info"
+          printf 'Candidate apksigner output:\\n%s\\n' "$new_info"
+          old_cert=$(printf '%s\\n' "$old_info" | grep -Eo '[A-Fa-f0-9]{64}' | head -n1 | tr '[:upper:]' '[:lower:]' || true)
+          new_cert=$(printf '%s\\n' "$new_info" | grep -Eo '[A-Fa-f0-9]{64}' | head -n1 | tr '[:upper:]' '[:lower:]' || true)
           if [ -z "$old_cert" ]; then
-            old_cert=$(keytool -printcert -jarfile "$old_apk" 2>&1 | awk '/SHA256:/ {sub(/^.*SHA256:[[:space:]]*/, ""); print; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+            old_cert=$(keytool -printcert -jarfile "$old_apk" 2>&1 | grep -Eo '([A-Fa-f0-9]{2}:){31}[A-Fa-f0-9]{2}' | head -n1 | tr -d ':' | tr '[:upper:]' '[:lower:]' || true)
           fi
           if [ -z "$new_cert" ]; then
-            new_cert=$(keytool -printcert -jarfile "$new_apk" 2>&1 | awk '/SHA256:/ {sub(/^.*SHA256:[[:space:]]*/, ""); print; exit}' | tr -d ' :\\r' | tr '[:upper:]' '[:lower:]')
+            new_cert=$(keytool -printcert -jarfile "$new_apk" 2>&1 | grep -Eo '([A-Fa-f0-9]{2}:){31}[A-Fa-f0-9]{2}' | head -n1 | tr -d ':' | tr '[:upper:]' '[:lower:]' || true)
           fi
           echo "Run #198 certificate SHA-256: ${old_cert:-UNAVAILABLE}"
           echo "Candidate certificate SHA-256: ${new_cert:-UNAVAILABLE}"
