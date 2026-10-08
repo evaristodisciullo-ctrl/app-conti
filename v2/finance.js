@@ -10,16 +10,21 @@ export function pendingEntries(state){
  return uniqueById(state.entries||[]).filter(item=>!completedIds.has(item.id));
 }
 export function financeTotals(state,kind,ym=null){
- const inMonth=item=>!ym||matchesMonth(item,ym);
+ const inMonth=item=>{if(!ym)return true;const fields=dateFields(item);return Boolean(fields.month)&&matchesMonth(item,ym)};
  const pending=toCents(pendingEntries(state).filter(x=>x.kind===kind&&inMonth(x)).reduce((sum,x)=>sum+Number(x.amount||0),0));
  const done=toCents(completedEntries(state).filter(x=>x.kind===kind&&inMonth(x)).reduce((sum,x)=>sum+Number(x.amount||0),0));
  return {pending:fromCents(pending),done:fromCents(done),total:fromCents(pending+done)};
 }
 export function projectedBalance(state){
- return fromCents(toCents(realBalance(state))+pendingEntries(state).reduce((sum,item)=>sum+toCents(signedAmount(item)),0));
+ // Forecast is intentionally bounded: include every one-off pending item, and
+ // only the next pending occurrence in each recurring series.
+ const pending=pendingEntries(state).filter(item=>dateFields(item).precision!=='none'),oneOff=[],series=new Map();
+ for(const item of pending){const key=item.seriesId||item.recurrenceSource;if(!key){oneOff.push(item);continue}const rows=series.get(key)||[];rows.push(item);series.set(key,rows)}
+ const next=[...series.values()].map(rows=>rows.sort((a,b)=>String(a.date||'9999').localeCompare(String(b.date||'9999')))[0]);
+ return fromCents(toCents(realBalance(state))+[...oneOff,...next].reduce((sum,item)=>sum+toCents(signedAmount(item)),0));
 }
 export function monthEndBalance(state,ym){
- const monthPending=pendingEntries(state).filter(item=>item.date&&['day','month'].includes(dateFields(item).precision)&&matchesMonth(item,ym));
+ const monthPending=pendingEntries(state).filter(item=>Boolean(dateFields(item).month)&&matchesMonth(item,ym));
  return fromCents(toCents(realBalance(state))+monthPending.reduce((sum,item)=>sum+toCents(signedAmount(item)),0));
 }
 export function markCompleted(state,id,completedAt=new Date().toISOString()){

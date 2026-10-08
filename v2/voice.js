@@ -129,7 +129,7 @@ export function parseItalianVoiceEntry(text,{kind='income'}={}){
  const category=categoryMatch?.[1]?.trim()||'',supplier=supplierMatch?.[1]?.trim()||'';
  if(categoryMatch)description=description.replace(categoryMatch[0],' ');
  if(supplierMatch)description=description.replace(supplierMatch[0],' ');
- description=description.replace(/\b(?:euro|€)\b/gi,' ').replace(/[,:;]+/g,' ').replace(/\s+\b(?:il|lo|la|alle|per|di|da)\s*$/i,' ').replace(/\s+/g,' ').trim();
+ description=description.replace(/\b(?:euro|€)\b/gi,' ').replace(/[,:;]+/g,' ').replace(/(?:\s+\b(?:il|lo|la|alle|per|di|da)\s*)+$/i,' ').replace(/\s+/g,' ').trim();
  const fields={description,amount,date:dateFields.date,datePrecision:dateFields.datePrecision,category,supplier,time,recurrenceRule,recurrence:recurrenceRule?({day:'daily',week:'weekly',month:'monthly',year:'yearly'}[recurrenceRule.unit]||'none'):'none',kind};
  const missing=[];if(!description)missing.push('description');if(!(Number.isFinite(amount)&&amount>0)&&kind!=='todo')missing.push('amount');
  return {fields,missing,transcript:source};

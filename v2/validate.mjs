@@ -39,8 +39,12 @@ const checks = [
   ,['notification bell icons use filled section colors', css.includes('.bell-icon{') && css.includes('fill:currentColor')]
   ,['money list cards use a prominent date beneath the description', app.includes('class="money-meta"><span class="date-emphasis">') && css.includes('.money-row .money-meta .date-emphasis{')]
   ,['paired manual and voice buttons share exact dimensions and section colors', css.includes('.list-create-action{height:56px;min-height:56px;max-height:56px') && css.includes('.list-create-action:not(.todo-add-action){') && css.includes('.list-create-action.todo-add-action{')]
-  ,['section-only data deletion lives in section settings', app.includes('id="resetFinance">Cancella tutti i dati economici inseriti') && app.includes('id="resetTodo">Cancella tutte le cose da fare inserite') && !app.includes('id="resetAll"') && !app.includes('data-go="data-management"')]
-  ,['Android SpeechRecognizer is marshalled to main looper and reports actionable errors', speechPlugin.includes('Looper.getMainLooper()') && speechPlugin.includes('mainHandler.post(() -> startListening(call))') && speechPlugin.includes('SpeechRecognizer.ERROR_NETWORK_TIMEOUT')]
+  ,['section deletion tiles live on each section home and stay out of settings', app.includes('finance-reset-action" id="resetFinance') && app.includes('todo-reset-action" id="resetTodo') && !/function settings\(\)\{[^\n]*id="resetFinance"/.test(app) && !/function todoSettings\(\)\{[^\n]*id="resetTodo"/.test(app) && !app.includes('id="resetAll"')]
+  ,['Android speech session exposes real readiness, partial text, retry and confirmation', speechPlugin.includes('onReadyForSpeech(Bundle params) { emitState("ready"') && speechPlugin.includes('onBeginningOfSpeech() { emitState("recording"') && speechPlugin.includes('EXTRA_PARTIAL_RESULTS, true') && speechPlugin.includes('public void retry(') && speechPlugin.includes('public void confirm(') && speechPlugin.includes('Looper.getMainLooper()')]
+  ,['voice dialog waits for a real ready event and requires user confirmation', app.includes("if(state==='ready')status.textContent='Parla ora'") && app.includes('data-voice-confirm') && app.includes('NativeSpeechRecognition.confirm') && app.includes('data-voice-retry') && app.includes('data-voice-cancel')]
+  ,['monthly finance summaries use selected month and bounded recurring forecast', app.includes("financeTotals(state,'income',monthKey())") && app.includes("financeTotals(state,'expense',monthKey())") && finance.includes('only the next pending occurrence in each recurring series')]
+  ,['active Todo defaults to the current month', app.includes('active:{month:currentTodoMonth,year:currentTodoYear}')]
+  ,['real-balance field is blank and current balance is shown separately', app.includes('Saldo attualmente registrato: <b>${euro(realBalance())}</b>') && app.includes('id="balanceValue" inputmode="decimal" value=""')]
 ];
 
 let failed = 0;

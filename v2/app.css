@@ -124,3 +124,23 @@ html[data-app-theme="dark"] .money-meta .date-emphasis{color:#e0e9fb}html[data-a
 html[data-app-theme="dark"] .list-create-action:not(.todo-add-action){background:linear-gradient(105deg,#287be2,#5367d8);color:#fff;border-color:#3979d7}
 html[data-app-theme="dark"] .list-create-action.todo-add-action{background:linear-gradient(105deg,#108c69,#20aa7e);color:#fff;border-color:#148b68}
 html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
+
+/* Requested monthly forecast, section reset tiles and user-controlled voice capture. */
+.forecast-label{display:block}.forecast-help{display:block;margin-top:4px;color:#60738a;font-size:11px;font-weight:600;line-height:1.35}
+.domain-reset-action{min-height:62px;text-align:left;display:flex;align-items:center;gap:12px;border:1px solid #f0c8cb!important;background:linear-gradient(110deg,#fff1f1,#fff9f8)!important;color:#7f2933!important;box-shadow:0 5px 13px rgba(140,42,54,.08)!important}
+.domain-reset-action>span:nth-child(2){flex:1;min-width:0;font-weight:800}.domain-reset-action .link-icon{background:#ffe1e3!important;color:#bf3644!important}.todo-reset-action{border-color:#f0c8cb!important;background:linear-gradient(110deg,#effaf4,#f7fcf9)!important;color:#246849!important}.todo-reset-action .link-icon{background:#ffe4e5!important;color:#bf3644!important}
+.balance-current-info{margin:0 0 11px;padding:10px 12px;border-radius:13px;background:#edf6ff;color:#385773;font-size:13px}.balance-current-info b{display:block;margin-top:4px;color:#173d82;font-size:17px}
+.money-row .money-meta .date-emphasis{white-space:nowrap!important;overflow:visible;overflow-wrap:normal;font-size:15.5px!important;line-height:1.2}
+.voice-capture{width:min(100%,420px);max-height:calc(100dvh - 28px);overflow:auto;padding:20px;border:1px solid #d5e4fb;box-shadow:0 18px 55px rgba(14,44,88,.24)}
+.voice-capture.finance-voice{background:linear-gradient(150deg,#fff 0%,#eff7ff 100%);border-top:5px solid #277fe0}
+.voice-capture.todo-voice{background:linear-gradient(150deg,#fff 0%,#effbf5 100%);border-top:5px solid #13a879}
+.voice-capture h2{font-size:20px;color:#1d3d70}.todo-voice h2{color:#16664d}
+.voice-status{display:flex;align-items:center;gap:9px;margin:10px 0 9px;padding:11px 12px;border-radius:13px;background:#e8f3ff;color:#20579b}.todo-voice .voice-status{background:#e5f7ed;color:#16704e}
+.voice-live-dot{width:11px;height:11px;flex:none;border-radius:50%;background:#90a3ba}.voice-capture:has(.voice-meter.is-listening) .voice-live-dot{background:#e6324a;box-shadow:0 0 0 5px rgba(230,50,74,.14)}
+.voice-meter{--voice-level:.2;display:flex;align-items:center;justify-content:center;gap:5px;height:32px;margin:0 0 12px;color:#2581db;opacity:.32}
+.todo-voice .voice-meter{color:#10a878}.voice-meter i{width:5px;height:8px;border-radius:5px;background:currentColor;transform:scaleY(.55);transition:transform .1s ease}
+.voice-meter.is-listening{opacity:1}.voice-meter.is-listening i{transform:scaleY(var(--voice-level));height:26px}.voice-meter.is-recognizing{opacity:.8}.voice-meter.is-recognizing i{height:8px}
+.voice-transcript-label{display:block;color:#374966;font-size:13px;font-weight:800}.voice-transcript-label textarea{display:block;width:100%;min-height:80px;margin-top:7px;padding:11px;border:1px solid #cbd9ea;border-radius:13px;background:#fff;color:#20324d;font:inherit;font-size:16px;line-height:1.4;resize:vertical}
+.voice-error{margin:10px 0 0;padding:10px 11px;border-radius:12px;background:#fff0f0;color:#9a2633;font-size:13px;line-height:1.4}.voice-error[hidden]{display:none}
+.voice-capture .dialog-actions{grid-template-columns:1fr 1fr}.voice-capture .dialog-actions button:first-child{grid-column:1/-1}.voice-capture .dialog-actions button:disabled{opacity:.48;filter:saturate(.5)}.todo-voice .dialog-actions button:first-child{background:linear-gradient(110deg,#0a9b71,#27b783)}
+@media(max-width:380px){.voice-capture{padding:16px}.voice-capture h2{font-size:18px}.voice-status{padding:9px 10px}.voice-transcript-label textarea{min-height:70px}.domain-reset-action{font-size:13px}}
