@@ -33,6 +33,7 @@ export function matchesDateFilter(item,month='all',year='all'){
  return true;
 }
 export function dateSortKey(item){
+ if(!item.date)return '9999-9999-9999|';
  const f=dateFields(item);
  return [f.year||0,f.month||0,f.day||0].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
 }
