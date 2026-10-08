@@ -4,6 +4,10 @@ import vm from 'node:vm';
 const app = await readFile(new URL('./app.js', import.meta.url), 'utf8');
 const finance = await readFile(new URL('./finance.js', import.meta.url), 'utf8');
 const css = await readFile(new URL('./app.css', import.meta.url), 'utf8');
+const voice = await readFile(new URL('./voice.js', import.meta.url), 'utf8');
+const platform = await readFile(new URL('./platform.js', import.meta.url), 'utf8');
+const manifest = await readFile(new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+const activity = await readFile(new URL('../android/app/src/main/java/it/inordine/app/MainActivity.java', import.meta.url), 'utf8');
 
 const checks = [
   ['viewport uses dynamic height', css.includes('100dvh')],
@@ -26,6 +30,12 @@ const checks = [
   ['backup restore screen is reachable', app.includes("name==='backup'") && app.includes('id=\"importBackup\"')],
   ['theme and app colors are applied', app.includes('dataset.appTheme') && app.includes('dataset.appColor')],
   ['Capacitor Preferences plugin is imported', (await readFile(new URL('./platform.js', import.meta.url), 'utf8')).includes("@capacitor/preferences")]
+  ,['separate voice and manual list actions exist', app.includes('data-voice-create="\'+kind+\'"') && app.includes('manualmente')]
+  ,['voice phrase parser and Italian time parsing exist', voice.includes('parseItalianVoiceEntry') && voice.includes('parseItalianTime')]
+  ,['Android requests microphone permission', manifest.includes('android.permission.RECORD_AUDIO') && activity.includes('NativeSpeechRecognition.class') && platform.includes("registerPlugin('NativeSpeechRecognition')")]
+  ,['voice review form explicitly avoids automatic save', app.includes('Nulla è stato salvato.') && app.includes('Dati riconosciuti:')]
+  ,['finance dates and status use separate readable fields', app.includes('class="money-meta"') && css.includes('.money-meta .date-emphasis')]
+  ,['notification bell icons use filled section colors', css.includes('.bell-icon{') && css.includes('fill:currentColor')]
 ];
 
 let failed = 0;

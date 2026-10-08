@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { parseItalianAmount,parseItalianDate } from '../v2/voice.js';
+import { parseItalianAmount,parseItalianDate,parseItalianTime,parseItalianRecurrence,parseItalianVoiceEntry } from '../v2/voice.js';
 import { formatDateValue, matchesDateFilter, matchesMonth, dateSortKey } from '../v2/date-values.js';
 import { realBalance, projectedBalance, monthEndBalance, financeTotals, markCompleted, undoCompletion, deleteMoneyRecord, adjustCompletedAmount } from '../v2/finance.js';
 import { generateOccurrenceDates, migrateLegacyRecurrences } from '../v2/recurrence.js';
@@ -69,7 +69,15 @@ assert.deepEqual(collectNotificationPlan(partialNotify,new Date('2026-10-01T00:0
 assert.equal(parseItalianAmount('mille e cento euro'),1100);
 assert.equal(parseItalianAmount('1.100,50 euro'),1100.5);
 assert.equal(parseItalianAmount('centoventi'),120);
+assert.deepEqual(parseItalianRecurrence('tutti i mesi'),{unit:'month',interval:1,end:'never'});
+assert.deepEqual(parseItalianRecurrence('ogni 2 settimane'),{unit:'week',interval:2,end:'never'});
+assert.equal(parseItalianTime('alle 10'),'10:00');assert.equal(parseItalianTime('10:35'),'10:35');assert.equal(parseItalianTime('alle dieci e trenta'),'10:30');
+const spokenSalary=parseItalianVoiceEntry('Stipendio 1.100 euro il 10 ottobre, tutti i mesi',{kind:'income'});
+assert.equal(spokenSalary.fields.description,'Stipendio');assert.equal(spokenSalary.fields.amount,1100);assert.equal(spokenSalary.fields.date,'2026-10-10');assert.equal(spokenSalary.fields.datePrecision,'day');assert.deepEqual(spokenSalary.fields.recurrenceRule,{unit:'month',interval:1,end:'never'});assert.deepEqual(spokenSalary.missing,[]);
+const spokenPartial=parseItalianVoiceEntry('Stipendio il 10 ottobre',{kind:'income'});assert.equal(spokenPartial.fields.date,'10-10');assert.equal(spokenPartial.fields.datePrecision,'dayMonth');assert.equal(spokenPartial.fields.amount,null);assert.deepEqual(spokenPartial.missing,['amount']);
+const spokenTodo=parseItalianVoiceEntry('Chiamare il medico domani alle 10',{kind:'todo'});assert.equal(spokenTodo.fields.description,'Chiamare il medico');assert.equal(spokenTodo.fields.datePrecision,'day');assert.equal(spokenTodo.fields.time,'10:00');assert.equal(spokenTodo.fields.amount,null);
 assert.deepEqual(parseItalianDate('9 ottobre 2026','day'),{suffix:'Date',value:'2026-10-09'});
+assert.equal(parseItalianDate('31 febbraio 2026','day'),null,'voice date parsing rejects impossible calendar dates');
 assert.deepEqual(parseItalianDate('9 ottobre','dayMonth'),{suffixes:['DayMonthMonth','DayMonthPart'],values:['10','9']});
 assert.deepEqual(parseItalianDate('ottobre 2026','month'),{suffix:'Month',value:'2026-10'});
 assert.equal(parseItalianDate('9 ottobre','day'),null);

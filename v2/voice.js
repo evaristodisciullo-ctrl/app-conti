@@ -51,11 +51,86 @@ export function parseItalianDate(text,mode){
  const p=spokenParts(source);
  if(iso){p.year=iso[1];p.month=iso[2];p.day=iso[3]}
  if(slash){p.day=String(Number(slash[1])).padStart(2,'0');p.month=String(Number(slash[2])).padStart(2,'0');p.year=slash[3]}
- if(mode==='day'&&p.day&&p.month&&p.year)return {suffix:'Date',value:`${p.year}-${p.month}-${p.day}`};
+ if(mode==='day'&&p.day&&p.month&&p.year){const date=new Date(Date.UTC(Number(p.year),Number(p.month)-1,Number(p.day),12));if(date.getUTCFullYear()!==Number(p.year)||date.getUTCMonth()!==Number(p.month)-1||date.getUTCDate()!==Number(p.day))return null;return {suffix:'Date',value:`${p.year}-${p.month}-${p.day}`}}
  if(mode==='dayOnly'&&p.day)return {suffix:'DayPart',value:String(Number(p.day))};
  if(mode==='monthOnly'&&p.month)return {suffix:'MonthPart',value:p.month};
  if(mode==='year'&&p.year)return {suffix:'YearPart',value:p.year};
- if(mode==='dayMonth'&&p.day&&p.month)return {suffixes:['DayMonthMonth','DayMonthPart'],values:[p.month,String(Number(p.day))]};
+ if(mode==='dayMonth'&&p.day&&p.month&&Number(p.day)<=new Date(Date.UTC(2000,Number(p.month),0)).getUTCDate())return {suffixes:['DayMonthMonth','DayMonthPart'],values:[p.month,String(Number(p.day))]};
  if(mode==='month'&&p.year&&p.month)return {suffix:'Month',value:`${p.year}-${p.month}`};
  return null;
+}
+
+export function parseItalianRecurrence(text){
+ const source=String(text||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ const match=source.match(/\b(?:ogni|tutti\s+(?:i|le))\s+(?:(\d+)\s+)?(giorn[oi]|settiman[ae]|mes[ei]|ann[oi])\b/);
+ if(!match)return null;
+ const unit=/giorn/.test(match[2])?'day':/settiman/.test(match[2])?'week':/mes/.test(match[2])?'month':'year';
+ return {unit,interval:Math.max(1,Number(match[1]||1)),end:'never'};
+}
+export function parseItalianTime(text){
+ const match=String(text||'').toLowerCase().match(/\b(?:alle\s*(\d{1,2})|([01]?\d|2[0-3])[:.]([0-5]\d))\b/);
+ if(!match){
+  const words=String(text||'').toLowerCase().match(/\balle\s+([a-zà-ù]+)(?:\s+e\s+([a-zà-ù]+))?\b/i);
+  if(!words)return null;
+  const hour=parseItalianAmount(words[1]),minute=words[2]?parseItalianAmount(words[2]):0;
+  if(!Number.isInteger(hour)||hour>23||!Number.isInteger(minute)||minute>59)return null;
+  return `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
+ }
+ const hour=Number(match[1]||match[2]),minute=Number(match[3]||0);
+ if(hour>23||minute>59)return null;
+ return `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;
+}
+function parseVoiceDate(text,recurrence){
+ const source=String(text||'').trim();
+ const complete=parseItalianDate(source,'day');
+ if(complete)return {date:complete.value,datePrecision:'day'};
+ const partial=parseItalianDate(source,'dayMonth');
+ if(partial){
+  const month=partial.values[0],day=String(partial.values[1]).padStart(2,'0');
+  if(recurrence)return {date:`${new Date().getFullYear()}-${month}-${day}`,datePrecision:'day'};
+  return {date:`${month}-${day}`,datePrecision:'dayMonth'};
+ }
+ const month=parseItalianDate(source,'month');
+ if(month)return {date:month.value,datePrecision:'month'};
+ const year=parseItalianDate(source,'year');
+ if(year)return {date:year.value,datePrecision:'year'};
+ const lower=source.toLowerCase();
+ if(/\boggi\b|\bdomani\b/.test(lower)){
+  const date=new Date();if(/\bdomani\b/.test(lower))date.setDate(date.getDate()+1);
+  return {date:`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`,datePrecision:'day'};
+ }
+ return {date:'',datePrecision:'none'};
+}
+export function parseItalianVoiceEntry(text,{kind='income'}={}){
+ const source=String(text||'').trim();
+ if(!source)return {fields:{},missing:['description','amount'],transcript:''};
+ const recurrenceRule=parseItalianRecurrence(source);
+ const amountPattern=/(?:\b\d[\d.,]*(?:\s*euro)?\b|\b(?:mille|cento|duecento|trecento|quattrocento|cinquecento|seicento|settecento|ottocento|novecento|venti|trenta|quaranta|cinquanta|sessanta|settanta|ottanta|novanta|uno|una|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|undici|dodici|tredici|quattordici|quindici|diciassette|diciotto|diciannove)(?:[ -]+[a-zà-ù]+)*\s*(?:euro)?\b)/gi;
+ const monthRegex=new RegExp(`\\b(?:[1-9]|[12]\\d|3[01])\\s+(?:${MONTHS.join('|')})(?:\\s+(?:19|20)\\d{2})?\\b`,'i');
+ const fullNumeric=source.match(/\b\d{1,2}[/.]\d{1,2}[/.]\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/);
+ const monthYear=new RegExp(`\\b(?:${MONTHS.join('|')})\\s+(?:19|20)\\d{2}\\b`,'i');
+ const dateMatch=source.match(monthRegex)||source.match(fullNumeric)||source.match(monthYear)||source.match(/\b(?:oggi|domani)\b/i);
+ const datePhrase=dateMatch?.[0]||'';
+ const dateStart=dateMatch?.index??-1,dateEnd=dateStart+(datePhrase.length||0);
+ const amountMatch=kind==='todo'?null:[...source.matchAll(amountPattern)].find(match=>{
+  const start=match.index,end=start+match[0].length;
+  return !(dateStart>=0&&start<dateEnd&&end>dateStart)&&!(/\balle\s*$/i.test(source.slice(Math.max(0,start-8),start)));
+ })||null;
+ const amount=amountMatch?parseItalianAmount(amountMatch[0]):null;
+ const dateFields=datePhrase?parseVoiceDate(datePhrase,recurrenceRule):{date:'',datePrecision:'none'};
+ const time=parseItalianTime(source);
+ let description=source;
+ if(amountMatch)description=description.replace(amountMatch[0],' ');
+ if(datePhrase)description=description.replace(datePhrase,' ');
+ if(recurrenceRule)description=description.replace(/\b(?:ogni|tutti\s+(?:i|le))\s+(?:\d+\s+)?(?:giorn[oi]|settiman[ae]|mes[ei]|ann[oi])\b/i,' ');
+ if(time)description=description.replace(/\balle\s+(?:\d{1,2}(?:[:.]\d{2})?|[a-zà-ù]+(?:\s+e\s+[a-zà-ù]+)?)\b/i,' ').replace(/\b(?:[01]?\d|2[0-3])[:.][0-5]\d\b/i,' ');
+ const categoryMatch=description.match(/\b(?:categoria|per categoria)\s+(.+?)(?=\s+(?:da|presso|alle)\b|$)/i);
+ const supplierMatch=description.match(/\b(?:da|presso)\s+(.+?)(?=\s+(?:categoria|per categoria)\b|$)/i);
+ const category=categoryMatch?.[1]?.trim()||'',supplier=supplierMatch?.[1]?.trim()||'';
+ if(categoryMatch)description=description.replace(categoryMatch[0],' ');
+ if(supplierMatch)description=description.replace(supplierMatch[0],' ');
+ description=description.replace(/\b(?:euro|€)\b/gi,' ').replace(/[,:;]+/g,' ').replace(/\s+\b(?:il|lo|la|alle|per|di|da)\s*$/i,' ').replace(/\s+/g,' ').trim();
+ const fields={description,amount,date:dateFields.date,datePrecision:dateFields.datePrecision,category,supplier,time,recurrenceRule,recurrence:recurrenceRule?({day:'daily',week:'weekly',month:'monthly',year:'yearly'}[recurrenceRule.unit]||'none'):'none',kind};
+ const missing=[];if(!description)missing.push('description');if(!(Number.isFinite(amount)&&amount>0)&&kind!=='todo')missing.push('amount');
+ return {fields,missing,transcript:source};
 }

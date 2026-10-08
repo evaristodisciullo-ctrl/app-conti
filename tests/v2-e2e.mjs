@@ -35,6 +35,15 @@ const financeLogo=await page.locator('.page-header .eds-logo').evaluate(el=>pars
 await page.screenshot({path:previewDir+'/02-conti-overview.png'});
 await page.locator('#setBalance').click();await page.locator('#balanceValue').fill('1000');await page.locator('#balanceForm button[type=submit]').click();
 await page.locator('[data-go="landing"]').click();await page.locator('[data-go="finance-notifications"]').click();await page.locator('#financeNotificationsEnabled').check();await page.locator('#financeNotificationsForm button[type=submit]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
+assert.match(await page.locator('[data-add-money="income"]').innerText(),/Aggiungi entrata manualmente/,'income list exposes the explicit manual action');
+assert.match(await page.locator('[data-voice-create="income"]').innerText(),/Aggiungi entrata con la voce/,'income list exposes voice capture separately');
+await page.evaluate(()=>{window.SpeechRecognition=class{start(){setTimeout(()=>{this.onresult?.({results:[[{transcript:'Stipendio 1.100 euro il 10 ottobre, tutti i mesi'}]]});this.onend?.()},0)}abort(){}}});
+const entriesBeforeVoice=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).entries.length);
+await page.locator('[data-voice-create="income"]').click();await page.waitForSelector('#moneyForm');
+assert.equal(await page.locator('#moneyDescription').inputValue(),'Stipendio');assert.equal(await page.locator('#moneyAmount').inputValue(),'1100');assert.equal(await page.locator('#moneyDate').inputValue(),'2026-10-10');assert.equal(await page.locator('#moneyRecurrence').inputValue(),'monthly');assert.match(await page.locator('[data-voice-message]').innerText(),/Nulla è stato salvato/);
+await page.screenshot({path:`${previewDir}/16-voice-review.png`});
+assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).entries.length),entriesBeforeVoice,'voice recognition only prefills a review form and never saves automatically');
+await page.locator('[data-go="income"]').click();
 await page.locator('[data-add-money="income"]').click();
 await page.locator('#moneyDescription').fill('Stipendio test');
 await page.locator('#moneyAmount').fill('245,50');
@@ -102,6 +111,16 @@ await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-g
 
 // Todo create, recurring instances, completion and restore.
 await page.locator('[data-go="landing"]').click();
+await page.locator('[data-go="todo"]').click();
+await page.locator('[data-go="todo-active"]').click();
+assert.match(await page.locator('[data-go="todo-add"]').innerText(),/Aggiungi cosa da fare manualmente/,'Todo list exposes a separate manual action');
+assert.match(await page.locator('[data-voice-create="todo"]').innerText(),/Aggiungi cosa da fare con la voce/,'Todo list exposes a separate voice action');
+await page.evaluate(()=>{window.SpeechRecognition=class{start(){setTimeout(()=>{this.onresult?.({results:[[{transcript:'Chiamare il medico domani alle 10'}]]});this.onend?.()},0)}abort(){}}});
+const todoCountBeforeVoice=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.tasks.length);
+await page.locator('[data-voice-create="todo"]').click();await page.waitForSelector('#todoForm');
+assert.equal(await page.locator('#todoDescription').inputValue(),'Chiamare il medico');assert.ok(await page.locator('#todoDate').inputValue());assert.equal(await page.locator('#todoReminderTime').inputValue(),'10:00');assert.equal(await page.locator('#todoNotify').isChecked(),true);
+assert.doesNotMatch(await page.locator('[data-voice-message]').innerText(),/importo mancante/,'Todo voice review does not request an irrelevant amount');
+assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.tasks.length),todoCountBeforeVoice,'Todo voice capture requires an explicit save');await page.screenshot({path:`${previewDir}/17-todo-voice-review.png`});
 await page.locator('[data-go="todo"]').click();
 await page.waitForFunction(()=>{const i=document.querySelector('.todo-art');return i?.complete&&i.naturalWidth>0});
 await page.screenshot({path:`${previewDir}/07-cose-da-fare.png`});
