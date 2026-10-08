@@ -2,6 +2,8 @@ package it.inordine.app;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -20,6 +22,7 @@ import com.getcapacitor.annotation.PermissionCallback;
     permissions = {@Permission(alias = "audio", strings = {Manifest.permission.RECORD_AUDIO})}
 )
 public class NativeSpeechRecognition extends Plugin {
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private SpeechRecognizer recognizer;
     private PluginCall listeningCall;
 
@@ -44,6 +47,12 @@ public class NativeSpeechRecognition extends Plugin {
     }
 
     private void startListening(PluginCall call) {
+        // SpeechRecognizer is a main-looper-only Android API. Plugin calls may be
+        // dispatched from Capacitor's bridge executor, so always marshal it here.
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post(() -> startListening(call));
+            return;
+        }
         stopRecognizer(false);
         listeningCall = call;
         try {
@@ -60,7 +69,7 @@ public class NativeSpeechRecognition extends Plugin {
                 PluginCall active = listeningCall;
                 listeningCall = null;
                 stopRecognizer(false);
-                if (active != null) active.reject("Speech recognition failed: " + error, "RECOGNITION_ERROR");
+                if (active != null) active.reject(errorMessage(error), errorCode(error));
             }
             @Override public void onResults(Bundle results) {
                 PluginCall active = listeningCall;
@@ -93,24 +102,53 @@ public class NativeSpeechRecognition extends Plugin {
 
     @PluginMethod
     public void cancel(PluginCall call) {
-        PluginCall active = listeningCall;
-        listeningCall = null;
-        stopRecognizer(true);
-        if (active != null) active.reject("Speech recognition cancelled", "CANCELLED");
-        call.resolve();
+        mainHandler.post(() -> {
+            PluginCall active = listeningCall;
+            listeningCall = null;
+            stopRecognizer(true);
+            if (active != null) active.reject("Speech recognition cancelled", "CANCELLED");
+            call.resolve();
+        });
     }
 
     private void stopRecognizer(boolean cancel) {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mainHandler.post(() -> stopRecognizer(cancel));
+            return;
+        }
         if (recognizer == null) return;
-        if (cancel) recognizer.cancel();
-        recognizer.destroy();
+        try {
+            if (cancel) recognizer.cancel();
+        } catch (RuntimeException ignored) { }
+        try { recognizer.destroy(); } catch (RuntimeException ignored) { }
         recognizer = null;
+    }
+
+    private static String errorCode(int error) {
+        switch (error) {
+            case SpeechRecognizer.ERROR_NETWORK: return "NETWORK";
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: return "NETWORK_TIMEOUT";
+            case SpeechRecognizer.ERROR_AUDIO: return "AUDIO_ERROR";
+            case SpeechRecognizer.ERROR_CLIENT: return "CLIENT_ERROR";
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: return "BUSY";
+            case SpeechRecognizer.ERROR_SERVER: return "SERVER_ERROR";
+            case SpeechRecognizer.ERROR_NO_MATCH: return "NO_MATCH";
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: return "NO_SPEECH";
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "PERMISSION_DENIED";
+            default: return "RECOGNITION_ERROR";
+        }
+    }
+
+    private static String errorMessage(int error) {
+        return "Speech recognition failed (Android error " + error + "): " + errorCode(error);
     }
 
     @Override
     protected void handleOnDestroy() {
-        listeningCall = null;
-        stopRecognizer(true);
+        mainHandler.post(() -> {
+            listeningCall = null;
+            stopRecognizer(true);
+        });
         super.handleOnDestroy();
     }
 }

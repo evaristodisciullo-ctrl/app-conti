@@ -101,3 +101,26 @@ html[data-app-theme="dark"] .money-meta .date-emphasis{color:#e0e9fb}html[data-a
 .task small.money-meta{display:grid}.wide.voice-add-action>span.action-mic{flex:0 0 35px}
 .money-meta{grid-template-columns:minmax(0,1fr);gap:3px}.money-meta .date-emphasis,.money-meta .money-category,.money-meta .entry-status{grid-column:1}.money-meta .entry-status{justify-self:start}
 .form-card .voice-button{background:#edf4ff!important;color:#246ac5!important;border-color:#c9dcff!important;box-shadow:none!important}.todo-head~.form-card .voice-button{background:#e9f8f0!important;color:#11815d!important;border-color:#c9ead9!important}.todo-head~.form-card .voice-message{background:#e9f8f0;color:#205e45}
+
+/* Requested list layout: paired actions and clear date-first money cards. */
+.list-create-action{height:56px;min-height:56px;max-height:56px;margin:8px 0 0;flex:none;border-radius:17px;font-size:14px;font-weight:820}
+.list-create-action .action-plus,.list-create-action .action-mic{width:34px;height:34px;flex:0 0 34px}
+.list-create-action:not(.todo-add-action){border:1px solid #3979d7;background:linear-gradient(105deg,#287be2,#5367d8);color:#fff;box-shadow:0 7px 16px rgba(49,105,210,.17)}
+.list-create-action:not(.todo-add-action) .action-plus{background:rgba(255,255,255,.2);color:#fff}
+.list-create-action:not(.todo-add-action) .action-mic{background:rgba(255,255,255,.2);color:#fff}
+.list-create-action.todo-add-action{border:1px solid #148b68;background:linear-gradient(105deg,#108c69,#20aa7e);color:#fff;box-shadow:0 7px 16px rgba(18,143,105,.17)}
+.list-create-action.todo-add-action .action-plus{background:rgba(255,255,255,.2);color:white}
+.list-create-action.todo-add-action .action-mic{background:rgba(255,255,255,.2);color:white}
+.money-row{align-items:center;gap:12px;min-height:88px;padding:12px 14px}
+.money-row>div:first-child{flex:1;min-width:0}
+.money-row>div:first-child>b{font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.money-row small.money-meta{display:block;margin-top:6px!important;overflow:visible}
+.money-row .money-meta .date-emphasis{display:block;color:#263b61;font-size:16px!important;font-weight:850;line-height:1.25;white-space:normal}
+.money-row .money-actions{display:flex;flex:none;flex-direction:column;align-items:flex-end;gap:7px;max-width:52%}
+.money-row .money-actions strong{font-size:15px;line-height:1.1}
+.money-row .money-actions button{min-height:36px;padding:7px 10px;font-size:11px}
+.money-row .money-actions .danger{margin:0!important}
+@media(max-width:380px){.list-create-action{font-size:13px;padding:9px 11px}.money-row{gap:8px;padding:11px}.money-row .money-meta .date-emphasis{font-size:15px!important}.money-row .money-actions{max-width:54%}.money-row .money-actions button{padding:7px 8px;font-size:10.5px}}
+html[data-app-theme="dark"] .list-create-action:not(.todo-add-action){background:linear-gradient(105deg,#287be2,#5367d8);color:#fff;border-color:#3979d7}
+html[data-app-theme="dark"] .list-create-action.todo-add-action{background:linear-gradient(105deg,#108c69,#20aa7e);color:#fff;border-color:#148b68}
+html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}

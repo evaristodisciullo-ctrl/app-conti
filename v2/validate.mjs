@@ -8,6 +8,7 @@ const voice = await readFile(new URL('./voice.js', import.meta.url), 'utf8');
 const platform = await readFile(new URL('./platform.js', import.meta.url), 'utf8');
 const manifest = await readFile(new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
 const activity = await readFile(new URL('../android/app/src/main/java/it/inordine/app/MainActivity.java', import.meta.url), 'utf8');
+const speechPlugin = await readFile(new URL('../android/app/src/main/java/it/inordine/app/NativeSpeechRecognition.java', import.meta.url), 'utf8');
 
 const checks = [
   ['viewport uses dynamic height', css.includes('100dvh')],
@@ -36,6 +37,10 @@ const checks = [
   ,['voice review form explicitly avoids automatic save', app.includes('Nulla è stato salvato.') && app.includes('Dati riconosciuti:')]
   ,['finance dates and status use separate readable fields', app.includes('class="money-meta"') && css.includes('.money-meta .date-emphasis')]
   ,['notification bell icons use filled section colors', css.includes('.bell-icon{') && css.includes('fill:currentColor')]
+  ,['money list cards use a prominent date beneath the description', app.includes('class="money-meta"><span class="date-emphasis">') && css.includes('.money-row .money-meta .date-emphasis{')]
+  ,['paired manual and voice buttons share exact dimensions and section colors', css.includes('.list-create-action{height:56px;min-height:56px;max-height:56px') && css.includes('.list-create-action:not(.todo-add-action){') && css.includes('.list-create-action.todo-add-action{')]
+  ,['section-only data deletion lives in section settings', app.includes('id="resetFinance">Cancella tutti i dati economici inseriti') && app.includes('id="resetTodo">Cancella tutte le cose da fare inserite') && !app.includes('id="resetAll"') && !app.includes('data-go="data-management"')]
+  ,['Android SpeechRecognizer is marshalled to main looper and reports actionable errors', speechPlugin.includes('Looper.getMainLooper()') && speechPlugin.includes('mainHandler.post(() -> startListening(call))') && speechPlugin.includes('SpeechRecognizer.ERROR_NETWORK_TIMEOUT')]
 ];
 
 let failed = 0;
