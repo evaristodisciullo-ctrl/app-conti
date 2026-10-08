@@ -5,7 +5,7 @@ import { extname, resolve, sep } from 'node:path';
 import { chromium } from 'playwright';
 
 const sizes = [[360,800],[390,844],[412,915],[430,932]];
-const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.json':'application/json'};
+const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.json':'application/json'};
 const root=resolve('www');
 const server=createServer(async(req,res)=>{try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname),file=resolve(root,path==='/'?'index.html':'.'+path);if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403).end();return}const data=await readFile(file);res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream','cache-control':'no-store'}).end(data)}catch{res.writeHead(404).end('Not found')}});
 await new Promise((ok,fail)=>{server.once('error',fail);server.listen(4173,'127.0.0.1',ok)});
@@ -19,7 +19,7 @@ await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
 await page.evaluate(()=>localStorage.clear());
 await page.reload();
 await page.waitForSelector('.brand-logo');
-assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');
+assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');const homeLogo=await page.locator('.brand-logo').boundingBox(),homeTag=await page.locator('.brand-top .eyebrow').boundingBox(),homeBrand=await page.locator('.brand').boundingBox();assert.ok(homeLogo.x>homeBrand.x+homeBrand.width*.68,'combined E.D.S. logo is placed at the upper right of the Home card');assert.ok(homeLogo.x+homeLogo.width<=homeBrand.x+homeBrand.width-10,'Home logo stays inside the main card');assert.ok(homeLogo.x>homeTag.x+homeTag.width-6,'Home logo does not cover the tagline');assert.equal(await page.locator('.brand-logo').getAttribute('src'),'../assets/eds-blue-green-overlap.jpg');
 await page.waitForFunction(()=>{const i=document.querySelector('.home-art');return i?.complete&&i.naturalWidth>0});
 assert.equal(await page.locator('.home-pair').count(),2,'Home separates finance and Todo areas');
 assert.equal(await page.locator('.home-pair .home-area + .home-pair-notice').count(),2,'each notification button sits below its own Home card');
