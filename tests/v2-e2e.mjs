@@ -21,8 +21,8 @@ await page.reload();
 await page.waitForSelector('.brand-logo');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');
 const homeLogo=await page.locator('.brand-logo').boundingBox(),homeTag=await page.locator('.brand-top .eyebrow').boundingBox(),homeBrand=await page.locator('.brand').boundingBox();
-assert.ok(homeLogo.width>=72&&homeLogo.height>=68,'combined E.D.S. Home logo is larger than the previous mark');
-assert.ok(homeLogo.x>homeBrand.x+homeBrand.width*.72,'combined E.D.S. logo is at the upper right of the Home card');
+assert.ok(homeLogo.width>=84&&homeLogo.height>=84,'combined E.D.S. Home logo is slightly larger than the previous mark');
+assert.ok(homeLogo.x+homeLogo.width*.5>homeBrand.x+homeBrand.width*.72,'combined E.D.S. logo is at the upper right of the Home card');
 assert.ok(homeLogo.x+homeLogo.width<=homeBrand.x+homeBrand.width-8,'Home logo stays inside the main card');
 assert.ok(homeLogo.y>=homeBrand.y+8&&homeLogo.y+homeLogo.height<=homeBrand.y+homeBrand.height-8,'full Home logo remains inside the card without vertical clipping');
 assert.ok(homeLogo.x>homeTag.x+homeTag.width+8,'Home logo does not cover the tagline');
@@ -32,6 +32,16 @@ assert.equal(await page.locator('.brand-logo').evaluate(i=>{const r=i.getBoundin
 await page.waitForFunction(()=>{const i=document.querySelector('.home-art');return i?.complete&&i.naturalWidth>0});
 assert.equal(await page.locator('.home-pair').count(),2,'Home separates finance and Todo areas');
 assert.equal(await page.locator('.home-pair .home-area + .home-pair-notice').count(),2,'each notification button sits below its own Home card');
+for(const [width,height] of sizes){
+ await page.setViewportSize({width,height});
+ const layout=await page.locator('.brand-logo').evaluate(el=>{const r=el.getBoundingClientRect(),card=el.closest('.brand').getBoundingClientRect(),tag=el.closest('.brand').querySelector('.brand-top .eyebrow').getBoundingClientRect();return {complete:el.complete&&el.naturalWidth>0,logo:{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom},card:{x:card.x,y:card.y,right:card.right,bottom:card.bottom,w:card.width},tag:{right:tag.right},hits:[[r.left+4,r.top+4],[r.right-4,r.top+4],[r.left+4,r.bottom-4],[r.right-4,r.bottom-4],[r.left+r.width/2,r.top+r.height/2]].map(([x,y])=>document.elementFromPoint(x,y)===el)}});
+ assert.equal(layout.complete,true,`E.D.S. logo loads at Android viewport ${width}x${height}`);
+ assert.ok(layout.logo.w>=84&&layout.logo.h>=84,`E.D.S. logo remains enlarged at Android viewport ${width}x${height}`);
+ assert.ok(layout.logo.x>=layout.card.x&&layout.logo.right<=layout.card.right&&layout.logo.y>=layout.card.y&&layout.logo.bottom<=layout.card.bottom,`E.D.S. logo stays within hero at Android viewport ${width}x${height}: ${JSON.stringify(layout)}`);
+ assert.ok(layout.tag.right+4<layout.logo.x,`E.D.S. logo does not overlap the tagline at Android viewport ${width}x${height}`);
+ assert.ok(layout.hits.every(Boolean),`logo is not covered at Android viewport ${width}x${height}`);
+}
+await page.setViewportSize({width:390,height:844});
 const homeLogoPaint=await page.locator('.brand-logo').evaluate(el=>{const r=el.getBoundingClientRect(),brand=el.closest('.brand').getBoundingClientRect(),cs=getComputedStyle(el);const points=[[r.left+4,r.top+4],[r.right-4,r.top+4],[r.left+4,r.bottom-4],[r.right-4,r.bottom-4],[r.left+r.width/2,r.top+r.height/2]];return {complete:el.complete&&el.naturalWidth>0,width:r.width,height:r.height,inside:r.left>=brand.left&&r.right<=brand.right&&r.top>=brand.top&&r.bottom<=brand.bottom,objectFit:cs.objectFit,clipPath:cs.clipPath,topHits:points.map(([x,y])=>document.elementsFromPoint(x,y)[0]===el)}});assert.equal(homeLogoPaint.complete,true,'Home E.D.S. logo image loads');assert.ok(homeLogoPaint.width>=82&&homeLogoPaint.height>=82,'Home E.D.S. logo is slightly larger than the original');assert.equal(homeLogoPaint.inside,true,'Home E.D.S. logo remains fully within the main card');assert.equal(homeLogoPaint.objectFit,'contain','Home E.D.S. logo preserves the full image proportions');assert.equal(homeLogoPaint.clipPath,'none','Home E.D.S. logo has no CSS clip path');assert.ok(homeLogoPaint.topHits.every(Boolean),`all sampled points across the Home logo paint above neighboring elements: ${JSON.stringify(homeLogoPaint)}`);
 await page.screenshot({path:`${previewDir}/01-home.png`});
 
