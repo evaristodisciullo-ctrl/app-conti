@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { realBalance, projectedBalance, monthEndBalance, financeTotals, markCompleted, undoCompletion, deleteMoneyRecord, adjustCompletedAmount } from '../v2/finance.js';
 import { generateOccurrenceDates, migrateLegacyRecurrences } from '../v2/recurrence.js';
 import { collectNotificationPlan } from '../v2/notifications.js';
 const monthly=generateOccurrenceDates('2024-01-31','day',{unit:'month',interval:1,end:'count',count:4});
