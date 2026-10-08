@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { parseItalianAmount,parseItalianDate } from '../v2/voice.js';
 import { formatDateValue, matchesDateFilter, matchesMonth, dateSortKey } from '../v2/date-values.js';
 import { realBalance, projectedBalance, monthEndBalance, financeTotals, markCompleted, undoCompletion, deleteMoneyRecord, adjustCompletedAmount } from '../v2/finance.js';
 import { generateOccurrenceDates, migrateLegacyRecurrences } from '../v2/recurrence.js';
@@ -64,3 +65,11 @@ assert.deepEqual(generateOccurrenceDates('2026','year',{unit:'year',interval:1,e
 assert.deepEqual(generateOccurrenceDates('10-09','dayMonth',{unit:'year',interval:1,end:'count',count:3}),[{date:'10-09',index:0}]);
 const partialNotify={financeNotifications:{enabled:true},entries:[{id:'partial',kind:'income',date:'2026-10',datePrecision:'month',reminder:{enabled:true}},{id:'exact',kind:'income',date:'2026-10-09',datePrecision:'day',reminder:{enabled:true}}],todo:{notifications:{enabled:true},tasks:[{id:'partialTask',date:'10-09',datePrecision:'dayMonth',reminder:{enabled:true}}]}};
 assert.deepEqual(collectNotificationPlan(partialNotify,new Date('2026-10-01T00:00:00')).map(x=>x.extra.itemId),['exact']);
+
+assert.equal(parseItalianAmount('mille e cento euro'),1100);
+assert.equal(parseItalianAmount('1.100,50 euro'),1100.5);
+assert.equal(parseItalianAmount('centoventi'),120);
+assert.deepEqual(parseItalianDate('9 ottobre 2026','day'),{suffix:'Date',value:'2026-10-09'});
+assert.deepEqual(parseItalianDate('9 ottobre','dayMonth'),{suffixes:['DayMonthMonth','DayMonthPart'],values:['10','9']});
+assert.deepEqual(parseItalianDate('ottobre 2026','month'),{suffix:'Month',value:'2026-10'});
+assert.equal(parseItalianDate('9 ottobre','day'),null);
