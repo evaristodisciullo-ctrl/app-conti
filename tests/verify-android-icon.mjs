@@ -42,6 +42,7 @@ const originalPath=entries.find(p=>p.startsWith('res/drawable-nodpi')&&p.endsWit
 assert.ok(originalPath,'original E.D.S. image is present in the compiled APK');
 const packaged=execFileSync('unzip',['-p',apk,originalPath]);
 const original=readFileSync('assets/eds-blue-green-overlap.jpg');
+assert.equal(digest(original),'325a653c26de4a3afc7ca6c6cd06592df5924e7ac5fd98b7cea446540dc49caa','original E.D.S. overlap artwork is the complete approved square composite');
 
 assert.equal(digest(packaged),digest(original),'APK contains the exact original image bytes');
 

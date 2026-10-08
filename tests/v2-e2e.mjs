@@ -28,6 +28,10 @@ assert.ok(homeLogo.y>=homeBrand.y+8&&homeLogo.y+homeLogo.height<=homeBrand.y+hom
 assert.ok(homeLogo.x>homeTag.x+homeTag.width+8,'Home logo does not cover the tagline');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>getComputedStyle(i).objectFit),'contain','Home logo preserves the complete original composition');
 assert.equal(await page.locator('.brand-logo').getAttribute('src'),'./assets/eds-blue-green-overlap.jpg');
+const logoPixels=await page.locator('.brand-logo').evaluate(el=>{const canvas=document.createElement('canvas');canvas.width=el.naturalWidth;canvas.height=el.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(el,0,0);const pixel=(x,y)=>Array.from(ctx.getImageData(x,y,1,1).data);return {size:[canvas.width,canvas.height],blue:pixel(80,270),green:pixel(475,470)}});
+assert.deepEqual(logoPixels.size,[512,512],'Home E.D.S. composite keeps its full square image');
+assert.ok(logoPixels.blue[2]>logoPixels.blue[0]*3&&logoPixels.blue[2]>logoPixels.blue[1]*2,'Home logo visibly contains its blue E.D.S. mark');
+assert.ok(logoPixels.green[1]>logoPixels.green[0]*3&&logoPixels.green[1]>logoPixels.green[2]*1.6,'Home logo visibly contains its green E.D.S. mark');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>{const r=i.getBoundingClientRect();return document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)===i}),true,'Home logo is not covered by another element');
 await page.waitForFunction(()=>{const i=document.querySelector('.home-art');return i?.complete&&i.naturalWidth>0});
 assert.equal(await page.locator('.home-pair').count(),2,'Home separates finance and Todo areas');
