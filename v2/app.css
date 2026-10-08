@@ -144,3 +144,55 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .voice-error{margin:10px 0 0;padding:10px 11px;border-radius:12px;background:#fff0f0;color:#9a2633;font-size:13px;line-height:1.4}.voice-error[hidden]{display:none}
 .voice-capture .dialog-actions{grid-template-columns:1fr 1fr}.voice-capture .dialog-actions button:first-child{grid-column:1/-1}.voice-capture .dialog-actions button:disabled{opacity:.48;filter:saturate(.5)}.todo-voice .dialog-actions button:first-child{background:linear-gradient(110deg,#0a9b71,#27b783)}
 @media(max-width:380px){.voice-capture{padding:16px}.voice-capture h2{font-size:18px}.voice-status{padding:9px 10px}.voice-transcript-label textarea{min-height:70px}.domain-reset-action{font-size:13px}}
+
+/* Compact only the two approved section home screens; preserve a safe scroll fallback. */
+@media(min-height:701px){
+ .finance-home-screen .page-header,.todo-home-screen .page-header{min-height:68px;margin-bottom:8px;padding:9px 12px;border-radius:21px}
+ .finance-home-screen .page-header>button,.todo-home-screen .page-header>button{width:38px;height:38px}
+ .finance-home-screen .finance-actions{gap:8px;margin:2px 0 9px}
+ .finance-home-screen .finance-tile{border-radius:20px}
+ .finance-home-screen .finance-art-frame{height:82px;padding:4px 5px 0}
+ .finance-home-screen .finance-tile-copy{padding:6px 9px 8px}
+ .finance-home-screen .finance-tile-copy b{font-size:15px}
+ .finance-home-screen .finance-tile-copy small{margin-top:2px;font-size:10px}
+ .finance-home-screen .finance-arrow{right:8px;bottom:8px;width:28px;height:28px;font-size:21px}
+ .finance-home-screen .section-kicker,.todo-home-screen .section-kicker{margin:1px 4px 6px;font-size:12px}
+ .finance-home-screen .balance{padding:9px 12px 10px;border-radius:19px}
+ .finance-home-screen .balance-art-wrap{grid-template-columns:minmax(0,1fr) minmax(70px,28%);min-height:64px;gap:4px}
+ .finance-home-screen .balance-art{height:68px}
+ .finance-home-screen .balance-icon{width:23px;height:23px}
+ .finance-home-screen .balance strong{margin:4px 0 3px;font-size:clamp(25px,7vw,31px)}
+ .finance-home-screen .forecast-label{gap:2px 8px;padding-top:6px;font-size:11px}
+ .finance-home-screen .forecast-help{margin-top:2px;font-size:10px;line-height:1.25}
+ .finance-home-screen .balance .balance-update-button{min-height:44px!important;margin:7px 0 0!important;padding:8px 11px!important;border-radius:13px!important;font-size:14px!important}
+ .finance-home-screen .finance-metrics-separated{margin:8px 0!important;padding:9px!important;border-radius:18px}
+ .finance-home-screen .finance-summary-metrics{gap:6px}
+ .finance-home-screen .finance-summary-metrics span{padding:7px 9px;font-size:11px}
+ .finance-home-screen .finance-summary-metrics b{margin-top:2px;font-size:14px}
+ .finance-home-screen .quick-links{gap:6px;margin-top:8px}
+ .finance-home-screen .quick-links .wide{min-height:47px;padding:7px 10px;border-radius:15px;font-size:13px}
+ .finance-home-screen .quick-links .wide small{margin-top:2px;font-size:10px}
+ .finance-home-screen .quick-links .link-icon{width:31px;height:31px;border-radius:10px;font-size:16px}
+ .finance-home-screen .domain-reset-action{min-height:47px}
+ .todo-home-screen .todo-hero{margin:2px 0 7px;padding-bottom:7px;border-radius:20px}
+ .todo-home-screen .todo-art-frame{height:116px;padding:4px 10px 0}
+ .todo-home-screen .todo-hero p{margin:0 9px;padding:6px 8px;border-radius:12px;font-size:11px}
+ .todo-home-screen .todo-kicker{font-size:13px}
+ .todo-home-screen .todo-areas{gap:8px;margin-bottom:8px}
+ .todo-home-screen .todo-areas .area-card{min-height:100px;padding:10px 11px;border-radius:19px}
+ .todo-home-screen .todo-areas .tile-icon{width:29px;height:29px;border-radius:10px;font-size:17px}
+ .todo-home-screen .todo-areas .area-card b{margin-top:6px;font-size:14px}
+ .todo-home-screen .todo-areas .area-card small{margin-top:3px;font-size:10px;line-height:1.25}
+ .todo-home-screen .todo-areas .area-card strong{top:43px;right:11px;font-size:21px}
+ .todo-home-screen .todo-areas .tile-arrow{right:11px;top:13px;font-size:20px}
+ .todo-home-screen .primary-action{min-height:48px;margin-top:7px;padding:7px 11px;border-radius:16px}
+ .todo-home-screen .primary-action .action-plus{width:31px;height:31px;border-radius:10px;font-size:23px}
+ .todo-home-screen .settings-action{min-height:46px;margin-top:6px;padding:7px 10px;border-radius:15px;font-size:13px}
+ .todo-home-screen .settings-action .link-icon{width:31px;height:31px;border-radius:10px;font-size:16px}
+ .todo-home-screen .settings-action small{margin-top:2px;font-size:10px}
+ .todo-home-screen .domain-reset-action{min-height:46px}
+}
+@media(max-height:700px){
+ .finance-home-screen .finance-art-frame{height:104px}
+ .todo-home-screen .todo-art-frame{height:155px}
+}

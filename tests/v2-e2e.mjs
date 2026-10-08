@@ -230,6 +230,19 @@ for(const [width,height] of sizes){
   console.log(`PASS responsive ${width}x${height}: ${routeChecks.length} screens, no horizontal overflow or missing logo`);
 }
 
+for(const [width,height] of [[390,844],[412,915]]){
+  await page.setViewportSize({width,height});
+  await openV2Route('money');await page.evaluate(()=>scrollTo(0,0));
+  await page.screenshot({path:`${previewDir}/15-conti-home-compact-${width}.png`});
+  const moneyBounds=await page.evaluate(()=>{const x=document.querySelector('.finance-home-screen'),r=x.getBoundingClientRect(),shell=getComputedStyle(document.querySelector('.app-shell'));return {top:r.top,bottom:r.bottom,available:innerHeight-parseFloat(shell.paddingBottom),images:[...x.querySelectorAll('img')].every(i=>i.complete&&i.naturalWidth>0),tiles:x.querySelectorAll('.finance-tile').length,links:x.querySelectorAll('.quick-links .wide').length}});
+  assert.equal(moneyBounds.tiles,2,'compact finance home retains both illustrated entry tiles');assert.equal(moneyBounds.links,3,'compact finance home retains movements, settings and section reset');assert.ok(moneyBounds.images,'compact finance home loads every existing illustration and logo');assert.ok(moneyBounds.top>=0&&moneyBounds.bottom<=moneyBounds.available+1,`finance home fits without clipping at ${width}x${height}: ${JSON.stringify(moneyBounds)}`);
+  await openV2Route('todo');await page.evaluate(()=>scrollTo(0,0));
+  await page.screenshot({path:`${previewDir}/18-cose-da-fare-home-compact-${width}.png`});
+  const todoBounds=await page.evaluate(()=>{const x=document.querySelector('.todo-home-screen'),r=x.getBoundingClientRect(),shell=getComputedStyle(document.querySelector('.app-shell'));return {top:r.top,bottom:r.bottom,available:innerHeight-parseFloat(shell.paddingBottom),image:x.querySelector('.todo-art')?.complete&&x.querySelector('.todo-art')?.naturalWidth>0,tiles:x.querySelectorAll('.todo-areas .area-card').length,actions:x.querySelectorAll('.primary-action,.settings-action').length}});
+  assert.equal(todoBounds.tiles,2,'compact Todo home retains both activity tiles');assert.equal(todoBounds.actions,4,'compact Todo home retains add, notifications, settings and reset');assert.ok(todoBounds.image,'compact Todo home loads its existing illustration');assert.ok(todoBounds.top>=0&&todoBounds.bottom<=todoBounds.available+1,`Todo home fits without clipping at ${width}x${height}: ${JSON.stringify(todoBounds)}`);
+}
+console.log('PASS compact principal screens: finance and Todo fit at 390x844 and 412x915 with every tile, action, logo and image present');
+
 // Real reinitialization readback of saved finances, Todo items and preferences.
 const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));
 assert.equal(saved.balance,1150);

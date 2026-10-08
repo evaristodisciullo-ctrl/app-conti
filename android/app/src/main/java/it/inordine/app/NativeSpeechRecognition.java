@@ -87,6 +87,9 @@ public class NativeSpeechRecognition extends Plugin {
             intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, false);
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
             intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 1500L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 9000L);
             recognizer.startListening(intent);
             emitState("starting", "", "");
         } catch (RuntimeException error) {
@@ -106,6 +109,20 @@ public class NativeSpeechRecognition extends Plugin {
     @PluginMethod
     public void retry(PluginCall call) {
         mainHandler.post(() -> { latestTranscript = ""; emitState("starting", "", ""); startListening(); call.resolve(); });
+    }
+
+    @PluginMethod
+    public void finish(PluginCall call) {
+        mainHandler.post(() -> {
+            if (recognizer == null) {
+                JSObject data = new JSObject(); data.put("transcript", latestTranscript); data.put("isFinal", true);
+                notifyListeners("speechTranscript", data); emitState("review", "", "");
+            } else {
+                try { recognizer.stopListening(); emitState("recognizing", "", ""); }
+                catch (RuntimeException error) { emitState("error", "STOP_FAILED", "Impossibile terminare l’ascolto"); }
+            }
+            call.resolve();
+        });
     }
 
     @PluginMethod
