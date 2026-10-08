@@ -6,41 +6,51 @@ import { join } from 'node:path';
 
 const apk='android/app/build/outputs/apk/debug/app-debug.apk';
 const manifest=readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
-const adaptive=readFileSync('android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml','utf8');
-const adaptiveRound=readFileSync('android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml','utf8');
+const adaptive=readFileSync('android/app/src/main/res/mipmap-anydpi-v26/eds_launcher.xml','utf8');
+const adaptiveRound=readFileSync('android/app/src/main/res/mipmap-anydpi-v26/eds_launcher_round.xml','utf8');
 const foreground=readFileSync('android/app/src/main/res/drawable/eds_launcher_foreground.xml','utf8');
-assert.match(manifest,/android:icon="@mipmap\/ic_launcher"/);
-assert.match(manifest,/android:roundIcon="@mipmap\/ic_launcher_round"/);
-assert.match(adaptive,/@drawable\/eds_launcher_foreground/);
-assert.match(adaptiveRound,/@drawable\/eds_launcher_foreground/);
-assert.match(foreground,/@drawable\/eds_blue_green_original/);
-assert.match(foreground,/android:insetLeft="16dp"/);
+assert.ok(manifest.includes('android:icon="@mipmap/eds_launcher"'));
+assert.ok(manifest.includes('android:roundIcon="@mipmap/eds_launcher_round"'));
+assert.ok(adaptive.includes('@drawable/eds_launcher_foreground'));
+assert.ok(adaptiveRound.includes('@drawable/eds_launcher_foreground'));
+assert.ok(foreground.includes('@drawable/eds_blue_green_original'));
+assert.ok(!foreground.includes('android_robot')&&!foreground.includes('ic_launcher_background'));
+assert.ok(!readFileSync('android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml','utf8').includes('android_robot'));
 
 const entries=execFileSync('unzip',['-Z1',apk],{encoding:'utf8'}).trim().split('\n');
-const imagePath=entries.find(p=>/^res\/drawable-nodpi(?:-v\d+)?\/eds_blue_green_original\.jpg$/.test(p));
-assert.ok(imagePath,'original E.D.S. image is present as an Android APK drawable');
-const packaged=execFileSync('unzip',['-p',apk,imagePath]);
+const originalPath='res/drawable-nodpi/eds_blue_green_original.jpg';
+assert.ok(entries.includes(originalPath),'original E.D.S. image is present in the compiled APK');
+const packaged=execFileSync('unzip',['-p',apk,originalPath]);
 const original=readFileSync('assets/eds-blue-green-overlap.jpg');
-assert.equal(createHash('sha256').update(packaged).digest('hex'),createHash('sha256').update(original).digest('hex'),'APK contains the exact original E.D.S. image bytes');
+const digest=b=>createHash('sha256').update(b).digest('hex');
+assert.equal(digest(packaged),digest(original),'APK contains the exact original image bytes');
 
 const densities={mdpi:[48,108],hdpi:[72,162],xhdpi:[96,216],xxhdpi:[144,324],xxxhdpi:[192,432]};
 for(const [density,[legacy,foregroundSize]] of Object.entries(densities)){
-  for(const [name,size] of [['ic_launcher',legacy],['ic_launcher_round',legacy],['ic_launcher_foreground',foregroundSize]]){
-    const entry=entries.find(p=>new RegExp('^res/mipmap-'+density+'(?:-v\\d+)?/'+name+'\\.png$').test(p));
-    assert.ok(entry,'APK is missing '+density+' '+name);
+  for(const [name,size] of [['eds_launcher',legacy],['eds_launcher_round',legacy],['eds_launcher_foreground',foregroundSize]]){
+    const entry='res/mipmap-'+density+'/'+name+'.png';
+    assert.ok(entries.includes(entry),'APK is missing '+density+' '+name);
     const png=execFileSync('unzip',['-p',apk,entry]);
     assert.equal(png.toString('hex',0,8),'89504e470d0a1a0a',entry+' is not a PNG');
-    assert.equal(png.readUInt32BE(16),size,entry+' has an unexpected width');
-    assert.equal(png.readUInt32BE(20),size,entry+' has an unexpected height');
+    assert.equal(png.readUInt32BE(16),size,entry+' has unexpected width');
+    assert.equal(png.readUInt32BE(20),size,entry+' has unexpected height');
   }
+}
+for(const entry of ['res/mipmap-anydpi-v26/eds_launcher.xml','res/mipmap-anydpi-v26/eds_launcher_round.xml','res/drawable/eds_launcher_foreground.xml']){
+  assert.ok(entries.includes(entry),'APK is missing compiled adaptive icon resource '+entry);
 }
 
 const sdk=process.env.ANDROID_HOME||process.env.ANDROID_SDK_ROOT;
-assert.ok(sdk,'Android SDK path is not available for APK inspection');
+assert.ok(sdk,'Android SDK path is missing');
 const buildTools=join(sdk,'build-tools');
 const versions=execFileSync('find',[buildTools,'-mindepth','1','-maxdepth','1','-type','d'],{encoding:'utf8'}).trim().split('\n').sort((a,b)=>b.localeCompare(a,undefined,{numeric:true}));
 assert.ok(versions[0],'Android build-tools are missing');
-const badging=execFileSync(join(versions[0],'aapt'),['dump','badging',apk],{encoding:'utf8'});
-assert.match(badging,/package: name='it\.inordine\.app'/);
-assert.match(badging,/application:.*icon='[^']*ic_launcher/);
-console.log('PASS APK icon: manifest, adaptive and round resources, all 15 mipmap PNGs, and exact original E.D.S. image bytes verified.');
+const aapt=join(versions[0],'aapt');
+const badging=execFileSync(aapt,['dump','badging',apk],{encoding:'utf8'});
+assert.ok(badging.includes("package: name='it.inordine.app'"),'APK has the expected existing package id');
+assert.match(badging,/application:.*icon='[^']*eds_launcher/,'compiled APK selects the E.D.S. launcher resource');
+assert.match(badging,/roundIcon='[^']*eds_launcher_round/,'compiled APK selects the E.D.S. round launcher resource');
+const resources=execFileSync(aapt,['dump','resources',apk],{encoding:'utf8'});
+assert.ok(resources.includes('eds_launcher_foreground'),'compiled adaptive foreground resource is present');
+assert.ok(resources.includes('eds_blue_green_original'),'compiled adaptive foreground references the exact source image');
+console.log('PASS compiled APK launcher icon: dedicated manifest refs, adaptive and round resources, all 15 density PNGs, and exact E.D.S. source bytes verified.');
