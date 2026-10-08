@@ -11,7 +11,7 @@ function wordNumber(word){
  return null;
 }
 export function parseItalianAmount(text){
- let value=String(text||'').trim().toLowerCase().replace(/euro|eur|€|cent(esimi)?/g,'').trim();
+ let value=String(text||'').trim().toLowerCase().replace(/euro|eur|€|centesimi?/g,'').trim();
  if(!value)return null;
  if(/\d/.test(value)){
   value=value.replace(/\s/g,'');
