@@ -20,7 +20,7 @@
   "scripts": {
     "build:v2": "node v2/build.mjs",
     "validate:v2": "node v2/validate.mjs",
-    "test:v2": "npm run build:v2 && node v2/validate.mjs && node tests/v2-e2e.mjs",
+    "test:v2": "npm run build:v2 && node v2/validate.mjs && node tests/domain-v2.mjs && node tests/v2-e2e.mjs",
     "preview:v2": "npm run build:v2 && node tests/visual-preview.mjs"
   }
 }

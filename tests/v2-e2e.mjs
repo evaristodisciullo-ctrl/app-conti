@@ -24,24 +24,24 @@ await page.waitForFunction(()=>{const i=document.querySelector('.home-art');retu
 await page.screenshot({path:`${previewDir}/01-home.png`});
 
 // Establish a real starting balance and a future income, then receive it.
-page.once('dialog',d=>d.accept('1000'));
-await page.getByRole('button',{name:'Conti economici'}).click();
+await page.locator('[data-go="money"]').click();
 await page.waitForFunction(()=>{const i=document.querySelector('.finance-art');return i?.complete&&i.naturalWidth>0});
-await page.locator('#setBalance').click();
-await page.locator('[data-go="income"]').click();
+await page.locator('#setBalance').click();await page.locator('#balanceValue').fill('1000');await page.locator('#balanceForm button[type=submit]').click();
+await page.locator('[data-go="finance-notifications"]').click();await page.locator('#financeNotificationsEnabled').check();await page.locator('#financeNotificationsForm button[type=submit]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
 await page.locator('[data-add-money="income"]').click();
 await page.locator('#moneyDescription').fill('Stipendio test');
 await page.locator('#moneyAmount').fill('245,50');
 await page.locator('#moneyDate').fill(new Date().toISOString().slice(0,10));
 await page.locator('#moneyCategory').selectOption({label:'Stipendio'});
 await page.locator('#moneyForm button[type="submit"]').click();
+await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill('Promemoria indipendente');await page.locator('#moneyAmount').fill('12');await page.locator('#moneyDateMode').selectOption('none');await page.locator('#moneyNotify').check();await page.locator('#moneyReminderMode').selectOption('custom');const financeReminderAt=await page.evaluate(()=>{const d=new Date(Date.now()+7*86400000);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T10:00'});await page.locator('#moneyCustomAt').fill(financeReminderAt);await page.locator('#moneyForm button[type="submit"]').click();const reminderEntry=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).entries.find(x=>x.description==='Promemoria indipendente'));assert.equal(reminderEntry.date,'');assert.equal(reminderEntry.datePrecision,'none');assert.equal(reminderEntry.reminder.mode,'custom');assert.ok(reminderEntry.reminder.customAt);
 await page.locator('[data-go="money"]').click();
 assert.match(await page.locator('.balance').innerText(),/1\.000,00/,'pending income must not change real balance');
 await page.locator('[data-go="income"]').click();
 await page.screenshot({path:`${previewDir}/02-entrate.png`});
 await page.locator('[data-money-filter="income:pending"]').click();
-assert.equal(await page.locator('[data-edit-money]').count(),1,'pending income filter');
-await page.locator('[data-money-done]').click();
+assert.equal(await page.locator('[data-edit-money]').count(),2,'pending income filter includes a no-date custom reminder');
+await page.locator('[data-money-done]').first().click();
 await page.locator('[data-go="money"]').click();
 assert.match(await page.locator('.balance').innerText(),/1\.245,50/,'received income updates real balance');
 
@@ -58,10 +58,11 @@ assert.match(await page.locator('.balance').innerText(),/1\.245,50/,'pending pay
 await page.locator('[data-go="expense"]').click();
 await page.screenshot({path:`${previewDir}/03-pagamenti.png`});
 await page.locator('[data-money-filter="expense:pending"]').click();
-await page.locator('[data-money-done]').click();
+await page.locator('[data-money-done]').first().click();
 await page.locator('[data-go="money"]').click();
 assert.match(await page.locator('.balance').innerText(),/1\.145,50/,'paid expense reduces real balance');
-await page.locator('[data-go="income"]').click();await page.locator('[data-add-money="income"]').click();
+await page.locator('[data-go="expense"]').click();await page.locator('[data-add-money="expense"]').click();await page.locator('#moneyDescription').fill('Spesa solo mese');await page.locator('#moneyAmount').fill('10');await page.locator('#moneyDateMode').selectOption('month');await page.locator('#moneyMonth').fill('2026-11');await page.locator('#moneyForm button[type=submit]').click();const monthEntry=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).entries.find(x=>x.description==='Spesa solo mese'));assert.equal(monthEntry.date,'2026-11');assert.equal(monthEntry.datePrecision,'month');assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')))).balance,1145.5,'future month-only payment does not change real balance');
+await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();await page.locator('[data-add-money="income"]').click();
 await page.locator('#moneyDescription').fill('Ricorrenza stipendio');await page.locator('#moneyAmount').fill('30');await page.locator('#moneyDate').fill('2026-01-31');await page.locator('#moneyCategory').selectOption({label:'Stipendio'});await page.locator('#moneyRecurrence').selectOption('monthly');await page.locator('#moneyForm button[type=submit]').click();
 const recurrenceData=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(recurrenceData.entries.filter(x=>x.description==='Ricorrenza stipendio').length,12);assert.ok(recurrenceData.entries.some(x=>x.description==='Ricorrenza stipendio'&&x.date==='2026-02-28'),'monthly recurrence clamps month-end dates safely');
 assert.equal(recurrenceData.balance,1145.5,'future recurring income does not change real balance');
@@ -86,7 +87,7 @@ await page.locator('[data-go="summary"]').click();
 assert.match(await page.locator('body').innerText(),/Confronto con/,'summary shows a previous month comparison');
 await page.screenshot({path:`${previewDir}/06-riepilogo.png`});
 await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\"settings\"]').click();await page.screenshot({path:`${previewDir}/12-impostazioni.png`});await page.locator('[data-go=\"categories\"]').click();
-await page.locator('[data-delete-category]').first().click();assert.equal(await page.locator('[data-delete-category]').count(),7,'default categories can be deleted');
+page.once('dialog',d=>d.accept());await page.locator('[data-delete-category]').first().click();assert.equal(await page.locator('[data-delete-category]').count(),7,'default categories can be deleted');
 await page.locator('#categoryName').fill('Casa nuova');await page.locator('#categoryForm button').click();assert.equal(await page.locator('#categoryList article').filter({hasText:'Casa nuova'}).count(),1,'categories can be added');await page.screenshot({path:`${previewDir}/10-categorie.png`});
 await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-go=\"preferences\"]').click();await page.locator('#dateFormat').selectOption('yyyy-mm-dd');await page.locator('#textSize').selectOption('large');await page.locator('#reduceAnimations').check();await page.locator('#preferencesForm button').click();assert.equal(await page.locator('html').getAttribute('data-text-size'),'large');await page.screenshot({path:`${previewDir}/11-preferenze.png`});
 await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-go=\"landing\"]').click();await page.locator('[data-go=\"money\"]').click();
@@ -116,17 +117,18 @@ await page.locator('#todoYear').selectOption('2026');
 assert.equal(await page.locator('[data-edit-task]').count(),1,'Todo month and year filters work after restore');
 await page.locator('#todoMonth').selectOption('all');
 await page.locator('#todoYear').selectOption('all');
-const editable=page.locator('[data-edit-task]').first();await editable.click();
+const only=page.locator('[data-edit-task]').filter({hasText:'Chiamare dentista'}).first();await only.click();await page.locator('#todoEditDescription').fill('Solo questa');await page.locator('#todoEditForm button[type=submit]').click();await page.locator('[data-series-scope="one"]').click();assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Solo questa'}).count(),1,'Solo questa detaches only the selected occurrence');assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Chiamare dentista'}).count(),24);
+const editable=page.locator('[data-edit-task]').filter({hasText:'Chiamare dentista'}).first();await editable.click();
 await page.locator('#todoEditDescription').fill('Dentista aggiornato');
-await page.locator('#todoEditForm button[type=submit]').click();
-assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Dentista aggiornato'}).count(),1,'Todo edit appears immediately');
+await page.locator('#todoEditForm button[type=submit]').click();await page.locator('[data-series-scope=\"future\"]').click();
+assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Dentista aggiornato'}).count(),24,'recurring Todo edit applies to this and following instances');
 await page.reload();await page.locator('[data-go=\"todo\"]').click();await page.locator('[data-go=\"todo-active\"]').click();
-assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Dentista aggiornato'}).count(),1,'Todo edit survives app reinitialization');
-await page.locator('[data-edit-task]').first().click();
-await page.locator('[data-delete-task]').click();
-assert.equal(await page.locator('[data-edit-task]').count(),24,'Todo delete removes the selected task');
-await page.locator('[data-go=\"todo\"]').click();await page.locator('[data-go=\"todo-settings\"]').click();await page.locator('#todoNotifications').check();await page.locator('#todoNotifyTime').fill('08:30');await page.locator('#todoSettingsForm button[type=submit]').click();
-const notificationPrefs=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.notifications);assert.equal(notificationPrefs.enabled,true);assert.equal(notificationPrefs.rule.time,'08:30');
+assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Dentista aggiornato'}).count(),24,'Todo edit survives app reinitialization');
+await page.locator('[data-edit-task]').filter({hasText:'Dentista aggiornato'}).first().click();
+page.once('dialog',d=>d.accept());await page.locator('[data-delete-task]').click();
+assert.equal(await page.locator('[data-edit-task]').count(),1,'deleting a recurring Todo series preserves the detached single occurrence');assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Solo questa'}).count(),1);
+await page.locator('[data-go=\"todo\"]').click();await page.locator('[data-go=\"todo-settings\"]').click();await page.locator('#todoNotifications').check();await page.locator('#todoNotifyTime').fill('08:30');await page.locator('#todoDailySummary').check();await page.locator('#todoDailySummaryTime').fill('18:30');await page.locator('#todoSettingsForm button[type=submit]').click();
+const notificationPrefs=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.notifications);assert.equal(notificationPrefs.enabled,true);assert.equal(notificationPrefs.rule.time,'08:30');assert.equal(notificationPrefs.dailySummary,true);assert.equal(notificationPrefs.dailySummaryTime,'18:30');
 
 // Appearance controls take effect immediately and survive a full reload.
 await page.locator('[data-go="todo"]').click();
@@ -143,13 +145,22 @@ assert.equal(await page.locator('html').getAttribute('data-todo-color'),'Blu');
 await page.reload();
 assert.equal(await page.locator('html').getAttribute('data-app-theme'),'dark','preferences persist after page reload');
 
+
+// Completed finance edit/undo/delete and completed Todo edit retain state correctly.
+await page.goto('http://127.0.0.1:4173/');await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();await page.locator('[data-money-filter="income:done"]').click();
+await page.locator('[data-edit-money]').first().click();await page.locator('#moneyEditAmount').fill('250');await page.locator('#moneyEditForm button[type=submit]').click();if(await page.locator('[data-series-scope=\"future\"]').count())await page.locator('[data-series-scope=\"future\"]').click();
+let financeState=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(financeState.balance,1150,'editing received income changes actual balance by the amount delta');
+await page.locator('[data-undo-money]').click();financeState=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(financeState.balance,900,'undoing received income returns it to pending and reverses its balance effect');
+await page.locator('[data-money-filter="income:pending"]').click();await page.locator('[data-money-done]').first().click();
+await page.locator('[data-go="money"]').click();await page.locator('[data-go="landing"]').click();await page.locator('[data-go="todo"]').click();await page.locator('[data-go="todo-add"]').click();await page.locator('#todoDescription').fill('Attività completata editabile');await page.locator('#todoNotify').check();await page.locator('#todoReminderMode').selectOption('custom');const todoReminderAt=await page.evaluate(()=>{const d=new Date(Date.now()+9*86400000);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'T09:30'});await page.locator('#todoCustomAt').fill(todoReminderAt);await page.locator('#todoForm button[type=submit]').click();const todoReminder=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.tasks.find(x=>x.description==='Attività completata editabile'));assert.equal(todoReminder.date,'');assert.ok(todoReminder.reminder.customAt);await page.locator('[data-edit-task]').filter({hasText:'Attività completata editabile'}).locator('[data-complete]').click();await page.locator('[data-go="todo"]').click();await page.locator('[data-go="todo-done"]').click();const doneRow=page.locator('[data-edit-task]').filter({hasText:'Attività completata editabile'});await doneRow.click();await page.locator('#todoEditDescription').fill('Completata modificata');await page.locator('#todoEditForm button[type=submit]').click();assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Completata modificata'}).count(),1,'editing a completed activity preserves its completed state');
+
 // Verify responsive bounds on principal routes at each requested Android size.
-const routeChecks=['home','money','income','expense','movements','summary','budget','budget-categories','todo','todo-add','todo-active','todo-done','todo-settings','settings','profile','categories','appearance','backup','preferences','security','data-management'];
+const routeChecks=['home','money','income','expense','finance-notifications','movements','summary','budget','budget-categories','todo','todo-add','todo-active','todo-done','todo-settings','todo-notifications','todo-settings-color','settings','profile','categories','appearance','backup','preferences','security','data-management'];
 async function openV2Route(name){
   await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});await page.waitForSelector('.brand-logo');
   if(name==='home')return;
-  const finance=['money','income','expense','movements','summary','budget','budget-categories'];
-  const todoRoutes=['todo','todo-add','todo-active','todo-done','todo-settings'];
+  const finance=['money','income','expense','finance-notifications','movements','summary','budget','budget-categories'];
+  const todoRoutes=['todo','todo-add','todo-active','todo-done','todo-settings','todo-notifications','todo-settings-color'];
   if(finance.includes(name)){
     await page.locator('[data-go=\"money\"]').click();
     if(name!=='money'){
@@ -158,7 +169,7 @@ async function openV2Route(name){
     }
   }else if(todoRoutes.includes(name)){
     await page.locator('[data-go=\"todo\"]').click();
-    if(name!=='todo')await page.locator(`[data-go=\"${name}\"]`).click();
+    if(name==='todo-settings-color'){await page.locator('[data-go=\"todo-notifications\"]').click();await page.locator('[data-go=\"todo-settings-color\"]').click()}else if(name!=='todo')await page.locator(`[data-go=\"${name}\"]`).click();
   }else{
     await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\"settings\"]').click();
     if(name!=='settings')await page.locator(`[data-go=\"${name}\"]`).click();
@@ -181,12 +192,12 @@ for(const [width,height] of sizes){
 
 // Real reinitialization readback of saved finances, Todo items and preferences.
 const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));
-assert.equal(saved.balance,1145.5);
+assert.equal(saved.balance,1150);
 assert.equal(saved.history.length,2);
 assert.equal(saved.entries.filter(x=>x.description==='Ricorrenza stipendio').length,12);
 assert.equal(saved.entries.filter(x=>x.description==='Rinnovo annuale').length,3);
-assert.equal(saved.todo.tasks.length,24);
-assert.equal(saved.todo.done.length,0);
+assert.equal(saved.todo.tasks.length,1);
+assert.equal(saved.todo.done.length,1);
 assert.equal(saved.todo.tasks.some(x=>x.description==='Dentista aggiornato'),false,'deleted Todo item stays deleted after reload');
 assert.equal(saved.preferences.lightTheme,false);
 assert.equal(saved.appColor,'Viola');
@@ -195,8 +206,9 @@ assert.equal(saved.preferences.textSize,'large');
 assert.equal(errors.length,0,`browser errors: ${errors.join('; ')}`);
 // Export and restore a real application backup through the file input.
 await page.goto('http://127.0.0.1:4173/');await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-go=\"backup\"]').click();await page.screenshot({path:`${previewDir}/14-backup.png`});
-const downloadPromise=page.waitForEvent('download');await page.locator('#exportBackup').click();const download=await downloadPromise;const backupPath=await download.path();const backup=JSON.parse(await readFile(backupPath,'utf8'));assert.equal(backup.format,'in-ordine-v2');assert.equal(backup.state.balance,1145.5);
-await page.locator('#importBackup').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await page.waitForSelector('.settings-list');assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')))).todo.tasks.length,24);
+const downloadPromise=page.waitForEvent('download');await page.locator('#exportBackup').click();const download=await downloadPromise;const backupPath=await download.path();const backup=JSON.parse(await readFile(backupPath,'utf8'));assert.equal(backup.format,'in-ordine-v2');assert.equal(backup.state.balance,1150);
+await page.locator('#importBackup').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await page.waitForSelector('.settings-list');assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')))).todo.tasks.length,1);
+await page.locator('[data-go=\"data-management\"]').click();page.once('dialog',d=>d.accept());await page.locator('#resetTodo').click();let cleared=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(cleared.todo.tasks.length,0);assert.equal(cleared.balance,1150);assert.equal(cleared.history.length,2,'clearing Todo retains finances');await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-go=\"backup\"]').click();await page.locator('#importBackup').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await page.waitForSelector('.settings-list');await page.locator('[data-go=\"data-management\"]').click();page.once('dialog',d=>d.accept());await page.locator('#resetFinance').click();cleared=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(cleared.entries.length,0);assert.equal(cleared.balance,0);assert.equal(cleared.todo.tasks.length,1,'clearing finances retains Todo');await page.goto('http://127.0.0.1:4173/');await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\"settings\"]').click();await page.locator('[data-go=\"data-management\"]').click();page.once('dialog',d=>d.accept());await page.locator('#resetAll').click();cleared=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(cleared.entries.length,0);assert.equal(cleared.todo.tasks.length,0);assert.equal(cleared.balance,null);
 console.log('PASS finance, Todo, filters, monthly/yearly recurrence, budgets, category CRUD, settings, backup/restore and persistence');
 console.log(`PREVIEW_DIR ${previewDir}`);
 await browser.close();

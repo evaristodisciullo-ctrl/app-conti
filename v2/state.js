@@ -33,13 +33,20 @@ export function createEmptyState() {
     adjustments: [],
     budgets: {},
     budgetPlans: [],
+    financeNotifications: { enabled: false, defaultTime: '09:00' },
     todo: {
       setupDone: false,
       tasks: [],
       done: [],
       color: 'Verde E.D.S.',
       theme: 'light',
-      notifications: { enabled: false, rule: { timing: 'same', time: '09:00', overdue: 'none' }, sent: {} }
+      notifications: {
+        enabled: false,
+        rule: { timing: 'same', time: '09:00', overdue: 'none', advanceMinutes: 0 },
+        dailySummary: false,
+        dailySummaryTime: '18:00',
+        sent: {}
+      }
     },
     preferences: {
       textSize: 'medium',
@@ -60,6 +67,8 @@ function normalize(candidate) {
   out.todo.tasks = Array.isArray(candidate.todo?.tasks) ? candidate.todo.tasks : [];
   out.todo.done = Array.isArray(candidate.todo?.done) ? candidate.todo.done : [];
   out.todo.notifications = { ...base.todo.notifications, ...(candidate.todo?.notifications || {}) };
+  out.todo.notifications.rule = { ...base.todo.notifications.rule, ...(candidate.todo?.notifications?.rule || {}) };
+  out.financeNotifications = { ...base.financeNotifications, ...(candidate.financeNotifications || {}) };
   out.preferences = { ...base.preferences, ...(candidate.preferences || {}) };
   out.entries = Array.isArray(candidate.entries) ? candidate.entries : [];
   out.history = Array.isArray(candidate.history) ? candidate.history : [];

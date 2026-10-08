@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { generateOccurrenceDates, migrateLegacyRecurrences } from '../v2/recurrence.js';
+import { collectNotificationPlan } from '../v2/notifications.js';
+const monthly=generateOccurrenceDates('2024-01-31','day',{unit:'month',interval:1,end:'count',count:4});
+assert.deepEqual(monthly.map(x=>x.date),['2024-01-31','2024-02-29','2024-03-31','2024-04-30']);
+const weekly=generateOccurrenceDates('2026-01-05','day',{unit:'week',interval:2,end:'count',count:3});
+assert.deepEqual(weekly.map(x=>x.date),['2026-01-05','2026-01-19','2026-02-02']);
+const till=generateOccurrenceDates('2026-01-01','day',{unit:'month',interval:1,end:'date',until:'2026-03-01'});
+assert.deepEqual(till.map(x=>x.date),['2026-01-01','2026-02-01','2026-03-01']);
+const state={entries:[{id:'a',kind:'income',recurrence:'monthly',date:'2026-01-01'},{id:'b',kind:'income',recurrenceSource:'a',date:'2026-02-01'}],history:[],todo:{tasks:[{id:'t',recurrence:'weekly',date:'2026-01-01'}],done:[]}};
+migrateLegacyRecurrences(state);
+assert.equal(state.entries[1].seriesId,'a');assert.equal(state.todo.tasks[0].seriesId,'t');
+const now=new Date('2026-01-01T00:00:00');
+const plan=collectNotificationPlan({financeNotifications:{enabled:true,defaultTime:'09:00'},entries:[{id:'f',kind:'income',description:'Entrata',date:'',reminder:{enabled:true,mode:'custom',customAt:'2026-01-02T10:00'}}],todo:{notifications:{enabled:true,rule:{time:'08:00',advanceMinutes:0},dailySummary:true,dailySummaryTime:'18:00'},tasks:[{id:'t',description:'Attività',date:'2026-01-02',datePrecision:'day',reminder:{enabled:true,mode:'due',time:'08:30'}}]}},now);
+assert.ok(plan.some(x=>x.extra.kind==='finance'&&x.title.includes('Conti')),'custom finance reminder works without due date');
+assert.ok(plan.some(x=>x.extra.kind==='todo'&&x.title.includes('Attività')),'todo reminder is independently planned');
+assert.ok(plan.some(x=>x.extra.kind==='todo-daily'),'daily summary coexists with finance and task notices');
+console.log('PASS recurrence intervals/clamping/end dates, additive series migration, custom no-date reminders, independent notification channels and daily summary');
