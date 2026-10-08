@@ -49,7 +49,7 @@ const aapt=join(versions[0],'aapt');
 const badging=execFileSync(aapt,['dump','badging',apk],{encoding:'utf8'});
 assert.ok(badging.includes("package: name='it.inordine.app'"),'APK has the expected existing package id');
 assert.ok(badging.includes('eds_launcher'),'compiled APK selects the dedicated E.D.S. launcher resource');
-const resources=execFileSync(aapt,['dump','resources',apk],{encoding:'utf8'});
+const resources=execFileSync(aapt,['dump','resources',apk],{encoding:'utf8',maxBuffer:16*1024*1024});
 assert.ok(resources.includes('eds_launcher_round'),'compiled round launcher resource is present');
 assert.ok(resources.includes('eds_launcher_foreground'),'compiled adaptive foreground resource is present');
 assert.ok(resources.includes('eds_blue_green_original'),'compiled adaptive foreground references the original image');
