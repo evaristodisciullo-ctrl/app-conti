@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const app = await readFile(new URL('./app.js', import.meta.url), 'utf8');
+const finance = await readFile(new URL('./finance.js', import.meta.url), 'utf8');
 const css = await readFile(new URL('./app.css', import.meta.url), 'utf8');
 
 const checks = [
@@ -10,11 +11,11 @@ const checks = [
   ['safe-area bottom', css.includes('safe-area-inset-bottom')],
   ['horizontal overflow guarded', css.includes('overflow-x:hidden')],
   ['no legacy fixed 520px app shell', !css.includes('.app{max-width:520px')],
-  ['real balance completion rule present', app.includes('state.balance=realBalance()+signedAmount(x)')],
+  ['real balance is explicit', finance.includes('export const realBalance=state=>') && finance.includes('export function projectedBalance')],
   ['future entry is saved before completion', app.includes('state.entries.push(base)')],
-  ['completed movement history exists', app.includes('state.history.unshift(x)')],
+  ['completed movements transfer into history', finance.includes('export function markCompleted') && finance.includes('state.history=[item,')],
   ['todo persistence exists', app.includes('state.todo.tasks.push(base)')],
-  ['completed item can be edited and reversed', app.includes('data-undo-money') && app.includes('moneyEditForm') && app.includes('state.balance=realBalance()-signedAmount(item)')],
+  ['completed item can be edited and reversed', app.includes('data-undo-money') && app.includes('moneyEditForm') && finance.includes('export function undoCompletion') && finance.includes('export function adjustCompletedAmount')],
   ['series updates and deletion operate on future instances', app.includes('data-series-scope=\"future\"') && app.includes('Eliminare questa serie ricorrente completa')],
   ['unassigned-date reminders and separate notification channels exist', app.includes('financeNotificationsForm') && app.includes('data-reminder-custom') && app.includes('todoDailySummary')],
   ['per-domain data erasure exists', app.includes('id=\"resetFinance\"') && app.includes('id=\"resetTodo\"')],
