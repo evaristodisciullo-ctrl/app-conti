@@ -65,6 +65,29 @@ jobs:
             echo "Run #198 certificate: $old_cert"
             echo "Candidate certificate: $new_cert"
           fi
+      - name: Install and launch the APK on an Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+            adb shell am start -W -n it.inordine.app/.MainActivity
+            for attempt in $(seq 1 10); do
+              if adb shell pidof it.inordine.app >/dev/null; then break; fi
+              sleep 1
+            done
+            adb shell pidof it.inordine.app
+            adb shell screencap -p /sdcard/in-ordine-home.png
+            adb pull /sdcard/in-ordine-home.png android-home-emulator.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: in-ordine-android-home-preview
+          path: android-home-emulator.png
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: in-ordine-android-debug-apk
