@@ -63,3 +63,15 @@ body{background:radial-gradient(ellipse at 5% 0%,rgba(85,195,255,.42),transparen
 .search-field input:focus-visible{outline:2px solid rgba(54,119,239,.42);outline-offset:-2px}
 html[data-app-theme="dark"] .search-field{background:#232d3c;color:#edf1f8;border-color:#303a4c}
 html[data-app-theme="dark"] .search-field input{background:#1a2230;color:#f2f5fa}
+
+.page-header .eds-logo{width:52px;height:51px}
+@media(max-width:380px){.page-header .eds-logo{width:47px;height:46px}}
+.bell-icon{display:inline-block;width:21px;height:21px;flex:0 0 21px;vertical-align:-4px;margin-right:7px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.money-head .bell-icon,.finance-notice .bell-icon{color:#087fef}
+.todo-head .bell-icon,.todo-notice .bell-icon{color:#08a879}
+.money-row small,.task:not(.money-row) small{font-size:14px!important;line-height:1.35;color:#26354e!important;font-weight:720}
+.money-row>div:first-child,.task>div:first-child{min-width:0;overflow-wrap:anywhere}
+.money-row .money-actions{flex-wrap:wrap}
+.money-row .money-actions button{white-space:nowrap}
+.home-pair-notice{display:flex;align-items:center;justify-content:center;gap:6px}
+@media(max-width:360px){.money-row small,.task:not(.money-row) small{font-size:13.5px!important}.page-header .eds-logo{width:44px;height:43px}}
