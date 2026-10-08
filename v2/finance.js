@@ -1,6 +1,6 @@
 const toCents=value=>Math.round((Number(value)||0)*100);
 const fromCents=cents=>cents/100;
-import {matchesMonth} from './date-values.js';
+import {matchesMonth,dateFields} from './date-values.js';
 const uniqueById=items=>{const seen=new Set();return items.filter(item=>{if(!item?.id||seen.has(item.id))return false;seen.add(item.id);return true})};
 export const realBalance=state=>Number.isFinite(Number(state.balance))?Number(state.balance):0;
 export const signedAmount=item=>item.kind==='income'?Number(item.amount||0):-Number(item.amount||0);
@@ -19,7 +19,7 @@ export function projectedBalance(state){
  return fromCents(toCents(realBalance(state))+pendingEntries(state).reduce((sum,item)=>sum+toCents(signedAmount(item)),0));
 }
 export function monthEndBalance(state,ym){
- const monthPending=pendingEntries(state).filter(item=>item.date&&['day','month'].includes(item.datePrecision)&&matchesMonth(item,ym));
+ const monthPending=pendingEntries(state).filter(item=>item.date&&['day','month'].includes(dateFields(item).precision)&&matchesMonth(item,ym));
  return fromCents(toCents(realBalance(state))+monthPending.reduce((sum,item)=>sum+toCents(signedAmount(item)),0));
 }
 export function markCompleted(state,id,completedAt=new Date().toISOString()){
