@@ -22,7 +22,8 @@ function reminderDate(item, kind, state) {
   if (reminder.mode === 'custom' || reminder.customAt) return parseLocalDateTime(reminder.customAt || reminder.at);
   if (!item.date) return null;
   const precision = item.datePrecision || (item.date.length === 7 ? 'month' : 'day');
-  const due = precision === 'month' ? `${item.date}-01` : item.date;
+  if (precision !== 'day' || !/^\\d{4}-\\d{2}-\\d{2}$/.test(item.date)) return null;
+  const due = item.date;
   const [year, month, day] = due.split('-').map(Number);
   const at = new Date(year, month - 1, day, 9, 0, 0, 0);
   const prefs = kind === 'todo' ? state.todo.notifications : state.financeNotifications;
@@ -60,7 +61,7 @@ export function collectNotificationPlan(state, now = new Date()) {
       for (let i = 0; i < 14; i += 1) {
         const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hour || 0, minute || 0, 0, 0);
         const key = `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`;
-        const due = (state.todo.tasks || []).filter(item => item.date && (item.date.length === 7 ? item.date === key.slice(0, 7) : item.date === key)).length;
+        const due = (state.todo.tasks || []).filter(item => item.date && (item.datePrecision === 'day' || (!item.datePrecision && item.date.length === 10)) && item.date === key).length;
         push(50000, `todo-daily:${key}`, 'In Ordine · Riepilogo', due ? `Hai ${due} attività in scadenza.` : 'Il tuo riepilogo giornaliero è pronto.', at, { kind: 'todo-daily', date: key });
       }
     }

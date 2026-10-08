@@ -22,12 +22,14 @@ export function normalizeRecurrenceRule(value, fallbackCount = 12) {
 
 function dateOrdinal(value, precision) {
   if (!value) return null;
+  if (precision === 'year' || value.length === 4) return `${value}-01-01`;
   if (precision === 'month' || value.length === 7) return `${value}-01`;
   return value;
 }
 
 function advance(value, precision, unit, interval) {
   if (!value) return '';
+  if (precision === 'year' || value.length === 4) return unit === 'year' ? String(Number(value) + interval) : value;
   if (precision === 'month' || value.length === 7) {
     if (unit === 'day' || unit === 'week') return value;
     const [year, month] = value.split('-').map(Number);
@@ -49,14 +51,17 @@ function advance(value, precision, unit, interval) {
 function horizonOrdinal(now, precision, months) {
   const date = new Date(now);
   date.setUTCMonth(date.getUTCMonth() + months);
-  return precision === 'month' ? date.toISOString().slice(0, 7) : date.toISOString().slice(0, 10);
+  return precision === 'year' ? date.toISOString().slice(0, 4) : precision === 'month' ? date.toISOString().slice(0, 7) : date.toISOString().slice(0, 10);
 }
 
 export function generateOccurrenceDates(date, precision = 'day', ruleValue = null, options = {}) {
   const rule = normalizeRecurrenceRule(ruleValue);
   if (!date) return [];
   if (!rule) return [{ date, index: 0 }];
+  if (!precision || precision === 'none') return [{date,index:0}];
   if (precision !== 'month' && date.length === 7) precision = 'month';
+  if (precision !== 'year' && precision !== 'month' && precision !== 'day') return [{date,index:0}];
+  if (precision === 'year' && rule.unit !== 'year') return [{date,index:0}];
   if (precision === 'month' && (rule.unit === 'day' || rule.unit === 'week')) return [{ date, index: 0 }];
   const now = options.now ? new Date(options.now) : new Date();
   const cutoff = rule.end === 'date' && rule.until
@@ -125,18 +130,35 @@ export function recurrenceRuleFromForm(prefix, documentRef = document) {
 }
 
 export function dateValueFromForm(prefix, documentRef = document) {
-  const mode = documentRef.querySelector(`#${prefix}DateMode`)?.value || 'day';
-  if (mode === 'none') return { date: '', datePrecision: 'none' };
-  if (mode === 'month') return { date: documentRef.querySelector(`#${prefix}Month`)?.value || '', datePrecision: 'month' };
-  return { date: documentRef.querySelector(`#${prefix}Date`)?.value || '', datePrecision: 'day' };
+ const mode=documentRef.querySelector(`#${prefix}DateMode`)?.value||'day';
+ let value='';
+ if(mode==='none')return {date:'',datePrecision:'none'};
+ if(mode==='day')value=documentRef.querySelector(`#${prefix}Date`)?.value||'';
+ if(mode==='month')value=documentRef.querySelector(`#${prefix}Month`)?.value||'';
+ if(mode==='dayOnly'){const n=Number(documentRef.querySelector(`#${prefix}DayPart`)?.value);value=n?String(n).padStart(2,'0'):''}
+ if(mode==='monthOnly')value=documentRef.querySelector(`#${prefix}MonthPart`)?.value||'';
+ if(mode==='year'){const n=Number(documentRef.querySelector(`#${prefix}YearPart`)?.value);value=n?String(n):''}
+ if(mode==='dayMonth'){const d=Number(documentRef.querySelector(`#${prefix}DayMonthPart`)?.value),m=documentRef.querySelector(`#${prefix}DayMonthMonth`)?.value||'';value=d&&m?`${m}-${String(d).padStart(2,'0')}`:''}
+ return value&&validPartial(value,mode)?{date:value,datePrecision:mode}:{date:'',datePrecision:'none'};
 }
-
-export function restoreDateForm(prefix, item, documentRef = document) {
-  const precision = item.datePrecision || (item.date?.length === 7 ? 'month' : item.date ? 'day' : 'none');
-  const mode = documentRef.querySelector(`#${prefix}DateMode`);
-  if (mode) mode.value = precision;
-  const day = documentRef.querySelector(`#${prefix}Date`);
-  const month = documentRef.querySelector(`#${prefix}Month`);
-  if (day) day.value = precision === 'day' ? item.date || '' : '';
-  if (month) month.value = precision === 'month' ? item.date || '' : '';
+function validPartial(value,mode){
+ if(mode==='day')return /^\\d{4}-\\d{2}-\\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'));
+ if(mode==='month')return /^\\d{4}-(0[1-9]|1[0-2])$/.test(value);
+ if(mode==='year')return /^\\d{4}$/.test(value);
+ if(mode==='monthOnly')return /^(0[1-9]|1[0-2])$/.test(value);
+ if(mode==='dayOnly')return /^(0[1-9]|[12]\\d|3[01])$/.test(value);
+ if(mode==='dayMonth'){const [m,d]=value.split('-').map(Number);return /^\\d{2}-\\d{2}$/.test(value)&&m>=1&&m<=12&&d>=1&&d<=new Date(Date.UTC(2000,m,0)).getUTCDate()}
+ return false;
 }
+export function restoreDateForm(prefix,item,documentRef=document){
+ const precision=item.datePrecision||inferPrecision(item.date||'');
+ const mode=documentRef.querySelector(`#${prefix}DateMode`);if(mode)mode.value=precision;
+ const set=(id,value)=>{const input=documentRef.querySelector(`#${prefix}${id}`);if(input)input.value=value||''};
+ if(precision==='day')set('Date',item.date);
+ else if(precision==='month')set('Month',item.date);
+ else if(precision==='year')set('YearPart',item.date);
+ else if(precision==='dayOnly')set('DayPart',Number(item.date));
+ else if(precision==='monthOnly')set('MonthPart',item.date);
+ else if(precision==='dayMonth'){const [m,d]=item.date.split('-');set('DayMonthMonth',m);set('DayMonthPart',Number(d))}
+}
+function inferPrecision(value){if(!value)return'none';if(/^\\d{4}-\\d{2}-\\d{2}$/.test(value))return'day';if(/^\\d{4}-\\d{2}$/.test(value))return'month';if(/^\\d{4}$/.test(value))return'year';if(/^\\d{2}$/.test(value))return'dayOnly';if(/^\\d{2}-\\d{2}$/.test(value))return'dayMonth';return'none';}
