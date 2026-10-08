@@ -5,6 +5,10 @@ on:
   workflow_dispatch:
   pull_request:
     branches: [main]
+
+permissions:
+  actions: read
+  contents: read
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -32,6 +36,35 @@ jobs:
         run: test -s android/app/build/outputs/apk/debug/app-debug.apk
       - name: Verify packaged launcher icon
         run: node tests/verify-android-icon.mjs
+      - name: Compare signing certificate with installed build #198
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/in-ordine-run198
+          if ! gh run download 37811515287 --repo "$GITHUB_REPOSITORY" --name in-ordine-android-debug-apk --dir /tmp/in-ordine-run198; then
+            echo "Firma APK #198: verifica non riuscita; non disinstallare l'app esistente." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=APK signing compatibility unknown::Could not retrieve the APK installed from run #198."
+            exit 0
+          fi
+          old_apk=$(find /tmp/in-ordine-run198 -type f -name '*.apk' -print -quit)
+          new_apk=android/app/build/outputs/apk/debug/app-debug.apk
+          apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
+          old_cert=$("$apksigner" verify --print-certs "$old_apk" | sed -n 's/.*Signer #1 certificate SHA-256 digest: //p' | head -n1)
+          new_cert=$("$apksigner" verify --print-certs "$new_apk" | sed -n 's/.*Signer #1 certificate SHA-256 digest: //p' | head -n1)
+          if [ -z "$old_cert" ] || [ -z "$new_cert" ]; then
+            echo "Firma APK #198: verifica non riuscita; non disinstallare l'app esistente." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=APK signing compatibility unknown::Could not read the APK signing certificate."
+          elif [ "$old_cert" = "$new_cert" ]; then
+            echo "Firma APK #198: compatibile con l'APK candidato #${{ github.run_number }}. Certificato SHA-256: $new_cert" >> "$GITHUB_STEP_SUMMARY"
+            echo "APK signing certificate matches installed run #198."
+          else
+            echo "Firma APK #198: NON compatibile con l'APK candidato #${{ github.run_number }}. Non disinstallare l'app esistente: i dati locali potrebbero essere rimossi." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=APK signing mismatch::The new APK cannot update the app signed by run #198. Do not uninstall the existing app."
+            echo "Run #198 certificate: $old_cert"
+            echo "Candidate certificate: $new_cert"
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: in-ordine-android-debug-apk
