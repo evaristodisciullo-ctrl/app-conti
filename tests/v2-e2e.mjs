@@ -27,7 +27,7 @@ await page.screenshot({path:`${previewDir}/01-home.png`});
 await page.locator('[data-go="money"]').click();
 await page.waitForFunction(()=>{const i=document.querySelector('.finance-art');return i?.complete&&i.naturalWidth>0});
 await page.locator('#setBalance').click();await page.locator('#balanceValue').fill('1000');await page.locator('#balanceForm button[type=submit]').click();
-await page.locator('[data-go="finance-notifications"]').click();await page.locator('#financeNotificationsEnabled').check();await page.locator('#financeNotificationsForm button[type=submit]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
+await page.locator('[data-go="landing"]').click();await page.locator('[data-go="finance-notifications"]').click();await page.locator('#financeNotificationsEnabled').check();await page.locator('#financeNotificationsForm button[type=submit]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
 await page.locator('[data-add-money="income"]').click();
 await page.locator('#moneyDescription').fill('Stipendio test');
 await page.locator('#moneyAmount').fill('245,50');
@@ -72,6 +72,7 @@ await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\
 assert.equal(await page.locator('.money-row').count(),2,'movements contain only completed money operations');
 await page.screenshot({path:`${previewDir}/04-movimenti.png`});
 await page.locator('[data-go=\"money\"]').click();
+await page.locator('[data-go=\"settings\"]').click();
 
 // Budget totals and category caps are stored and visible.
 await page.locator('[data-go="budget"]').click();
@@ -162,8 +163,14 @@ async function openV2Route(name){
   const finance=['money','income','expense','finance-notifications','movements','summary','budget','budget-categories'];
   const todoRoutes=['todo','todo-add','todo-active','todo-done','todo-settings','todo-notifications','todo-settings-color'];
   if(finance.includes(name)){
-    await page.locator('[data-go=\"money\"]').click();
-    if(name!=='money'){
+    if(name==='finance-notifications')await page.locator('[data-go=\"finance-notifications\"]').click();
+    else if(name==='summary'||name==='budget'||name==='budget-categories'){
+      await page.locator('[data-go=\"money\"]').click();await page.locator('[data-go=\"settings\"]').click();
+      if(name==='budget-categories')await page.locator('[data-go=\"budget\"]').click();
+      await page.locator('[data-go=\"'+name+'\"]').click();
+    }
+    else await page.locator('[data-go=\"money\"]').click();
+    if(name!=='money'&&name!=='finance-notifications'&&name!=='summary'&&name!=='budget'&&name!=='budget-categories'){
       if(name==='budget-categories'){await page.locator('[data-go=\"budget\"]').click();await page.locator('[data-go=\"budget-categories\"]').click()}
       else await page.locator(`[data-go=\"${name}\"]`).click();
     }
