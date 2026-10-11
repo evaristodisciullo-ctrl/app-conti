@@ -185,7 +185,7 @@ await page.evaluate(snapshot=>localStorage.setItem('inOrdineV2State',snapshot),s
 assert.equal(await page.locator('[data-todo-search="active"]').count(),0,'active Todo search has been removed');
 assert.equal(await page.locator('.search-field').count(),0,'active Todo list has no empty search space');
 assert.equal(await page.locator('#todoMonth').count(),1,'active month filter remains available');
-assert.ok(await page.locator('[data-go="todo-done"]').innerText().then(x=>x.includes('Vedi cose già fatte')&&x.includes('Visualizza tutte le cose già completate')),'active screen links to completed tasks with approved copy');
+assert.ok(await page.locator('[data-go="todo-done"]').innerText().then(x=>x.includes('Vedi cose già fatte')&&x.includes('Visualizza tutte le cose che hai completato')),'active screen links to completed tasks with approved copy');
 await page.screenshot({path:`${previewDir}/08-attivita.png`});
 await page.locator('[data-go="todo-done"]').click();
 assert.equal(await page.locator('h1').innerText(),'Cose già fatte','active footer opens completed tasks directly');assert.equal(await page.locator('[data-go="todo-add"]').count(),0,'completed screen has no task creation action');assert.equal(await page.locator('.search-field').count(),0,'completed Todo list has no search field');
