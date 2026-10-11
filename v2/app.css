@@ -306,7 +306,7 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 @media(max-width:390px){.todo-task-name{font-size:13px}.todo-task-row{gap:6px}.todo-task-row .todo-complete{font-size:9px;padding:4px 6px}}
 
 /* Definitive approved five-screen layout */
-.money-description,.todo-task-name{font-weight:400}
+.money-description,.todo-task-name{font-weight:500}
 .money-amount,.money-date-group>.date-emphasis,.todo-date-heading{font-weight:850}
 .balance{padding:12px;background:linear-gradient(140deg,#dff3ff,#edf5ff);border:1px solid rgba(255,255,255,.95);box-shadow:0 6px 15px rgba(35,117,187,.13)}
 .balance-art-wrap{grid-template-columns:minmax(0,1fr) minmax(86px,29%);min-height:82px}
