@@ -49,7 +49,7 @@ const fixedToday=new Date(2026,9,11,12);
 assert.equal(isOverdue({date:'2026-10-10',datePrecision:'day'},fixedToday),true,'yesterday is expired');
 assert.equal(isOverdue({date:'2026-10-12',datePrecision:'day'},fixedToday),false,'tomorrow is not expired');
 assert.equal(isOverdue({date:'2026-09',datePrecision:'month'},fixedToday),true,'a past month is expired after its final day');
-assert.equal(isOverdue({date:'2026-10',datePrecision:'month'},fixedToday),false,'the current month is not expired before month end');
+assert.equal(isOverdue({date:'2026-10',datePrecision:'month'},fixedToday),false,'the current month is not expired before month end');assert.equal(isOverdue({date:'2026-10',datePrecision:'month'},new Date(2026,10,1,0)),true,'the previous month becomes expired at midnight on the first');assert.equal(isOverdue({date:'2026-12',datePrecision:'month'},new Date(2027,0,1,0)),true,'month expiration works across New Year');
 assert.equal(isOverdue({date:'2025',datePrecision:'year'},fixedToday),true,'a past year is expired');
 assert.equal(isOverdue({date:'2026',datePrecision:'year'},fixedToday),false,'the current year is not expired');
 assert.equal(isOverdue({date:'10-10',datePrecision:'dayMonth'},fixedToday),false,'an unspecified year is never invented for overdue checks');
