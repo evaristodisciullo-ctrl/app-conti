@@ -52,7 +52,7 @@ export function isOverdue(item,now=new Date()){
  if(f.precision==='month'){
   if(!validateDateValue(item.date,'month'))return false;
   const [year,month]=item.date.split('-').map(Number);
-  return new Date(year,month,1)<today;
+  return new Date(year,month,1)<=today;
  }
  if(f.precision==='year'){
   if(!validateDateValue(item.date,'year'))return false;
