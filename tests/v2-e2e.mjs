@@ -21,6 +21,7 @@ await page.evaluate(()=>localStorage.clear());
 await page.reload();
 await page.waitForSelector('.brand-logo');
 assert.equal(await page.locator('.brand-logo').evaluate(i=>i.naturalWidth>0),true,'E.D.S. home logo loads');
+await page.evaluate(()=>{const key='inOrdineV2State',s=JSON.parse(localStorage.getItem(key));s.preferences.moneyFilters={income:'removed-filter',expense:'removed-filter'};localStorage.setItem(key,JSON.stringify(s))});await page.reload();await page.waitForSelector('.brand-logo');await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();assert.equal(await page.locator('[data-money-filter="income:pending"]').getAttribute('class'),'active','stale saved income filter falls back to Da ricevere');await page.locator('[data-go="money"]').click();await page.locator('[data-go="expense"]').click();assert.equal(await page.locator('[data-money-filter="expense:pending"]').getAttribute('class'),'active','stale saved payment filter falls back to Da pagare');await page.goto('http://127.0.0.1:4173/');await page.waitForSelector('.brand-logo');
 const homeLogo=await page.locator('.brand-logo').boundingBox(),homeTag=await page.locator('.brand-top .eyebrow').boundingBox(),homeBrand=await page.locator('.brand').boundingBox();
 assert.ok(homeLogo.width>=84&&homeLogo.height>=84,'combined E.D.S. Home logo is slightly larger than the previous mark');
 assert.ok(homeLogo.x+homeLogo.width*.5>homeBrand.x+homeBrand.width*.72,'combined E.D.S. logo is at the upper right of the Home card');
