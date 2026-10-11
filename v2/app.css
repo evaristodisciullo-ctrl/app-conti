@@ -304,3 +304,45 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .todo-nav-link-active .todo-nav-arrow{background:#e88205}
 .todo-nav-copy{position:relative;z-index:1}
 @media(max-width:390px){.todo-task-name{font-size:13px}.todo-task-row{gap:6px}.todo-task-row .todo-complete{font-size:9px;padding:4px 6px}}
+
+/* Definitive approved five-screen layout */
+.money-description,.todo-task-name{font-weight:400}
+.money-amount,.money-date-group>.date-emphasis,.todo-date-heading{font-weight:850}
+.balance{padding:12px;background:linear-gradient(140deg,#dff3ff,#edf5ff);border:1px solid rgba(255,255,255,.95);box-shadow:0 6px 15px rgba(35,117,187,.13)}
+.balance-art-wrap{grid-template-columns:minmax(0,1fr) minmax(86px,29%);min-height:82px}
+.balance-art{height:84px}
+.balance .finance-summary-metrics{grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.balance .finance-summary-metrics span{padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.82);font-size:10px;color:#344b6b}
+.balance .finance-summary-metrics b{margin-top:2px;font-size:12px;color:#182b4e}
+.balance .finance-summary-metrics span:nth-child(3){grid-column:1/-1;padding:5px 8px;background:#dcecff}
+.balance .balance-update-button{display:block;width:100%;min-height:36px;margin-top:6px;padding:8px 10px;border:0;border-radius:10px;background:#0876e8;color:#fff;font-size:11px;font-weight:800}
+.finance-metrics-separated{display:none!important}
+.finance-home-screen .section-kicker{margin:0 4px 5px;font-size:11px}
+.finance-home-screen .finance-tile.income{border:3px solid #06bd54!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
+.finance-home-screen .finance-tile.expense{border:3px solid #0879ef!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
+.money-date-group.income.open{border-color:#edcf72;background:#fffdf0}
+.money-date-group.income.completed,.money-date-group.expense.completed{border-color:#83cfae;background:#f1fff7}
+.money-date-group.expense.open{border-color:#e7a3a3;background:#fffafa}
+.money-open-section.expense .money-section-heading>b,.money-open-section.expense .money-section-heading>strong{color:#17233d!important;font-weight:850}
+.money-open-section.expense .money-state.is-open{color:#59677d}
+.todo-date-group.pending{background:#fffdf0;border-color:#eedf99}
+.todo-date-group.completed{background:#edfff4;border-color:#b6e8cc}
+.todo-nav-link{position:relative;isolation:isolate;min-height:60px;margin-top:7px;padding:8px 11px;border-radius:16px;box-shadow:0 5px 13px rgba(20,81,123,.10)}
+.todo-nav-link::before,.todo-nav-link::after{z-index:0}
+.todo-nav-link::before{inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),transparent 52%),radial-gradient(ellipse at 12% 135%,rgba(255,255,255,.84) 0 19%,transparent 20%),radial-gradient(ellipse at 97% -60%,rgba(255,255,255,.33) 0 25%,transparent 26%)}
+.todo-nav-link::after{right:39px;top:-44px;width:130px;height:130px;border-color:rgba(255,255,255,.30);box-shadow:0 0 0 9px rgba(255,255,255,.13),0 0 0 19px rgba(255,255,255,.10)}
+.todo-nav-wave{position:absolute;z-index:0;left:0;right:0;height:17px;pointer-events:none}
+.todo-nav-wave-top{top:0;opacity:.42;background:radial-gradient(ellipse at 23% -90%,#fff 0 64%,transparent 65%),radial-gradient(ellipse at 76% -110%,#fff 0 55%,transparent 56%)}
+.todo-nav-wave-bottom{bottom:0;opacity:.62;background:radial-gradient(ellipse at 10% 130%,rgba(255,255,255,.95) 0 35%,transparent 36%),radial-gradient(ellipse at 87% 145%,rgba(255,255,255,.80) 0 33%,transparent 34%)}
+.todo-nav-link-done{background:linear-gradient(110deg,#0879e9,#0097f2 65%,#58c5f2)!important;color:#123766}
+.todo-nav-link-active{background:linear-gradient(110deg,#f7b915,#ffd344 65%,#ffe991)!important;color:#493309}
+.todo-nav-icon{z-index:1;flex-basis:38px;width:38px;height:38px;box-shadow:0 2px 8px rgba(19,72,126,.2)}
+.todo-nav-check{background:linear-gradient(145deg,#fff,#bfe4ff);color:#087ade;font-size:24px}
+.todo-nav-calendar{background:linear-gradient(145deg,#fff8dc,#ffd66b);color:#d98000}
+.todo-nav-calendar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.todo-nav-copy,.todo-nav-arrow{z-index:1}
+.todo-nav-copy b{font-size:13px}
+.todo-nav-copy small{font-size:10px;color:#344864}
+.todo-nav-arrow{flex-basis:29px;width:29px;height:29px;font-size:23px}
+.todo-nav-link-active .todo-nav-arrow{background:#ed8200}
+@media(max-width:390px){.money-description{font-size:13px}.money-amount{font-size:12px}.todo-task-name{font-size:13px}.todo-nav-link{min-height:58px}}
