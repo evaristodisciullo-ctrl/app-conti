@@ -206,3 +206,44 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 @media(max-width:380px){.brand.card .brand-top{grid-template-columns:minmax(0,1fr) 88px;min-height:96px;padding:0}.brand.card .brand-top .brand-logo{width:88px!important;height:88px!important;max-width:88px!important}}
 
 .overdue-label{display:inline-block;color:#b42318;font-size:.72em;font-weight:800;letter-spacing:.04em;margin-left:.5em}
+
+/* Approved finance list grouping and compact row layout */
+.finance-tile.income{border:5px solid #13d84b;box-shadow:0 10px 24px rgba(31,119,205,.13)}
+.finance-tile.expense{border:5px solid #1269ed;box-shadow:0 10px 24px rgba(31,119,205,.13)}
+.money-sections{display:grid;gap:11px;min-width:0}
+.money-status-section{min-width:0}
+.money-section-heading{display:flex;align-items:center;gap:9px;min-height:46px;margin:0 0 9px;padding:10px 13px;border-radius:15px}
+.money-section-heading>b{flex:1;font-size:14px;font-weight:850;color:#172b52}
+.money-section-heading>strong{font-size:14px;font-weight:850;font-variant-numeric:tabular-nums;color:#172b52;white-space:nowrap}
+.money-open-section .money-section-heading{background:#fff3d5}
+.money-open-section.income .money-section-heading{background:#fff3d5}
+.money-open-section.expense .money-section-heading{background:#ffe6e8}
+.money-done-section .money-section-heading{background:#e1f7ed}
+.money-date-group{margin:0 0 9px;padding:12px 13px 7px;border:1px solid rgba(55,74,113,.10);border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 5px 15px rgba(48,63,105,.055);min-width:0}
+.money-date-group>.date-emphasis{display:inline-block;margin:0 0 13px;padding:6px 9px;border-radius:8px;background:#edf0f4;color:#10234a;font-size:16px;line-height:1.15;font-weight:900;letter-spacing:.015em;text-align:left}
+.money-date-rows{min-width:0}
+.money-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(72px,auto) minmax(110px,auto);align-items:center;gap:9px;padding:10px 0;min-height:48px;border-bottom:1px solid rgba(55,74,113,.11);min-width:0}
+.money-row:last-child{border-bottom:0}
+.money-description{min-width:0;overflow-wrap:anywhere;color:#17233d;font-size:14px;line-height:1.2;font-weight:820}
+.money-amount{justify-self:center;white-space:nowrap;color:#152545;font-size:14px;font-weight:850;font-variant-numeric:tabular-nums}
+.money-state-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+.money-state-stack{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:0}
+.money-state{display:inline-flex;align-items:center;gap:5px;color:#59677d;font-size:10px;font-weight:760;white-space:nowrap}
+.money-state i{display:block;width:7px;height:7px;border-radius:50%;background:#e9a521;flex:none}
+.money-state.is-done{color:#087b57}
+.money-state.is-done i{background:#16a66b}
+.money-state-stack .overdue-label{margin:0;color:#b42318;font-size:9px;line-height:1.1;white-space:nowrap}
+.money-mark-action,.money-edit-icon{display:grid;place-items:center;width:29px;height:29px;min-height:29px;padding:0!important;border:0;border-radius:9px;background:#eef4ff;color:#2563cf;font-size:17px;line-height:1;flex:none}
+.money-mark-action{background:#fff4d8;color:#986400;font-size:15px;font-weight:900}
+.money-edit-icon{font-size:18px}
+.money-collapse{display:grid;place-items:center;width:28px;height:28px;min-height:28px;padding:0;border:1px solid rgba(31,77,126,.12);border-radius:9px;background:rgba(255,255,255,.74);color:#245eb7;font-size:19px;line-height:1}
+.money-section-empty{padding:10px 12px;color:#68758b;font-size:12px}
+.money-reopen-action{margin-top:10px;border:1px solid #bfd5ff!important;background:#f2f6ff!important;color:#245eb7!important}
+@media(max-width:390px){
+ .money-date-group{padding:10px 10px 6px}
+ .money-row{grid-template-columns:minmax(0,1fr) minmax(65px,auto) minmax(102px,auto);gap:6px}
+ .money-description,.money-amount{font-size:12px}
+ .money-state{font-size:9px}
+ .money-state-actions{gap:4px}
+ .money-mark-action,.money-edit-icon{width:26px;height:26px;min-height:26px}
+}
