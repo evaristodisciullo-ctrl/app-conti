@@ -52,8 +52,8 @@ const checks = [
   ,['finance filters and status sections render in approved order', app.includes('data-money-filter=') && app.includes("doneLabel=isIncome?'Ricevute':'Pagati'") && app.includes("filter==='done'?section(shownDone,true):filter==='pending'?section(shownOpen,false)")]
   ,['finance lists group rows under one date heading and keep undated items separate', app.includes('financeDateGroupKey(item)') && app.includes('data-date-group=') && app.includes("return 'SENZA DATA'")]
   ,['only payment completed section is collapsible in All view', app.includes('data-toggle-paid-section') && app.includes("kind==='expense'&&filter==='all'") && app.includes('paidEntriesExpanded')]
-  ,['completed finance rows edit and reopen from edit form', app.includes('data-edit-money-open=') && app.includes('data-undo-money-edit=') && !app.includes('class="money-undo-small"')]
-  ,['approved home tile borders are vivid and finance list rows fit small screens', css.includes('.finance-tile.income{border:5px solid #13d84b') && css.includes('.finance-tile.expense{border:5px solid #1269ed') && css.includes('@media(max-width:390px)') && css.includes('.money-row{display:grid')]
+  ,['completed finance rows edit and reopen from edit form', app.includes('data-edit-money-open=') && app.includes('data-undo-money-edit=') && !app.includes('data-undo-money="')]
+  ,['approved home tile borders are vivid and finance list rows fit small screens', css.includes('inset 0 0 0 5px #13d84b') && css.includes('inset 0 0 0 5px #1269ed') && css.includes('@media(max-width:390px)') && css.includes('.money-row{display:grid')]
 ];
 
 let failed = 0;
