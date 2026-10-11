@@ -167,7 +167,7 @@ await page.screenshot({path:`${previewDir}/08-attivita.png`});
 await page.locator('[data-complete]').first().click();
 await page.locator('[data-go="todo"]').click();
 await page.locator('[data-go="todo-done"]').click();
-assert.equal(await page.locator('[data-edit-task]').count(),1,'completed task appears in completed list');assert.match(await page.locator('.todo-date').innerText(),/Completata il \\d{2}\\/\\d{2}\\/\\d{4}/,'completion date uses Italian day/month/year format');
+assert.equal(await page.locator('[data-edit-task]').count(),1,'completed task appears in completed list');assert.match(await page.locator('.todo-date').innerText(),/Completata il \d{2}\/\d{2}\/\d{4}/,'completion date uses Italian day/month/year format');
 await page.screenshot({path:`${previewDir}/09-completate.png`});
 await page.locator('[data-restore]').click();
 assert.equal(await page.locator('[data-edit-task]').count(),25,'restored task returns to active list');
