@@ -318,8 +318,8 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .balance .balance-update-button{display:block;width:100%;min-height:36px;margin-top:6px;padding:8px 10px;border:0;border-radius:10px;background:#0876e8;color:#fff;font-size:11px;font-weight:800}
 .finance-metrics-separated{display:none!important}
 .finance-home-screen .section-kicker{margin:0 4px 5px;font-size:11px}
-.finance-home-screen .finance-tile.income{border:3px solid #06bd54!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
-.finance-home-screen .finance-tile.expense{border:3px solid #0879ef!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)}
+.finance-home-screen .finance-tile.income{border:3px solid #06bd54!important;box-shadow:inset 0 0 0 5px rgb(0,216,75)}
+.finance-home-screen .finance-tile.expense{border:3px solid #0879ef!important;box-shadow:inset 0 0 0 5px rgb(0,105,237)}
 .money-date-group.income.open{border-color:#edcf72;background:#fffdf0}
 .money-date-group.income.completed,.money-date-group.expense.completed{border-color:#83cfae;background:#f1fff7}
 .money-date-group.expense.open{border-color:#e7a3a3;background:#fffafa}
