@@ -208,8 +208,8 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .overdue-label{display:inline-block;color:#b42318;font-size:.72em;font-weight:800;letter-spacing:.04em;margin-left:.5em}
 
 /* Approved finance list grouping and compact row layout */
-.finance-tile.income{border:5px solid #13d84b;box-shadow:0 10px 24px rgba(31,119,205,.13)}
-.finance-tile.expense{border:5px solid #1269ed;box-shadow:0 10px 24px rgba(31,119,205,.13)}
+.finance-tile.income{border:1px solid transparent;box-shadow:0 10px 24px rgba(31,119,205,.13),inset 0 0 0 5px #13d84b}
+.finance-tile.expense{border:1px solid transparent;box-shadow:0 10px 24px rgba(31,119,205,.13),inset 0 0 0 5px #1269ed}
 .money-sections{display:grid;gap:11px;min-width:0}
 .money-status-section{min-width:0}
 .money-section-heading{display:flex;align-items:center;gap:9px;min-height:46px;margin:0 0 9px;padding:10px 13px;border-radius:15px}
