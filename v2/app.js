@@ -165,7 +165,7 @@ function financeDateHeading(item){
   const fields=dateFields(item);
   if(!fields)return String(fmtDate(item.date,item.datePrecision)).toLocaleUpperCase('it-IT');
   const months=['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
-  if(fields.day&&fields.month)return fields.day+' '+months[Number(fields.month)-1]+(fields.year?' '+fields.year:'');
+  if(fields.day&&fields.month)return fields.day+' '+months[Number(fields.month)-1];
   if(fields.precision==='dayOnly')return 'GIORNO '+fields.day;
   if(fields.month)return months[Number(fields.month)-1]+(fields.year?' '+fields.year:'');
   if(fields.precision==='monthOnly')return 'MESE '+fields.month;
