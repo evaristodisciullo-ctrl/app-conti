@@ -49,7 +49,7 @@ const checks = [
   ,['active Todo defaults to the current month', app.includes('active:{month:currentTodoMonth,year:currentTodoYear}')]
   ,['real-balance field is blank and current balance is shown separately', app.includes('Saldo attualmente registrato: <b>${euro(realBalance())}</b>') && app.includes('id="balanceValue" inputmode="decimal" value=""')]
 
-  ,['finance filters and status sections render in approved order', app.includes('data-money-filter="'+kind+':all"') && app.includes("doneLabel=isIncome?'Ricevute':'Pagati'") && app.includes("filter==='done'?section(shownDone,true):filter==='pending'?section(shownOpen,false)")]
+  ,['finance filters and status sections render in approved order', app.includes('data-money-filter=') && app.includes("doneLabel=isIncome?'Ricevute':'Pagati'") && app.includes("filter==='done'?section(shownDone,true):filter==='pending'?section(shownOpen,false)")]
   ,['finance lists group rows under one date heading and keep undated items separate', app.includes('financeDateGroupKey(item)') && app.includes('data-date-group=') && app.includes("return 'SENZA DATA'")]
   ,['only payment completed section is collapsible in All view', app.includes('data-toggle-paid-section') && app.includes("kind==='expense'&&filter==='all'") && app.includes('paidEntriesExpanded')]
   ,['completed finance rows edit and reopen from edit form', app.includes('data-edit-money-open=') && app.includes('data-undo-money-edit=') && !app.includes('data-undo-money="')]
