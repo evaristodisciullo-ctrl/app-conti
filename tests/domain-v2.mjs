@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { parseItalianAmount,parseItalianDate,parseItalianTime,parseItalianRecurrence,parseItalianVoiceEntry } from '../v2/voice.js';
-import { formatDateValue, matchesDateFilter, matchesMonth, dateSortKey } from '../v2/date-values.js';
+import { formatDateValue, matchesDateFilter, matchesMonth, dateSortKey, isOverdue, validateDateValue } from '../v2/date-values.js';
 import { realBalance, projectedBalance, monthEndBalance, financeTotals, markCompleted, undoCompletion, deleteMoneyRecord, adjustCompletedAmount } from '../v2/finance.js';
 import { generateOccurrenceDates, migrateLegacyRecurrences } from '../v2/recurrence.js';
 import { collectNotificationPlan } from '../v2/notifications.js';
@@ -45,6 +45,18 @@ assert.equal(monthEndBalance(recurrence,'2026-10'),30);assert.equal(monthEndBala
 const undated={balance:40,entries:[{id:'no-date',kind:'income',amount:900,date:'',datePrecision:'none'},{id:'year-only',kind:'income',amount:800,date:'2026',datePrecision:'year'}],history:[]};assert.deepEqual(financeTotals(undated,'income','2026-10'),{pending:0,done:0,total:0},'undated or year-only records are not assigned to an arbitrary month');assert.equal(monthEndBalance(undated,'2026-10'),40);assert.equal(projectedBalance(undated),840,'a no-date operation is not treated as a dated forecast item');
 
 assert.equal(formatDateValue('2026-10-09','day'),'9 ottobre 2026');
+const fixedToday=new Date(2026,9,11,12);
+assert.equal(isOverdue({date:'2026-10-10',datePrecision:'day'},fixedToday),true,'yesterday is expired');
+assert.equal(isOverdue({date:'2026-10-12',datePrecision:'day'},fixedToday),false,'tomorrow is not expired');
+assert.equal(isOverdue({date:'2026-09',datePrecision:'month'},fixedToday),true,'a past month is expired after its final day');
+assert.equal(isOverdue({date:'2026-10',datePrecision:'month'},fixedToday),false,'the current month is not expired before month end');
+assert.equal(isOverdue({date:'2025',datePrecision:'year'},fixedToday),true,'a past year is expired');
+assert.equal(isOverdue({date:'2026',datePrecision:'year'},fixedToday),false,'the current year is not expired');
+assert.equal(isOverdue({date:'10-10',datePrecision:'dayMonth'},fixedToday),false,'an unspecified year is never invented for overdue checks');
+assert.equal(validateDateValue('2026-02-31','day'),false,'impossible full dates are rejected');
+assert.ok(dateSortKey({date:'2026-10-09',datePrecision:'day'})<dateSortKey({date:'2026-10-12',datePrecision:'day'}),'full dates sort chronologically');
+assert.ok(dateSortKey({date:'2026-10',datePrecision:'month'})<dateSortKey({date:'2026-11-01',datePrecision:'day'}),'month-only dates sort by the start of the stated month');
+assert.ok(dateSortKey({date:'10-09',datePrecision:'dayMonth'})<dateSortKey({date:'',datePrecision:'none'}),'partial dated entries stay ahead of undated entries');
 assert.equal(formatDateValue('10','monthOnly'),'ottobre');
 assert.equal(formatDateValue('10-09','dayMonth'),'9 ottobre');
 assert.equal(formatDateValue('2026','year'),'2026');
