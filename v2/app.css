@@ -247,3 +247,23 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
  .money-state-actions{gap:4px}
  .money-mark-action{width:auto;min-width:47px;height:26px;min-height:26px}.money-edit-icon{width:26px;height:26px;min-height:26px}
 }
+
+
+/* Requested visual cues for grouped finance items and Todo navigation. */
+.money-date-group.income.open{border-color:#edcf72}
+.money-date-group.income.completed{border-color:#83cfae}
+.money-date-group.expense.open{border-color:#e7a3a3}
+.money-date-group.expense.completed{border-color:#83cfae}
+.money-description{font-size:15px}
+@media(max-width:390px){.money-description{font-size:13px}}
+.todo-nav-link{display:flex;align-items:center;gap:11px;width:100%;min-height:68px;margin:10px 0 0;padding:11px 13px;border-radius:17px;text-align:left;box-shadow:0 4px 13px rgba(39,65,105,.07)}
+.todo-nav-link-done{border:1px solid #85b7f4;background:#eef7ff;color:#17335f}
+.todo-nav-link-active{border:1px solid #edc66f;background:#fff9e8;color:#17335f}
+.todo-nav-icon{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:12px;font-size:21px;font-weight:900}
+.todo-nav-check{background:#dcecff;color:#1769d2}
+.todo-nav-calendar{background:#fff0c8;color:#a9740a;font-size:20px}
+.todo-nav-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.todo-nav-copy b{font-size:14px;font-weight:850}
+.todo-nav-copy small{font-size:11px;line-height:1.25;color:#59677d}
+.todo-nav-arrow{color:#3574c8;font-size:26px;font-weight:800;line-height:1}
+.todo-restore-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;min-height:34px!important;padding:0!important;border:1px solid #9bd8b7!important;border-radius:50%!important;background:#e9f8ef!important;color:#198457!important;font-size:22px!important;font-weight:900}
