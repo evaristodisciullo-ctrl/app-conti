@@ -267,3 +267,40 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .todo-nav-copy small{font-size:11px;line-height:1.25;color:#59677d}
 .todo-nav-arrow{color:#3574c8;font-size:26px;font-weight:800;line-height:1}
 .todo-restore-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;min-height:34px!important;padding:0!important;border:1px solid #9bd8b7!important;border-radius:50%!important;background:#e9f8ef!important;color:#198457!important;font-size:22px!important;font-weight:900}
+
+
+/* Approved screen refinements */
+.money-description{font-weight:500}
+.money-date-group{box-shadow:none}
+.money-open-section.expense .money-section-heading>b,
+.money-open-section.expense .money-section-heading>strong{color:#172b52}
+.money-open-section.expense .money-state.is-open{color:#17233d}
+.money-open-section.expense .money-state.is-open i{background:#e34d55}
+.page-header.expense-head{background:linear-gradient(127deg,#08866d,#16ad82)}
+.finance-expense-action{border:1px solid #148b68;background:linear-gradient(105deg,#108c69,#20aa7e);color:#fff;box-shadow:0 7px 16px rgba(19,145,105,.18)}
+.finance-expense-action .action-plus{background:rgba(255,255,255,.2);color:#fff}
+.todo-date-group{margin:0 0 9px;padding:9px 12px 5px;border:1px solid #dbe9db;border-radius:15px;background:rgba(255,255,255,.92);box-shadow:0 4px 12px rgba(38,97,69,.045)}
+.todo-date-group.pending{border-color:#eadc9b;background:#fffdf3}
+.todo-date-group.completed{border-color:#b6e8cc;background:#f2fff7}
+.todo-date-heading{display:inline-block;margin:0 0 7px;padding:4px 8px;border-radius:7px;background:#f1f0f4;color:#17213a;font-size:16px;line-height:1.12;font-weight:900}
+.todo-task-row{display:flex;align-items:center;gap:8px;min-width:0;min-height:34px;padding:4px 1px;border-top:1px solid rgba(42,80,63,.08)}
+.todo-task-row:first-of-type{border-top:0}
+.todo-task-name{flex:1;min-width:0;color:#1b2a43;font-size:14px;line-height:1.2;font-weight:500;overflow-wrap:anywhere}
+.todo-done-check{display:grid;place-items:center;flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:#169a70;color:#fff;font-size:16px;font-weight:900}
+.todo-task-row .overdue-label{flex:none}
+.todo-task-row .todo-complete{display:flex;align-items:center;justify-content:center;gap:4px;flex:0 0 auto;min-height:27px;padding:4px 7px;border:1px solid #b8dfd0;border-radius:999px;background:#eefbf5;color:#176c51;font-size:10px;font-weight:650;white-space:nowrap}
+.todo-task-row .todo-complete span{font-size:13px}
+.todo-task-row .todo-restore-icon{margin-left:auto}
+.todo-nav-link{position:relative;isolation:isolate;overflow:hidden;min-height:70px;border:1px solid transparent!important}
+.todo-nav-link::before,.todo-nav-link::after{position:absolute;z-index:-1;content:"";pointer-events:none}
+.todo-nav-link::before{inset:0;background:radial-gradient(ellipse at 20% 120%,rgba(255,255,255,.8) 0 24%,transparent 25%),radial-gradient(ellipse at 82% -25%,rgba(255,255,255,.42) 0 25%,transparent 26%)}
+.todo-nav-link::after{right:38px;top:-31px;width:112px;height:112px;border:1px solid rgba(255,255,255,.55);border-radius:50%;box-shadow:0 0 0 10px rgba(255,255,255,.14),0 0 0 22px rgba(255,255,255,.1)}
+.todo-nav-link-done{background:linear-gradient(115deg,#0879e9,#05a2f7 58%,#63c6f6)!important;color:#102e58}
+.todo-nav-link-active{background:linear-gradient(115deg,#f5b71c,#ffd54c 57%,#ffe899)!important;color:#53330a}
+.todo-nav-icon{position:relative;z-index:1;flex-basis:40px;width:40px;height:40px;border-radius:50%;box-shadow:0 3px 9px rgba(28,55,95,.16)}
+.todo-nav-check{background:linear-gradient(145deg,#fff,#cceaff);color:#0788e9;font-size:23px}
+.todo-nav-calendar{background:linear-gradient(145deg,#fff8d8,#ffd465);color:#d88400}
+.todo-nav-arrow{position:relative;z-index:1;display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;border-radius:50%;background:#0878df;color:#fff}
+.todo-nav-link-active .todo-nav-arrow{background:#e88205}
+.todo-nav-copy{position:relative;z-index:1}
+@media(max-width:390px){.todo-task-name{font-size:13px}.todo-task-row{gap:6px}.todo-task-row .todo-complete{font-size:9px;padding:4px 6px}}
