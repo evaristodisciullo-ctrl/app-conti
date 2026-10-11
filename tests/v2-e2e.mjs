@@ -81,6 +81,7 @@ assert.deepEqual(await page.locator('.filter-row [data-money-filter^="income:"]'
 assert.equal(await page.locator('.money-status-section').count(),2,'all incomes render separate open and received sections');
 assert.equal(await page.locator('.money-open-section .money-section-heading').count(),1);
 assert.equal(await page.locator('.money-done-section .money-section-heading').count(),1);
+assert.ok(await page.locator('.money-date-group.income.open').count()>0,'open income date groups are present');assert.equal(await page.locator('.money-date-group.income.open').first().evaluate(el=>getComputedStyle(el).borderTopColor),'rgb(237, 207, 114)','open income date groups have amber outlines');assert.equal(await page.locator('.money-description').first().evaluate(el=>getComputedStyle(el).fontSize),'15px','finance descriptions are slightly larger');
 await page.screenshot({path:`${previewDir}/02-entrate.png`});
 const incomeRows=await page.locator('.money-row').evaluateAll(rows=>rows.map(r=>({done:r.dataset.done==='true',sort:r.dataset.dateSort})));const incomeSplit=incomeRows.findIndex(r=>r.done);if(incomeSplit>=0){assert.ok(incomeRows.slice(0,incomeSplit).every(r=>!r.done),'all open incomes are listed before received incomes');assert.ok(incomeRows.slice(incomeSplit).every(r=>r.done),'received incomes stay in their own group');for(const group of [incomeRows.slice(0,incomeSplit),incomeRows.slice(incomeSplit)])assert.deepEqual(group.map(r=>r.sort),group.map(r=>r.sort).slice().sort(),'each income group is chronological');}
 
@@ -108,6 +109,7 @@ assert.match(await page.locator('.balance').innerText(),/1\.245,50/,'pending pay
 await page.locator('[data-go="expense"]').click();
 assert.deepEqual(await page.locator('.filter-row [data-money-filter^="expense:"]').allTextContents(),['Tutte','Da pagare','Pagati'],'payment filters retain approved order');
 assert.equal(await page.locator('.money-status-section').count(),2,'all payments render separate open and paid sections');
+assert.ok(await page.locator('.money-date-group.expense.open').count()>0,'open payment date groups are present');assert.equal(await page.locator('.money-date-group.expense.open').first().evaluate(el=>getComputedStyle(el).borderTopColor),'rgb(231, 163, 163)','open payment date groups have rose outlines');
 await page.screenshot({path:`${previewDir}/03-pagamenti.png`});
 await page.locator('[data-money-filter="expense:pending"]').click();
 await page.locator('[data-money-done]').first().click();
@@ -172,13 +174,21 @@ await page.locator('#todoRecurrence').selectOption('monthly');
 await page.locator('#todoNotify').check();
 await page.locator('#todoForm button[type="submit"]').click();
 assert.equal(await page.locator('[data-edit-task]').count(),0,'active Todo defaults to the current month and hides future recurrence instances');await page.locator('#todoMonth').selectOption('11');await page.locator('#todoYear').selectOption('2026');assert.equal(await page.locator('[data-edit-task]').count(),1,'a later month remains selectable');assert.equal(await page.locator('[data-edit-task]').filter({hasText:'Chiamare dentista'}).first().locator('.todo-date').innerText(),'30/11/2026','complete Todo dates use Italian day/month/year format');await page.locator('#todoMonth').selectOption('all');await page.locator('#todoYear').selectOption('all');assert.equal(await page.locator('[data-edit-task]').count(),25,'monthly Todo recurrence remains available through all-month filters');
-assert.equal(await page.locator('.search-field').evaluate(el=>getComputedStyle(el).display),'flex','Todo search field is styled as a compact control');
-assert.ok(parseFloat(await page.locator('.search-field input').evaluate(el=>getComputedStyle(el).height))>=40,'Todo search input keeps a usable touch height');
+assert.equal(await page.locator('[data-todo-search="active"]').count(),0,'active Todo search has been removed');
+assert.equal(await page.locator('.search-field').count(),0,'active Todo list has no empty search space');
+assert.equal(await page.locator('#todoMonth').count(),1,'active month filter remains available');
+assert.ok(await page.locator('[data-go="todo-done"]').innerText().then(x=>x.includes('Vedi cose già fatte')&&x.includes('Visualizza tutte le cose già completate')),'active screen links to completed tasks with approved copy');
 await page.screenshot({path:`${previewDir}/08-attivita.png`});
+await page.locator('[data-go="todo-done"]').click();
+assert.equal(await page.locator('h1').innerText(),'Cose già fatte','active footer opens completed tasks directly');
+assert.ok(await page.locator('[data-go="todo-active"]').innerText().then(x=>x.includes('Vedi cose in scadenza')&&x.includes('Visualizza tutte le cose ancora da fare')),'completed screen links back with approved copy');
+await page.locator('[data-go="todo-active"]').click();
 await page.locator('[data-complete]').first().click();
 await page.locator('[data-go="todo"]').click();
 await page.locator('[data-go="todo-done"]').click();
 assert.equal(await page.locator('[data-edit-task]').count(),1,'completed task appears in completed list');assert.match(await page.locator('.todo-date').innerText(),/Completata il \d{2}\/\d{2}\/\d{4}/,'completion date uses Italian day/month/year format');
+assert.equal(await page.locator('[data-delete-task]').count(),0,'completed list has no permanent delete control');
+assert.equal(await page.locator('[data-restore]').getAttribute('aria-label'),'Ripristina attività','completed task uses restore action instead of trash');
 await page.screenshot({path:`${previewDir}/09-completate.png`});
 await page.locator('[data-restore]').click();
 assert.equal(await page.locator('[data-edit-task]').count(),25,'restored task returns to active list');
