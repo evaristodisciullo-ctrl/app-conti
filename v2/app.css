@@ -234,7 +234,7 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .money-state.is-done i{background:#16a66b}
 .money-state-stack .overdue-label{margin:0;color:#b42318;font-size:9px;line-height:1.1;white-space:nowrap}
 .money-mark-action,.money-edit-icon{display:grid;place-items:center;width:29px;height:29px;min-height:29px;padding:0!important;border:0;border-radius:9px;background:#eef4ff;color:#2563cf;font-size:17px;line-height:1;flex:none}
-.money-mark-action{background:#fff4d8;color:#986400;font-size:15px;font-weight:900}
+.money-mark-action{width:auto;min-width:47px;padding:0 6px!important;gap:3px;background:#fff4d8;color:#986400;font-size:12px;font-weight:900}.money-mark-label{font-size:9px;font-weight:800;white-space:nowrap}
 .money-edit-icon{font-size:18px}
 .money-collapse{display:grid;place-items:center;width:28px;height:28px;min-height:28px;padding:0;border:1px solid rgba(31,77,126,.12);border-radius:9px;background:rgba(255,255,255,.74);color:#245eb7;font-size:19px;line-height:1}
 .money-section-empty{padding:10px 12px;color:#68758b;font-size:12px}
@@ -245,5 +245,5 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
  .money-description,.money-amount{font-size:12px}
  .money-state{font-size:9px}
  .money-state-actions{gap:4px}
- .money-mark-action,.money-edit-icon{width:26px;height:26px;min-height:26px}
+ .money-mark-action{width:auto;min-width:47px;height:26px;min-height:26px}.money-edit-icon{width:26px;height:26px;min-height:26px}
 }
