@@ -180,7 +180,7 @@ assert.equal(await page.locator('#todoMonth').count(),1,'active month filter rem
 assert.ok(await page.locator('[data-go="todo-done"]').innerText().then(x=>x.includes('Vedi cose già fatte')&&x.includes('Visualizza tutte le cose già completate')),'active screen links to completed tasks with approved copy');
 await page.screenshot({path:`${previewDir}/08-attivita.png`});
 await page.locator('[data-go="todo-done"]').click();
-assert.equal(await page.locator('h1').innerText(),'Cose già fatte','active footer opens completed tasks directly');
+assert.equal(await page.locator('h1').innerText(),'Cose già fatte','active footer opens completed tasks directly');assert.equal(await page.locator('[data-go="todo-add"]').count(),1,'completed screen keeps manual task creation above its return link');
 assert.ok(await page.locator('[data-go="todo-active"]').innerText().then(x=>x.includes('Vedi cose in scadenza')&&x.includes('Visualizza tutte le cose ancora da fare')),'completed screen links back with approved copy');
 await page.locator('[data-go="todo-active"]').click();
 await page.locator('[data-complete]').first().click();
