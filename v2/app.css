@@ -204,3 +204,5 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .brand.card .brand-top .eyebrow{grid-column:1;grid-row:1;justify-self:center}
 .brand.card .brand-top .brand-logo{position:relative!important;top:auto!important;right:auto!important;left:auto!important;bottom:auto!important;grid-column:2;grid-row:1;justify-self:end;display:block!important;flex:none;width:88px!important;height:88px!important;max-width:88px!important;object-fit:contain!important;object-position:center!important;transform:none!important;clip-path:none!important;opacity:1!important;visibility:visible!important;z-index:7!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
 @media(max-width:380px){.brand.card .brand-top{grid-template-columns:minmax(0,1fr) 88px;min-height:96px;padding:0}.brand.card .brand-top .brand-logo{width:88px!important;height:88px!important;max-width:88px!important}}
+
+.overdue-label{display:inline-block;color:#b42318;font-size:.72em;font-weight:800;letter-spacing:.04em;margin-left:.5em}
