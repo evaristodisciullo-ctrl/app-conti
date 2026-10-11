@@ -346,3 +346,8 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .todo-nav-arrow{flex-basis:29px;width:29px;height:29px;font-size:23px}
 .todo-nav-link-active .todo-nav-arrow{background:#ed8200}
 @media(max-width:390px){.money-description{font-size:13px}.money-amount{font-size:12px}.todo-task-name{font-size:13px}.todo-nav-link{min-height:58px}}
+
+
+/* Match the approved pale red outline on the Pagamenti pending total. */
+.money-open-section.expense .money-section-heading{border:1px solid #e7a3a3;color:#17233d}
+.money-open-section.expense .money-section-heading>b,.money-open-section.expense .money-section-heading>strong{color:#17233d}
