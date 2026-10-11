@@ -35,9 +35,9 @@ const checks = [
   ,['voice phrase parser and Italian time parsing exist', voice.includes('parseItalianVoiceEntry') && voice.includes('parseItalianTime')]
   ,['Android requests microphone permission', manifest.includes('android.permission.RECORD_AUDIO') && activity.includes('NativeSpeechRecognition.class') && platform.includes("registerPlugin('NativeSpeechRecognition')")]
   ,['voice review form explicitly avoids automatic save', app.includes('Nulla è stato salvato.') && app.includes('Dati riconosciuti:')]
-  ,['finance dates and status use separate readable fields', app.includes('class="money-meta"') && css.includes('.money-meta .date-emphasis')]
+  ,['finance dates and status use separate readable fields', app.includes('class="money-state ') && css.includes('.money-state.is-done')]
   ,['notification bell icons use filled section colors', css.includes('.bell-icon{') && css.includes('fill:currentColor')]
-  ,['money list cards use a prominent date beneath the description', app.includes('class="money-meta"><span class="date-emphasis">') && css.includes('.money-row .money-meta .date-emphasis{')]
+  ,['money list cards use a prominent date beneath the description', app.includes('class="money-date-group"') && css.includes('.money-date-group>.date-emphasis{')]
   ,['manual create action styling remains intact', css.includes('.list-create-action{height:56px;min-height:56px;max-height:56px') && css.includes('.list-create-action:not(.todo-add-action){') && css.includes('.list-create-action.todo-add-action{')]
   ,['section deletion tiles live on each section home and stay out of settings', app.includes('finance-reset-action" id="resetFinance') && app.includes('todo-reset-action" id="resetTodo') && !/function settings\(\)\{[^\n]*id="resetFinance"/.test(app) && !/function todoSettings\(\)\{[^\n]*id="resetTodo"/.test(app) && !app.includes('id="resetAll"')]
   ,['Android speech session exposes real readiness, partial text, retry and confirmation', speechPlugin.includes('onReadyForSpeech(Bundle params) { emitState("ready"') && speechPlugin.includes('onBeginningOfSpeech() { emitState("recording"') && speechPlugin.includes('EXTRA_PARTIAL_RESULTS, true') && speechPlugin.includes('public void retry(') && speechPlugin.includes('public void confirm(') && speechPlugin.includes('ERROR_LANGUAGE_UNAVAILABLE') && speechPlugin.includes('Looper.getMainLooper()')]
@@ -48,6 +48,12 @@ const checks = [
   ,['monthly finance summaries use selected month and bounded recurring forecast', app.includes("financeTotals(state,'income',monthKey())") && app.includes("financeTotals(state,'expense',monthKey())") && finance.includes('only the next pending occurrence in each recurring series')]
   ,['active Todo defaults to the current month', app.includes('active:{month:currentTodoMonth,year:currentTodoYear}')]
   ,['real-balance field is blank and current balance is shown separately', app.includes('Saldo attualmente registrato: <b>${euro(realBalance())}</b>') && app.includes('id="balanceValue" inputmode="decimal" value=""')]
+
+  ,['finance filters and status sections render in approved order', app.includes('data-money-filter="'+kind+':all"') && app.includes("doneLabel=isIncome?'Ricevute':'Pagati'") && app.includes("filter==='done'?section(shownDone,true):filter==='pending'?section(shownOpen,false)")]
+  ,['finance lists group rows under one date heading and keep undated items separate', app.includes('financeDateGroupKey(item)') && app.includes('data-date-group=') && app.includes("return 'SENZA DATA'")]
+  ,['only payment completed section is collapsible in All view', app.includes('data-toggle-paid-section') && app.includes("kind==='expense'&&filter==='all'") && app.includes('paidEntriesExpanded')]
+  ,['completed finance rows edit and reopen from edit form', app.includes('data-edit-money-open=') && app.includes('data-undo-money-edit=') && !app.includes('data-undo-money="')]
+  ,['approved home tile borders are vivid and finance list rows fit small screens', css.includes('.finance-tile.income{border:5px solid #13d84b') && css.includes('.finance-tile.expense{border:5px solid #1269ed') && css.includes('@media(max-width:390px)') && css.includes('.money-row{display:grid')]
 ];
 
 let failed = 0;
