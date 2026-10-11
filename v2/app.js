@@ -245,7 +245,8 @@ function todoList(done=false){
   const activeLink='<button class="todo-nav-link todo-nav-link-done" data-go="todo-done"><span class="todo-nav-icon todo-nav-check" aria-hidden="true">✓</span><span class="todo-nav-copy"><b>Vedi cose già fatte</b><small>Visualizza tutte le cose già completate</small></span><span class="todo-nav-arrow" aria-hidden="true">›</span></button>';
   const doneLink='<button class="todo-nav-link todo-nav-link-active" data-go="todo-active"><span class="todo-nav-icon todo-nav-calendar" aria-hidden="true">▦</span><span class="todo-nav-copy"><b>Vedi cose in scadenza</b><small>Visualizza tutte le cose ancora da fare</small></span><span class="todo-nav-arrow" aria-hidden="true">›</span></button>';
   const searchField=done?'<label class="search-field">Cerca attività<input data-todo-search="done" type="search" placeholder="Cerca nelle attività" value="'+escapeHtml(todoSearch.done)+'"></label>':'';
-  const footer=done?doneLink:'<button class="wide card add-action todo-add-action list-create-action" data-go="todo-add"><span class="action-plus" aria-hidden="true">+</span><span>Aggiungi cosa da fare manualmente</span><b aria-hidden="true">›</b></button>'+activeLink;
+  const addAction='<button class="wide card add-action todo-add-action list-create-action" data-go="todo-add"><span class="action-plus" aria-hidden="true">+</span><span>Aggiungi cosa da fare manualmente</span><b aria-hidden="true">›</b></button>';
+  const footer=addAction+(done?doneLink:activeLink);
   shell('<header class="page-header todo-head"><button data-go="todo">‹</button><div><small>COSE DA FARE</small><h1>'+(done?'Cose già fatte':'In scadenza')+'</h1></div><span class="eds">E.D.S.</span></header>'+todoFilterControls(source,done)+searchField+rows+footer)
 }
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
