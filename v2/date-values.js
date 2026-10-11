@@ -33,9 +33,32 @@ export function matchesDateFilter(item,month='all',year='all'){
  return true;
 }
 export function dateSortKey(item){
- if(!item.date)return '9999-9999-9999|';
- const f=dateFields(item);
- return [f.year||0,f.month||0,f.day||0].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ const f=dateFields(item),precision=f.precision;
+ if(precision==='day'&&Number.isInteger(f.year)&&Number.isInteger(f.month)&&Number.isInteger(f.day))return '0|'+[f.year,f.month,f.day].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ if(precision==='month'&&Number.isInteger(f.year)&&Number.isInteger(f.month))return '0|'+[f.year,f.month,1].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ if(precision==='year'&&Number.isInteger(f.year))return '0|'+[f.year,1,1].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ if(precision==='dayMonth'&&Number.isInteger(f.month)&&Number.isInteger(f.day))return '1|'+[f.month,f.day].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ if(precision==='monthOnly'&&Number.isInteger(f.month))return '1|'+[f.month,1].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ if(precision==='dayOnly'&&Number.isInteger(f.day))return '1|'+[0,f.day].map(x=>String(x).padStart(4,'0')).join('-')+'|'+String(item.createdAt||'');
+ return '2|9999-9999-9999|'+String(item.createdAt||'');
+}
+export function isOverdue(item,now=new Date()){
+ if(!item?.date)return false;
+ const f=dateFields(item),today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ if(f.precision==='day'){
+  if(!validateDateValue(item.date,'day'))return false;
+  return item.date<`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+ }
+ if(f.precision==='month'){
+  if(!validateDateValue(item.date,'month'))return false;
+  const [year,month]=item.date.split('-').map(Number);
+  return new Date(year,month,1)<today;
+ }
+ if(f.precision==='year'){
+  if(!validateDateValue(item.date,'year'))return false;
+  return new Date(f.year+1,0,1)<=today;
+ }
+ return false;
 }
 export function formatDateValue(value,precision=inferDatePrecision(value)){
  if(!value||precision==='none')return 'Senza data';
@@ -52,7 +75,11 @@ export function formatDateValue(value,precision=inferDatePrecision(value)){
 }
 export function validateDateValue(value,precision){
  if(!value)return false;
- if(precision==='day')return /^\d{4}-\d{2}-\d{2}$/.test(value)&&!Number.isNaN(Date.parse(value+'T12:00:00Z'));
+ if(precision==='day'){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return false;
+  const [year,month,day]=value.split('-').map(Number),date=new Date(Date.UTC(year,month-1,day));
+  return date.getUTCFullYear()===year&&date.getUTCMonth()+1===month&&date.getUTCDate()===day;
+ }
  if(precision==='month')return /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
  if(precision==='year')return /^\d{4}$/.test(value);
  if(precision==='monthOnly')return /^(0[1-9]|1[0-2])$/.test(value);
