@@ -351,3 +351,268 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 /* Match the approved pale red outline on the Pagamenti pending total. */
 .money-open-section.expense .money-section-heading{border:1px solid #e7a3a3;color:#17233d}
 .money-open-section.expense .money-section-heading>b,.money-open-section.expense .money-section-heading>strong{color:#17233d}
+
+/* Match the approved five-screen palette and compact list proportions. */
+.screen:has(.finance-home-screen),
+.screen:has(.money-flow-screen),
+.screen:has(.todo-list-screen){
+ background:radial-gradient(ellipse at 3% 8%,rgba(104,224,232,.46),transparent 54%),radial-gradient(ellipse at 97% 92%,rgba(141,231,199,.42),transparent 55%),linear-gradient(135deg,#c6f2fa,#d7f6e8);
+}
+.todo-list-screen .todo-head{min-height:60px;margin-bottom:7px;padding:7px 12px;border-radius:18px;background:linear-gradient(110deg,#079eb7 0%,#0bb98a 58%,#63d936 100%);box-shadow:0 8px 18px rgba(22,161,146,.2)}
+.todo-list-screen .todo-head>button{width:36px;height:36px}
+.todo-list-screen .todo-head .eds-logo{width:38px;height:38px}
+.todo-list-screen .todo-head h1{font-size:21px}
+.todo-list-screen .todo-filters{gap:6px;margin-bottom:7px}
+.todo-list-screen .todo-filters select{min-height:34px;padding:6px 8px;border-color:#dce9ef;border-radius:11px;font-size:12px}
+.todo-list-screen .todo-date-group{margin-bottom:6px;padding:6px 9px 4px;border-radius:12px;background:#fffdf2;box-shadow:none}
+.todo-list-screen .todo-date-group.pending{background:#fffdf2;border-color:#eadf9d}
+.todo-list-screen .todo-date-group.completed{background:#eafff2;border-color:#b8e7ce}
+.todo-list-screen .todo-date-heading{margin-bottom:4px;padding:3px 7px;font-size:14px}
+.todo-list-screen .todo-task-row{min-height:29px;padding:3px 1px;gap:7px}
+.todo-list-screen .todo-task-name{font-size:13px;font-weight:400}
+.todo-list-screen .todo-done-check{flex-basis:23px;width:23px;height:23px;font-size:14px}
+.todo-list-screen .todo-task-row .todo-complete{min-height:23px!important;height:23px!important;padding:2px 6px!important;border:1px solid #b8dfd0!important;border-radius:999px!important;background:#eefbf5!important;color:#176c51!important;font-size:10px!important;font-weight:650!important;line-height:1!important;box-shadow:none!important}
+.todo-list-screen .todo-restore-icon{flex-basis:28px;width:28px;height:28px;min-height:28px!important;font-size:19px!important}
+.todo-list-screen .todo-nav-link{min-height:56px;margin-top:5px;padding:6px 9px;border-radius:17px}
+.todo-list-screen .todo-nav-icon{flex-basis:36px;width:36px;height:36px}
+.todo-list-screen .todo-nav-copy b{font-size:12px}
+.todo-list-screen .todo-nav-copy small{font-size:9px}
+.todo-list-screen .todo-nav-arrow{flex-basis:27px;width:27px;height:27px}
+.money-flow-screen .money-open-section.expense{background:transparent}
+.money-flow-screen .money-open-section.expense .money-section-heading{background:#fff;border:1px solid #e7a3a3;color:#17233d}
+.money-flow-screen .money-date-group.expense.open{background:#fff;border-color:#e7a3a3}
+.money-flow-screen .money-done-section.expense{background:transparent}
+.money-flow-screen .money-date-group.expense.completed{background:#effff7;border-color:#83cfae}
+.money-flow-screen .page-header{min-height:62px;margin-bottom:6px;padding:8px 11px;border-radius:18px}
+.money-flow-screen .page-header>button{width:35px;height:35px}
+.money-flow-screen .eds-logo{width:35px;height:34px}
+.money-flow-screen .page-header h1{font-size:20px}
+.money-flow-screen .month-nav{grid-template-columns:32px minmax(0,1fr) 32px;gap:5px;margin-bottom:6px;padding:4px 6px;border-radius:14px}
+.money-flow-screen .month-nav b{font-size:12px}
+.money-flow-screen .month-nav button{width:30px;height:30px;border-radius:10px;font-size:20px}
+.money-flow-screen .filter-row{gap:4px;padding:0 0 6px}
+.money-flow-screen .filter-row button{padding:6px 8px;font-size:10px}
+.money-flow-screen .compact-search{min-height:30px;padding:0 6px;border-radius:12px}
+.money-flow-screen .compact-search span{font-size:19px}
+.money-flow-screen .compact-search input{height:27px!important;min-height:27px!important;font-size:11px!important}
+.money-flow-screen .money-sections{gap:6px}
+.money-flow-screen .money-section-heading{min-height:30px;margin:0 0 5px;padding:6px 9px;border-radius:12px}
+.money-flow-screen .money-section-heading>b,.money-flow-screen .money-section-heading>strong{font-size:12px}
+.money-flow-screen .money-date-group{margin-bottom:5px;padding:4px 7px 2px;border-radius:12px}
+.money-flow-screen .money-date-group>.date-emphasis{margin-bottom:2px;padding:3px 7px;font-size:15px}
+.money-flow-screen .money-row{grid-template-columns:minmax(0,1fr) minmax(55px,auto) minmax(88px,auto);gap:4px;min-height:24px;padding:2px 0}
+.money-flow-screen .money-description{font-size:12px!important;line-height:1.1}
+.money-flow-screen .money-amount{font-size:12px}
+.money-flow-screen .money-state{gap:3px;font-size:8px}
+.money-flow-screen .money-state i{width:6px;height:6px}
+.money-flow-screen .money-mark-action{min-width:36px;height:20px;min-height:20px;padding:0 4px!important;font-size:10px}
+.money-flow-screen .money-mark-label{font-size:8px}
+.money-flow-screen .money-edit-icon{width:22px;height:22px;min-height:22px;font-size:15px}
+.money-flow-screen .flow-totals{margin-top:8px;padding:9px 11px;border-radius:16px}
+.money-flow-screen .flow-totals>div{padding:4px 0}
+.money-flow-screen .flow-totals span{font-size:11px}
+.money-flow-screen .flow-totals strong{font-size:14px}
+.money-flow-screen .flow-totals .grand{margin-top:3px;padding-top:7px}
+.money-flow-screen .list-create-action{min-height:42px;height:42px;margin-top:6px;padding:6px 10px;border-radius:14px;font-size:12px}
+.money-flow-screen .list-create-action .action-plus{width:28px;height:28px;border-radius:10px;font-size:21px}
+.money-flow-screen:has(.expense-head) .filter-row button.active{background:#14966f;border-color:#14966f}
+.money-flow-screen .finance-expense-action{border:1px solid #108b67!important;background:linear-gradient(105deg,#108c69,#20aa7e)!important;color:#fff!important;box-shadow:0 6px 14px rgba(19,145,105,.18)!important}
+.money-flow-screen .finance-expense-action .action-plus{background:rgba(255,255,255,.2);color:#fff}
+.todo-list-screen .todo-add-action{height:40px!important;min-height:40px!important;max-height:40px!important;margin-top:5px;padding:5px 9px;border:1px solid #45c79a!important;border-radius:18px;font-size:12px;background:linear-gradient(105deg,#069b6e,#18c798)!important;box-shadow:0 5px 13px rgba(14,147,111,.18)!important}
+.todo-list-screen .todo-add-action .action-plus{width:28px;height:28px;border-radius:50%;font-size:21px}
+.todo-list-screen .todo-nav-link{border-radius:28px;box-shadow:0 0 0 2px rgba(255,255,255,.78),0 5px 14px rgba(16,85,143,.2)}
+.todo-list-screen .todo-nav-link-done{border:2px solid #bce8ff!important}
+.todo-list-screen .todo-nav-link-active{border:2px solid #fff0b8!important;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 5px 14px rgba(199,137,19,.2)}
+.money-flow-screen .money-status-section{padding:4px 7px;border:1px solid #83cfae;border-radius:14px;background:#f1fff7}
+.money-flow-screen .money-status-section.money-open-section.income{border-color:#edcf72;background:#fffdf0}
+.money-flow-screen .money-status-section.money-open-section.expense{border-color:#e7a3a3;background:#fff}
+.money-flow-screen .money-status-section.money-done-section{border-color:#83cfae;background:#effff7}
+.money-flow-screen .money-section-heading{min-height:28px;margin:0 0 3px;padding:4px 6px;border-radius:9px;background:transparent}
+.money-flow-screen .money-open-section.income .money-section-heading{background:#fff3d5}
+.money-flow-screen .money-open-section.expense .money-section-heading{border:1px solid #e7a3a3;background:#fff}
+.money-flow-screen .money-done-section .money-section-heading{background:#e1f7ed}
+.money-flow-screen .money-status-groups{min-width:0}
+.money-flow-screen .money-date-group,.money-flow-screen .money-date-group.income.open,.money-flow-screen .money-date-group.income.completed,.money-flow-screen .money-date-group.expense.open,.money-flow-screen .money-date-group.expense.completed{margin:0;padding:3px 0 2px;border:0;border-radius:0;background:transparent;box-shadow:none}
+.money-flow-screen .money-date-group+.money-date-group{border-top:1px solid rgba(55,74,113,.12)}
+.money-flow-screen .money-date-group>.date-emphasis{margin:0 0 2px;padding:2px 6px;background:#edf0f4}
+.finance-home-screen .balance .finance-summary-metrics span:nth-child(2){background:#ffe9eb}
+
+/* Final visual alignment pass against the supplied reference captures. */
+.money-flow-screen .money-section-heading{gap:7px;min-height:31px;padding:4px 7px}
+.money-flow-screen .money-section-heading::before{content:"◷";display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;border-radius:50%;color:#c18a19;font-size:21px;line-height:1}
+.money-flow-screen .money-done-section .money-section-heading::before{content:"✓";background:#14966f;color:#fff;font-size:14px;font-weight:900}
+.money-flow-screen .money-date-group,.money-flow-screen .money-date-group.income.open,.money-flow-screen .money-date-group.income.completed,.money-flow-screen .money-date-group.expense.open,.money-flow-screen .money-date-group.expense.completed{margin:0 0 5px;padding:4px 7px 3px;border:1px solid rgba(55,74,113,.12);border-radius:10px;background:#fff;box-shadow:0 2px 5px rgba(45,70,100,.06)}
+.money-flow-screen .money-date-group:last-child{margin-bottom:0}
+.money-flow-screen .money-date-group+.money-date-group{border-top:1px solid rgba(55,74,113,.12)}
+.money-flow-screen .money-date-group>.date-emphasis{margin:0 0 2px;padding:3px 6px;font-size:15px}
+.money-flow-screen .money-row{min-height:27px;padding:3px 0;grid-template-columns:minmax(0,1fr) minmax(57px,auto) minmax(94px,auto);gap:4px}
+.money-flow-screen .money-state-actions{gap:4px}
+.money-flow-screen .money-mark-action{display:flex;align-items:center;justify-content:center;min-width:42px;height:21px;min-height:21px;padding:0 5px!important;border-radius:8px;font-size:9px;line-height:1;white-space:nowrap}
+.money-flow-screen .money-date-group.expense.open .money-mark-action span:first-child{display:none}
+.money-flow-screen .money-mark-label{font-size:9px;font-weight:700}
+.money-flow-screen .money-edit-icon{width:23px;height:23px;min-height:23px;border-radius:7px}
+.money-flow-screen .money-open-section.expense .money-section-heading::before{color:#b94049}
+
+.finance-home-screen .balance{padding:14px 12px 12px}
+.finance-home-screen .balance-art-wrap{min-height:90px;grid-template-columns:minmax(0,1fr) minmax(88px,29%)}
+.finance-home-screen .balance-art{height:94px}
+.finance-home-screen .balance .finance-summary-metrics span:first-child{background:#fff3d5}
+.finance-home-screen .finance-actions{gap:8px}
+.finance-home-screen .finance-tile{min-height:156px}
+.finance-home-screen .finance-tile-copy{padding-top:8px;padding-bottom:14px}
+.finance-home-screen .finance-tile .finance-arrow{width:34px;height:34px}
+.finance-home-screen .quick-links button{min-height:55px;padding-top:10px;padding-bottom:10px}
+.finance-home-screen .danger{min-height:52px}
+
+.todo-list-screen .todo-nav-link{min-height:62px;padding:7px 11px;border-width:2px!important;box-shadow:0 0 0 2px rgba(255,255,255,.95),0 0 13px rgba(255,255,255,.9),0 5px 16px rgba(16,85,143,.26)}
+.todo-list-screen .todo-nav-link-done{background:linear-gradient(105deg,#0875e8 0%,#079cf4 57%,#61c9f6 100%)!important;border-color:#b9eaff!important}
+.todo-list-screen .todo-nav-link-active{background:linear-gradient(105deg,#f5b414 0%,#ffd23e 58%,#fff0a0 100%)!important;border-color:#fff1bd!important;box-shadow:0 0 0 2px rgba(255,255,255,.98),0 0 15px rgba(255,227,129,.9),0 5px 16px rgba(199,137,19,.26)}
+.todo-list-screen .todo-nav-link::before{background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 44%),radial-gradient(ellipse at 8% 115%,rgba(255,255,255,.98) 0 20%,transparent 21%),radial-gradient(ellipse at 96% -45%,rgba(255,255,255,.62) 0 28%,transparent 29%),linear-gradient(168deg,transparent 58%,rgba(255,255,255,.23) 59% 64%,transparent 65%)}
+.todo-list-screen .todo-nav-link::after{right:36px;top:-52px;width:145px;height:145px;border-color:rgba(255,255,255,.36);box-shadow:0 0 0 8px rgba(255,255,255,.18),0 0 0 18px rgba(255,255,255,.12),0 0 0 30px rgba(255,255,255,.08)}
+.todo-list-screen .todo-nav-wave-top{height:21px;opacity:.58}
+.todo-list-screen .todo-nav-wave-bottom{height:22px;opacity:.82}
+.todo-list-screen .todo-nav-icon{flex-basis:40px;width:40px;height:40px;border:2px solid rgba(255,255,255,.88);box-shadow:0 3px 12px rgba(20,83,146,.3)}
+.todo-list-screen .todo-nav-arrow{flex-basis:32px;width:32px;height:32px;box-shadow:0 2px 7px rgba(27,79,136,.24)}
+.todo-list-screen .todo-nav-copy b{font-size:13px}
+.todo-list-screen .todo-nav-copy small{font-size:9px;line-height:1.2}
+.todo-list-screen .todo-nav-check{font-size:25px}
+.todo-list-screen .todo-nav-link-done .todo-nav-copy::before,.todo-list-screen .todo-nav-link-active .todo-nav-copy::before{position:absolute;left:-14px;top:-13px;content:"✦";color:rgba(255,255,255,.98);font-size:15px;text-shadow:0 0 5px #fff}
+.money-flow-screen:has(.income-head) .money-date-group{margin-bottom:8px;padding:8px 10px 7px;border-radius:13px}
+.money-flow-screen:has(.income-head) .money-date-group>.date-emphasis{margin-bottom:5px;padding:4px 8px;font-size:16px}
+.money-flow-screen:has(.income-head) .money-row{min-height:43px;padding:5px 0;grid-template-columns:minmax(0,1fr) minmax(65px,auto) minmax(102px,auto)}
+.money-flow-screen:has(.income-head) .money-sections{gap:8px}
+.money-flow-screen:has(.expense-head) .money-status-section{padding:2px 4px;border-radius:13px}
+.money-flow-screen:has(.expense-head) .money-sections{gap:4px}
+.money-flow-screen:has(.expense-head) .money-date-group{margin-bottom:2px;padding:1px 4px;border-radius:9px}
+.money-flow-screen:has(.expense-head) .money-date-group>.date-emphasis{margin-bottom:1px;padding:2px 6px;font-size:14px}
+.money-flow-screen:has(.expense-head) .money-row{min-height:23px;padding:1px 0;grid-template-columns:minmax(0,1fr) minmax(53px,auto) minmax(90px,auto)}
+.money-flow-screen:has(.expense-head) .money-status-groups .money-date-group+.money-date-group{margin-top:3px}
+.finance-home-screen .balance-art-wrap{min-height:98px}
+.finance-home-screen .balance-art{height:100px}
+.finance-home-screen .quick-links .wide{min-height:59px;padding-top:11px;padding-bottom:11px}
+.finance-home-screen .quick-links{gap:6px}
+.money-flow-screen:has(.expense-head) .money-date-group{margin-bottom:0;padding:0 3px;border-radius:8px}
+.money-flow-screen:has(.expense-head) .money-status-groups .money-date-group+.money-date-group{margin-top:2px}
+.money-flow-screen:has(.expense-head) .flow-totals{margin-top:5px;padding:6px 9px}
+.money-flow-screen:has(.expense-head) .flow-totals>div{padding:2px 0}
+.money-flow-screen:has(.expense-head) .flow-totals .grand{margin-top:1px;padding-top:5px}
+.todo-list-screen .todo-date-group{margin-bottom:5px;padding:4px 7px 3px}
+.todo-list-screen .todo-date-heading{margin-bottom:3px;padding:2px 6px}
+.todo-list-screen .todo-task-row{min-height:26px;padding:2px 1px;gap:6px}
+.screen:has(.finance-home-screen),.screen:has(.money-flow-screen),.screen:has(.todo-list-screen){background:radial-gradient(ellipse at 3% 5%,rgba(57,196,239,.52),transparent 56%),radial-gradient(ellipse at 97% 94%,rgba(120,230,181,.43),transparent 55%),linear-gradient(135deg,#afeaf8,#d4f5e4)}
+.todo-list-screen .todo-add-action{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(105deg,#04986a 0%,#06b880 60%,#16c994 100%)!important;box-shadow:0 0 0 2px rgba(255,255,255,.76),0 0 12px rgba(64,224,174,.58),0 5px 14px rgba(14,147,111,.22)!important}
+.todo-list-screen .todo-add-action::after{position:absolute;z-index:-1;inset:1px;border-radius:inherit;content:"";background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 44%,rgba(0,81,61,.08));pointer-events:none}
+.todo-list-screen .todo-add-action>b{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.17);color:#fff}
+.todo-list-screen .todo-date-group{padding:3px 7px 2px}
+.todo-list-screen .todo-task-row{min-height:25px;padding:1px 1px;gap:6px}
+.todo-list-screen .todo-nav-link{min-height:60px}
+.money-flow-screen:has(.income-head) .money-status-section{padding:6px 9px}
+.money-flow-screen:has(.income-head) .money-sections{gap:9px}
+.money-flow-screen:has(.income-head) .money-row{min-height:54px;padding:6px 0}
+.money-flow-screen:has(.income-head) .list-create-action{min-height:46px;height:46px}
+.money-flow-screen:has(.expense-head) .money-done-section{padding:1px 3px}
+.money-flow-screen:has(.expense-head) .money-done-section .money-section-heading{min-height:26px;padding:2px 5px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed{margin:0;padding:0 2px;border-radius:8px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed>.date-emphasis{margin:0;padding:1px 4px;font-size:14px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed .money-row{min-height:20px;padding:0}
+.money-flow-screen:has(.expense-head) .flow-totals{margin-top:3px;padding:4px 8px}
+.money-flow-screen:has(.expense-head) .flow-totals>div{padding:1px 0}
+.money-flow-screen:has(.expense-head) .flow-totals .grand{margin-top:0;padding-top:4px}
+.todo-list-screen:has(.todo-nav-link-active) .todo-date-group{margin-bottom:4px;padding:2px 6px}
+.todo-list-screen:has(.todo-nav-link-active) .todo-task-row{min-height:23px;padding:0 1px}
+.todo-list-screen:has(.todo-nav-link-done) .todo-task-row{min-height:31px;padding:3px 1px}
+.todo-list-screen .todo-nav-copy small{max-width:138px;white-space:normal}
+.finance-home-screen .balance-icon{width:34px;height:34px;font-size:18px}
+.finance-home-screen .balance .balance-update-button{background:#0876e8!important;box-shadow:0 5px 12px rgba(43,104,215,.16)}
+@media(max-width:390px){.money-flow-screen .money-row{grid-template-columns:minmax(0,1fr) minmax(52px,auto) minmax(87px,auto)}.money-flow-screen:has(.income-head) .money-row{grid-template-columns:minmax(0,1fr) minmax(55px,auto) minmax(92px,auto)}.todo-list-screen .todo-nav-link{min-height:60px}}
+
+/* Da pagare uses the approved light blush fill across its heading and date cards. */
+.money-flow-screen .money-status-section.money-open-section.expense{background:#fff0f1;border-color:#e7a3a3}
+.money-flow-screen .money-open-section.expense .money-section-heading{background:#fff7f7;border-color:#e7a3a3}
+.money-flow-screen .money-date-group.expense.open{background:#fffafa;border-color:#e7a3a3}
+
+/* Final alignment details visible in the approved captures. */
+.money-flow-screen:has(.income-head) .money-row{min-height:48px;padding:4px 0}
+.money-flow-screen:has(.income-head) .money-mark-action{display:flex;flex-direction:column;justify-content:center;gap:0;min-width:36px;width:36px;height:40px;min-height:40px;padding:2px!important;border-radius:8px;background:#fff4d8;color:#a77813;line-height:1}
+.money-flow-screen:has(.income-head) .money-mark-action>span:first-child{font-size:15px}
+.money-flow-screen:has(.income-head) .money-mark-label{font-size:8px;line-height:1.05}
+.finance-home-screen .balance{background:#fff}
+.todo-list-screen .todo-task-row .todo-complete{min-height:22px!important;height:22px!important;padding:2px 5px!important;border:0!important;background:#e4f8ed!important;color:#17805a!important;font-size:9px!important}
+.todo-list-screen .todo-task-row .todo-complete span{font-size:12px}
+.todo-list-screen .todo-restore-icon{flex-basis:25px;width:25px;height:25px;min-height:25px!important;font-size:17px!important}
+.todo-list-screen .todo-nav-link::before{background:linear-gradient(180deg,rgba(255,255,255,.36),transparent 48%),radial-gradient(ellipse at 8% 118%,rgba(255,255,255,.98) 0 18%,transparent 19%),radial-gradient(ellipse at 36% 125%,rgba(255,255,255,.23) 0 26%,transparent 27%),radial-gradient(ellipse at 96% 122%,rgba(255,255,255,.76) 0 22%,transparent 23%)}
+.app-shell:has(.todo-list-screen){padding-right:0;padding-bottom:18px;padding-left:0}
+.screen-inner:has(.todo-list-screen){width:min(100%,322px)}
+.todo-list-screen{width:100%;margin:0}
+.todo-list-screen .todo-nav-link{min-height:64px;margin-top:6px}
+.todo-list-screen:has(.todo-nav-link-active) .todo-task-row{min-height:31px;padding:3px 1px}
+
+/* State-specific card colors and spacing matched to the approved phone captures. */
+.money-flow-screen .money-date-group.income.open{border:1px solid #edcf72;background:#fffef8}
+.money-flow-screen .money-date-group.income.completed{border:1px solid #83cfae;background:#f8fffb}
+.money-flow-screen .money-date-group.expense.open{border:1px solid #e7a3a3;background:#fffafa}
+.money-flow-screen .money-date-group.expense.completed{border:1px solid #83cfae;background:#f7fffb}
+.money-flow-screen .money-open-section.expense .money-section-heading>b,
+.money-flow-screen .money-open-section.expense .money-section-heading>strong{color:#111}
+.money-flow-screen:has(.income-head) .money-date-group{margin-bottom:5px;padding:4px 6px 3px;border-radius:10px}
+.money-flow-screen:has(.income-head) .money-date-group>.date-emphasis{margin-bottom:2px;padding:3px 6px;font-size:15px}
+.money-flow-screen:has(.income-head) .money-row{min-height:44px;padding:3px 0;grid-template-columns:minmax(0,1fr) minmax(57px,auto) minmax(94px,auto);gap:4px}
+.money-flow-screen:has(.income-head) .money-sections{gap:7px}
+.money-flow-screen:has(.income-head) .money-status-section{padding:5px 7px}
+.money-flow-screen:has(.income-head) .money-mark-action{width:34px;min-width:34px;height:36px;min-height:36px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.open{margin:0;padding:1px 4px;border-radius:9px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.open>.date-emphasis{margin:0 0 1px;padding:2px 6px;font-size:14px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed{border-color:#83cfae;background:#f7fffb}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed>.date-emphasis{margin:0;padding:1px 4px;font-size:14px}
+.money-flow-screen:has(.expense-head) .money-date-group.expense.completed .money-row{min-height:23px;padding:1px 0}
+.money-flow-screen:has(.expense-head) .money-open-section.expense .money-section-heading{background:#fff5f5;color:#111}
+.money-flow-screen .money-description{font-weight:400}
+
+/* The approved summary uses compact action rows beneath the two illustrated tiles. */
+.finance-home-screen .finance-tile{min-height:150px}
+.finance-home-screen .quick-links{gap:5px;margin-top:6px}
+.finance-home-screen .quick-links .wide{min-height:45px;padding:5px 9px}
+.finance-home-screen .quick-links .wide small{font-size:9px}
+.finance-home-screen .quick-links .link-icon{width:28px;height:28px}
+.finance-home-screen .domain-reset-action{min-height:42px;font-size:11px}
+
+/* Glossy lower navigation controls: layered highlights and flowing pearl waves. */
+.todo-list-screen .todo-nav-link{min-height:64px;padding:6px 10px;border-radius:28px}
+.todo-list-screen .todo-nav-link-done{background:linear-gradient(105deg,#0878e9 0%,#0795ee 54%,#55c5f5 100%)!important}
+.todo-list-screen .todo-nav-link-active{background:linear-gradient(105deg,#f4b20d 0%,#ffd13b 55%,#fff0a1 100%)!important}
+.todo-list-screen .todo-nav-link::before{background:linear-gradient(180deg,rgba(255,255,255,.58),rgba(255,255,255,.05) 30%,transparent 48%),radial-gradient(ellipse at 5% 118%,rgba(255,255,255,.98) 0 20%,transparent 21%),radial-gradient(ellipse at 30% 124%,rgba(255,255,255,.40) 0 22%,transparent 23%),radial-gradient(ellipse at 72% 126%,rgba(255,255,255,.70) 0 18%,transparent 19%),radial-gradient(ellipse at 98% 118%,rgba(255,255,255,.92) 0 17%,transparent 18%),linear-gradient(174deg,transparent 54%,rgba(255,255,255,.16) 55% 59%,transparent 60%)}
+.todo-list-screen .todo-nav-wave-top{height:24px;opacity:.72;background:radial-gradient(ellipse at 17% -112%,rgba(255,255,255,.95) 0 64%,transparent 65%),radial-gradient(ellipse at 72% -118%,rgba(255,255,255,.7) 0 51%,transparent 52%)}
+.todo-list-screen .todo-nav-wave-bottom{height:25px;opacity:.9;background:radial-gradient(ellipse at 6% 142%,rgba(255,255,255,.98) 0 33%,transparent 34%),radial-gradient(ellipse at 38% 150%,rgba(255,255,255,.36) 0 28%,transparent 29%),radial-gradient(ellipse at 76% 142%,rgba(255,255,255,.82) 0 26%,transparent 27%),radial-gradient(ellipse at 100% 148%,rgba(255,255,255,.92) 0 25%,transparent 26%)}
+.todo-list-screen .todo-nav-icon{flex-basis:44px;width:44px;height:44px;border:2px solid rgba(255,255,255,.95);box-shadow:0 0 0 3px rgba(255,255,255,.34),0 4px 12px rgba(15,80,143,.36)}
+.todo-list-screen .todo-nav-check{background:linear-gradient(145deg,#fff,#d8f4ff 68%,#9ee0ff);font-size:26px}
+.todo-list-screen .todo-nav-calendar{background:linear-gradient(145deg,#fffbe5,#ffce43);font-size:21px}
+.todo-list-screen .todo-nav-arrow{flex-basis:34px;width:34px;height:34px;border:1px solid rgba(255,255,255,.56);box-shadow:0 3px 8px rgba(21,83,143,.32)}
+.todo-list-screen .todo-nav-link-active .todo-nav-arrow{background:linear-gradient(145deg,#f18b05,#d96800)}
+.todo-list-screen .todo-nav-copy b{font-size:13px}
+.todo-list-screen .todo-nav-copy small{font-size:9px;line-height:1.15}
+.todo-list-screen .todo-nav-link-done .todo-nav-copy{color:#102b50}
+.todo-list-screen .todo-nav-link-done .todo-nav-copy small{color:#263b56}
+.todo-list-screen .todo-nav-link::after{right:0;top:auto;bottom:0;width:100%;height:100%;border:0;border-radius:inherit;background:radial-gradient(ellipse at 92% 50%,rgba(255,255,255,.24),transparent 38%);box-shadow:none}
+.todo-list-screen .todo-nav-wave-top{height:19px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 24' preserveAspectRatio='none'%3E%3Cpath d='M0 0H400V8C340 2 303 17 244 11S128 3 76 13 25 15 0 9Z' fill='rgba(255,255,255,.48)'/%3E%3Cpath d='M0 0H400V4C320 0 284 11 218 7S94 1 0 7Z' fill='rgba(255,255,255,.35)'/%3E%3C/svg%3E");background-size:100% 100%}
+.todo-list-screen .todo-nav-wave-bottom{height:27px;opacity:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 34' preserveAspectRatio='none'%3E%3Cpath d='M0 19C40 2 80 4 119 18S193 33 241 18 321 1 400 15V34H0Z' fill='rgba(255,255,255,.78)'/%3E%3Cpath d='M0 26C59 10 100 17 151 26S251 32 302 20 367 12 400 22V34H0Z' fill='rgba(255,255,255,.36)'/%3E%3Cpath d='M0 32C58 22 104 25 159 31S261 33 314 27 376 22 400 28V34H0Z' fill='rgba(255,255,255,.58)'/%3E%3C/svg%3E");background-size:100% 100%}
+.todo-list-screen .todo-nav-link-done .todo-nav-check{background:linear-gradient(145deg,#169af6,#0066d9 78%);color:#fff}
+.todo-list-screen .todo-nav-link-active .todo-nav-calendar{background:linear-gradient(145deg,#ffc830,#f18c00);color:#fff}
+.todo-list-screen .todo-nav-link-active .todo-nav-copy::before{color:#fff4bc;text-shadow:0 0 7px #fff}
+.screen-inner:has(.todo-list-screen){padding-bottom:0}
+.todo-list-screen:has(.todo-nav-link-active) .todo-task-row{min-height:28px;padding:2px 1px}
+.todo-list-screen:has(.todo-nav-link-done) .todo-task-row{min-height:28px;padding:2px 1px}
+.finance-home-screen .finance-art-frame{height:102px}
+.finance-home-screen .finance-tile{min-height:146px}
+.money-flow-screen:has(.expense-head) .flow-totals{padding:3px 8px}
+.money-flow-screen:has(.expense-head) .flow-totals>div{padding:0}
+.money-flow-screen:has(.expense-head) .flow-totals span{font-size:10px}
+.money-flow-screen:has(.expense-head) .flow-totals strong{font-size:12px}
+.todo-list-screen .todo-task-row .todo-complete{padding:2px 4px!important;font-size:8.5px!important;font-weight:550!important}
+.todo-list-screen .todo-nav-link-active{background:linear-gradient(105deg,#f5ad00 0%,#ffca28 34%,#ffe98a 65%,#ffd23a 88%,#f2a000 100%)!important;box-shadow:0 0 0 2px rgba(255,255,255,.98),0 0 19px rgba(255,206,39,.96),0 5px 17px rgba(199,137,19,.32),inset 0 2px 11px rgba(255,255,255,.62)}
+.finance-home-screen .finance-actions{margin-top:10px}
+.finance-home-screen .quick-links .wide{min-height:49px;padding:6px 9px}
+.finance-home-screen .domain-reset-action{min-height:47px}
+.money-flow-screen:has(.income-head) .money-row{min-height:52px;padding:5px 0}
+.money-flow-screen:has(.income-head) .flow-totals>div{padding:6px 0}
+.money-flow-screen:has(.income-head) .flow-totals .grand{padding-top:8px}
+.money-flow-screen:has(.income-head) .list-create-action{background:linear-gradient(105deg,#087af3,#0062ed)!important;border-color:#0879f2!important}
