@@ -646,3 +646,101 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
   .money-flow-screen:has(.expense-head) .money-row{grid-template-columns:minmax(0,1fr) minmax(53px,auto) minmax(90px,auto)}
   .todo-list-screen .todo-task-row{min-height:38px}
 }
+
+/* Approved roomy operation/task cards: grow the interior while preserving type and controls. */
+.money-flow-screen .money-row{box-sizing:border-box;min-height:66px!important;padding:19px 0!important;align-items:center}
+.money-flow-screen:has(.income-head) .money-row{min-height:100px!important;padding:26px 0!important}
+.money-flow-screen .money-date-group .date-emphasis{display:inline-block;color:#111!important;font-weight:850!important}
+.money-flow-screen .money-date-group.income.open .date-emphasis{background:#fff2c9}
+.money-flow-screen .money-date-group.income.completed .date-emphasis{background:#dcf7e8}
+.money-flow-screen .money-date-group.expense.open .date-emphasis{background:#ffe2e2}
+.money-flow-screen .money-date-group.expense.completed .date-emphasis{background:#dcf7e8}
+.todo-list-screen .todo-task-row{box-sizing:border-box;min-height:65px!important;padding:18px 8px!important;align-items:center}
+.money-recurrence{min-width:0;margin:0 0 14px;padding:0;border:0}
+.money-recurrence legend{margin:0 0 7px;font-size:13px;font-weight:780;color:#303e59}
+.form-card .money-recurrence-choice{display:flex;align-items:center;gap:9px;min-height:40px;margin:0 0 7px;padding:8px 10px;border:1px solid #e1e7f1;border-radius:13px;background:#fbfcff;font-size:13px;font-weight:700;color:#303e59}
+.form-card .money-recurrence-choice input{display:inline-block;width:17px;height:17px;min-height:17px!important;flex:none;margin:0;padding:0;border:0;background:transparent;accent-color:#168f68}
+#moneyForm[data-kind="expense"] .money-recurrence-choice input{accent-color:#b73552}
+#moneyForm[data-kind="income"] .money-recurrence-choice:has(input:checked){border-color:#b9e7d2;background:#eaf8f1}
+#moneyForm[data-kind="expense"] .money-recurrence-choice:has(input:checked){border-color:#f0c8cf;background:#fff0f1}
+#moneyForm[data-kind="income"] .money-recurrence-monthly{background:#eefaf4}
+#moneyForm[data-kind="expense"] .money-recurrence-monthly{background:#fff2f2}
+#moneyForm>button[type="submit"]{width:100%;min-height:46px;border-radius:13px}
+.money-recurrence-monthly{margin:0 0 8px;padding:10px;border-radius:14px;background:rgba(234,243,255,.58)}
+.money-recurrence-monthly>b{display:block;margin:0 0 7px;font-size:13px}
+.form-card .money-recurrence-monthly input[type=number]{min-height:42px;margin:2px 0 8px}
+.form-card .money-recurrence-monthly input[hidden]{display:none!important}
+.form-card .calendar-hint{display:none}
+body:has(#moneyForm) .page-header.money-head h1{font-size:17px!important;line-height:1.15!important;white-space:nowrap}
+body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:linear-gradient(105deg,#0c9d79,#18c99a)!important}
+
+/* Approved entry screen: compact hero and two large navigation cards. */
+.brand.card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:88px minmax(108px,1fr);align-items:center;min-height:214px;margin:4px 0 17px;padding:10px 16px 13px}
+.brand.card .brand-top{grid-column:1/-1;grid-row:1;grid-template-columns:minmax(0,1fr) 88px;min-height:88px;align-items:center;justify-items:start}
+.brand.card .brand-top .eyebrow{justify-self:start!important;text-align:left}
+.brand.card .brand-top .brand-logo{width:88px!important;height:88px!important;max-width:88px!important}
+.brand.card .brand-copy{grid-column:1;grid-row:2;align-self:center;margin:0;padding:2px 0 20px;min-width:0}
+.brand.card .brand-copy strong{font-size:clamp(29px,8vw,37px);line-height:1.05}
+.brand.card .brand-copy p{max-width:205px;font-size:15px;line-height:1.25}
+.brand.card .home-art{position:relative;grid-column:2;grid-row:2;right:auto;bottom:auto;align-self:center;justify-self:end;width:100%;height:126px;max-width:225px;margin:0;object-fit:contain;object-position:center;filter:drop-shadow(0 8px 10px rgba(27,95,167,.15))}
+.brand.card .brand-ribbon{left:15px;bottom:10px;padding:6px 10px;font-size:11px}
+.home-section-title{margin:0 4px 12px;font-size:23px;line-height:1.15}
+.home-paired-grid{gap:12px;margin:0 0 12px}
+.home-pair{gap:9px}
+.home-pair .home-area{height:auto;min-height:258px;padding:13px 11px 12px;gap:2px;justify-content:flex-start}
+.home-tile-art{height:126px;flex:none}
+.home-area b{margin-top:5px;font-size:20px;line-height:1.15}
+.home-area small{margin-top:5px;font-size:13px;line-height:1.25}
+.home-area-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:45px;margin-top:auto;border-radius:999px;color:#fff;font-size:18px;font-weight:900;box-shadow:0 5px 12px rgba(34,110,195,.18),inset 0 2px 5px rgba(255,255,255,.4)}
+.home-area-cta b{margin:0;color:inherit;font-size:24px;line-height:1}
+.home-area.money .home-area-cta{background:linear-gradient(105deg,#0786ed,#1568e9)}
+.home-area.todo .home-area-cta{background:linear-gradient(105deg,#13bf88,#009b70)}
+.home-pair-notice{min-height:59px;font-size:13px}
+.home-note{margin:10px 0 0;font-size:14px;line-height:1.2}
+
+/* Approved economic home: larger illustrated tiles with working section CTAs. */
+.finance-home-screen .balance{padding:10px 13px 11px}
+.finance-home-screen .finance-actions{gap:10px;margin-top:11px}
+.finance-home-screen .finance-tile{min-height:207px;padding:0 0 9px}
+.finance-home-screen .finance-art-frame{height:124px;flex:none;padding:5px 5px 0}
+.finance-home-screen .finance-tile-copy{display:flex;flex:1;flex-direction:column;align-items:stretch;padding:5px 11px 0}
+.finance-home-screen .finance-tile-copy>b{font-size:22px;line-height:1.05;text-align:center}
+.finance-home-screen .finance-tile-copy>small{margin:4px 0 7px;font-size:13px;line-height:1.2;text-align:center}
+.finance-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:43px;margin-top:auto;border-radius:999px;color:#fff;font-size:17px;font-weight:900;box-shadow:0 5px 12px rgba(31,104,185,.2),inset 0 2px 5px rgba(255,255,255,.4)}
+.finance-cta b{font-size:22px;line-height:1}
+.finance-tile.income .finance-cta{background:linear-gradient(105deg,#15c989,#02a979)}
+.finance-tile.expense .finance-cta{background:linear-gradient(105deg,#1687ef,#0870e8)}
+@media(max-width:360px){.brand.card{grid-template-rows:88px minmax(108px,1fr);min-height:214px;padding:9px 12px 12px}.brand.card .brand-top{min-height:88px;grid-template-columns:minmax(0,1fr) 88px}.brand.card .brand-top .brand-logo{width:88px!important;height:88px!important;max-width:88px!important}.brand.card .home-art{height:112px}.home-pair .home-area{min-height:242px}.home-tile-art{height:112px}.home-area b{font-size:18px}.finance-home-screen .finance-tile{min-height:195px}.finance-home-screen .finance-art-frame{height:112px}}
+/* Proportion match for the supplied compact Home composition. */
+.brand.card{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);grid-template-rows:68px minmax(94px,1fr);min-height:178px;padding:8px 15px 11px}
+.brand.card .brand-top{grid-template-columns:minmax(0,1fr) 68px;min-height:68px}
+.brand.card .brand-top .brand-logo{width:68px!important;height:68px!important;max-width:68px!important}
+.brand.card .brand-copy{padding:0 0 17px}
+.brand.card .brand-copy strong{font-size:32px}
+.brand.card .brand-copy p{max-width:185px;font-size:13px;line-height:1.2}
+.brand.card .home-art{height:99px;max-width:205px}
+.brand.card .brand-ribbon{font-size:10px;left:13px;bottom:8px;padding:5px 9px}
+.home-section-title{font-size:22px}
+.home-pair .home-area{height:250px!important;min-height:250px!important;flex:none;padding:11px 9px 10px}
+.home-tile-art{height:120px}
+.home-area b{font-size:18px;line-height:1.1}
+.home-area small{font-size:11.5px;line-height:1.2}
+.finance-home-screen .balance{padding:9px 12px 10px}
+.finance-home-screen .balance-art-wrap{min-height:76px;grid-template-columns:minmax(0,1fr) minmax(78px,31%);gap:4px}
+.finance-home-screen .balance-art{height:76px}
+.finance-home-screen .finance-summary-metrics{gap:6px;margin-top:6px}
+.finance-home-screen .finance-summary-metrics span{padding:7px 9px;font-size:11px}
+.finance-home-screen .finance-summary-metrics b{font-size:14px}
+.finance-home-screen .balance .balance-update-button{min-height:42px!important;margin:8px 0 0!important;font-size:16px!important}
+.finance-home-screen .finance-tile{min-height:211px;padding-bottom:8px}
+.finance-home-screen .finance-art-frame{height:112px}
+.finance-home-screen .finance-tile-copy>b{font-size:20px}
+.finance-home-screen .finance-tile-copy>small{font-size:12px;margin-bottom:6px}
+.finance-cta{min-height:40px;font-size:16px}
+@media(max-width:360px){.brand.card{grid-template-rows:68px minmax(94px,1fr);min-height:178px}.brand.card .brand-top{grid-template-columns:minmax(0,1fr) 68px;min-height:68px}.brand.card .brand-top .brand-logo{width:68px!important;height:68px!important;max-width:68px!important}.brand.card .home-art{height:92px}.home-pair .home-area{height:238px!important;min-height:238px!important}.home-tile-art{height:108px}}
+
+/* Keep the amount centered in its own column, with clear separation from status and action. */
+.money-flow-screen .money-row{column-gap:12px!important}
+
+/* Make finance operation names clearly more readable without bolding them. */
+.money-flow-screen .money-description{font-size:18px!important;line-height:1.25!important}
