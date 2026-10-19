@@ -28,7 +28,7 @@ const checks = [
   ['native notification sync exists', app.includes('syncTodoNotifications')],
   ['Android declares exact alarm access and exposes an in-app authorization flow', manifest.includes('android.permission.SCHEDULE_EXACT_ALARM') && app.includes('changeExactNotificationSetting') && app.includes('data-request-exact-alarm')],
   ['Capacitor local notifications receiver restores pending alarms after device reboot', localNotificationsManifest.includes('LocalNotificationRestoreReceiver') && localNotificationsManifest.includes('android.intent.action.BOOT_COMPLETED') && localNotificationsManifest.includes('android.permission.RECEIVE_BOOT_COMPLETED')],
-  ['item reminders enable their domain notification master before scheduling', app.includes("if(prefix.startsWith('money'))state.financeNotifications.enabled=true;else state.todo.notifications.enabled=true") && app.includes('if(notice.checked){if(finance)state.financeNotifications.enabled=true;else state.todo.notifications.enabled=true}')],
+  ['individual reminders schedule independently and the general switch covers all dated entries', (await readFile(new URL('./notifications.js', import.meta.url), 'utf8')).includes('if (!financeAll && !itemEnabled) continue') && (await readFile(new URL('./notifications.js', import.meta.url), 'utf8')).includes('if (!todoPrefs.enabled && !itemEnabled) continue')],
   ['backup export exists', app.includes('exportBackup')],
   ['month-end recurrence helper exists', app.includes('shiftDateSafe')],
   ['income/payment filters are wired', app.includes("closest('[data-money-filter]')")],

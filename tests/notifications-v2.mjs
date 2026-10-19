@@ -16,6 +16,12 @@ assert.equal(plan[0].schedule.at.getDate(), 19);
 assert.equal(plan[0].schedule.at.getHours(), 23);
 assert.equal(plan[0].schedule.at.getMinutes(), 57);
 assert.equal(plan[0].schedule.allowWhileIdle, true, 'alarm is configured to wake during Doze');
+const perItemOnly = collectNotificationPlan({ ...state, financeNotifications: { enabled: false }, entries: state.entries, todo: { notifications: { enabled: false }, tasks: [] } }, now);
+assert.equal(perItemOnly.length, 1, 'an individually enabled finance reminder is not suppressed by the general switch');
+const allFinance = collectNotificationPlan({ ...state, financeNotifications: { enabled: true, defaultTime: '23:30' }, entries: [{ ...state.entries[0], reminder: { enabled: false } }], todo: { notifications: { enabled: false }, tasks: [] } }, now);
+assert.equal(allFinance.length, 1, 'the general finance switch schedules dated entries without individual opt-in');
+assert.equal(allFinance[0].schedule.at.getHours(), 23, 'the general finance reminder uses the configured default time');
+assert.equal(allFinance[0].schedule.at.getMinutes(), 30);
 
 const calls = [];
 const makePlugin = ({ display = 'granted', exact = 'granted' } = {}) => ({

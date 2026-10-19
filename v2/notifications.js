@@ -44,20 +44,24 @@ export function collectNotificationPlan(state, now = new Date()) {
     out.push({ id: stableId(prefix, key, used), title, body, schedule: { at, allowWhileIdle: true }, extra });
   };
 
-  if (state.financeNotifications?.enabled) {
-    for (const item of state.entries || []) {
-      const at = reminderDate(item, 'finance', state);
-      if (at) push(30000, `finance:${item.id}`, 'In Ordine · Conti', item.description || 'Promemoria economico', at, { kind: 'finance', itemId: item.id });
-    }
+  const financeAll = Boolean(state.financeNotifications?.enabled);
+  for (const item of state.entries || []) {
+    const itemEnabled = item.reminder?.enabled ?? item.notify ?? false;
+    if (!financeAll && !itemEnabled) continue;
+    const scheduledItem = financeAll ? { ...item, reminder: { ...(item.reminder || {}), enabled: true } } : item;
+    const at = reminderDate(scheduledItem, 'finance', state);
+    if (at) push(30000, `finance:${item.id}`, 'In Ordine · Conti', item.description || 'Promemoria economico', at, { kind: 'finance', itemId: item.id });
   }
 
   const todoPrefs = state.todo?.notifications || {};
-  if (todoPrefs.enabled) {
-    for (const item of state.todo?.tasks || []) {
-      const at = reminderDate(item, 'todo', state);
-      if (at) push(10000, `todo:${item.id}`, 'In Ordine · Attività', item.description || 'Promemoria attività', at, { kind: 'todo', itemId: item.id });
-    }
-    if (todoPrefs.dailySummary) {
+  for (const item of state.todo?.tasks || []) {
+    const itemEnabled = item.reminder?.enabled ?? item.notify ?? false;
+    if (!todoPrefs.enabled && !itemEnabled) continue;
+    const scheduledItem = todoPrefs.enabled ? { ...item, reminder: { ...(item.reminder || {}), enabled: true } } : item;
+    const at = reminderDate(scheduledItem, 'todo', state);
+    if (at) push(10000, `todo:${item.id}`, 'In Ordine · Attività', item.description || 'Promemoria attività', at, { kind: 'todo', itemId: item.id });
+  }
+  if (todoPrefs.enabled && todoPrefs.dailySummary) {
       const [hour, minute] = String(todoPrefs.dailySummaryTime || '18:00').split(':').map(Number);
       for (let i = 0; i < 14; i += 1) {
         const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hour || 0, minute || 0, 0, 0);
@@ -65,7 +69,6 @@ export function collectNotificationPlan(state, now = new Date()) {
         const due = (state.todo.tasks || []).filter(item => item.date && (item.datePrecision === 'day' || (!item.datePrecision && item.date.length === 10)) && item.date === key).length;
         push(50000, `todo-daily:${key}`, 'In Ordine · Riepilogo', due ? `Hai ${due} attività in scadenza.` : 'Il tuo riepilogo giornaliero è pronto.', at, { kind: 'todo-daily', date: key });
       }
-    }
   }
   return out;
 }
