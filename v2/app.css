@@ -774,6 +774,18 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
  .todo-home-screen .todo-art-frame{height:176px!important}
 }
 
+/* Continuous Todo timelines: month navigation stays available while scrolling. */
+.todo-list-screen .todo-month-nav{position:sticky;top:0;z-index:30;box-sizing:border-box;min-height:58px;margin:0 0 12px;padding:7px 9px;border:1px solid rgba(255,255,255,.94);border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 7px 18px rgba(29,83,98,.16);backdrop-filter:blur(12px)}
+.todo-list-screen .todo-month-nav b{font-size:16px;font-weight:900;letter-spacing:.025em;text-transform:uppercase;color:#16334b}
+.todo-list-screen .todo-month-nav button{width:42px;height:42px;border:1px solid #d3e8e8;border-radius:14px;background:linear-gradient(145deg,#f7ffff,#e5f5f6);color:#177e78;font-size:28px;font-weight:750;box-shadow:0 2px 6px rgba(30,102,105,.08)}
+.todo-list-screen .todo-month-nav button:disabled{opacity:.42;cursor:default;box-shadow:none}
+.todo-list-screen .todo-month-section{scroll-margin-top:76px;margin:0 0 15px}
+.todo-list-screen .todo-month-heading{display:block;margin:0 0 9px;padding:10px 14px;border:1px solid rgba(255,255,255,.68);border-radius:15px;color:#fff;font-size:20px;line-height:1.15;font-weight:950;letter-spacing:.035em;box-shadow:0 6px 15px rgba(26,104,104,.16)}
+.todo-list-screen.pending-list .todo-month-heading{background:linear-gradient(110deg,#078c78 0%,#10ac83 58%,#38c978 100%)}
+.todo-list-screen.completed-list .todo-month-heading{background:linear-gradient(110deg,#078663 0%,#13a875 58%,#42bf83 100%)}
+.todo-list-screen .todo-no-month .todo-month-heading{background:linear-gradient(110deg,#617a8c,#8198a8)}
+@media(max-width:360px){.todo-list-screen .todo-month-nav b{font-size:14px}.todo-list-screen .todo-month-heading{font-size:18px}}
+
 /* Todo activity names are bold in both pending and completed lists. */
 .todo-list-screen .todo-task-name{font-weight:700!important}
 
