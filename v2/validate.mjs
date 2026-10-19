@@ -7,6 +7,7 @@ const css = await readFile(new URL('./app.css', import.meta.url), 'utf8');
 const voice = await readFile(new URL('./voice.js', import.meta.url), 'utf8');
 const platform = await readFile(new URL('./platform.js', import.meta.url), 'utf8');
 const manifest = await readFile(new URL('../android/app/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
+const localNotificationsManifest = await readFile(new URL('../node_modules/@capacitor/local-notifications/android/src/main/AndroidManifest.xml', import.meta.url), 'utf8');
 const activity = await readFile(new URL('../android/app/src/main/java/it/inordine/app/MainActivity.java', import.meta.url), 'utf8');
 const speechPlugin = await readFile(new URL('../android/app/src/main/java/it/inordine/app/NativeSpeechRecognition.java', import.meta.url), 'utf8');
 
@@ -25,6 +26,9 @@ const checks = [
   ['unassigned-date reminders and separate notification channels exist', app.includes('financeNotificationsForm') && app.includes('data-reminder-custom') && app.includes('todoDailySummary')],
   ['per-domain data erasure exists', app.includes('id=\"resetFinance\"') && app.includes('id=\"resetTodo\"')],
   ['native notification sync exists', app.includes('syncTodoNotifications')],
+  ['Android declares exact alarm access and exposes an in-app authorization flow', manifest.includes('android.permission.SCHEDULE_EXACT_ALARM') && app.includes('changeExactNotificationSetting') && app.includes('data-request-exact-alarm')],
+  ['Capacitor local notifications receiver restores pending alarms after device reboot', localNotificationsManifest.includes('LocalNotificationRestoreReceiver') && localNotificationsManifest.includes('android.intent.action.BOOT_COMPLETED') && localNotificationsManifest.includes('android.permission.RECEIVE_BOOT_COMPLETED')],
+  ['item reminders enable their domain notification master before scheduling', app.includes("if(prefix.startsWith('money'))state.financeNotifications.enabled=true;else state.todo.notifications.enabled=true") && app.includes('if(notice.checked){if(finance)state.financeNotifications.enabled=true;else state.todo.notifications.enabled=true}')],
   ['backup export exists', app.includes('exportBackup')],
   ['month-end recurrence helper exists', app.includes('shiftDateSafe')],
   ['income/payment filters are wired', app.includes("closest('[data-money-filter]')")],

@@ -40,7 +40,8 @@ export function collectNotificationPlan(state, now = new Date()) {
   const out = [];
   const push = (prefix, key, title, body, at, extra = {}) => {
     if (!at || at <= now) return;
-    out.push({ id: stableId(prefix, key, used), title, body, schedule: { at }, extra });
+    // Wake the device at the scheduled time even when it is in Doze.
+    out.push({ id: stableId(prefix, key, used), title, body, schedule: { at, allowWhileIdle: true }, extra });
   };
 
   if (state.financeNotifications?.enabled) {
@@ -70,20 +71,34 @@ export function collectNotificationPlan(state, now = new Date()) {
 }
 
 export async function syncNotifications(state, nativePlugin, now = new Date()) {
-  if (!nativePlugin) return;
+  if (!nativePlugin) return { status: 'unavailable', scheduled: 0 };
   try {
     const notifications = collectNotificationPlan(state, now);
-    const pending = await nativePlugin.getPending();
-    const owned = (pending.notifications || []).filter(item => item.id >= 10000 && item.id < 70000).map(item => ({ id: item.id }));
-    if (owned.length) await nativePlugin.cancel({ notifications: owned });
-    if (!notifications.length) return;
+    // Do not remove existing alarms until Android confirms they can be replaced.
+    if (!notifications.length) {
+      const pending = await nativePlugin.getPending();
+      const owned = (pending.notifications || []).filter(item => item.id >= 10000 && item.id < 70000).map(item => ({ id: item.id }));
+      if (owned.length) await nativePlugin.cancel({ notifications: owned });
+      return { status: 'cleared', scheduled: 0 };
+    }
     const permission = await nativePlugin.checkPermissions();
     if (permission.display !== 'granted') {
       const requested = await nativePlugin.requestPermissions();
-      if (requested.display !== 'granted') return;
+      if (requested.display !== 'granted') return { status: 'notification-permission-denied', scheduled: 0 };
     }
-    await nativePlugin.schedule({ notifications });
+    let exactAvailable = true;
+    if (typeof nativePlugin.checkExactNotificationSetting === 'function') {
+      const exact = await nativePlugin.checkExactNotificationSetting();
+      exactAvailable = exact.exact_alarm === 'granted';
+    }
+    const pending = await nativePlugin.getPending();
+    const plannedIds = new Set(notifications.map(item => item.id));
+    const stale = (pending.notifications || []).filter(item => item.id >= 10000 && item.id < 70000 && !plannedIds.has(item.id)).map(item => ({ id: item.id }));
+    if (stale.length) await nativePlugin.cancel({ notifications: stale });
+    const result = await nativePlugin.schedule({ notifications });
+    return { status: exactAvailable ? 'scheduled' : 'scheduled-inexact', exactAlarm: exactAvailable, scheduled: result.notifications?.length ?? notifications.length };
   } catch (error) {
     console.warn('Notification sync failed', error);
+    return { status: 'failed', scheduled: 0, error };
   }
 }

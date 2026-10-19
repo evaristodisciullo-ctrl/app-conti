@@ -801,3 +801,6 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 @media(max-width:360px){
  .money-flow-screen .list-create-action{font-size:15px!important;padding-left:10px!important;padding-right:10px!important}
 }
+.exact-alarm-access{margin:12px 0;padding:16px;border:1px solid rgba(31,115,172,.22);border-radius:18px;background:rgba(255,255,255,.88)}
+.exact-alarm-access p{margin:8px 0 12px;color:#52647a;font-size:.92rem}
+.exact-alarm-access button{min-height:44px;padding:10px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,#128b72,#16b68b);color:#fff;font-weight:700}
