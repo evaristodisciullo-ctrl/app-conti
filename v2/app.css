@@ -773,3 +773,6 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
  .todo-home-screen .todo-areas .area-card{min-height:150px!important;height:150px!important}
  .todo-home-screen .todo-art-frame{height:176px!important}
 }
+
+/* Todo activity names are bold in both pending and completed lists. */
+.todo-list-screen .todo-task-name{font-weight:700!important}
