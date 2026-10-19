@@ -743,4 +743,33 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 .money-flow-screen .money-row{column-gap:12px!important}
 
 /* Make finance operation names clearly more readable without bolding them. */
-.money-flow-screen .money-description{font-size:18px!important;line-height:1.25!important}
+.money-flow-screen .money-description{font-size:18px!important;line-height:1.25!important;font-weight:700!important;color:#000!important}
+
+/* Latest approved emphasis and hierarchy for Todo screens. */
+.todo-list-screen:has(.todo-nav-link-done) .todo-add-action{
+ height:auto!important;min-height:80px!important;max-height:none!important;margin-top:8px!important;padding:12px 14px!important;
+ font-size:16px!important;font-weight:850!important;border-radius:22px!important
+}
+.todo-list-screen:has(.todo-nav-link-done) .todo-add-action .action-plus{width:42px!important;height:42px!important;font-size:28px!important}
+.todo-list-screen:has(.todo-nav-link-done) .todo-nav-link-done{
+ height:auto!important;min-height:58px!important;margin-top:7px!important;padding:5px 10px!important
+}
+.todo-list-screen:has(.todo-nav-link-done) .todo-nav-link-done .todo-nav-icon{flex-basis:38px!important;width:38px!important;height:38px!important}
+.todo-list-screen:has(.todo-nav-link-active) .todo-nav-link-active{
+ height:auto!important;min-height:80px!important;padding:12px 14px!important
+}
+.todo-home-screen .todo-art-frame{height:184px!important;padding:4px 10px 0!important;grid-template-rows:minmax(0,1fr)}
+.todo-home-screen .todo-art{width:100%!important;height:100%!important;max-height:100%!important;object-fit:contain!important}
+.todo-home-screen .todo-areas .area-card{position:relative;box-sizing:border-box;min-height:154px!important;height:154px!important;padding:10px 11px 48px!important}
+.todo-home-screen .todo-areas .todo-area-cta{
+ position:absolute;left:10px;right:10px;bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px;
+ min-height:34px;padding:5px 8px;border-radius:999px;color:#fff;font-size:13px;font-weight:850;
+ box-shadow:0 4px 9px rgba(25,82,76,.15),inset 0 1px 3px rgba(255,255,255,.45)
+}
+.todo-home-screen .todo-areas .todo-area-cta i{font-style:normal;font-size:18px;line-height:1}
+.todo-home-screen .todo-areas .pending .todo-area-cta{background:linear-gradient(105deg,#e9b500,#ffcf31)}
+.todo-home-screen .todo-areas .completed .todo-area-cta{background:linear-gradient(105deg,#11a875,#079364)}
+@media(max-width:360px){
+ .todo-home-screen .todo-areas .area-card{min-height:150px!important;height:150px!important}
+ .todo-home-screen .todo-art-frame{height:176px!important}
+}
