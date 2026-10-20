@@ -811,3 +811,43 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 .exact-alarm-access{margin:12px 0;padding:16px;border:1px solid rgba(31,115,172,.22);border-radius:18px;background:rgba(255,255,255,.88)}
 .exact-alarm-access p{margin:8px 0 12px;color:#52647a;font-size:.92rem}
 .exact-alarm-access button{min-height:44px;padding:10px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,#128b72,#16b68b);color:#fff;font-weight:700}
+
+/* Phase 3: full action labels, matching yellow Todo return control, and restore action. */
+.money-flow-screen .money-mark-action{
+ box-sizing:border-box;display:flex!important;flex-direction:row!important;align-items:center;justify-content:center;
+ width:auto!important;min-width:112px!important;min-height:36px!important;height:auto!important;
+ padding:6px 8px!important;border-radius:11px!important;font-size:11px!important;line-height:1.12!important;white-space:normal!important
+}
+.money-flow-screen .money-mark-label{font-size:11px!important;font-weight:800!important;line-height:1.12!important;white-space:normal!important;text-align:center}
+.money-flow-screen:has(.income-head) .money-mark-action{width:auto!important;min-width:112px!important;min-height:36px!important;height:auto!important;flex-direction:row!important;padding:6px 8px!important}
+.money-flow-screen:has(.income-head) .money-mark-action>span:first-child{font-size:14px!important}
+.todo-list-screen .todo-task-row .todo-complete{box-sizing:border-box;min-height:32px!important;height:auto!important;padding:6px 8px!important;font-size:10.5px!important;line-height:1.15!important}
+.todo-list-screen .todo-restore-action{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:0 1 154px;min-width:112px;max-width:154px;min-height:38px;height:auto;
+ margin-left:auto;padding:7px 10px;border:1px solid #83cfae;border-radius:13px;background:linear-gradient(110deg,#0f9a6c,#27b77d);
+ color:#fff;font-size:11px;font-weight:800;line-height:1.15;text-align:center;white-space:normal;box-shadow:0 3px 8px rgba(14,133,91,.17)
+}
+.todo-list-screen.pending-list .todo-nav-link-done{
+ box-sizing:border-box;height:auto!important;min-height:80px!important;max-height:none!important;margin-top:7px!important;padding:12px 14px!important;
+ border:2px solid #fff1bd!important;border-radius:28px!important;
+ background:linear-gradient(105deg,#f5ad00 0%,#ffca28 34%,#ffe98a 65%,#ffd23a 88%,#f2a000 100%)!important;
+ box-shadow:0 0 0 2px rgba(255,255,255,.98),0 0 19px rgba(255,206,39,.96),0 5px 17px rgba(199,137,19,.32),inset 0 2px 11px rgba(255,255,255,.62)!important;
+ color:#493309!important
+}
+.todo-list-screen.pending-list .todo-nav-link-done .todo-nav-icon{flex-basis:44px!important;width:44px!important;height:44px!important;background:linear-gradient(145deg,#fffbe5,#ffce43)!important;color:#fff!important}
+.todo-list-screen.pending-list .todo-nav-link-done .todo-nav-copy{color:#493309!important}
+.todo-list-screen.pending-list .todo-nav-link-done .todo-nav-copy small{color:#493309!important;opacity:.82}
+.todo-list-screen.pending-list .todo-nav-link-done .todo-nav-copy::before{color:#fff4bc;text-shadow:0 0 7px #fff}
+.todo-list-screen.pending-list .todo-nav-link-done .todo-nav-arrow{background:linear-gradient(145deg,#f18b05,#d96800)!important}
+@media(max-width:380px){
+ .money-flow-screen .money-mark-action,.money-flow-screen:has(.income-head) .money-mark-action{min-width:100px!important;padding:5px 6px!important;font-size:10px!important}
+ .money-flow-screen .money-mark-label{font-size:10px!important}
+ .todo-list-screen .todo-restore-action{flex-basis:128px;min-width:104px;max-width:128px;padding:6px 7px;font-size:10px}
+ .todo-list-screen .todo-task-row .todo-complete{padding:5px 6px!important;font-size:9.5px!important}
+}
+@media(max-width:420px){
+ .money-flow-screen .money-row,.money-flow-screen:has(.income-head) .money-row,.money-flow-screen:has(.expense-head) .money-row{grid-template-columns:minmax(0,1fr) auto!important;column-gap:10px!important;row-gap:8px!important}
+ .money-flow-screen .money-state-actions{grid-column:1/-1;justify-content:flex-end;min-height:36px}
+ .money-flow-screen .money-mark-action,.money-flow-screen:has(.income-head) .money-mark-action{width:148px!important;min-width:112px!important;max-width:148px!important}
+}
+@media(max-width:380px){.money-flow-screen .money-mark-action,.money-flow-screen:has(.income-head) .money-mark-action{width:132px!important;max-width:132px!important}}
