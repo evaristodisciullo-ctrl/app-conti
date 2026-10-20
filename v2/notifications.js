@@ -135,7 +135,7 @@ export function collectNotificationPlan(state, now = new Date()) {
 
   for (const item of state.entries || []) {
     const at = reminderDate(item, 'finance', state);
-    if (at) push(30000, `finance:${item.id}`, 'In Ordine · Conti', item.description || 'Promemoria economico', at, { kind: 'finance', itemId: item.id });
+    if (at) push(30000, `finance:${item.id}`, 'In Ordine · Conti', item.description || 'Promemoria economico', at, { kind: 'finance', itemId: item.id, entryKind: item.kind, month: item.date?.slice(0, 7) || '' });
   }
 
   const todoPrefs = state.todo?.notifications || {};
@@ -151,10 +151,17 @@ export async function syncNotifications(state, nativePlugin, now = new Date()) {
   if (!nativePlugin) return { status: 'unavailable', scheduled: 0 };
   try {
     const notifications = collectNotificationPlan(state, now);
+    const clearDelivered = async (keepIds) => {
+      if (typeof nativePlugin.getDeliveredNotifications !== 'function' || typeof nativePlugin.removeDeliveredNotifications !== 'function') return;
+      const delivered = await nativePlugin.getDeliveredNotifications();
+      const stale = (delivered.notifications || []).filter(item => item.id >= 10000 && item.id < 70000 && !keepIds.has(item.id)).map(item => ({ id: item.id }));
+      if (stale.length) await nativePlugin.removeDeliveredNotifications({ notifications: stale });
+    };
     if (!notifications.length) {
       const pending = await nativePlugin.getPending();
       const owned = (pending.notifications || []).filter(item => item.id >= 10000 && item.id < 70000).map(item => ({ id: item.id }));
       if (owned.length) await nativePlugin.cancel({ notifications: owned });
+      await clearDelivered(new Set());
       return { status: 'cleared', scheduled: 0 };
     }
 
@@ -176,6 +183,7 @@ export async function syncNotifications(state, nativePlugin, now = new Date()) {
     const plannedIds = new Set(notifications.map(item => item.id));
     const stale = (pending.notifications || []).filter(item => item.id >= 10000 && item.id < 70000 && !plannedIds.has(item.id)).map(item => ({ id: item.id }));
     if (stale.length) await nativePlugin.cancel({ notifications: stale });
+    await clearDelivered(plannedIds);
     const result = await nativePlugin.schedule({ notifications });
     return { status: 'scheduled', exactAlarm: true, scheduled: result.notifications?.length ?? notifications.length };
   } catch (error) {

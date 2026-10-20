@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { applyReminderToSeries, clearReminderOverrideFromSeries, collectNotificationPlan, effectiveReminder, notificationDefaults, reminderDate, stripDailySummarySettings, syncNotifications, uniqueReminderSeries } from '../v2/notifications.js';
+import { resolveNotificationRoute } from '../v2/notification-navigation.js';
 
 const now = new Date(2026, 9, 1, 0, 0, 0, 0);
 const item = { id: 'schedina', kind: 'expense', description: 'Schedina', date: '2026-10-19', datePrecision: 'day', reminder: { enabled: true, mode: 'due', time: '23:57', advanceDays: 0, advanceMinutes: 45 } };
@@ -63,12 +64,14 @@ assert.equal(stripDailySummarySettings(obsolete), true);
 assert.deepEqual(collectNotificationPlan({ todo: { notifications: { enabled: true, dailySummary: true }, tasks: [] } }, now), [], 'daily summary settings never create notifications');
 
 const calls = [];
-const makePlugin = ({ display = 'granted', requested = 'granted', exact = 'granted', pending = [] } = {}) => ({
+const makePlugin = ({ display = 'granted', requested = 'granted', exact = 'granted', pending = [], delivered = [] } = {}) => ({
   async checkPermissions() { calls.push('check-display'); return { display }; },
   async requestPermissions() { calls.push('request-display'); return { display: requested }; },
   async checkExactNotificationSetting() { calls.push('check-exact'); return { exact_alarm: exact }; },
   async getPending() { calls.push('get-pending'); return { notifications: pending }; },
   async cancel({ notifications }) { calls.push(['cancel', notifications.map(x => x.id)]); },
+  async getDeliveredNotifications() { calls.push('get-delivered'); return { notifications: delivered }; },
+  async removeDeliveredNotifications({ notifications }) { calls.push(['remove-delivered', notifications.map(x => x.id)]); },
   async schedule({ notifications }) { calls.push(['schedule', notifications]); return { notifications: notifications.map(x => ({ id: x.id })) }; },
 });
 
@@ -93,10 +96,25 @@ const pendingRows = monthly.map((x, index) => ({ id: collectNotificationPlan({ f
 const completedState = { financeNotifications: {}, entries: [monthly[1], monthly[2]], todo: {} };
 const activePlan = collectNotificationPlan(completedState, now);
 calls.length = 0;
-const completedSync = await syncNotifications(completedState, makePlugin({ pending: pendingRows.map(x => ({ id: x.id })) }), now);
+const completedSync = await syncNotifications(completedState, makePlugin({ pending: pendingRows.map(x => ({ id: x.id })), delivered: [{ id: pendingRows[0].id }, { id: pendingRows[1].id }, { id: 9 }] }), now);
 assert.equal(completedSync.status, 'scheduled');
 const cancelled = calls.find(x => Array.isArray(x) && x[0] === 'cancel')?.[1] || [];
 assert.deepEqual(cancelled, [pendingRows[0].id], 'completing one occurrence cancels only its reminder; future occurrence alarms remain');
+assert.deepEqual(calls.find(x => Array.isArray(x) && x[0] === 'remove-delivered')?.[1], [pendingRows[0].id], 'completing an occurrence removes its delivered notice but preserves notices for future occurrences');
 assert.deepEqual(calls.find(x => Array.isArray(x) && x[0] === 'schedule')[1].map(x => x.id), activePlan.map(x => x.id));
+
+calls.length=0;const clearedPlugin=makePlugin({pending:[{id:plan[0].id},{id:77}],delivered:[{id:plan[0].id},{id:88}]});
+const emptySync=await syncNotifications({notificationSettings:{enabled:false},entries:[],todo:{tasks:[]}},clearedPlugin,now);
+assert.equal(emptySync.status,'cleared');
+assert.deepEqual(calls.find(x=>Array.isArray(x)&&x[0]==='cancel')?.[1],[plan[0].id],'disabling all reminders cancels only app-owned pending alarms and preserves unrelated plugin alarms');
+assert.deepEqual(calls.find(x=>Array.isArray(x)&&x[0]==='remove-delivered')?.[1],[plan[0].id],'disabling all reminders clears only app-owned delivered notices');
+
+const navState={entries:[{id:'income-1',kind:'income',date:'2027-02-12'}],history:[{id:'paid-1',kind:'expense',date:'2026-11-02'}],todo:{tasks:[{id:'task-1',date:'2027-03'}],done:[{id:'done-1',date:'2026-09'}]}};
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'finance',itemId:'income-1'}},'2026-10'),{screen:'income',itemId:'income-1',month:'2027-02',found:true,completed:false},'income tap resolves the entry screen and stored month');
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'finance',itemId:'paid-1'}},'2026-10'),{screen:'expense',itemId:'paid-1',month:'2026-11',found:true,completed:true},'completed finance tap stays in the correct income/payment list');
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'finance',itemId:'deleted-income',entryKind:'income',month:'2026-12'}},'2026-10'),{screen:'income',itemId:null,month:'2026-12',found:false,completed:false},'deleted finance item falls back to its correct list and saved month');
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'todo',itemId:'task-1'}},'2026-10'),{screen:'todo-active',itemId:'task-1',found:true,completed:false},'future Todo occurrence resolves to In scadenza');
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'todo',itemId:'done-1'}},'2026-10'),{screen:'todo-done',itemId:'done-1',found:true,completed:true},'completed Todo occurrence resolves to Già fatte');
+assert.deepEqual(resolveNotificationRoute(navState,{extra:{kind:'todo',itemId:'deleted-task'}},'2026-10'),{screen:'todo-active',itemId:null,found:false,completed:false},'deleted activity falls back to In scadenza');
 
 console.log('Notification tests passed: exact time/day arithmetic, recurrence deduplication and propagation, rescheduling on due-date change, specific-occurrence cancellation, Doze flag, and permission gates');

@@ -23,5 +23,10 @@ assert.match(app, /changeExactNotificationSetting\(\)/, 'app sends the user to A
 assert.match(notifications, /requestPermissions\(\)/, 'notification scheduler requests runtime notification permissions through Capacitor');
 assert.match(app, /syncTodoNotifications\(\{guidePermissions:true\}\)/, 'creating a reminder starts the permission guidance flow');
 assert.match(notifications, /applyReminderToSeries|reminderSeriesKey/);
+assert.match(app, /addListener\('localNotificationActionPerformed',openNotificationTarget\)/, 'notification taps route through the app list handler');
+assert.match(app, /resolveNotificationRoute\(state,action\?\.notification,monthKey\(\)\)/, 'tap routing resolves target from current persisted state');
+assert.match(app, /focusNotificationItem\(destination\.itemId,(?:false|true)\)/, 'tap routing scrolls to an existing target item');
+assert.match(app, /notificationNavigationReady=true;if\(pendingNotificationTap\)/, 'cold-start tap waits for app state/authentication before routing');
+assert.doesNotMatch(app.slice(app.indexOf('function openNotificationTarget'), app.indexOf('function openNotificationTarget') + 1500), /data-money-done|data-complete|markCompleted|\.splice\(/, 'tapping a notification never completes or mutates an item');
 
 console.log('Android notification contract checks passed (manifest merge contract, exact/idle alarm implementation, reboot restore receiver, and app permission flow). Runtime delivery still requires an Android device/emulator test.');
