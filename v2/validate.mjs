@@ -15,7 +15,7 @@ const checks = [
   ['viewport uses dynamic height', css.includes('100dvh')],
   ['safe-area top', css.includes('safe-area-inset-top')],
   ['safe-area bottom', css.includes('safe-area-inset-bottom')],
-  ['horizontal overflow guarded', css.includes('overflow-x:hidden')],
+  ['horizontal overflow guarded', css.includes('overflow-x:clip')],
   ['no legacy fixed 520px app shell', !css.includes('.app{max-width:520px')],
   ['real balance is explicit', finance.includes('export const realBalance=state=>') && finance.includes('export function projectedBalance')],
   ['future entry is saved before completion', app.includes('state.entries.push(base)')],
@@ -54,7 +54,9 @@ const checks = [
   ,['native Italian speech listener allows pauses and partial transcript feedback', speechPlugin.includes('EXTRA_PARTIAL_RESULTS, true') && speechPlugin.includes('EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 9000L') && speechPlugin.includes('EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 5000L')]
   ,['only the two requested home screens receive compact layout rules', app.includes('class="finance-home-screen"') && app.includes('class="todo-home-screen"') && css.includes('.finance-home-screen .finance-art-frame') && css.includes('.todo-home-screen .todo-art-frame')]
   ,['monthly finance summaries use selected month and bounded recurring forecast', app.includes("financeTotals(state,'income',monthKey())") && app.includes("financeTotals(state,'expense',monthKey())") && finance.includes('only the next pending occurrence in each recurring series')]
-  ,['Todo month selector defaults to the current available month and follows visible sections', app.includes("monthKeys.includes(today)?today:(monthKeys[0]||today)") && app.includes('function syncTodoMonthFromScroll') && app.includes('data-todo-month-label')]
+  ,['Todo month selector defaults to the current available month and follows visible sections', app.includes('selected=todoVisibleMonth[mode]||today') && app.includes("todoVisibleMonth.active='';todoList(false)") && app.includes("todoVisibleMonth.done='';todoList(true)") && app.includes('function syncTodoMonthFromScroll') && app.includes('data-todo-month-label')]
+  ,['Todo month selector resets to today on re-entry', app.includes('selected=todoVisibleMonth[mode]||today') && app.includes("todoVisibleMonth.active='';todoList(false)") && app.includes("todoVisibleMonth.done='';todoList(true)") ]
+  ,['Todo month selector remains sticky below the Android safe area', css.includes('position:sticky;top:max(0px,env(safe-area-inset-top,0px))') && app.includes('stickyTop')]
   ,['Todo lists render all activities in chronological month sections with quick scroll navigation', app.includes('function orderedTodos') && app.includes('data-todo-month="\'+key+\'"') && app.includes('window.scrollTo(0,Math.max(0,top))') && app.includes('todoMonthLabel(key)') && !app.includes('id="todoMonth"') && !app.includes('id="todoYear"')]
   ,['Todo lists group tasks by due and completion date and completed view omits search and add controls', app.includes('todo-date-group') && app.includes('todo-date-heading') && app.includes('completionDate?fmtTodoDate(completionDate') && !app.slice(app.indexOf('function todoList('),app.indexOf('function syncTodoMonthFromScroll')).includes('data-todo-search') && !app.slice(app.indexOf('function todoList('),app.indexOf('function syncTodoMonthFromScroll')).includes('const footer=addAction') && app.includes('Aggiungi cosa da fare</span>')]
   ,['finance operation descriptions are regular weight and payment summary labels are black', css.includes('.money-description{font-weight:500}') && css.includes('.money-open-section.expense .money-section-heading>strong{color:#172b52}')]
