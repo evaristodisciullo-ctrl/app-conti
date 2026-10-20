@@ -894,3 +894,53 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 .todo-list-screen .todo-task-row:not(.has-long-description) .todo-restore-action{flex-basis:130px;min-width:110px;max-width:130px;padding:6px 7px;font-size:10px}
 .notification-entry>button{min-width:66px;white-space:nowrap}
 @media(max-width:360px){.notification-entry{grid-template-columns:24px minmax(0,1fr) auto;gap:7px}.notification-entry>button{min-width:62px;padding:7px 9px}}
+
+/* Final APK #307 layout correction: reserve separate space for reminder bells,
+   status labels, amounts and actions on narrow Android screens. */
+.money-flow-screen .money-row{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(104px,40%)!important;
+ align-items:center!important;column-gap:8px!important;row-gap:5px!important;
+ min-height:74px!important;padding:34px 4px 8px!important;position:relative!important
+}
+.money-flow-screen .money-row .money-description{
+ grid-column:1;grid-row:1 / span 2;align-self:center;max-width:31%!important;
+ padding-right:4px;overflow-wrap:break-word;word-break:normal;hyphens:none
+}
+.money-flow-screen .money-row .money-amount{
+ position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+ z-index:1;max-width:26%;font-size:14px!important
+}
+.money-flow-screen .money-row .money-state-actions{
+ grid-column:2;grid-row:1 / span 2;display:grid!important;
+ grid-template-columns:minmax(0,1fr) 34px;grid-template-rows:auto auto;
+ align-items:center;justify-items:end;gap:5px 3px;width:100%;max-width:none!important;
+ margin:0!important;padding:0!important;z-index:2
+}
+.money-flow-screen .money-row .money-state-stack{grid-column:1;grid-row:1;max-width:100%;justify-self:end}
+.money-flow-screen .money-row .money-reminder-bell{
+ position:absolute!important;top:1px!important;right:1px!important;z-index:3;
+ grid-column:auto;grid-row:auto;
+ width:32px!important;height:32px!important;min-width:32px!important;padding:4px!important
+}
+.money-flow-screen .money-row .money-mark-action,.money-flow-screen .money-row .money-edit-icon{
+ grid-column:1 / -1;grid-row:2;justify-self:end;max-width:100%!important
+}
+.money-flow-screen .money-row .money-reminder-bell .filled-bell,
+.todo-list-screen .todo-task-row .todo-reminder-bell .filled-bell{
+ width:22px!important;height:22px!important
+}
+.todo-list-screen .todo-task-row.has-long-description{padding-right:5px!important}
+.todo-list-screen .todo-task-row.has-long-description .todo-task-name{padding-right:42px!important}
+.todo-list-screen .todo-task-row .todo-reminder-bell{
+ position:absolute!important;top:1px!important;right:1px!important;z-index:3;
+ display:flex;align-items:center;justify-content:center;width:34px!important;height:34px!important;
+ padding:4px!important;border-radius:50%
+}
+@media(max-width:430px){
+ .money-flow-screen .money-row .money-mark-action{width:112px!important;min-width:112px!important;max-width:112px!important}
+}
+@media(max-width:380px){
+ .money-flow-screen .money-row{grid-template-columns:minmax(0,1fr) minmax(100px,40%)!important;column-gap:5px!important}
+ .money-flow-screen .money-row .money-amount{font-size:12px!important;max-width:29%}
+ .money-flow-screen .money-row .money-mark-action{width:108px!important;min-width:108px!important;max-width:108px!important;padding:5px 6px!important;font-size:10px!important}
+}
