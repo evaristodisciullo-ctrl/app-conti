@@ -222,30 +222,11 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .money-date-group{margin:0 0 9px;padding:12px 13px 7px;border:1px solid rgba(55,74,113,.10);border-radius:17px;background:rgba(255,255,255,.96);box-shadow:0 5px 15px rgba(48,63,105,.055);min-width:0}
 .money-date-group>.date-emphasis{display:inline-block;margin:0 0 13px;padding:6px 9px;border-radius:8px;background:#edf0f4;color:#10234a;font-size:16px;line-height:1.15;font-weight:900;letter-spacing:.015em;text-align:left}
 .money-date-rows{min-width:0}
-.money-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(72px,auto) minmax(110px,auto);align-items:center;gap:9px;padding:10px 0;min-height:48px;border-bottom:1px solid rgba(55,74,113,.11);min-width:0}
-.money-row:last-child{border-bottom:0}
-.money-description{min-width:0;overflow-wrap:anywhere;color:#17233d;font-size:14px;line-height:1.2;font-weight:820}
-.money-amount{justify-self:center;white-space:nowrap;color:#152545;font-size:14px;font-weight:850;font-variant-numeric:tabular-nums}
-.money-state-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
-.money-state-stack{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:0}
-.money-state{display:inline-flex;align-items:center;gap:5px;color:#59677d;font-size:10px;font-weight:760;white-space:nowrap}
-.money-state i{display:block;width:7px;height:7px;border-radius:50%;background:#e9a521;flex:none}
-.money-state.is-done{color:#087b57}
-.money-state.is-done i{background:#16a66b}
-.money-state-stack .overdue-label{margin:0;color:#b42318;font-size:9px;line-height:1.1;white-space:nowrap}
-.money-edit-icon{display:grid;place-items:center;width:29px;height:29px;min-height:29px;padding:0!important;border:0;border-radius:9px;background:#eef4ff;color:#2563cf;font-size:17px;line-height:1;flex:none}
-
-.money-edit-icon{font-size:18px}
 .money-collapse{display:grid;place-items:center;width:28px;height:28px;min-height:28px;padding:0;border:1px solid rgba(31,77,126,.12);border-radius:9px;background:rgba(255,255,255,.74);color:#245eb7;font-size:19px;line-height:1}
 .money-section-empty{padding:10px 12px;color:#68758b;font-size:12px}
 .money-reopen-action{margin-top:10px;border:1px solid #bfd5ff!important;background:#f2f6ff!important;color:#245eb7!important}
 @media(max-width:390px){
  .money-date-group{padding:10px 10px 6px}
- .money-row{grid-template-columns:minmax(0,1fr) minmax(65px,auto) minmax(102px,auto);gap:6px}
- .money-description, .money-amount{font-size:12px}
- .money-state{font-size:9px}
- .money-state-actions{gap:4px}
- .money-edit-icon{width:26px;height:26px;min-height:26px}
 }
 
 
@@ -254,8 +235,6 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .money-date-group.income.completed{border-color:#83cfae}
 .money-date-group.expense.open{border-color:#e7a3a3}
 .money-date-group.expense.completed{border-color:#83cfae}
-.money-description{font-size:15px}
-@media(max-width:390px){.money-description{font-size:13px}}
 .todo-nav-link{display:flex;align-items:center;gap:11px;width:100%;min-height:68px;margin:10px 0 0;padding:11px 13px;border-radius:17px;text-align:left;box-shadow:0 4px 13px rgba(39,65,105,.07)}
 .todo-nav-link-done{border:1px solid #85b7f4;background:#eef7ff;color:#17335f}
 .todo-nav-link-active{border:1px solid #edc66f;background:#fff9e8;color:#17335f}
@@ -270,7 +249,6 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 
 
 /* Approved screen refinements */
-.money-description{font-weight:500}
 .money-date-group{box-shadow:none}
 .money-open-section.expense .money-section-heading>b, .money-open-section.expense .money-section-heading>strong{color:#172b52}
 .money-open-section.expense .money-state.is-open{color:#17233d}
@@ -305,8 +283,8 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 @media(max-width:390px){.todo-task-name{font-size:13px}}
 
 /* Definitive approved five-screen layout */
-.money-description, .todo-task-name{font-weight:700}
-.money-amount, .money-date-group>.date-emphasis, .todo-date-heading{font-weight:850}
+.todo-task-name{font-weight:700}
+.money-date-group>.date-emphasis, .todo-date-heading{font-weight:850}
 .balance{padding:12px;background:linear-gradient(140deg,#dff3ff,#edf5ff);border:1px solid rgba(255,255,255,.95);box-shadow:0 6px 15px rgba(35,117,187,.13)}
 .balance-art-wrap{grid-template-columns:minmax(0,1fr) minmax(86px,29%);min-height:82px}
 .balance-art{height:84px}
@@ -344,7 +322,7 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .todo-nav-copy small{font-size:10px;color:#344864}
 .todo-nav-arrow{flex-basis:29px;width:29px;height:29px;font-size:23px}
 .todo-nav-link-active .todo-nav-arrow{background:#ed8200}
-@media(max-width:390px){.money-description{font-size:13px}.money-amount{font-size:12px}.todo-task-name{font-size:13px}.todo-nav-link{min-height:58px}}
+@media(max-width:390px){.todo-task-name{font-size:13px}.todo-nav-link{min-height:58px}}
 
 
 /* Match the approved pale red outline on the Pagamenti pending total. */
@@ -903,6 +881,157 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 }
 
 /* Stable list-card components: finance and Todo rows use one layout at every width. */
-.money-row-card{box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);gap:6px;min-width:0;min-height:0;margin:0;padding:10px 12px 9px;border:1px solid rgba(55,74,113,.12);border-bottom:1px solid rgba(55,74,113,.12);border-radius:15px;background:#fff;box-shadow:0 3px 10px rgba(48,63,105,.045)}.money-row-heading{display:grid;grid-template-columns:minmax(0,1fr) 38px;align-items:start;gap:8px;min-width:0}.money-description{grid-column:1;grid-row:1;min-width:0;margin:0;color:#000;font-size:18px;font-weight:900;line-height:1.25;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}.money-list-bell,.todo-list-bell{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:36px;height:36px;min-width:36px;min-height:36px;margin:-3px -3px 0 0;padding:5px;border:1px solid #f0d985;border-radius:50%;background:#fff8d9;color:#bd8b08;box-shadow:0 1px 3px rgba(139,103,0,.12);cursor:pointer}.money-list-bell{grid-column:2;grid-row:1;justify-self:end}.money-list-bell .filled-bell,.todo-list-bell .filled-bell{display:block;width:23px;height:23px;fill:#f5c21f;stroke:#c68c00;stroke-width:.8;stroke-linecap:round;stroke-linejoin:round}.money-row-footer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 8px;min-width:0}.money-row-footer .money-amount{grid-column:1;grid-row:1;justify-self:center;max-width:100%;margin:0;color:#152545;font-size:18px;font-weight:950;font-variant-numeric:tabular-nums;line-height:1.15;white-space:nowrap}.money-row-footer .money-state-actions{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:flex-end;justify-self:end;gap:4px;width:auto;min-width:0;margin:0}.money-row-footer .money-mark-action,.money-row-footer .money-edit-icon{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:min(100%,148px);min-width:112px;min-height:38px;height:auto;padding:7px 10px;border:0;border-radius:11px;background:#fff4d8;color:#986400;font-size:11px;font-weight:900;line-height:1.15;text-align:center;white-space:normal;overflow-wrap:normal}.money-row-footer .money-mark-action{flex-direction:row;gap:4px;width:auto;max-width:100%;min-width:112px;padding:8px 10px}.money-row-footer .money-mark-label{font-size:11px;font-weight:850;line-height:1.15;white-space:normal}.money-row-footer .money-edit-icon{width:38px;min-width:38px;background:#eef4ff;color:#2563cf;font-size:18px}.money-row-footer .overdue-label,.money-row-footer .money-state{display:inline-flex;align-items:center;gap:5px;margin:0;color:#b42318;font-size:11px;font-weight:850;line-height:1.15;white-space:nowrap}.money-row-footer .money-state.is-done{color:#087b57}.money-row-footer .money-state i{width:7px;height:7px;border-radius:50%;background:#16a66b}.todo-item-card{box-sizing:border-box;position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0;min-height:104px;margin:0;padding:12px 12px 11px;border-bottom:1px solid rgba(55,74,113,.14);border-radius:14px;background:#fff}.todo-task-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:start;min-width:0;padding-right:44px}.todo-task-name{display:block;min-width:0;color:#18283f;font-size:16px;font-weight:780;line-height:1.35;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}.todo-item-card[data-done="true"] .todo-task-main{padding-left:30px;padding-right:0}.todo-done-check{position:absolute;top:0;left:0;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#e3f7eb;color:#13835d;font-weight:900}.todo-list-bell{position:absolute;top:-3px;right:-3px;z-index:2}.todo-task-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:0}.todo-task-actions .overdue-label{align-self:flex-start;margin:0;color:#b42318;font-size:11px;font-weight:850;line-height:1.15}.todo-task-actions .todo-complete,.todo-task-actions .todo-restore-action{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:min(100%,220px);min-width:0;min-height:40px;height:auto;margin:0;padding:8px 12px;border:1px solid #83cfae;border-radius:13px;background:linear-gradient(110deg,#0f9a6c,#27b77d);color:#fff;font-size:12px;font-weight:850;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:normal;box-shadow:0 3px 8px rgba(14,133,91,.17)}.todo-task-actions .todo-complete{width:min(100%,180px);min-height:36px;padding:7px 10px;border-color:#bbebd1;border-radius:999px;background:#e8faef;color:#13835d;font-size:12px;box-shadow:none}.todo-task-actions .todo-complete span{margin-right:5px;font-size:17px;line-height:1}.todo-item-card[data-notification-target="true"]{outline:3px solid #f5c21f;outline-offset:2px}
-@media(max-width:380px){.money-row-card{padding:11px 11px 10px}.money-description{font-size:16px}.money-row-footer .money-amount{font-size:17px}.todo-item-card{padding:11px 10px 10px}.todo-task-name{font-size:15px}}
+/* Finance cards: a two-row card with a fixed action lane prevents content-dependent drift. */
+.money-row-card {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(55, 74, 113, .12);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(48, 63, 105, .045);
+}
+.money-row-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  align-items: start;
+  gap: 8px;
+  min-width: 0;
+}
+.money-description {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  margin: 0;
+  color: #000;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+.money-list-bell,
+.todo-list-bell {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: -2px -2px 0 0;
+  padding: 5px;
+  border: 1px solid #f0d985;
+  border-radius: 50%;
+  background: #fff8d9;
+  color: #bd8b08;
+  box-shadow: 0 1px 3px rgba(139, 103, 0, .12);
+  cursor: pointer;
+}
+.money-list-bell { grid-column: 2; grid-row: 1; justify-self: end; }
+.money-list-bell .filled-bell,
+.todo-list-bell .filled-bell {
+  display: block;
+  width: 23px;
+  height: 23px;
+  fill: #f5c21f;
+  stroke: #c68c00;
+  stroke-width: .8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.money-row-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(108px, 132px);
+  align-items: start;
+  gap: 8px;
+  min-width: 0;
+}
+.money-row-footer .money-amount {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  max-width: 100%;
+  margin: 0;
+  color: #152545;
+  font-size: 18px;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  height: 38px;
+  line-height: 38px;
+  white-space: nowrap;
+}
+.money-row-footer .money-state-actions {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-self: stretch;
+  gap: 4px;
+  min-width: 0;
+  margin: 0;
+}
+.money-row-footer .money-mark-action,
+.money-row-footer .money-edit-icon {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  height: auto;
+  margin: 0;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 11px;
+  background: #fff4d8;
+  color: #986400;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+.money-row-footer .money-mark-action { flex-direction: row; gap: 4px; }
+.money-row-footer .money-mark-label { font-size: 11px; font-weight: 850; line-height: 1.15; white-space: normal; }
+.money-row-footer .money-edit-icon {
+  width: 38px;
+  min-width: 38px;
+  justify-self: end;
+  background: #eef4ff;
+  color: #2563cf;
+  font-size: 18px;
+}
+.money-row-footer .overdue-label,
+.money-row-footer .money-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  color: #b42318;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.money-row-footer .money-state.is-done { color: #087b57; }
+.money-row-footer .money-state i { width: 7px; height: 7px; border-radius: 50%; background: #16a66b; }
+@media (max-width: 380px) {
+  .money-row-card { padding: 7px 8px; }
+  .money-description { font-size: 16px; }
+  .money-row-footer { grid-template-columns: minmax(0, 1fr) minmax(104px, 124px); gap: 6px; }
+  .money-row-footer .money-amount { font-size: 17px; }
+}
+.todo-item-card{box-sizing:border-box;position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0;min-height:104px;margin:0;padding:12px 12px 11px;border-bottom:1px solid rgba(55,74,113,.14);border-radius:14px;background:#fff}.todo-task-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:start;min-width:0;padding-right:44px}.todo-task-name{display:block;min-width:0;color:#18283f;font-size:16px;font-weight:780;line-height:1.35;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}.todo-item-card[data-done="true"] .todo-task-main{padding-left:30px;padding-right:0}.todo-done-check{position:absolute;top:0;left:0;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#e3f7eb;color:#13835d;font-weight:900}.todo-list-bell{position:absolute;top:-3px;right:-3px;z-index:2}.todo-task-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:0}.todo-task-actions .overdue-label{align-self:flex-start;margin:0;color:#b42318;font-size:11px;font-weight:850;line-height:1.15}.todo-task-actions .todo-complete,.todo-task-actions .todo-restore-action{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:min(100%,220px);min-width:0;min-height:40px;height:auto;margin:0;padding:8px 12px;border:1px solid #83cfae;border-radius:13px;background:linear-gradient(110deg,#0f9a6c,#27b77d);color:#fff;font-size:12px;font-weight:850;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:normal;box-shadow:0 3px 8px rgba(14,133,91,.17)}.todo-task-actions .todo-complete{width:min(100%,180px);min-height:36px;padding:7px 10px;border-color:#bbebd1;border-radius:999px;background:#e8faef;color:#13835d;font-size:12px;box-shadow:none}.todo-task-actions .todo-complete span{margin-right:5px;font-size:17px;line-height:1}.todo-item-card[data-notification-target="true"]{outline:3px solid #f5c21f;outline-offset:2px}
+@media(max-width:380px){.todo-item-card{padding:11px 10px 10px}.todo-task-name{font-size:15px}}
 
