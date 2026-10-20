@@ -14,11 +14,11 @@ const state={entries:[{id:'a',kind:'income',recurrence:'monthly',date:'2026-01-0
 migrateLegacyRecurrences(state);
 assert.equal(state.entries[1].seriesId,'a');assert.equal(state.todo.tasks[0].seriesId,'t');
 const now=new Date('2026-01-01T00:00:00');
-const plan=collectNotificationPlan({financeNotifications:{enabled:true,defaultTime:'09:00'},entries:[{id:'f',kind:'income',description:'Entrata',date:'',reminder:{enabled:true,mode:'custom',customAt:'2026-01-02T10:00'}}],todo:{notifications:{enabled:true,rule:{time:'08:00',advanceMinutes:0},dailySummary:true,dailySummaryTime:'18:00'},tasks:[{id:'t',description:'Attività',date:'2026-01-02',datePrecision:'day',reminder:{enabled:true,mode:'due',time:'08:30'}}]}},now);
+const plan=collectNotificationPlan({financeNotifications:{enabled:true,defaultTime:'09:00'},entries:[{id:'f',kind:'income',description:'Entrata',date:'',reminder:{enabled:true,mode:'custom',customAt:'2026-01-02T10:00'}}],todo:{notifications:{enabled:true,rule:{time:'08:00',advanceDays:0}},tasks:[{id:'t',description:'Attività',date:'2026-01-02',datePrecision:'day',reminder:{enabled:true,mode:'due',time:'08:30',advanceDays:0}}]}},now);
 assert.ok(plan.some(x=>x.extra.kind==='finance'&&x.title.includes('Conti')),'custom finance reminder works without due date');
 assert.ok(plan.some(x=>x.extra.kind==='todo'&&x.title.includes('Attività')),'todo reminder is independently planned');
-assert.ok(plan.some(x=>x.extra.kind==='todo-daily'),'daily summary coexists with finance and task notices');
-console.log('PASS recurrence intervals/clamping/end dates, additive series migration, custom no-date reminders, independent notification channels and daily summary');
+assert.equal(plan.length,2,'only the two individual due reminders are scheduled; daily summaries are removed');
+console.log('PASS recurrence intervals/clamping/end dates, additive series migration, custom no-date reminders, and due-only notifications');
 
 const recurringFinance={balance:500,entries:[...Array.from({length:18},(_,i)=>({id:`salary-${i}`,kind:'income',amount:1100,date:`${2026+Math.floor((9+i)/12)}-${String((9+i)%12+1).padStart(2,'0')}-10`,seriesId:'salary-series',occurrenceIndex:i})),...Array.from({length:18},(_,i)=>({id:`rent-${i}`,kind:'expense',amount:200,date:`${2026+Math.floor((9+i)/12)}-${String((9+i)%12+1).padStart(2,'0')}-15`,seriesId:'rent-series',occurrenceIndex:i})),{id:'one-off',kind:'income',amount:50,date:'2026-12-01'}],history:[]};
 assert.equal(realBalance(recurringFinance),500,'future recurring entries never change the real balance');

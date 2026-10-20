@@ -32,22 +32,82 @@ export function applyReminderToSeries(items, itemId, reminder) {
   const source = items.find(item => item.id === itemId);
   if (!source) return [];
   const series = reminderSeriesKey(source);
-  const firstIndex = source.occurrenceIndex || 0;
   const updated = [];
   for (const item of items) {
-    if (item.id !== source.id && (reminderSeriesKey(item) !== series || (item.occurrenceIndex || 0) < firstIndex)) continue;
-    item.reminder = { ...reminder };
+    if (reminderSeriesKey(item) !== series) continue;
+    item.reminder = { ...reminder, customized: true };
     item.notify = Boolean(reminder.enabled);
     updated.push(item);
   }
   return updated;
 }
 
+export function clearReminderOverrideFromSeries(items, itemId) {
+  const source = items.find(item => item.id === itemId);
+  if (!source) return [];
+  const series = reminderSeriesKey(source);
+  const updated = [];
+  for (const item of items) {
+    if (reminderSeriesKey(item) !== series) continue;
+    delete item.reminder;
+    delete item.notify;
+    updated.push(item);
+  }
+  return updated;
+}
+
+export function notificationDefaults(state, kind) {
+  const shared = state.notificationSettings;
+  if (shared) return shared;
+  const domain = kind === 'todo' ? state.todo?.notifications : state.financeNotifications;
+  return {
+    enabled: Boolean(domain?.enabled),
+    rule: {
+      advanceDays: Math.max(0, Math.floor(Number(domain?.rule?.advanceDays) || 0)),
+      time: domain?.rule?.time || domain?.defaultTime || '09:00'
+    }
+  };
+}
+
+export function effectiveReminder(item, kind, state) {
+  const stored = item.reminder || {};
+  const legacyCustom = stored.customized === undefined && (
+    (stored.enabled === true && (Object.hasOwn(stored, 'advanceDays') || Object.hasOwn(stored, 'time') || stored.mode === 'custom' || stored.customAt)) ||
+    (!item.reminder && item.notify === true)
+  );
+  const customized = stored.customized === true || legacyCustom;
+  const defaults = notificationDefaults(state, kind);
+  if (customized) return {
+    enabled: Boolean(stored.enabled ?? item.notify), customized: true,
+    advanceDays: Math.max(0, Math.floor(Number(stored.advanceDays) || 0)),
+    time: stored.time || '09:00', mode: stored.mode || 'due', customAt: stored.customAt || stored.at || ''
+  };
+  return {
+    enabled: Boolean(defaults.enabled), customized: false,
+    advanceDays: Math.max(0, Math.floor(Number(defaults.rule?.advanceDays) || 0)),
+    time: defaults.rule?.time || '09:00', mode: 'due', customAt: ''
+  };
+}
+
+export function stripDailySummarySettings(state) {
+  let changed = false;
+  for (const prefs of [state.todo?.notifications, state.financeNotifications]) {
+    if (!prefs || typeof prefs !== 'object') continue;
+    for (const key of ['dailySummary', 'dailySummaryTime', 'sent']) {
+      if (Object.hasOwn(prefs, key)) { delete prefs[key]; changed = true; }
+    }
+    if (prefs.rule && typeof prefs.rule === 'object') {
+      for (const key of ['timing', 'overdue', 'advanceMinutes']) {
+        if (Object.hasOwn(prefs.rule, key)) { delete prefs.rule[key]; changed = true; }
+      }
+    }
+  }
+  return changed;
+}
+
 export function reminderDate(item, kind, state) {
-  const reminder = item.reminder || {};
-  const legacyEnabled = kind === 'todo' ? item.notify : false;
-  const enabled = reminder.enabled ?? legacyEnabled;
-  if (!enabled) return null;
+  const reminder = effectiveReminder(item, kind, state);
+  if (!reminder.enabled) return null;
   // Retain compatibility with reminders created by older builds. New reminders
   // are always due-date based and never subtract minutes from the chosen time.
   if (reminder.mode === 'custom' || reminder.customAt) return parseLocalDateTime(reminder.customAt || reminder.at);
@@ -56,11 +116,10 @@ export function reminderDate(item, kind, state) {
   if (precision !== 'day' || !/^\d{4}-\d{2}-\d{2}$/.test(item.date)) return null;
   const [year, month, day] = item.date.split('-').map(Number);
   const at = new Date(year, month - 1, day, 9, 0, 0, 0);
-  const prefs = kind === 'todo' ? state.todo?.notifications : state.financeNotifications;
-  const time = reminder.time || prefs?.defaultTime || prefs?.rule?.time || '09:00';
+  const time = reminder.time || '09:00';
   const [hour, minute] = String(time).split(':').map(Number);
   at.setHours(Number.isFinite(hour) ? hour : 9, Number.isFinite(minute) ? minute : 0, 0, 0);
-  const advanceDays = Math.max(0, Math.floor(Number(reminder.advanceDays ?? prefs?.rule?.advanceDays ?? 0) || 0));
+  const advanceDays = Math.max(0, Math.floor(Number(reminder.advanceDays) || 0));
   at.setDate(at.getDate() - advanceDays);
   return at;
 }
@@ -74,33 +133,17 @@ export function collectNotificationPlan(state, now = new Date()) {
     out.push({ id: stableId(prefix, key, used), title, body, schedule: { at, allowWhileIdle: true }, extra });
   };
 
-  const financeAll = Boolean(state.financeNotifications?.enabled);
   for (const item of state.entries || []) {
-    const itemEnabled = item.reminder?.enabled ?? item.notify ?? false;
-    if (!financeAll && !itemEnabled) continue;
-    const scheduledItem = financeAll ? { ...item, reminder: { ...(item.reminder || {}), enabled: true } } : item;
-    const at = reminderDate(scheduledItem, 'finance', state);
+    const at = reminderDate(item, 'finance', state);
     if (at) push(30000, `finance:${item.id}`, 'In Ordine · Conti', item.description || 'Promemoria economico', at, { kind: 'finance', itemId: item.id });
   }
 
   const todoPrefs = state.todo?.notifications || {};
   for (const item of state.todo?.tasks || []) {
-    const itemEnabled = item.reminder?.enabled ?? item.notify ?? false;
-    if (!todoPrefs.enabled && !itemEnabled) continue;
-    const scheduledItem = todoPrefs.enabled ? { ...item, reminder: { ...(item.reminder || {}), enabled: true } } : item;
-    const at = reminderDate(scheduledItem, 'todo', state);
+    const at = reminderDate(item, 'todo', state);
     if (at) push(10000, `todo:${item.id}`, 'In Ordine · Attività', item.description || 'Promemoria attività', at, { kind: 'todo', itemId: item.id });
   }
 
-  if (todoPrefs.enabled && todoPrefs.dailySummary) {
-    const [hour, minute] = String(todoPrefs.dailySummaryTime || '18:00').split(':').map(Number);
-    for (let i = 0; i < 14; i += 1) {
-      const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i, hour || 0, minute || 0, 0, 0);
-      const key = `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`;
-      const due = (state.todo.tasks || []).filter(item => item.date && (item.datePrecision === 'day' || (!item.datePrecision && item.date.length === 10)) && item.date === key).length;
-      push(50000, `todo-daily:${key}`, 'In Ordine · Riepilogo', due ? `Hai ${due} attività in scadenza.` : 'Il tuo riepilogo giornaliero è pronto.', at, { kind: 'todo-daily', date: key });
-    }
-  }
   return out;
 }
 

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { applyReminderToSeries, collectNotificationPlan, reminderDate, syncNotifications, uniqueReminderSeries } from '../v2/notifications.js';
+import { applyReminderToSeries, clearReminderOverrideFromSeries, collectNotificationPlan, effectiveReminder, notificationDefaults, reminderDate, stripDailySummarySettings, syncNotifications, uniqueReminderSeries } from '../v2/notifications.js';
 
 const now = new Date(2026, 9, 1, 0, 0, 0, 0);
 const item = { id: 'schedina', kind: 'expense', description: 'Schedina', date: '2026-10-19', datePrecision: 'day', reminder: { enabled: true, mode: 'due', time: '23:57', advanceDays: 0, advanceMinutes: 45 } };
@@ -39,7 +39,28 @@ assert.equal(afterChange.schedule.at.getHours(), 18, 'date edits retain selected
 const seriesItems = structuredClone(monthly);
 const applied = applyReminderToSeries(seriesItems, 'rent-0', { enabled: true, advanceDays: 3, time: '07:45', mode: 'due' });
 assert.equal(applied.length, 3, 'setting a recurring reminder updates all pending occurrences');
-assert.ok(seriesItems.every(x => x.reminder.advanceDays === 3 && x.reminder.time === '07:45'));
+assert.ok(seriesItems.every(x => x.reminder.advanceDays === 3 && x.reminder.time === '07:45' && x.reminder.customized));
+const middleSeries = structuredClone(monthly);applyReminderToSeries(middleSeries, 'rent-1', { enabled: true, advanceDays: 2, time: '08:00' });assert.ok(middleSeries.every(x => x.reminder.advanceDays === 2), 'a custom notification selected on a later occurrence applies to the whole pending recurring series');
+
+const shared = { notificationSettings: { enabled: true, rule: { advanceDays: 1, time: '09:00' } }, financeNotifications: {}, entries: [
+  { id: 'salary', kind: 'income', description: 'Stipendio', date: '2026-10-10', datePrecision: 'day' },
+  { id: 'dentist', kind: 'income', description: 'Dentista', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, customized: true, advanceDays: 0, time: '16:00' } },
+  { id: 'bill', kind: 'expense', description: 'Bolletta', date: '2026-10-10', datePrecision: 'day' }
+], todo: { tasks: [] } };
+let sharedPlan = collectNotificationPlan(shared, now);
+assert.deepEqual(sharedPlan.map(x => [x.body, x.schedule.at.getDate(), x.schedule.at.getHours()]), [['Stipendio', 9, 9], ['Dentista', 10, 16], ['Bolletta', 9, 9]], 'single-item custom notification takes precedence over shared defaults');
+shared.notificationSettings = { enabled: true, rule: { advanceDays: 2, time: '10:00' } };
+sharedPlan = collectNotificationPlan(shared, now);
+assert.deepEqual(sharedPlan.map(x => [x.schedule.at.getDate(), x.schedule.at.getHours()]), [[8, 10], [10, 16], [8, 10]], 'changing shared settings never overwrites the personal reminder');
+const resetSeries = [{ id: 'repeat-0', seriesId: 'repeat', occurrenceIndex: 0 }, { id: 'repeat-1', seriesId: 'repeat', occurrenceIndex: 1 }];
+applyReminderToSeries(resetSeries, 'repeat-0', { enabled: true, advanceDays: 4, time: '07:30' });
+clearReminderOverrideFromSeries(resetSeries, 'repeat-0');
+assert.ok(resetSeries.every(x => !x.reminder), 'removing one recurring override returns all pending instances to shared defaults');
+assert.equal(effectiveReminder({ id: 'global' }, 'finance', shared).advanceDays, 2);
+assert.deepEqual(notificationDefaults(shared, 'finance').rule, { advanceDays: 2, time: '10:00' });
+const obsolete = { todo: { notifications: { enabled: true, dailySummary: true, dailySummaryTime: '18:00', sent: {}, rule: { advanceMinutes: 10, timing: 'before' } } } };
+assert.equal(stripDailySummarySettings(obsolete), true);
+assert.deepEqual(collectNotificationPlan({ todo: { notifications: { enabled: true, dailySummary: true }, tasks: [] } }, now), [], 'daily summary settings never create notifications');
 
 const calls = [];
 const makePlugin = ({ display = 'granted', requested = 'granted', exact = 'granted', pending = [] } = {}) => ({

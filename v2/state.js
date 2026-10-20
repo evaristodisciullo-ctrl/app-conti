@@ -34,6 +34,7 @@ export function createEmptyState() {
     budgets: {},
     budgetPlans: [],
     financeNotifications: { enabled: false, defaultTime: '09:00' },
+    notificationSettings: { enabled: false, rule: { advanceDays: 0, time: '09:00' } },
     todo: {
       setupDone: false,
       tasks: [],
@@ -42,10 +43,7 @@ export function createEmptyState() {
       theme: 'light',
       notifications: {
         enabled: false,
-        rule: { timing: 'same', time: '09:00', overdue: 'none', advanceMinutes: 0 },
-        dailySummary: false,
-        dailySummaryTime: '18:00',
-        sent: {}
+        rule: { advanceDays: 0, time: '09:00' }
       }
     },
     preferences: {
@@ -69,6 +67,18 @@ function normalize(candidate) {
   out.todo.notifications = { ...base.todo.notifications, ...(candidate.todo?.notifications || {}) };
   out.todo.notifications.rule = { ...base.todo.notifications.rule, ...(candidate.todo?.notifications?.rule || {}) };
   out.financeNotifications = { ...base.financeNotifications, ...(candidate.financeNotifications || {}) };
+  const oldTodoNotifications = candidate.todo?.notifications || {};
+  const oldFinanceNotifications = candidate.financeNotifications || {};
+  out.notificationSettings = candidate.notificationSettings ? {
+    enabled: Boolean(candidate.notificationSettings.enabled),
+    rule: { advanceDays: 0, time: '09:00', ...(candidate.notificationSettings.rule || {}) }
+  } : {
+    enabled: Boolean(oldFinanceNotifications.enabled || oldTodoNotifications.enabled),
+    rule: {
+      advanceDays: Math.max(0, Number(oldTodoNotifications.rule?.advanceDays ?? oldFinanceNotifications.rule?.advanceDays) || 0),
+      time: oldTodoNotifications.rule?.time || oldFinanceNotifications.rule?.time || oldFinanceNotifications.defaultTime || '09:00'
+    }
+  };
   out.preferences = { ...base.preferences, ...(candidate.preferences || {}) };
   out.entries = Array.isArray(candidate.entries) ? candidate.entries : [];
   out.history = Array.isArray(candidate.history) ? candidate.history : [];
