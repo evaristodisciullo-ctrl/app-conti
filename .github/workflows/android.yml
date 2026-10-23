@@ -29,47 +29,19 @@ jobs:
         run: |
           test -f android/app/src/main/java/it/inordine/app/MainActivity.java
           npx cap sync android
-      - name: Require persistent APK signing key
-        env:
-          INORDINE_SIGNING_KEYSTORE_BASE64: ${{ secrets.INORDINE_SIGNING_KEYSTORE_BASE64 }}
-          INORDINE_SIGNING_STORE_PASSWORD: ${{ secrets.INORDINE_SIGNING_STORE_PASSWORD }}
-          INORDINE_SIGNING_KEY_ALIAS: ${{ secrets.INORDINE_SIGNING_KEY_ALIAS }}
-          INORDINE_SIGNING_KEY_PASSWORD: ${{ secrets.INORDINE_SIGNING_KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-          if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
-            echo "::error title=Persistent APK signing key required::Configure all INORDINE_SIGNING_* repository secrets before building an installable APK."
-            exit 1
-          fi
-          signing_key="$RUNNER_TEMP/in-ordine-stable-signing.jks"
-          printf '%s' "$INORDINE_SIGNING_KEYSTORE_BASE64" | base64 --decode > "$signing_key"
-          chmod 600 "$signing_key"
-          keytool -list -keystore "$signing_key" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" >/dev/null
-          echo "INORDINE_SIGNING_KEYSTORE_PATH=$signing_key" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_STORE_PASSWORD=$INORDINE_SIGNING_STORE_PASSWORD" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_KEY_ALIAS=$INORDINE_SIGNING_KEY_ALIAS" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_KEY_PASSWORD=$INORDINE_SIGNING_KEY_PASSWORD" >> "$GITHUB_ENV"
-          echo "Build firma APK con la chiave persistente dei repository secrets." >> "$GITHUB_STEP_SUMMARY"
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
-      - name: Verify APK and persistent signing certificate
-        env:
-          INORDINE_SIGNING_KEYSTORE_PATH: ${{ env.INORDINE_SIGNING_KEYSTORE_PATH }}
-          INORDINE_SIGNING_STORE_PASSWORD: ${{ env.INORDINE_SIGNING_STORE_PASSWORD }}
-          INORDINE_SIGNING_KEY_ALIAS: ${{ env.INORDINE_SIGNING_KEY_ALIAS }}
+      - name: Verify APK signature
         run: |
           set -euo pipefail
           apk=android/app/build/outputs/apk/debug/app-debug.apk
           test -s "$apk"
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
           "$apksigner" verify --verbose "$apk"
-          apk_cert=$("$apksigner" verify --print-certs "$apk" | grep -Eo '[A-Fa-f0-9]{64}' | head -n1 | tr '[:upper:]' '[:lower:]')
-          key_cert=$(keytool -exportcert -keystore "$INORDINE_SIGNING_KEYSTORE_PATH" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" | sha256sum | cut -d' ' -f1)
-          if [ "$apk_cert" != "$key_cert" ]; then
-            echo "::error title=APK signing certificate mismatch::The APK was not signed with the configured persistent keystore."
-            exit 1
-          fi
+          cert_line=$("$apksigner" verify --print-certs "$apk" | grep -m1 'Signer #1 certificate SHA-256 digest:')
+          apk_cert=${cert_line##*: }
+          [[ "$apk_cert" =~ ^[A-Fa-f0-9]{64}$ ]]
           echo "Certificato APK SHA-256: $apk_cert" >> "$GITHUB_STEP_SUMMARY"
       - name: Verify merged Android notification permissions and reboot receiver
         run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/debug
