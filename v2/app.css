@@ -884,27 +884,25 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 /* Finance cards: a two-row card with a fixed action lane prevents content-dependent drift. */
 .money-row-card {
   box-sizing: border-box;
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 5px;
+  gap: 2px;
   min-width: 0;
   margin: 0;
-  padding: 8px 10px;
+  padding: 7px 10px;
   border: 1px solid rgba(55, 74, 113, .12);
   border-radius: 14px;
   background: #fff;
   box-shadow: 0 3px 10px rgba(48, 63, 105, .045);
 }
 .money-row-heading {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 36px;
-  align-items: start;
-  gap: 8px;
+  display: block;
   min-width: 0;
+  padding-right: 42px;
 }
+.money-row-card[data-done="true"] .money-row-heading { padding-right: 0; }
 .money-description {
-  grid-column: 1;
-  grid-row: 1;
   min-width: 0;
   margin: 0;
   color: #000;
@@ -935,7 +933,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   box-shadow: 0 1px 3px rgba(139, 103, 0, .12);
   cursor: pointer;
 }
-.money-list-bell { grid-column: 2; grid-row: 1; justify-self: end; }
+.money-list-bell { position: absolute; top: 6px; right: 6px; margin: 0; }
 .money-list-bell .filled-bell,
 .todo-list-bell .filled-bell {
   display: block;
@@ -951,7 +949,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
 }
 .money-row-footer .money-amount {
@@ -964,8 +962,8 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   font-size: 18px;
   font-weight: 950;
   font-variant-numeric: tabular-nums;
-  height: 30px;
-  line-height: 30px;
+  height: auto;
+  line-height: 1.15;
   white-space: nowrap;
 }
 .money-row-footer .money-state-actions {
@@ -973,9 +971,9 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   grid-row: 2;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   justify-self: stretch;
-  gap: 3px;
+  gap: 2px;
   min-width: 0;
   margin: 0;
 }
@@ -1023,6 +1021,8 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   font-weight: 850;
   line-height: 1.15;
   white-space: nowrap;
+  justify-content: center;
+  text-align: center;
 }
 .money-row-footer .money-state.is-done { color: #087b57; }
 .money-row-footer .money-state i { width: 7px; height: 7px; border-radius: 50%; background: #16a66b; }
