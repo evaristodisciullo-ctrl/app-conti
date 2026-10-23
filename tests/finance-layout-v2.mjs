@@ -55,6 +55,7 @@ try {
         bell: rect(el.querySelector('.money-list-bell')),
         amount: rect(el.querySelector('.money-amount')),
         action: rect(el.querySelector('.money-mark-action, .money-edit-icon')),
+        footer: rect(el.querySelector('.money-row-footer')),
         state: rect(el.querySelector('.overdue-label, .money-state.is-done')),
         descriptionText: el.querySelector('.money-description').innerText,
         actionText: el.querySelector('.money-mark-label')?.innerText || el.querySelector('.money-edit-icon')?.getAttribute('aria-label'),
@@ -66,13 +67,13 @@ try {
       };
     });
     assert.equal(data.done, done, `${kind} row state is correct`);
-    assert.ok(data.card.height >= 70 && data.card.height <= 135, `${kind} card remains compact (${data.card.height}px)`);
+    assert.ok(data.card.height >= 70 && data.card.height <= 165, `${kind} card remains compact (${data.card.height}px)`);
     assert.equal(data.descriptionOverflow, false, `${kind} name is readable at ${page.viewportSize().width}px`);
     assert.equal(data.actionOverflow, false, `${kind} action text fits at ${page.viewportSize().width}px`);
     assert.ok(data.description.right <= data.bell?.x || !data.bell, `${kind} name does not collide with its bell`);
     assert.ok(data.action && data.action.right <= data.card.right - 8, `${kind} action fits at the card's right edge`);
-    assert.ok(data.amount.right <= data.action.x, `${kind} amount does not overlap the action`);
-    assert.ok(Math.abs((data.amount.y + data.amount.height / 2) - (data.action.y + data.action.height / 2)) < 2, `${kind} amount and action share a row`);
+    assert.ok(Math.abs((data.amount.x + data.amount.width / 2) - (data.footer.x + data.footer.width / 2)) <= 1, `${kind} amount is centered across the full card`);
+    assert.ok(data.action.y >= data.amount.bottom - 1, `${kind} action is below the centered amount`);
     if (done) {
       assert.match(data.actionText, /Modifica/i, `${kind} completed row retains edit action`);
       assert.ok(data.state && data.state.y >= data.action.bottom - 1, `${kind} completed status sits below edit action`);

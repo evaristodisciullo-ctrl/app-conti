@@ -949,9 +949,9 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 }
 .money-row-footer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(108px, 132px);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 8px;
+  gap: 4px;
   min-width: 0;
 }
 .money-row-footer .money-amount {
@@ -964,18 +964,18 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   font-size: 18px;
   font-weight: 950;
   font-variant-numeric: tabular-nums;
-  height: 38px;
-  line-height: 38px;
+  height: 30px;
+  line-height: 30px;
   white-space: nowrap;
 }
 .money-row-footer .money-state-actions {
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: 1;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-self: stretch;
-  gap: 4px;
+  gap: 3px;
   min-width: 0;
   margin: 0;
 }
@@ -985,7 +985,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: min(100%, 132px);
   min-width: 0;
   min-height: 38px;
   height: auto;
@@ -1029,7 +1029,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 @media (max-width: 380px) {
   .money-row-card { padding: 7px 8px; }
   .money-description { font-size: 16px; }
-  .money-row-footer { grid-template-columns: minmax(0, 1fr) minmax(104px, 124px); gap: 6px; }
+  .money-row-footer { gap: 4px; }
   .money-row-footer .money-amount { font-size: 17px; }
 }
 .todo-item-card{box-sizing:border-box;position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0;min-height:104px;margin:0;padding:12px 12px 11px;border-bottom:1px solid rgba(55,74,113,.14);border-radius:14px;background:#fff}.todo-task-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr);align-items:start;min-width:0;padding-right:44px}.todo-task-name{display:block;min-width:0;color:#18283f;font-size:16px;font-weight:780;line-height:1.35;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}.todo-item-card[data-done="true"] .todo-task-main{padding-left:30px;padding-right:0}.todo-done-check{position:absolute;top:0;left:0;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#e3f7eb;color:#13835d;font-weight:900}.todo-list-bell{position:absolute;top:-3px;right:-3px;z-index:2}.todo-task-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:0}.todo-task-actions .overdue-label{align-self:flex-start;margin:0;color:#b42318;font-size:11px;font-weight:850;line-height:1.15}.todo-task-actions .todo-complete,.todo-task-actions .todo-restore-action{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:min(100%,220px);min-width:0;min-height:40px;height:auto;margin:0;padding:8px 12px;border:1px solid #83cfae;border-radius:13px;background:linear-gradient(110deg,#0f9a6c,#27b77d);color:#fff;font-size:12px;font-weight:850;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:normal;box-shadow:0 3px 8px rgba(14,133,91,.17)}.todo-task-actions .todo-complete{width:min(100%,180px);min-height:36px;padding:7px 10px;border-color:#bbebd1;border-radius:999px;background:#e8faef;color:#13835d;font-size:12px;box-shadow:none}.todo-task-actions .todo-complete span{margin-right:5px;font-size:17px;line-height:1}.todo-item-card[data-notification-target="true"]{outline:3px solid #f5c21f;outline-offset:2px}
