@@ -39,7 +39,9 @@ jobs:
           test -s "$apk"
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
           "$apksigner" verify --verbose "$apk"
-          cert_line=$("$apksigner" verify --print-certs "$apk" | grep -m1 'Signer #1 certificate SHA-256 digest:')
+          cert_output=$("$apksigner" verify --print-certs "$apk")
+          cert_line=$(printf '%s\n' "$cert_output" | grep 'Signer #1 certificate SHA-256 digest:')
+          test -n "$cert_line"
           apk_cert=${cert_line##*: }
           [[ "$apk_cert" =~ ^[A-Fa-f0-9]{64}$ ]]
           echo "Certificato APK SHA-256: $apk_cert" >> "$GITHUB_STEP_SUMMARY"
