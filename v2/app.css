@@ -972,7 +972,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-self: stretch;
+  justify-self: center;
   gap: 2px;
   min-width: 0;
   margin: 0;
