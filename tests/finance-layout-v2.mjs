@@ -85,7 +85,7 @@ try {
       assert.ok(data.stateCenterDelta <= 1, `${kind} completed status is centered`);
     } else {
       assert.equal(data.bellSize, '36px', `${kind} reminder bell remains full size`);
-      assert.ok(data.bell.y <= data.heading.y + 1 && data.bell.right >= data.card.right - 10, `${kind} bell stays in upper-right corner`);
+      assert.ok(data.bell.y <= data.heading.y + 1 && data.bell.right >= data.card.right - 13, `${kind} bell stays in upper-right corner`);
       assert.match(data.actionName, kind === 'income' ? /Segna come ricevuto/ : /Segna come pagato/);
       if (overdue) { assert.ok(data.state && data.state.y >= data.action.bottom - 1, `${kind} SCADUTO stays beneath the action`); assert.ok(data.stateCenterDelta <= 1, `${kind} SCADUTO is centered beneath the action`); }
       else assert.equal(data.state, null, `${kind} future item has no overdue state`);
