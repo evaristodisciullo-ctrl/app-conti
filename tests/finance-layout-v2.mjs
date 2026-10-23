@@ -64,30 +64,28 @@ try {
         actionName: el.querySelector('.money-mark-action')?.getAttribute('aria-label'),
         done: el.dataset.done === 'true',
         bellSize: el.querySelector('.money-list-bell') ? getComputedStyle(el.querySelector('.money-list-bell')).width : null,
-        titleAmountGap: rect(el.querySelector('.money-amount')).y - rect(el.querySelector('.money-description')).bottom,
-        actionCenterDelta: Math.abs((rect(el.querySelector('.money-mark-action, .money-edit-icon')).x + rect(el.querySelector('.money-mark-action, .money-edit-icon')).width / 2) - (rect(el).x + rect(el).width / 2)),
-        stateCenterDelta: (() => { const x = rect(el.querySelector('.overdue-label, .money-state.is-done')); return x ? Math.abs((x.x + x.width / 2) - (rect(el).x + rect(el).width / 2)) : null; })(),
+        titleAmountGap: rect(el.querySelector('.money-amount')).x - rect(el.querySelector('.money-description')).right,
+        actionCenterDelta: rect(el.querySelector('.money-mark-action, .money-edit-icon')).x - rect(el.querySelector('.money-amount')).right,
+        stateCenterDelta: (() => { const x = rect(el.querySelector('.overdue-label, .money-state.is-done')); const a = rect(el.querySelector('.money-mark-action, .money-edit-icon')); return x && a ? x.y - a.bottom : null; })(),
       };
     });
     assert.equal(data.done, done, `${kind} row state is correct`);
-    assert.ok(data.card.height >= 70 && data.card.height <= 165, `${kind} card remains compact (${data.card.height}px)`);
-    assert.ok(data.titleAmountGap <= 10, `${kind} amount follows the name without excessive vertical whitespace (${data.titleAmountGap}px)`);
-    assert.ok(data.actionCenterDelta <= 1, `${kind} confirmation or edit action is centered under the amount (${data.actionCenterDelta}px)`);
+    assert.ok(data.card.height >= 80 && data.card.height <= 165, `${kind} card remains compact (${data.card.height}px)`);
+    assert.ok(data.titleAmountGap >= 0, `${kind} amount follows the name on the same horizontal row (${data.titleAmountGap}px)`);
+    assert.ok(data.actionCenterDelta >= 0, `${kind} confirmation or edit action follows the amount on the same horizontal row (${data.actionCenterDelta}px)`);
     assert.equal(data.descriptionOverflow, false, `${kind} name is readable at ${page.viewportSize().width}px`);
     assert.equal(data.actionOverflow, false, `${kind} action text fits at ${page.viewportSize().width}px`);
-    assert.ok(data.description.right <= data.bell?.x || !data.bell, `${kind} name does not collide with its bell`);
+    assert.ok(data.description.right <= data.amount.x, `${kind} name does not collide with its amount`);
     assert.ok(data.action && data.action.right <= data.card.right - 8, `${kind} action fits at the card's right edge`);
-    assert.ok(Math.abs((data.amount.x + data.amount.width / 2) - (data.footer.x + data.footer.width / 2)) <= 1, `${kind} amount is centered across the full card`);
-    assert.ok(data.action.y >= data.amount.bottom - 1, `${kind} action is below the centered amount`);
+    assert.ok(data.amount.y < data.action.bottom && data.amount.bottom > data.action.y, `${kind} amount shares the horizontal action lane`);
     if (done) {
       assert.match(data.actionText, /Modifica/i, `${kind} completed row retains edit action`);
       assert.ok(data.state && data.state.y >= data.action.bottom - 1, `${kind} completed status sits below edit action`);
-      assert.ok(data.stateCenterDelta <= 1, `${kind} completed status is centered`);
     } else {
       assert.equal(data.bellSize, '36px', `${kind} reminder bell remains full size`);
-      assert.ok(data.bell.y <= data.heading.y + 1 && data.bell.right >= data.card.right - 13, `${kind} bell stays in upper-right corner`);
+      assert.ok(data.bell.y - data.card.y <= 6 && data.card.right - data.bell.right <= 6, `${kind} bell stays in the exact upper-right corner`);
       assert.match(data.actionName, kind === 'income' ? /Segna come ricevuto/ : /Segna come pagato/);
-      if (overdue) { assert.ok(data.state && data.state.y >= data.action.bottom - 1, `${kind} SCADUTO stays beneath the action`); assert.ok(data.stateCenterDelta <= 1, `${kind} SCADUTO is centered beneath the action`); }
+      if (overdue) { assert.ok(data.state && data.state.y >= data.action.bottom - 1, `${kind} SCADUTO stays beneath the action`); }
       else assert.equal(data.state, null, `${kind} future item has no overdue state`);
     }
     return data;
