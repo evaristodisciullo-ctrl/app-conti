@@ -29,7 +29,7 @@ jobs:
         run: |
           test -f android/app/src/main/java/it/inordine/app/MainActivity.java
           npx cap sync android
-      - name: Configure only a signing key compatible with the installed APK
+      - name: Configure persistent signing key or use CI debug signing
         env:
           INORDINE_SIGNING_KEYSTORE_BASE64: ${{ secrets.INORDINE_SIGNING_KEYSTORE_BASE64 }}
           INORDINE_SIGNING_STORE_PASSWORD: ${{ secrets.INORDINE_SIGNING_STORE_PASSWORD }}
@@ -37,18 +37,25 @@ jobs:
           INORDINE_SIGNING_KEY_PASSWORD: ${{ secrets.INORDINE_SIGNING_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
-            echo "::error title=Safe update stopped::No complete existing signing key is available; no installable artifact will be published."
-            exit 1
+          if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] && [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] && [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] && [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
+            echo "SIGNING_MODE=ephemeral-debug" >> "$GITHUB_ENV"
+            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. This APK is for a clean install; a later CI build may require uninstalling it first."
+            echo "Firma debug CI temporanea: gli aggiornamenti successivi potrebbero richiedere una nuova disinstallazione." >> "$GITHUB_STEP_SUMMARY"
+          else
+            if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
+              echo "::error title=Incomplete signing configuration::Configure all four signing secrets or remove them all to use CI debug signing."
+              exit 1
+            fi
+            signing_key="$RUNNER_TEMP/in-ordine-signing.jks"
+            printf '%s' "$INORDINE_SIGNING_KEYSTORE_BASE64" | base64 --decode > "$signing_key"
+            chmod 600 "$signing_key"
+            keytool -list -keystore "$signing_key" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" >/dev/null
+            echo "INORDINE_SIGNING_KEYSTORE_PATH=$signing_key" >> "$GITHUB_ENV"
+            echo "INORDINE_SIGNING_STORE_PASSWORD=$INORDINE_SIGNING_STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "INORDINE_SIGNING_KEY_ALIAS=$INORDINE_SIGNING_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "INORDINE_SIGNING_KEY_PASSWORD=$INORDINE_SIGNING_KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "SIGNING_MODE=persistent" >> "$GITHUB_ENV"
           fi
-          signing_key="$RUNNER_TEMP/in-ordine-update-check.jks"
-          printf '%s' "$INORDINE_SIGNING_KEYSTORE_BASE64" | base64 --decode > "$signing_key"
-          chmod 600 "$signing_key"
-          keytool -list -keystore "$signing_key" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" >/dev/null
-          echo "INORDINE_SIGNING_KEYSTORE_PATH=$signing_key" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_STORE_PASSWORD=$INORDINE_SIGNING_STORE_PASSWORD" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_KEY_ALIAS=$INORDINE_SIGNING_KEY_ALIAS" >> "$GITHUB_ENV"
-          echo "INORDINE_SIGNING_KEY_PASSWORD=$INORDINE_SIGNING_KEY_PASSWORD" >> "$GITHUB_ENV"
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
@@ -60,13 +67,16 @@ jobs:
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
           "$apksigner" verify --verbose "$apk"
           apk_cert=$("$apksigner" verify --print-certs "$apk" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n1 | tr -d ' :\r' | tr '[:lower:]' '[:upper:]')
-          key_cert=$(keytool -exportcert -keystore "$INORDINE_SIGNING_KEYSTORE_PATH" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" | sha256sum | cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
-          expected_cert=B1647F0830C02CFCD066312D699BDE05A20FCA9268A70D0DA5E712B87E17C7FD
-          if [ "$apk_cert" != "$key_cert" ] || [ "$apk_cert" != "$expected_cert" ]; then
-            echo "::error title=Safe update stopped::The candidate signature does not match the installed APK #330. No APK artifact will be published."
-            exit 1
+          if [ "${SIGNING_MODE:-}" = "persistent" ]; then
+            key_cert=$(keytool -exportcert -keystore "$INORDINE_SIGNING_KEYSTORE_PATH" -storepass "$INORDINE_SIGNING_STORE_PASSWORD" -alias "$INORDINE_SIGNING_KEY_ALIAS" | sha256sum | cut -d' ' -f1 | tr '[:lower:]' '[:upper:]')
+            if [ "$apk_cert" != "$key_cert" ]; then
+              echo "::error title=APK signature mismatch::The APK certificate does not match the configured persistent key."
+              exit 1
+            fi
+            echo "APK firmato con la chiave persistente configurata ($apk_cert)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Firma debug verificata con apksigner. Certificato CI: $apk_cert. Gli aggiornamenti futuri potrebbero richiedere la disinstallazione." >> "$GITHUB_STEP_SUMMARY"
           fi
-          echo "APK firmato e verificato con il certificato esatto della build #330 ($apk_cert)." >> "$GITHUB_STEP_SUMMARY"
       - name: Verify merged Android notification permissions and reboot receiver
         run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/debug
       - name: Verify packaged launcher icon
