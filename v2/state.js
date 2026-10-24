@@ -79,6 +79,24 @@ function normalize(candidate) {
       time: oldTodoNotifications.rule?.time || oldFinanceNotifications.rule?.time || oldFinanceNotifications.defaultTime || '09:00'
     }
   };
+  // Migrate the former shared defaults once. Current finance and To-do
+  // preferences remain independent after the migration instead of being
+  // overwritten with the shared value every time the app starts.
+  if (!candidate.financeNotifications) {
+    out.financeNotifications = {
+      ...base.financeNotifications,
+      enabled: Boolean(candidate.notificationSettings?.enabled ?? oldFinanceNotifications.enabled ?? out.notificationSettings.enabled),
+      defaultTime: candidate.notificationSettings?.rule?.time || oldFinanceNotifications.defaultTime || oldFinanceNotifications.rule?.time || out.notificationSettings.rule.time,
+      rule: { ...out.notificationSettings.rule, ...(oldFinanceNotifications.rule || {}) }
+    };
+  }
+  if (!candidate.todo?.notifications) {
+    out.todo.notifications = {
+      ...base.todo.notifications,
+      enabled: Boolean(oldTodoNotifications.enabled ?? candidate.notificationSettings?.enabled ?? out.notificationSettings.enabled),
+      rule: { ...out.notificationSettings.rule, ...(oldTodoNotifications.rule || {}) }
+    };
+  }
   out.preferences = { ...base.preferences, ...(candidate.preferences || {}) };
   out.entries = Array.isArray(candidate.entries) ? candidate.entries : [];
   out.history = Array.isArray(candidate.history) ? candidate.history : [];

@@ -92,6 +92,12 @@ const grantedDisplay = await syncNotifications(state, makePlugin({ display: 'den
 assert.equal(grantedDisplay.status, 'scheduled', 'granted display and exact permissions schedule reminders');
 assert.deepEqual(calls.slice(0, 3), ['check-display', 'request-display', 'check-exact']);
 
+const unconfirmedPlugin = makePlugin();
+unconfirmedPlugin.schedule = async () => ({ notifications: [] });
+const unconfirmed = await syncNotifications(state, unconfirmedPlugin, now);
+assert.equal(unconfirmed.status, 'failed', 'the app never reports reminders scheduled when Android does not confirm their IDs');
+assert.equal(unconfirmed.scheduled, 0);
+
 const pendingRows = monthly.map((x, index) => ({ id: collectNotificationPlan({ financeNotifications: {}, entries: [x], todo: {} }, now)[0].id, occurrence: index }));
 const completedState = { financeNotifications: {}, entries: [monthly[1], monthly[2]], todo: {} };
 const activePlan = collectNotificationPlan(completedState, now);

@@ -57,14 +57,16 @@ export function clearReminderOverrideFromSeries(items, itemId) {
 }
 
 export function notificationDefaults(state, kind) {
-  const shared = state.notificationSettings;
-  if (shared) return shared;
   const domain = kind === 'todo' ? state.todo?.notifications : state.financeNotifications;
+  // V2 keeps independent defaults for finance and To-do. The shared object is
+  // only a compatibility fallback for older backups that have no domain prefs.
+  const hasDomainSettings = domain && (Object.hasOwn(domain, 'enabled') || Object.hasOwn(domain, 'rule'));
+  const prefs = hasDomainSettings ? domain : state.notificationSettings;
   return {
-    enabled: Boolean(domain?.enabled),
+    enabled: Boolean(prefs?.enabled),
     rule: {
-      advanceDays: Math.max(0, Math.floor(Number(domain?.rule?.advanceDays) || 0)),
-      time: domain?.rule?.time || domain?.defaultTime || '09:00'
+      advanceDays: Math.max(0, Math.floor(Number(prefs?.rule?.advanceDays) || 0)),
+      time: prefs?.rule?.time || prefs?.defaultTime || '09:00'
     }
   };
 }
@@ -185,7 +187,12 @@ export async function syncNotifications(state, nativePlugin, now = new Date()) {
     if (stale.length) await nativePlugin.cancel({ notifications: stale });
     await clearDelivered(plannedIds);
     const result = await nativePlugin.schedule({ notifications });
-    return { status: 'scheduled', exactAlarm: true, scheduled: result.notifications?.length ?? notifications.length };
+    const scheduledIds = new Set((result.notifications || []).map(item => Number(item.id)));
+    const scheduled = notifications.filter(item => scheduledIds.has(Number(item.id))).length;
+    if (scheduled !== notifications.length) {
+      return { status: 'failed', exactAlarm: true, scheduled, error: new Error(`Android confirmed ${scheduled} of ${notifications.length} reminders`) };
+    }
+    return { status: 'scheduled', exactAlarm: true, scheduled };
   } catch (error) {
     console.warn('Notification sync failed', error);
     return { status: 'failed', scheduled: 0, error };
