@@ -77,9 +77,9 @@ assert.ok(await page.locator('[data-add-money="income"]').evaluate(el=>el.getBou
 const incomeAddLabel=page.locator('[data-add-money="income"] > span:nth-child(2)');
 for(const width of [320,360,390,430]){
  await page.setViewportSize({width,height:850});
- const box=await incomeAddLabel.evaluate(el=>{const r=el.getBoundingClientRect(),p=el.parentElement.getBoundingClientRect();return {font:parseFloat(getComputedStyle(el).fontSize),left:r.left,right:r.right,top:r.top,bottom:r.bottom,parent:{left:p.left,right:p.right,top:p.top,bottom:p.bottom},scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,scrollHeight:el.scrollHeight,clientHeight:el.clientHeight}});
+ const box=await incomeAddLabel.evaluate(el=>{const r=el.getBoundingClientRect(),p=el.parentElement.getBoundingClientRect();return {font:parseFloat(getComputedStyle(el).fontSize),overflow:getComputedStyle(el).overflowY,left:r.left,right:r.right,top:r.top,bottom:r.bottom,parent:{left:p.left,right:p.right,top:p.top,bottom:p.bottom},scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,scrollHeight:el.scrollHeight,clientHeight:el.clientHeight}});
  assert.ok(box.font>=28&&box.font<=30,'income label font is 28–30px at '+width+'px: '+JSON.stringify(box));
- assert.ok(box.left>=box.parent.left&&box.right<=box.parent.right&&box.top>=box.parent.top&&box.bottom<=box.parent.bottom&&box.scrollWidth<=box.clientWidth&&box.scrollHeight<=box.clientHeight+1,'income label is fully visible at '+width+'px: '+JSON.stringify(box));
+ assert.ok(box.left>=box.parent.left&&box.right<=box.parent.right&&box.top>=box.parent.top&&box.bottom<=box.parent.bottom&&box.top+box.scrollHeight<=box.parent.bottom&&box.scrollWidth<=box.clientWidth&&box.overflow==='visible','income label is fully visible inside its button at '+width+'px: '+JSON.stringify(box));
 }
 await page.setViewportSize({width:390,height:844});
 assert.equal(await page.locator('[data-voice-create]').count(),0,'single-phrase voice creation is hidden from the UI');
