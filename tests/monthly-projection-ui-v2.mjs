@@ -28,7 +28,8 @@ try{
  });
  await page.reload({waitUntil:'networkidle'});const persisted=await page.evaluate(()=>localStorage.getItem('inOrdineV2State'));await page.locator('[data-go="money"]').click();
  assert.equal(await page.locator('[data-home-month-nav]').count(),1,'Home has one monthly navigation bar');
- assert.equal(await page.locator('.section-kicker + .month-nav + .balance').count(),1,'month navigation is directly above the balance card');
+ assert.equal(await page.locator('.section-kicker + .balance > [data-home-month-nav]').count(),1,'month navigation is inside the balance card at its top');
+ assert.equal(await page.locator('[data-home-month-nav]').evaluate(nav=>getComputedStyle(nav).backgroundColor),'rgb(243, 245, 249)','Home month navigation has the requested light-gray rectangle');
  assert.equal(await page.locator('.month-nav b').innerText(),monthLabel(fixture.key),'Home opens on the current month');
  assert.equal(await page.locator('.balance .balance-label small').innerText(),'Saldo reale','current month retains the actual balance label');
  const values=async()=>page.locator('.balance').evaluate(card=>({initial:card.querySelector('.balance-art-wrap strong')?.textContent.trim(),receive:card.querySelector('.finance-summary-metrics span:nth-child(1) b')?.textContent.trim(),pay:card.querySelector('.finance-summary-metrics span:nth-child(2) b')?.textContent.trim(),ending:card.querySelector('.finance-summary-metrics span:nth-child(3) b')?.textContent.trim()}));
