@@ -73,9 +73,10 @@ try {
 
   await page.locator('.todo-list-screen [data-go="todo"]').click();
   await page.locator('[data-go="todo-settings"]').click();
+  await page.locator('[data-go="todo-notifications"]').click();
   await page.locator('#todoNotifications').check();
   await page.locator('#todoSettingsForm button[type="submit"]').click();
-  await page.locator('[data-go="todo"]').click(); await page.locator('[data-go="todo-active"]').click();
+  await page.locator('.todo-head [data-go="todo"]').click(); await page.locator('[data-go="todo-active"]').click();
   await assertBadge('todo-on', true);
   await assertBadge('todo-off', false);
   await assertBadge('todo-default', true);

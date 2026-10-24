@@ -20,7 +20,7 @@
   "scripts": {
     "build:v2": "node v2/build.mjs",
     "validate:v2": "node v2/validate.mjs",
-    "test:v2": "npm run build:v2 && node v2/validate.mjs && node tests/domain-v2.mjs && node tests/monthly-projection-v2.mjs && node tests/monthly-projection-ui-v2.mjs && node tests/notifications-v2.mjs && node tests/android-notifications-contract.mjs && node tests/v2-e2e.mjs && node tests/finance-layout-v2.mjs && node tests/reminder-indicator-v2.mjs && node tests/todo-reminder-indicator-v2.mjs && node tests/finance-notification-controls-v2.mjs",
+    "test:v2": "npm run build:v2 && node v2/validate.mjs && node tests/domain-v2.mjs && node tests/monthly-projection-v2.mjs && node tests/monthly-projection-ui-v2.mjs && node tests/notifications-v2.mjs && node tests/android-notifications-contract.mjs && node tests/v2-e2e.mjs && node tests/finance-layout-v2.mjs && node tests/reminder-indicator-v2.mjs && node tests/todo-reminder-indicator-v2.mjs && node tests/finance-notification-controls-v2.mjs && node tests/todo-settings-profile-v2.mjs",
     "preview:v2": "npm run build:v2 && node tests/visual-preview.mjs"
   }
 }

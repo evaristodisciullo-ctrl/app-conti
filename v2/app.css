@@ -669,6 +669,7 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
 .home-area.todo .home-area-cta{background:linear-gradient(105deg,#13bf88,#009b70)}
 .home-pair-notice{min-height:59px;font-size:13px}
 .home-note{margin:10px 0 0;font-size:14px;line-height:1.2}
+.home-greeting{margin:5px 4px 0;text-align:center;color:#147a5b;font-size:clamp(16px,4.5vw,19px);font-weight:780;line-height:1.25;letter-spacing:.01em}
 
 /* Approved economic home: larger illustrated tiles with working section CTAs. */
 .finance-home-screen .balance{padding:10px 13px 11px}
