@@ -939,6 +939,24 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
   cursor: pointer;
 }
 .money-list-bell { position: absolute; top: 4px; right: 4px; z-index: 2; margin: 0; }
+.money-list-bell.is-notification-active::after {
+  content: "✓";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #14966f;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(14, 95, 70, .25);
+  pointer-events: none;
+}
 .money-list-bell .filled-bell,
 .todo-list-bell .filled-bell {
   display: block;
