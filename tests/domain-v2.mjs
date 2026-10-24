@@ -25,7 +25,7 @@ assert.equal(realBalance(recurringFinance),500,'future recurring entries never c
 assert.deepEqual(financeTotals(recurringFinance,'income','2026-10'),{pending:1100,done:0,total:1100},'October totals count one monthly salary, not all generated future occurrences');
 assert.deepEqual(financeTotals(recurringFinance,'expense','2026-10'),{pending:200,done:0,total:200},'October totals count one recurring rent');
 assert.equal(monthEndBalance(recurringFinance,'2026-10'),1400,'end of month is real balance plus only selected-month pending operations');
-assert.equal(monthEndBalance(recurringFinance,'2026-11'),1400,'month switch scopes pending recurring entries');
+assert.equal(monthEndBalance(recurringFinance,'2026-11'),2300,'month projection carries forward prior-month pending entries and adds November once');
 assert.equal(projectedBalance(recurringFinance),1450,'overall forecast uses one-offs plus the next pending instance per recurring series');
 assert.deepEqual(financeTotals(recurringFinance,'income','2027-01'),{pending:1100,done:0,total:1100},'recurrences keep the same monthly amount in later months');
 const transaction={balance:100,entries:[{id:'in',kind:'income',amount:25,date:'2026-10-01'},{id:'out',kind:'expense',amount:10,date:'2026-10-02'}],history:[]};
@@ -41,7 +41,7 @@ const duplicate={balance:100,entries:[{id:'x',kind:'income',amount:10,date:'2026
 assert.equal(projectedBalance(duplicate),100);assert.deepEqual(financeTotals(duplicate,'income','2026-10'),{pending:0,done:10,total:10});
 const recurrence={balance:50,entries:[{id:'r1',kind:'expense',amount:20,date:'2026-10-01',seriesId:'r'},{id:'r2',kind:'expense',amount:20,date:'2026-11-01',seriesId:'r'}],history:[]};
 assert.equal(projectedBalance(recurrence),30,'forecast includes one upcoming occurrence per recurring expense series');
-assert.equal(monthEndBalance(recurrence,'2026-10'),30);assert.equal(monthEndBalance(recurrence,'2026-11'),30);
+assert.equal(monthEndBalance(recurrence,'2026-10'),30);assert.equal(monthEndBalance(recurrence,'2026-11'),10,'November carries October forward and applies the next payment');
 const undated={balance:40,entries:[{id:'no-date',kind:'income',amount:900,date:'',datePrecision:'none'},{id:'year-only',kind:'income',amount:800,date:'2026',datePrecision:'year'}],history:[]};assert.deepEqual(financeTotals(undated,'income','2026-10'),{pending:0,done:0,total:0},'undated or year-only records are not assigned to an arbitrary month');assert.equal(monthEndBalance(undated,'2026-10'),40);assert.equal(projectedBalance(undated),840,'a no-date operation is not treated as a dated forecast item');
 
 assert.equal(formatDateValue('2026-10-09','day'),'9 ottobre 2026');
