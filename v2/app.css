@@ -395,7 +395,7 @@ html[data-app-theme="dark"] .money-row .money-meta .date-emphasis{color:#e0e9fb}
 .money-flow-screen .finance-expense-action{border:1px solid #108b67!important;background:linear-gradient(105deg,#108c69,#20aa7e)!important;color:#fff!important;box-shadow:0 6px 14px rgba(19,145,105,.18)!important}
 .money-flow-screen .finance-expense-action .action-plus{background:rgba(255,255,255,.2);color:#fff}
 .todo-list-screen .todo-add-action{height:auto!important;min-height:84px!important;max-height:none!important;margin-top:5px;padding:9px 10px;border:1px solid #45c79a!important;border-radius:18px;font-size:12px;background:linear-gradient(105deg,#069b6e,#18c798)!important;box-shadow:0 5px 13px rgba(14,147,111,.18)!important}
-.todo-list-screen .todo-add-action>span:nth-child(2){font-size:clamp(23px,6.3vw,26px)!important;font-weight:900!important;line-height:1.02!important;text-transform:uppercase;overflow-wrap:anywhere}
+.todo-list-screen .todo-add-action>span:nth-child(2){font-size:clamp(20px,5.4vw,22px)!important;font-weight:900!important;line-height:1.02!important;text-transform:uppercase;overflow-wrap:anywhere}
 .todo-list-screen .todo-add-action .action-plus{width:28px;height:28px;border-radius:50%;font-size:21px}
 .todo-list-screen .todo-nav-link{border-radius:28px;box-shadow:0 0 0 2px rgba(255,255,255,.78),0 5px 14px rgba(16,85,143,.2)}
 .todo-list-screen .todo-nav-link-done{border:2px solid #bce8ff!important}
@@ -778,9 +778,9 @@ body:has(#moneyForm[data-kind="expense"]) .page-header.money-head{background:lin
  margin-top:10px!important;padding:9px 14px!important;border-radius:18px!important;
  font-size:16px!important;font-weight:850!important;gap:12px!important;align-items:center!important
 }
-.money-flow-screen .list-create-action>span:nth-child(2){font-size:clamp(23px,6.3vw,26px)!important;font-weight:900!important;line-height:1.02!important;text-transform:uppercase;overflow-wrap:anywhere}
+.money-flow-screen .list-create-action>span:nth-child(2){font-size:clamp(20px,5.4vw,22px)!important;font-weight:900!important;line-height:1.02!important;text-transform:uppercase;overflow-wrap:anywhere}
 .todo-home-screen .primary-action{min-height:84px;height:auto;align-items:center;padding:10px 11px}
-.todo-home-screen .primary-action>span:nth-child(2){font-size:clamp(23px,6.3vw,26px);font-weight:900;line-height:1.02;text-transform:uppercase;overflow-wrap:anywhere}
+.todo-home-screen .primary-action>span:nth-child(2){font-size:clamp(20px,5.4vw,22px);font-weight:900;line-height:1.02;text-transform:uppercase;overflow-wrap:anywhere}
 .money-flow-screen .list-create-action .action-plus{
  flex-basis:40px!important;width:40px!important;height:40px!important;border-radius:13px!important;font-size:26px!important
 }
