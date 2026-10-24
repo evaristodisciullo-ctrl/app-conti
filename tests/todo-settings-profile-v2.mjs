@@ -15,7 +15,7 @@ const fixture={version:2,balance:700,entries:[
  {id:'expense-on',kind:'expense',description:'Affitto',amount:500,date:'2026-10-31',datePrecision:'day',reminder:reminder(true),notify:true},
  {id:'income-off',kind:'income',description:'Premio',amount:100,date:'2026-10-29',datePrecision:'day',reminder:reminder(false),notify:false}],
  history:[],adjustments:[],budgetPlans:[],financeNotifications:{enabled:false,rule:{advanceDays:0,time:'09:00'}},
- profile:{fullName:''},todo:{setupDone:true,color:'Verde E.D.S.',theme:'light',tasks:[
+ profile:{fullName:'',namePromptCompleted:true},todo:{setupDone:true,color:'Verde E.D.S.',theme:'light',tasks:[
  {id:'todo-on',description:'Telefonare',date:'2026-10-30',datePrecision:'day',reminder:reminder(true),notify:true},
  {id:'todo-off',description:'Comprare pane',date:'2026-10-30',datePrecision:'day',reminder:reminder(false),notify:false},
  {id:'todo-default',description:'Ritirare pacco',date:'2026-10-30',datePrecision:'day'}],done:[{id:'done-1',description:'Attività completata',date:'2026-10-10',datePrecision:'day',completedAt:'2026-10-10T12:00:00Z'}],notifications:{enabled:false,rule:{advanceDays:0,time:'09:00'}}},preferences:{categories:[],moneyFilters:{},biometricEnabled:false}};

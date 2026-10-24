@@ -21,7 +21,7 @@ const context = await browser.newContext({ viewport: { width: 390, height: 850 }
 const page = await context.newPage();
 const reminder = enabled => ({ enabled, customized: true, mode: 'due', advanceDays: 0, time: '09:00' });
 const fixture = {
-  version: 2, balance: 0, entries: [
+  version: 2, balance: 0, profile: { fullName: 'Test', namePromptCompleted: true }, entries: [
     { id: 'income-on', kind: 'income', description: 'Operazione uguale', amount: 12, date: '2026-10-30', datePrecision: 'day', reminder: reminder(true), notify: true },
     { id: 'income-off', kind: 'income', description: 'Operazione uguale', amount: 12, date: '2026-10-30', datePrecision: 'day', reminder: reminder(false), notify: false },
     { id: 'expense-on', kind: 'expense', description: 'Operazione uguale', amount: 12, date: '2026-10-30', datePrecision: 'day', reminder: reminder(true), notify: true },

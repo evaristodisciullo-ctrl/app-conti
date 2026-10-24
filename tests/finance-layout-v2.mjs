@@ -32,6 +32,10 @@ try {
   await page.goto('http://127.0.0.1:4174/', { waitUntil: 'networkidle' });
   await page.evaluate(() => localStorage.clear());
   await page.reload({ waitUntil: 'networkidle' });
+  if (await page.locator('#firstRunNameForm').count()) {
+    await page.locator('#firstRunName').fill('Test');
+    await page.locator('#firstRunNameForm button[type="submit"]').click();
+  }
 
   const addMoney = async (kind, name, amount, date) => {
     await page.locator(`[data-add-money="${kind}"]`).click();

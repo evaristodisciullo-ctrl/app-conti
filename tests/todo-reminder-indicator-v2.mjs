@@ -19,7 +19,7 @@ const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 390, height: 850 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, locale: 'it-IT' });
 const savedReminder = enabled => ({ enabled, customized: true, mode: 'due', advanceDays: 0, time: '09:00' });
 const fixture = {
-  version: 2, balance: 0, entries: [], history: [], adjustments: [], budgetPlans: [],
+  version: 2, balance: 0, profile: { fullName: 'Test', namePromptCompleted: true }, entries: [], history: [], adjustments: [], budgetPlans: [],
   financeNotifications: { enabled: false, defaultTime: '09:00' },
   todo: { tasks: [
     { id: 'todo-on', description: 'Avviso attivo', date: '2026-10-30', datePrecision: 'day', reminder: savedReminder(true), notify: true },

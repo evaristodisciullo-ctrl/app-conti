@@ -22,7 +22,7 @@ const acceptedConfirmations = [];
 page.on('dialog', async dialog => { acceptedConfirmations.push(dialog.message()); await dialog.accept(); });
 const reminder = (enabled, time, advanceDays) => ({ enabled, customized: true, mode: 'due', time, advanceDays });
 const fixture = {
-  version: 2, balance: 0,
+  version: 2, balance: 0, profile: { fullName: 'Test', namePromptCompleted: true },
   entries: [
     { id: 'salary', kind: 'income', description: 'Stipendio', amount: 1000, date: '2026-10-30', datePrecision: 'day', reminder: reminder(true, '08:15', 1), notify: true },
     { id: 'rent', kind: 'expense', description: 'Affitto', amount: 400, date: '2026-11-02', datePrecision: 'day', reminder: reminder(true, '09:45', 2), notify: true }

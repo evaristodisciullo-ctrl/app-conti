@@ -18,7 +18,7 @@ try{
  const fixture=await page.evaluate(()=>{
   const now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`,nextDate=new Date(now.getFullYear(),now.getMonth()+1,1),next=`${nextDate.getFullYear()}-${String(nextDate.getMonth()+1).padStart(2,'0')}`;
   const date=(ym,day)=>`${ym}-${String(day).padStart(2,'0')}`;
-  const state={version:2,balance:1000,entries:[
+  const state={version:2,balance:1000,profile:{fullName:'Test',namePromptCompleted:true},entries:[
    {id:'test-current-income',kind:'income',description:'Entrata del mese',amount:120,date:date(key,5),datePrecision:'day'},
    {id:'test-current-expense',kind:'expense',description:'Uscita del mese',amount:50,date:date(key,8),datePrecision:'day'},
    {id:'test-future-income',kind:'income',description:'Entrata futura',amount:500,date:date(next,5),datePrecision:'day'},
