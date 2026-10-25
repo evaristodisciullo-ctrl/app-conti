@@ -16,7 +16,21 @@ Before enabling it, a project owner must:
 
 `drive.appdata` is restricted to this app's private Drive application-data area and avoids broad access to the user's documents. Google hides that area from the Drive UI; the user cannot browse or share those files there. Google documents that app data can be removed if the user removes the app's data folder / app access. The existing manual Android file-picker route remains available for visible, portable backup files.
 
+Google classifies `drive.appdata` as a non-sensitive Drive scope. That avoids the sensitive/restricted-scope review path, but the OAuth consent/brand configuration and any baseline verification required for public availability still need to be checked in the Cloud Console.
+
 The browser/SAF route can verify that Android wrote and re-read the selected file. It cannot verify the Drive provider's later cloud synchronization queue, so that route never reports a cloud-verified backup. The direct provider reports success only after Google Drive accepts the upload and returns the same bytes on a subsequent read.
+
+## iOS and cross-platform reuse (planning only)
+
+No iOS app or iOS provider is included in this branch. The portable parts are the JSON backup envelope (`format: in-ordine-backup`, `schemaVersion: 1`), the existing state payload, the legacy readers, and the provider-neutral `createBackupCloudService` contract. Android and iOS can exchange backups through the existing manual JSON file route without sharing app data containers or Google credentials.
+
+An iOS implementation would need a Capacitor iOS bridge matching `GoogleDriveBackup`'s `getStatus`, `saveBackup`, `listBackups`, `readBackup`, and `disconnect` methods. It should use an iOS OAuth client registered for the iOS bundle identifier, request only `drive.appdata`, keep access tokens in native code, and use the same Drive REST endpoints and upload-readback verification. Google requires the iOS client ID and its URL scheme in the iOS app configuration; no web/server client ID is needed unless a server is added. The iOS client must be in the Google Cloud project associated with the Drive app data. Confirm that Android- and iOS-created `appDataFolder` files are visible to both clients in a real two-platform test before promising automatic cross-platform discovery.
+
+The checksum is SHA-256 over UTF-8 JSON produced by recursively sorting object keys using JavaScript `JSON.stringify` number/string encoding. A Swift implementation must match those canonicalization and encoding rules exactly, or it must keep using the original JSON bytes for parsing and validate against Android-generated golden fixtures. Arrays retain their order. Do not change the envelope or checksum rules without a versioned migration; continue accepting both `in-ordine-v2` and raw version-2 state backups.
+
+For manual iPhone transfer, `UIDocumentPickerViewController` can import/export the `.json` file. External document URLs are security-scoped and must be accessed with the iOS document coordination rules. Automatic cloud upload and restore need a separate iOS native implementation and tests for consent, revocation, mobile connectivity, upload interruption, and readback. These are future implementation tasks; this change adds documentation only.
+
+Reference documentation: [Google Drive app data](https://developers.google.com/workspace/drive/api/guides/appdata), [Google Drive scopes](https://developers.google.com/workspace/drive/api/guides/api-specific-auth), [Google Sign-In for iOS](https://developers.google.com/identity/sign-in/ios/start-integrating), and [Apple document picker](https://developer.apple.com/documentation/uikit/uidocumentpickerviewcontroller).
 
 ## Stable signing key setup
 
@@ -34,5 +48,7 @@ To provision a stable key safely, the release owner should create it on a contro
 ### Existing PROVA installation compatibility
 
 The historical PROVA APK was signed with an ephemeral GitHub Actions debug key. That private key was not retained, so it cannot be recovered from the APK. A newly provisioned stable key therefore **cannot** be proven compatible with the PROVA currently installed on the user's phone. This repository keeps package `it.inordine.app.prova`, but no APK signed with a different key should be installed over the existing PROVA app. Do not ask the user to uninstall it. A future test installation needs either recovery of the exact old key (not available) or a separately approved new application ID; its migration/installation must be planned separately. The original app's application ID and signing configuration are untouched.
+
+For an update to install over an existing Android app, the application ID and signing certificate must match; Android also requires an equal or higher `versionCode`. Increment `versionCode` for every future distributed build. The repository currently keeps `versionCode 1` and no APK is being distributed by this task.
 
 The stable-key workflow is prepared but the signing key and GitHub secrets are not configured. Stable signing is not yet verified.

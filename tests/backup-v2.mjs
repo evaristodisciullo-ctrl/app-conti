@@ -39,6 +39,10 @@ const parsed = await readBackupText(text);
 assert.deepEqual(parsed, fixture, 'backup validation preserves entries, payments, due items, done items and preferences');
 assert.equal(backup.schemaVersion, 1, 'portable schema version is present');
 
+const legacyBackup = { format: 'in-ordine-v2', exportedAt: '2025-01-12T10:00:00.000Z', state: fixture };
+assert.deepEqual(await readBackupText(JSON.stringify(legacyBackup)), fixture, 'the pre-checksum in-ordine-v2 format remains restorable');
+assert.deepEqual(await readBackupText(JSON.stringify(fixture)), fixture, 'the original raw state backup remains restorable');
+
 const prior = createEmptyState();
 prior.welcomeCompleted = true;
 prior.profile.fullName = 'Dati locali di prova';
