@@ -39,8 +39,8 @@ jobs:
           set -euo pipefail
           if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] && [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] && [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] && [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
             echo "SIGNING_MODE=ephemeral-debug" >> "$GITHUB_ENV"
-            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. This APK is for a clean install; a later CI build may require uninstalling it first."
-            echo "Firma debug CI temporanea: gli aggiornamenti successivi potrebbero richiedere una nuova disinstallazione." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. The APK will be built for validation but will not be uploaded because it cannot safely update the installed trial app."
+            echo "Firma debug CI temporanea: build solo per verifica, senza pubblicare APK. Non installare sopra In Ordine PROVA; la firma non è garantita compatibile." >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
               echo "::error title=Incomplete signing configuration::Configure all four signing secrets or remove them all to use CI debug signing."
@@ -75,13 +75,14 @@ jobs:
             fi
             echo "APK firmato con la chiave persistente configurata ($apk_cert)." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Firma debug verificata con apksigner. Certificato CI: $apk_cert. Gli aggiornamenti futuri potrebbero richiedere la disinstallazione." >> "$GITHUB_STEP_SUMMARY"
+            echo "Firma debug temporanea verificata con apksigner. Certificato CI: $apk_cert. Questa build non viene caricata come artefatto installabile." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Verify merged Android notification permissions and reboot receiver
         run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/debug
       - name: Verify packaged launcher icon
         run: node tests/verify-android-icon.mjs
       - uses: actions/upload-artifact@v4
+        if: env.SIGNING_MODE == 'persistent'
         with:
           name: in-ordine-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk

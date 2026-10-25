@@ -2,6 +2,10 @@ package it.inordine.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 
 import com.getcapacitor.JSObject;
@@ -22,6 +26,28 @@ import java.nio.charset.StandardCharsets;
 @CapacitorPlugin(name = "BackupFilePicker")
 public class BackupFilePicker extends Plugin {
     private static final int MAX_BACKUP_BYTES = 10 * 1024 * 1024;
+
+    @PluginMethod
+    public void getConnectionStatus(PluginCall call) {
+        ConnectivityManager manager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network active = manager == null ? null : manager.getActiveNetwork();
+        NetworkCapabilities capabilities = active == null || manager == null ? null : manager.getNetworkCapabilities(active);
+        boolean validatedInternet = capabilities != null
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+        String transport = "none";
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) transport = "wifi";
+            else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) transport = "mobile";
+            else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) transport = "ethernet";
+            else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) transport = "vpn";
+            else transport = "other";
+        }
+        JSObject response = new JSObject();
+        response.put("internetAvailable", validatedInternet);
+        response.put("transport", transport);
+        call.resolve(response);
+    }
 
     @PluginMethod
     public void saveFile(PluginCall call) {

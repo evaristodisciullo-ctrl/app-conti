@@ -42,23 +42,23 @@ try {
   await page.locator('[data-go="money"]').click();
   await page.locator('[data-go="settings"]').click();
   await page.locator('[data-go="backup"]').click();
-  await page.locator('#openSaveBackup').click();
-  assert.match(await page.locator('.backup-intro').innerText(), /Google Drive o iCloud/);
+  assert.match(await page.locator('.backup-settings-card').innerText(), /Ultimo backup verificato su Google Drive:\s*nessuno/);
+  assert.match(await page.locator('.backup-settings-card').innerText(), /non può vedere né modificare la coda di caricamento/);
   await page.evaluate(() => { Object.defineProperty(window, 'showSaveFilePicker', { value: undefined, configurable: true }); });
   const downloadPromise = page.waitForEvent('download');
-  await page.locator('#saveBackupNow').click();
+  await page.locator('#openSaveBackup').click();
   const download = await downloadPromise;
   assert.match(download.suggestedFilename(), /^InOrdine_Backup_\d{2}-\d{2}-\d{4}\.json$/);
   await download.saveAs(backupPath);
   const savedBackup = JSON.parse(await readFile(backupPath, 'utf8'));
   assert.equal(savedBackup.format, 'in-ordine-backup');
   assert.deepEqual(savedBackup.state, fixture, 'created backup contains every fake record and preference');
-  assert.match(await page.locator('#backupStatus').innerText(), /Download avviato/);
-  await page.locator('[data-go="backup"]').click();
+  assert.match(await page.locator('.backup-result').innerText(), /DOWNLOAD AVVIATO/);
+  assert.match(await page.locator('.backup-result').innerText(), /Ultimo backup verificato su Google Drive: nessuno/);
+  await page.locator('#backupResultContinue').click();
 
   await page.evaluate(() => { const state = JSON.parse(localStorage.getItem('inOrdineV2State')); state.profile.fullName = 'Dati locali diversi'; localStorage.setItem('inOrdineV2State', JSON.stringify(state)); });
   await page.locator('#openRestoreBackup').click();
-  await page.locator('#chooseRestoreBackup').click();
   page.once('dialog', dialog => dialog.accept());
   await page.locator('#importBackup').setInputFiles(backupPath);
   await page.waitForSelector('#continueAfterRestore');
@@ -74,7 +74,6 @@ try {
   await page.locator('[data-go="settings"]').click();
   await page.locator('[data-go="backup"]').click();
   await page.locator('#openRestoreBackup').click();
-  await page.locator('#chooseRestoreBackup').click();
   await page.locator('#importBackup').setInputFiles(corruptPath);
   await page.waitForFunction(() => document.querySelector('#backupStatus')?.textContent.includes('danneggiato'));
   assert.equal(await page.evaluate(() => localStorage.getItem('inOrdineV2State')), beforeDamage, 'damaged file leaves current state byte-for-byte unchanged');
