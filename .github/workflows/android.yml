@@ -58,6 +58,8 @@ jobs:
           fi
       - name: Build debug APK
         working-directory: android
+        env:
+          INORDINE_DRIVE_BACKUP_ENABLED: ${{ vars.INORDINE_DRIVE_BACKUP_ENABLED }}
         run: ./gradlew assembleDebug
       - name: Verify APK signature
         run: |

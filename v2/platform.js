@@ -7,4 +7,5 @@ import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 
 const NativeSpeechRecognition = registerPlugin('NativeSpeechRecognition');
 const BackupFilePicker = registerPlugin('BackupFilePicker');
-export { Capacitor, Preferences, LocalNotifications, Filesystem, Directory, Share, NativeBiometric, NativeSpeechRecognition, BackupFilePicker };
+const GoogleDriveBackup = registerPlugin('GoogleDriveBackup');
+export { Capacitor, Preferences, LocalNotifications, Filesystem, Directory, Share, NativeBiometric, NativeSpeechRecognition, BackupFilePicker, GoogleDriveBackup };
