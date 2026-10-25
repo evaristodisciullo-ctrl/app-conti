@@ -30,6 +30,7 @@ jobs:
           test -f android/app/src/main/java/it/inordine/app/MainActivity.java
           npx cap sync android
       - name: Configure persistent signing key or use CI debug signing
+        id: configure-signing
         env:
           INORDINE_SIGNING_KEYSTORE_BASE64: ${{ secrets.INORDINE_SIGNING_KEYSTORE_BASE64 }}
           INORDINE_SIGNING_STORE_PASSWORD: ${{ secrets.INORDINE_SIGNING_STORE_PASSWORD }}
@@ -39,6 +40,7 @@ jobs:
           set -euo pipefail
           if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] && [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] && [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] && [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
             echo "SIGNING_MODE=ephemeral-debug" >> "$GITHUB_ENV"
+            echo "signing_mode=ephemeral-debug" >> "$GITHUB_OUTPUT"
             echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. The APK will be built for validation but will not be uploaded because it cannot safely update the installed trial app."
             echo "Firma debug CI temporanea: build solo per verifica, senza pubblicare APK. Non installare sopra In Ordine PROVA; la firma non è garantita compatibile." >> "$GITHUB_STEP_SUMMARY"
           else
@@ -55,6 +57,7 @@ jobs:
             echo "INORDINE_SIGNING_KEY_ALIAS=$INORDINE_SIGNING_KEY_ALIAS" >> "$GITHUB_ENV"
             echo "INORDINE_SIGNING_KEY_PASSWORD=$INORDINE_SIGNING_KEY_PASSWORD" >> "$GITHUB_ENV"
             echo "SIGNING_MODE=persistent" >> "$GITHUB_ENV"
+            echo "signing_mode=persistent" >> "$GITHUB_OUTPUT"
           fi
       - name: Build debug APK
         working-directory: android
@@ -62,6 +65,8 @@ jobs:
           INORDINE_DRIVE_BACKUP_ENABLED: ${{ vars.INORDINE_DRIVE_BACKUP_ENABLED }}
         run: ./gradlew assembleDebug
       - name: Verify APK signature
+        env:
+          SIGNING_MODE: ${{ steps.configure-signing.outputs.signing_mode }}
         run: |
           set -euo pipefail
           apk=android/app/build/outputs/apk/debug/app-debug.apk
@@ -84,7 +89,7 @@ jobs:
       - name: Verify packaged launcher icon
         run: node tests/verify-android-icon.mjs
       - uses: actions/upload-artifact@v4
-        if: env.SIGNING_MODE == 'persistent'
+        if: steps.configure-signing.outputs.signing_mode == 'persistent'
         with:
           name: in-ordine-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
