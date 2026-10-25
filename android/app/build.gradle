@@ -4,7 +4,7 @@ android {
     namespace = "it.inordine.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "it.inordine.app"
+        applicationId "it.inordine.app.prova"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

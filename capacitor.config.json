@@ -1,6 +1,6 @@
 {
-  "appId": "it.inordine.app",
-  "appName": "In Ordine",
+  "appId": "it.inordine.app.prova",
+  "appName": "In Ordine PROVA",
   "webDir": "www",
   "plugins": {
     "LocalNotifications": {

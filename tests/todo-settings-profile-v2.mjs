@@ -29,21 +29,12 @@ try{
 
  // Existing notification controls remain the single source of truth.
  await settings.nth(0).click();assert.equal(await page.locator('#todoSettingsForm').count(),1);await page.locator('.todo-head [data-go="todo"]').click();await page.locator('[data-go="todo-settings"]').click();
- await settings.nth(1).click();assert.equal(await page.locator('#exportTodoBackup').count(),1);assert.equal(await page.locator('#importTodoBackup').count(),1);
- const downloadPromise=page.waitForEvent('download');await page.locator('#exportTodoBackup').click();const backupFile=await downloadPromise,backup=JSON.parse(await readFile(await backupFile.path(),'utf8'));
- assert.equal(backup.format,'in-ordine-v2-todo');assert.equal(backup.scope,'todo');assert.equal(backup.todo.tasks.length,3);assert.equal(backup.todo.notifications.enabled,false);
- const replacement={...backup,todo:{...backup.todo,tasks:[{id:'restored-task',description:'Attività ripristinata',date:'2026-12-02',datePrecision:'day'}],done:[],notifications:{enabled:true,rule:{advanceDays:2,time:'07:15'}}}};
- await page.locator('#importTodoBackup').setInputFiles({name:'todo-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(replacement))});
- await page.waitForFunction(()=>JSON.parse(localStorage.getItem('inOrdineV2State')).todo.tasks[0]?.id==='restored-task');
- assert.ok(dialogs.some(message=>/sostituirà.*Cose da fare/i.test(message)),'Todo import warns before replacing existing Todo data');
- let saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));
- assert.deepEqual(saved.todo.tasks.map(x=>x.id),['restored-task']);assert.equal(saved.todo.notifications.enabled,true);assert.equal(saved.balance,700);assert.equal(saved.entries.length,3);assert.equal(saved.profile.fullName,'');
- await page.reload();saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(saved.todo.tasks[0].id,'restored-task');assert.equal(saved.balance,700,'Todo backup restore persists without replacing finance data');
+ await settings.nth(1).click();assert.equal(await page.locator('#openSaveBackup').count(),1);assert.equal(await page.locator('#openRestoreBackup').count(),1);assert.match(await page.locator('.form-card').innerText(),/SALVA I MIEI DATI/);assert.match(await page.locator('.form-card').innerText(),/RECUPERA I MIEI DATI/);await page.locator('.page-header [data-go=\"todo-settings\"]').click();
 
  // Existing biometric setting is reused, and saves back to the Todo menu.
  await page.locator('[data-go="todo"]').click();await page.locator('[data-go="todo-settings"]').click();await page.locator('[data-todo-setting="security"]').click();
  assert.equal(await page.locator('#biometricEnabled').isChecked(),false);await page.locator('#saveSecurity').click();
- saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(saved.preferences.biometricEnabled,false);assert.equal(await settings.count(),5,'security returns to the Todo settings menu');
+ let saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));assert.equal(saved.preferences.biometricEnabled,false);assert.equal(await settings.count(),5,'security returns to the Todo settings menu');
 
  // The name is saved in app state and greeting is isolated to the general home.
  await page.locator('[data-todo-setting="profile"]').click();await page.locator('#todoProfileName').fill('Eva');await page.locator('#todoProfileForm button[type="submit"]').click();
@@ -65,5 +56,5 @@ try{
  assert.equal(await page.locator('.todo-list-bell.is-notification-active').count(),2,'Todo bells use saved individual overrides over the general setting');
  await page.locator('.todo-list-screen .todo-head [data-go="todo"]').click();await page.locator('.todo-home-screen .todo-head [data-go="landing"]').click();await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();await bellCheck(page.locator('[data-edit-money="income-on"] .money-list-bell'),true);await bellCheck(page.locator('[data-edit-money="income-off"] .money-list-bell'),false);
  await page.locator('.money-flow-screen [data-go="money"]').click();await page.locator('[data-go="expense"]').click();await bellCheck(page.locator('[data-edit-money="expense-on"] .money-list-bell'),true);
- console.log('PASS Todo settings entries, scoped backup/restore, security reuse, persistent profile greeting, two-step Todo-only reset, and saved green bell indicators');
+ console.log('PASS Todo settings entries, shared full backup access, security reuse, persistent profile greeting, two-step Todo-only reset, and saved green bell indicators');
 }finally{await browser.close();await new Promise(close=>server.close(close))}
