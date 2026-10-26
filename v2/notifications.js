@@ -105,13 +105,22 @@ export function effectiveReminder(item, kind, state) {
   );
   const customized = stored.customized === true || legacyCustom;
   const defaults = notificationDefaults(state, kind);
+  // Track enabled state separately from a custom time. Old data is inferred only
+  // when its saved enabled value differs from the current global default.
+  const enabledCustomized = stored.enabledCustomized === true || (
+    stored.enabledCustomized === undefined && !customized &&
+    Object.hasOwn(stored, 'enabled') && Boolean(stored.enabled) !== Boolean(defaults.enabled)
+  );
+  const enabled = customized || enabledCustomized
+    ? Boolean(stored.enabled ?? item.notify)
+    : Boolean(defaults.enabled);
   if (customized) return {
-    enabled: Boolean(stored.enabled ?? item.notify), customized: true,
+    enabled, customized: true, enabledCustomized,
     advanceDays: Math.max(0, Math.floor(Number(stored.advanceDays) || 0)),
     time: stored.time || '09:00', mode: stored.mode || ((stored.customAt || stored.at) ? 'custom' : 'due'), customAt: stored.customAt || stored.at || ''
   };
   return {
-    enabled: Boolean(defaults.enabled), customized: false,
+    enabled, customized: false, enabledCustomized,
     advanceDays: Math.max(0, Math.floor(Number(defaults.rule?.advanceDays) || 0)),
     time: defaults.rule?.time || '09:00', mode: 'due', customAt: ''
   };
