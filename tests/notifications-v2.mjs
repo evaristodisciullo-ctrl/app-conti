@@ -60,6 +60,18 @@ assert.ok(resetSeries.every(x => !x.reminder), 'removing one recurring override 
 assert.equal(effectiveReminder({ id: 'global' }, 'finance', shared).advanceDays, 2);
 assert.deepEqual(notificationDefaults(shared, 'finance').rule, { advanceDays: 2, time: '10:00' });
 
+const individualEnabledState = {
+  financeNotifications: { enabled: false, rule: { advanceDays: 0, time: '09:00' } },
+  entries: [{ id: 'one-off', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, customized: false, enabledCustomized: true } }],
+  history: [], todo: { tasks: [] }
+};
+assert.equal(effectiveReminder(individualEnabledState.entries[0], 'finance', individualEnabledState).enabled, true, 'an explicit individual enable overrides the global off state');
+individualEnabledState.financeNotifications.rule.time = '11:00';
+assert.equal(effectiveReminder(individualEnabledState.entries[0], 'finance', individualEnabledState).time, '11:00', 'an enabled-only override still follows the global time');
+setFinanceReminderGroupEnabled(individualEnabledState, true);
+setFinanceReminderGroupEnabled(individualEnabledState, false);
+assert.equal(effectiveReminder(individualEnabledState.entries[0], 'finance', individualEnabledState).enabled, true, 'global changes preserve an explicit enabled-only override');
+
 const mixedFinance = { financeNotifications: { enabled: true, defaultTime: '09:00', rule: { advanceDays: 0, time: '09:00' } }, entries: [
   { id: 'general-time', kind: 'income', description: 'Orario generale', date: '2026-10-10', datePrecision: 'day' },
   { id: 'personal-time', kind: 'income', description: 'Orario scelto', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, customized: true, time: '07:30', advanceDays: 1 } },
