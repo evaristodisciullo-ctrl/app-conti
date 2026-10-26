@@ -49,7 +49,7 @@ try {
     assert.equal(await page.locator('#moneyRecurrenceCount').inputValue(), '12', 'the count default remains 12');
     assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), true, 'the numeric field is active for Numero di mesi');
   };
-  const save = async () => page.locator('#moneyForm button[type="submit"]').click();
+  const save = async () => { await page.locator('#moneyForm button[type="submit"]').click(); await page.locator('.money-flow-screen').waitFor(); };
 
   await openNew('income', 'Entrata a mesi');
   await assertCreateOrder();
@@ -101,6 +101,7 @@ try {
     await page.locator('#moneyEditRecurrenceEnd').selectOption('count');
     assert.equal(await page.locator('#moneyEditRecurrenceCount').isVisible(), true, `${kind} edit activates the count field only for Numero di mesi`);
     assert.equal(await page.locator('#moneyEditRecurrenceCount').inputValue(), kind === 'income' ? '4' : '7');
+    await page.locator(`.page-header [data-go="${kind}"]`).click();
   }
 
   console.log('PASS monthly recurrence order and behavior: income, payment, finite/default 12, Per sempre ignores the hidden count, and existing finance edit forms preserve the same choice order.');
