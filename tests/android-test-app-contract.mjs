@@ -20,11 +20,14 @@ assert.match(strings, /<string name="custom_url_scheme">it\.inordine\.app\.test<
 assert.match(manifest, /android:authorities="\$\{applicationId\}\.fileprovider"/);
 assert.match(workflow, /run: \.\/gradlew assembleQaDebug/);
 assert.match(workflow, /SIGNING_KEYSTORE_BASE64/);
-assert.match(workflow, /steps\.configure-signing\.outputs\.signing_mode == 'persistent'/);
+assert.match(workflow, /success\(\) && github\.event_name != 'pull_request' && steps\.configure-signing\.outcome == 'success'/);
+assert.match(workflow, /SIGNING_MODE=ephemeral-debug/);
+assert.match(workflow, /TEST-only debug signature/);
+assert.match(workflow, /retention-days: 14/);
 assert.match(workflow, /vars\.INORDINE_TEST_VERSION_CODE/);
 assert.match(backup, /in-ordine-backup/);
 assert.match(backup, /in-ordine-v2/);
 assert.match(cloud, /createBackupCloudService/);
 assert.match(state, /restoreStateSafely/);
 
-console.log('PASS TEST app flavor uses an isolated application ID and label, a separate deep-link scheme, version-code input, persistent-signing-only artifact gate, and existing backup/restore modules.');
+console.log('PASS TEST app flavor uses an isolated application ID and label, backup/restore modules, verified debug signing, and a TEST-only Actions artifact gate excluded from pull requests.');
