@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 const [gradle, strings, manifest, workflow, backup, cloud, state] = await Promise.all([
   readFile('android/app/build.gradle', 'utf8'),
-  readFile('android/app/src/testApp/res/values/strings.xml', 'utf8'),
+  readFile('android/app/src/qa/res/values/strings.xml', 'utf8'),
   readFile('android/app/src/main/AndroidManifest.xml', 'utf8'),
   readFile('.github/workflows/android.yml', 'utf8'),
   readFile('v2/backup.js', 'utf8'),
@@ -12,13 +12,13 @@ const [gradle, strings, manifest, workflow, backup, cloud, state] = await Promis
 ]);
 
 assert.match(gradle, /applicationId "it\.inordine\.app\.prova"/);
-assert.match(gradle, /testApp \{[\s\S]*?applicationId "it\.inordine\.app\.test"/);
+assert.match(gradle, /qa \{[\s\S]*?applicationId "it\.inordine\.app\.test"/);
 assert.match(gradle, /INORDINE_TEST_VERSION_CODE/);
 assert.match(strings, /<string name="app_name">In Ordine TEST<\/string>/);
 assert.match(strings, /<string name="package_name">it\.inordine\.app\.test<\/string>/);
 assert.match(strings, /<string name="custom_url_scheme">it\.inordine\.app\.test<\/string>/);
 assert.match(manifest, /android:authorities="\$\{applicationId\}\.fileprovider"/);
-assert.match(workflow, /run: \.\/gradlew assembleTestAppDebug/);
+assert.match(workflow, /run: \.\/gradlew assembleQaDebug/);
 assert.match(workflow, /SIGNING_KEYSTORE_BASE64/);
 assert.match(workflow, /steps\.configure-signing\.outputs\.signing_mode == 'persistent'/);
 assert.match(workflow, /vars\.INORDINE_TEST_VERSION_CODE/);

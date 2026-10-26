@@ -69,13 +69,13 @@ jobs:
         env:
           INORDINE_DRIVE_BACKUP_ENABLED: ${{ vars.INORDINE_DRIVE_BACKUP_ENABLED }}
           INORDINE_TEST_VERSION_CODE: ${{ vars.INORDINE_TEST_VERSION_CODE }}
-        run: ./gradlew assembleTestAppDebug
+        run: ./gradlew assembleQaDebug
       - name: Verify APK signature
         env:
           SIGNING_MODE: ${{ steps.configure-signing.outputs.signing_mode }}
         run: |
           set -euo pipefail
-          apk=$(find android/app/build/outputs/apk/testApp/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          apk=$(find android/app/build/outputs/apk/qa/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
           test -s "$apk"
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
           "$apksigner" verify --verbose "$apk"
@@ -91,14 +91,14 @@ jobs:
             echo "Firma debug temporanea verificata con apksigner. Certificato CI: $apk_cert. Questa build non viene caricata come artefatto installabile." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Verify merged Android notification permissions and reboot receiver
-        run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/testAppDebug
+        run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/qaDebug
       - name: Verify packaged launcher icon
-        run: node tests/verify-android-icon.mjs "$(find android/app/build/outputs/apk/testApp/debug -maxdepth 1 -type f -name '*.apk' -print -quit)" it.inordine.app.test "In Ordine TEST"
+        run: node tests/verify-android-icon.mjs "$(find android/app/build/outputs/apk/qa/debug -maxdepth 1 -type f -name '*.apk' -print -quit)" it.inordine.app.test "In Ordine TEST"
       - name: Verify isolated TEST app configuration
         run: node tests/android-test-app-contract.mjs
       - uses: actions/upload-artifact@v4
         if: steps.configure-signing.outputs.signing_mode == 'persistent' && vars.INORDINE_TEST_VERSION_CODE != ''
         with:
           name: in-ordine-test-android-debug-apk
-          path: android/app/build/outputs/apk/testApp/debug/*.apk
+          path: android/app/build/outputs/apk/qa/debug/*.apk
           if-no-files-found: error
