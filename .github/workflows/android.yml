@@ -42,8 +42,8 @@ jobs:
           if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] && [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] && [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] && [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
             echo "SIGNING_MODE=ephemeral-debug" >> "$GITHUB_ENV"
             echo "signing_mode=ephemeral-debug" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. The APK will be built for validation but will not be uploaded because future TEST updates could not be guaranteed."
-            echo "Firma debug CI temporanea: build solo per verifica, senza pubblicare APK installabile. La firma non è recuperabile per i futuri aggiornamenti di In Ordine TEST." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=TEST-only debug signature::This disposable debug-signed APK is uploaded only for In Ordine TEST. Its certificate can change between runs; uninstall the previous TEST app before installing a later build. It cannot update the original app."
+            echo "Firma debug CI temporanea: APK installabile caricato solo per In Ordine TEST. Il certificato può cambiare tra le build: per aggiornare una build precedente può essere necessario disinstallare e reinstallare TEST. Non riguarda l'app originale e non è una firma per distribuzione definitiva." >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
               echo "::error title=Incomplete signing configuration::Configure all four signing secrets or remove them all to use CI debug signing."
@@ -88,7 +88,7 @@ jobs:
             fi
             echo "APK firmato con la chiave persistente configurata ($apk_cert)." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "Firma debug temporanea verificata con apksigner. Certificato CI: $apk_cert. Questa build non viene caricata come artefatto installabile." >> "$GITHUB_STEP_SUMMARY"
+            echo "Firma debug temporanea verificata con apksigner. Certificato CI: $apk_cert. APK TEST-only; per build future potrebbe servire reinstallare In Ordine TEST." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Verify merged Android notification permissions and reboot receiver
         run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/qaDebug
@@ -97,8 +97,9 @@ jobs:
       - name: Verify isolated TEST app configuration
         run: node tests/android-test-app-contract.mjs
       - uses: actions/upload-artifact@v4
-        if: steps.configure-signing.outputs.signing_mode == 'persistent' && vars.INORDINE_TEST_VERSION_CODE != ''
+        if: success() && github.event_name != 'pull_request' && steps.configure-signing.outcome == 'success'
         with:
           name: in-ordine-test-android-debug-apk
           path: android/app/build/outputs/apk/qa/debug/*.apk
           if-no-files-found: error
+          retention-days: 14
