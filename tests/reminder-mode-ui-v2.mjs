@@ -72,6 +72,7 @@ try {
   assert.equal(reminderDate(custom, 'todo', state).getTime(), new Date(2026, 11, 1, 13, 45).getTime(), 'created custom reminder schedules exactly its selected local date and time');
 
   await page.locator('[data-go="todo"]').click();
+  await page.locator('[data-go="todo-active"]').click();
   const customId = custom.id;
   await page.locator(`[data-edit-task="${customId}"] .todo-task-name`).click();
   assert.equal(await visible('[data-reminder-time="todoEdit"]'), false, 'editing an existing custom reminder also hides the separate time field');
@@ -83,6 +84,7 @@ try {
   assert.equal(reminderDate(custom, 'todo', state).getTime(), new Date(2026, 11, 1, 16, 20).getTime(), 'editing custom reminder reschedules to the chosen date and time');
 
   await page.locator('[data-go="todo"]').click();
+  await page.locator('[data-go="todo-active"]').click();
   await page.locator(`[data-edit-task="${customId}"] .todo-task-name`).click();
   await page.locator('#todoEditReminderMode').selectOption('due');
   assert.equal(await visible('[data-reminder-time="todoEdit"]'), true, 'switching the existing task back to due mode restores its time control');
