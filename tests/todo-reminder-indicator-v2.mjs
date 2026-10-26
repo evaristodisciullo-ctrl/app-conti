@@ -79,15 +79,15 @@ try {
   await page.locator('.todo-head [data-go="todo"]').click(); await page.locator('[data-go="todo-active"]').click();
   await assertBadge('todo-on', true);
   await assertBadge('todo-off', false);
-  await assertBadge('todo-default', true);
+  await assertBadge('todo-default', false);
   const globalState = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
   assert.equal(globalState.todo.notifications.enabled, true, 'global activation persists');
   await page.reload(); await openActive();
-  await assertBadge('todo-on', true); await assertBadge('todo-off', false); await assertBadge('todo-default', true);
+  await assertBadge('todo-on', true); await assertBadge('todo-off', false); await assertBadge('todo-default', false);
 
   await page.locator('.todo-list-screen [data-go="todo"]').click(); await page.locator('[data-go="todo-done"]').click();
   assert.equal(await page.locator('.todo-item-card .todo-list-bell').count(), 0, 'completed activities have no notification bells to mark');
-  console.log('PASS Todo reminder checks follow individual/global saved states, update immediately, persist after reload, and do not alter card geometry at 320/360/390/430px');
+  console.log('PASS Todo reminder checks preserve individual overrides when global settings change, update immediately, persist after reload, and do not alter card geometry at 320/360/390/430px');
 } finally {
   await browser.close();
   await new Promise(resolveClose => server.close(resolveClose));
