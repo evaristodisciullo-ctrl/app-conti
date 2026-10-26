@@ -33,11 +33,11 @@ try {
   await page.addInitScript(value => localStorage.setItem('inOrdineV2State', JSON.stringify(value)), fixture);
   await page.goto('http://127.0.0.1:4183/');
 
-  const openNew = async kind => {
+  const openNew = async (kind, description) => {
     await page.locator('[data-go="money"]').click();
     await page.locator(`[data-go="${kind}"]`).click();
     await page.locator(`[data-add-money="${kind}"]`).click();
-    await page.locator('#moneyDescription').fill(kind === 'income' ? 'Entrata ricorrenza test' : 'Pagamento ricorrenza test');
+    await page.locator('#moneyDescription').fill(description);
     await page.locator('#moneyAmount').fill('10');
     await page.locator('#moneyDate').fill(date);
     await page.locator('#moneyRecurrenceMonthly').check();
@@ -51,46 +51,46 @@ try {
   };
   const save = async () => page.locator('#moneyForm button[type="submit"]').click();
 
-  await openNew('income');
+  await openNew('income', 'Entrata a mesi');
   await assertCreateOrder();
   await save();
   let saved = await state();
-  let entry = saved.entries.find(item => item.description === 'Entrata ricorrenza test');
+  let entry = saved.entries.find(item => item.description === 'Entrata a mesi');
   assert.equal(entry.recurrenceRule.end, 'count', 'income defaults to a finite monthly recurrence');
   assert.equal(entry.recurrenceRule.count, 12, 'income retains the 12-month default');
 
-  await openNew('income');
+  await openNew('income', 'Entrata per sempre');
   await page.locator('#moneyRecurrenceCount').fill('4');
   await page.locator('#moneyRecurrenceEndNever').check();
   assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), false, 'the count field is inactive for Per sempre');
   await save();
   saved = await state();
-  entry = saved.entries.find(item => item.description === 'Entrata ricorrenza test' && item.recurrenceRule?.end === 'never');
+  entry = saved.entries.find(item => item.description === 'Entrata per sempre' && item.recurrenceRule?.end === 'never');
   assert.ok(entry, 'Per sempre is saved for income');
   assert.equal(entry.recurrenceRule.count, 4, 'the saved count remains inert when Per sempre is selected');
   assert.ok(generateOccurrenceDates(entry.date, 'day', entry.recurrenceRule, { now: new Date(`${date}T00:00:00`), horizonMonths: 18 }).length > entry.recurrenceRule.count, 'Per sempre recurrence generation ignores the hidden numeric count');
 
-  await openNew('expense');
+  await openNew('expense', 'Pagamento a mesi');
   await assertCreateOrder();
   await page.locator('#moneyRecurrenceCount').fill('6');
   await save();
   saved = await state();
-  let payment = saved.entries.find(item => item.description === 'Pagamento ricorrenza test');
+  let payment = saved.entries.find(item => item.description === 'Pagamento a mesi');
   assert.equal(payment.kind, 'expense');
   assert.equal(payment.recurrenceRule.count, 6, 'the selected month count is saved for payments');
 
-  await openNew('expense');
+  await openNew('expense', 'Pagamento per sempre');
   await page.locator('#moneyRecurrenceCount').fill('7');
   await page.locator('#moneyRecurrenceEndNever').check();
   assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), false, 'the count field is inactive for Per sempre on payments');
   await save();
   saved = await state();
-  payment = saved.entries.find(item => item.description === 'Pagamento ricorrenza test' && item.recurrenceRule?.end === 'never');
+  payment = saved.entries.find(item => item.description === 'Pagamento per sempre' && item.recurrenceRule?.end === 'never');
   assert.ok(payment, 'Per sempre is saved for payments');
   assert.equal(payment.recurrenceRule.count, 7, 'the saved count remains inert when Per sempre is selected for a payment');
   assert.ok(generateOccurrenceDates(payment.date, 'day', payment.recurrenceRule, { now: new Date(`${date}T00:00:00`), horizonMonths: 18 }).length > payment.recurrenceRule.count, 'payment Per sempre generation ignores the hidden numeric count');
 
-  for (const [kind, description] of [['income', 'Entrata ricorrenza test'], ['expense', 'Pagamento ricorrenza test']]) {
+  for (const [kind, description] of [['income', 'Entrata per sempre'], ['expense', 'Pagamento per sempre']]) {
     await page.locator('[data-go="money"]').click();
     await page.locator(`[data-go="${kind}"]`).click();
     await page.locator('[data-edit-money]').filter({ hasText: description }).first().locator('.money-description').click();
