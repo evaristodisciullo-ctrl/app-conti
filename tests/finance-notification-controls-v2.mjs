@@ -25,7 +25,8 @@ const fixture = {
   version: 2, balance: 0, profile: { fullName: 'Test', namePromptCompleted: true },
   entries: [
     { id: 'salary', kind: 'income', description: 'Stipendio', amount: 1000, date: '2026-10-30', datePrecision: 'day', reminder: reminder(true, '08:15', 1), notify: true },
-    { id: 'rent', kind: 'expense', description: 'Affitto', amount: 400, date: '2026-11-02', datePrecision: 'day', reminder: reminder(true, '09:45', 2), notify: true }
+    { id: 'rent', kind: 'expense', description: 'Affitto', amount: 400, date: '2026-11-02', datePrecision: 'day', reminder: reminder(true, '09:45', 2), notify: true },
+    { id: 'ordinary', kind: 'income', description: 'Voce con orario generale', amount: 200, date: '2026-11-03', datePrecision: 'day' }
   ],
   history: [{ id: 'paid-history', kind: 'expense', description: 'Voce pagata', amount: 1, date: '2026-10-20', datePrecision: 'day', reminder: reminder(true, '11:30', 0), notify: true }],
   adjustments: [], budgetPlans: [],
@@ -49,13 +50,21 @@ try {
   assert.equal(await page.locator('[data-request-exact-alarm]').count(), 1, 'general settings expose the shared permission control');
   assert.match(await page.locator('.notification-entry').first().innerText(), /non programmato/i, 'the list does not claim a reminder is scheduled when the browser/native scheduler did not confirm it');
 
+  await page.locator('#financeDefaultTime').fill('11:00');
+  await page.locator('#financeNotificationsForm button[type="submit"]').click();
+  let saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
+  assert.equal(saved.financeNotifications.rule.time, '11:00', 'general finance time change is saved');
+  assert.equal(saved.entries.find(item => item.id === 'ordinary').reminder, undefined, 'general-time entry is not converted into a personal override');
+  assert.match(await page.locator('.notification-entry').filter({ hasText: 'Voce con orario generale' }).innerText(), /11:00/, 'an entry without personal settings follows the changed general time');
+  assert.match(await page.locator('.notification-entry').filter({ hasText: 'Voce con orario generale' }).innerText(), /Impostazioni generali/, 'the entry is identified as using general settings');
+
   const salaryRow = page.locator('.notification-entry').filter({ hasText: 'Stipendio' });
   await salaryRow.locator('[data-edit-money-notice]').click();
   assert.equal(await page.locator('[data-request-exact-alarm]').count(), 1, 'single-operation settings expose the same Android permission control');
   assert.equal(await page.locator('#displayPermissionStatus').count(), 1, 'single-operation screen shows notification permission status');
   await page.locator('[data-disable-single-reminder]').click();
   assert.equal(await page.locator('[data-disable-single-reminder]').isDisabled(), true, 'disabled notification is clearly shown as disabled');
-  let saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
+  saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
   assert.equal(saved.entries.find(item => item.id === 'salary').reminder.enabled, false, 'single action disables the selected finance reminder');
   assert.deepEqual([saved.entries.find(item => item.id === 'salary').reminder.time, saved.entries.find(item => item.id === 'salary').reminder.advanceDays], ['08:15', 1], 'single disable preserves the saved time and day offset');
   assert.equal(saved.entries.find(item => item.id === 'rent').reminder.enabled, true, 'single disable leaves other reminders unchanged');
@@ -68,11 +77,12 @@ try {
   await page.locator('#disableAllFinanceNotifications').click();
   assert.match(acceptedConfirmations.at(-1), /tutte le notifiche/i, 'bulk disable requests confirmation');
   saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
-  assert.ok(saved.entries.every(item => item.reminder.enabled === false), 'bulk disable turns off every income and payment reminder');
+  assert.ok(saved.entries.filter(item => item.reminder?.customized).every(item => item.reminder.enabled === false), 'bulk disable turns off every personalized income and payment reminder');
+  assert.equal(saved.entries.find(item => item.id === 'ordinary').reminder, undefined, 'bulk disable leaves general-time entries without fabricated override data');
   assert.ok(saved.history.every(item => item.reminder.enabled === false), 'bulk disable includes saved completed finance operations');
   assert.equal(saved.financeNotifications.enabled, false, 'bulk disable updates general finance activation state');
   assert.equal(saved.todo.notifications.enabled, true, 'bulk finance disable does not change To-do notification settings');
-  assert.deepEqual(saved.entries.map(item => [item.reminder.time, item.reminder.advanceDays]), [['08:15', 1], ['09:45', 2]], 'bulk disable preserves every entry time and offset');
+  assert.deepEqual(saved.entries.filter(item => item.reminder?.customized).map(item => [item.reminder.time, item.reminder.advanceDays]), [['08:15', 1], ['09:45', 2]], 'bulk disable preserves every personal time and offset');
 
   await page.reload();
   await openFinanceSettings();
@@ -95,7 +105,9 @@ try {
   await page.locator('#financeNotificationsEnabled').check();
   await page.locator('#financeNotificationsForm button[type="submit"]').click();
   saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
-  assert.ok(saved.entries.every(item => item.reminder.enabled === true), 'turning on all finance notifications activates all current operations');
+  assert.ok(saved.entries.filter(item => item.reminder?.customized).every(item => item.reminder.enabled === true), 'turning on all finance notifications activates saved personal reminders');
+  assert.equal(saved.entries.find(item => item.id === 'ordinary').reminder, undefined, 'turning notifications back on does not pin the ordinary item to an old time');
+  assert.match(await page.locator('.notification-entry').filter({ hasText: 'Voce con orario generale' }).innerText(), /11:00/, 'general-time entry remains aligned to the latest default after disable and re-enable');
   assert.equal(saved.todo.notifications.enabled, true, 'finance-wide enable preserves To-do settings');
   console.log('PASS finance notification controls: single disable, global confirmation/disable, reactivation, permission access, saved times, and reload persistence');
 } finally {

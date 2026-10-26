@@ -18,6 +18,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    flavorDimensions "edition"
+    productFlavors {
+        prova {
+            dimension "edition"
+            applicationId "it.inordine.app.prova"
+            versionCode 1
+        }
+        testApp {
+            dimension "edition"
+            applicationId "it.inordine.app.test"
+            versionCode (System.getenv('INORDINE_TEST_VERSION_CODE') ?: '1').toInteger()
+        }
+    }
     def stableKeystorePath = System.getenv('INORDINE_SIGNING_KEYSTORE_PATH')
     if (stableKeystorePath) {
         signingConfigs {

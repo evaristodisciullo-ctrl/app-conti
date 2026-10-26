@@ -42,6 +42,32 @@ export function applyReminderToSeries(items, itemId, reminder) {
   return updated;
 }
 
+export function setFinanceReminderGroupEnabled(state, enabled) {
+  const nextEnabled = Boolean(enabled);
+  for (const item of [...(state.entries || []), ...(state.history || [])]) {
+    const effective = effectiveReminder(item, 'finance', state);
+    if (!effective.customized) continue;
+    const current = item.reminder || {};
+    item.reminder = {
+      ...current,
+      enabled: nextEnabled,
+      customized: current.customized === false ? false : true,
+      mode: current.mode || effective.mode || 'due',
+      advanceDays: current.advanceDays ?? effective.advanceDays,
+      time: current.time || effective.time || '09:00',
+      customAt: current.customAt || current.at || effective.customAt || ''
+    };
+    item.notify = nextEnabled;
+  }
+  state.financeNotifications = { ...(state.financeNotifications || {}), enabled: nextEnabled };
+  state.notificationSettings = {
+    ...(state.notificationSettings || {}),
+    enabled: nextEnabled,
+    rule: { ...(state.notificationSettings?.rule || {}), ...(state.financeNotifications.rule || {}) }
+  };
+  return state;
+}
+
 export function clearReminderOverrideFromSeries(items, itemId) {
   const source = items.find(item => item.id === itemId);
   if (!source) return [];
@@ -82,7 +108,7 @@ export function effectiveReminder(item, kind, state) {
   if (customized) return {
     enabled: Boolean(stored.enabled ?? item.notify), customized: true,
     advanceDays: Math.max(0, Math.floor(Number(stored.advanceDays) || 0)),
-    time: stored.time || '09:00', mode: stored.mode || 'due', customAt: stored.customAt || stored.at || ''
+    time: stored.time || '09:00', mode: stored.mode || ((stored.customAt || stored.at) ? 'custom' : 'due'), customAt: stored.customAt || stored.at || ''
   };
   return {
     enabled: Boolean(defaults.enabled), customized: false,
@@ -112,7 +138,7 @@ export function reminderDate(item, kind, state) {
   if (!reminder.enabled) return null;
   // Retain compatibility with reminders created by older builds. New reminders
   // are always due-date based and never subtract minutes from the chosen time.
-  if (reminder.mode === 'custom' || reminder.customAt) return parseLocalDateTime(reminder.customAt || reminder.at);
+  if (reminder.mode === 'custom' || (!reminder.mode && (reminder.customAt || reminder.at))) return parseLocalDateTime(reminder.customAt || reminder.at);
   if (!item.date) return null;
   const precision = item.datePrecision || (item.date.length === 7 ? 'month' : 'day');
   if (precision !== 'day' || !/^\d{4}-\d{2}-\d{2}$/.test(item.date)) return null;

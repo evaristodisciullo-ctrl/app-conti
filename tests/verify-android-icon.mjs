@@ -4,7 +4,9 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const apk='android/app/build/outputs/apk/debug/app-debug.apk';
+const apk=process.argv[2]||'android/app/build/outputs/apk/debug/app-debug.apk';
+const expectedPackage=process.argv[3]||'it.inordine.app.prova';
+const expectedLabel=process.argv[4]||'In Ordine PROVA';
 const digest=b=>createHash('sha256').update(b).digest('hex');
 const manifest=readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
 const adaptive=readFileSync('android/app/src/main/res/mipmap-anydpi-v26/eds_launcher.xml','utf8');
@@ -72,7 +74,7 @@ const versions=execFileSync('find',[buildTools,'-mindepth','1','-maxdepth','1','
 assert.ok(versions[0],'Android build-tools are missing');
 const aapt=join(versions[0],'aapt');
 const badging=execFileSync(aapt,['dump','badging',apk],{encoding:'utf8'});
-assert.ok(badging.includes("package: name='it.inordine.app.prova'"),'APK has the isolated trial package id');
+assert.ok(badging.includes(`package: name='${expectedPackage}'`),`APK has the expected isolated package id ${expectedPackage}`);
 assert.ok(badging.includes('eds_launcher'),'compiled APK selects the dedicated E.D.S. launcher resource');
 const resources=execFileSync(aapt,['dump','resources',apk],{encoding:'utf8',maxBuffer:16*1024*1024});
 assert.ok(resources.includes('eds_launcher_round'),'compiled round launcher resource is present');
@@ -81,6 +83,6 @@ assert.ok(resources.includes('eds_blue_green_original'),'compiled adaptive foreg
 assert.ok(resources.includes('eds_launcher_background'),'compiled adaptive icon selects the dedicated E.D.S. background');
 assert.ok(!resources.includes('android_robot'),'compiled resource table contains no Android robot drawable');
 const applicationLabel=badging.match(/application: label='([^']+)'/);
-assert.equal(applicationLabel?.[1],'In Ordine PROVA','APK is clearly identified as the trial app');
+assert.equal(applicationLabel?.[1],expectedLabel,'APK is clearly identified as the selected test app');
 
 console.log('PASS compiled APK launcher icon: launcher and round resources, all density variants byte-match the E.D.S. icon, adaptive resources use the approved foreground, no robot drawable is packaged, and exact source bytes are present.');

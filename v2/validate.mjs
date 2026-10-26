@@ -24,7 +24,7 @@ const checks = [
   ['todo persistence exists', app.includes('state.todo.tasks.push(base)')],
   ['completed item can be edited and reversed', app.includes('data-undo-money') && app.includes('moneyEditForm') && finance.includes('export function undoCompletion') && finance.includes('export function adjustCompletedAmount')],
   ['series updates and deletion operate on future instances', app.includes('data-series-scope=\"future\"') && app.includes('Eliminare questa serie ricorrente completa')],
-  ['unassigned-date custom reminders and shared general reminder settings remain available', app.includes('financeNotificationsForm') && app.includes('data-reminder-custom') && app.includes('notificationSettings')],
+  ['unassigned-date custom reminders and shared general reminder settings remain available', app.includes('financeNotificationsForm') && app.includes('data-reminder-custom') && app.includes('notificationDefaults(state,domain)') && app.includes('customized=priorCustomized')],
   ['per-domain data erasure exists', app.includes('id=\"resetFinance\"') && app.includes('id=\"resetTodo\"')],
   ['native notification sync exists', app.includes('syncTodoNotifications')],
   ['Android declares exact alarm access and exposes an in-app authorization flow', manifest.includes('android.permission.SCHEDULE_EXACT_ALARM') && app.includes('changeExactNotificationSetting') && app.includes('data-request-exact-alarm')],

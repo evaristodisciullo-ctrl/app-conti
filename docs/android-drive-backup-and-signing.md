@@ -10,7 +10,7 @@ Before enabling it, a project owner must:
 
 1. Create or select a Google Cloud project and enable the Google Drive API.
 2. Configure the OAuth consent screen and permitted test users / publication status.
-3. Register an Android OAuth client for package `it.inordine.app.prova` and the SHA-1 certificate fingerprint of the stable signing key used by the build.
+3. Register an Android OAuth client for package `it.inordine.app.test` and the SHA-1 certificate fingerprint of the stable signing key used by the TEST build.
 4. Set the repository Actions variable `INORDINE_DRIVE_BACKUP_ENABLED` to `true` only after the Google configuration and signing fingerprint match.
 5. Install and test an APK signed with that same persistent key, including consent, upload/readback, listing, mobile data, offline, revoked access, and restore.
 
@@ -47,8 +47,10 @@ To provision a stable key safely, the release owner should create it on a contro
 
 ### Existing PROVA installation compatibility
 
-The historical PROVA APK was signed with an ephemeral GitHub Actions debug key. That private key was not retained, so it cannot be recovered from the APK. A newly provisioned stable key therefore **cannot** be proven compatible with the PROVA currently installed on the user's phone. This repository keeps package `it.inordine.app.prova`, but no APK signed with a different key should be installed over the existing PROVA app. Do not ask the user to uninstall it. A future test installation needs either recovery of the exact old key (not available) or a separately approved new application ID; its migration/installation must be planned separately. The original app's application ID and signing configuration are untouched.
+The historical PROVA APK was signed with an ephemeral GitHub Actions debug key. That private key was not retained, so it cannot be recovered from the APK. A newly provisioned stable key therefore **cannot** be proven compatible with the PROVA currently installed on the user's phone. The original app's application ID and signing configuration are untouched. PROVA remains a separate Gradle flavor with package `it.inordine.app.prova`.
+
+The separately approved TEST flavor uses package `it.inordine.app.test` and display name `In Ordine TEST`; it installs alongside both existing apps and has its own Android application data. GitHub Actions builds `assembleTestAppDebug`. The stable-signing secrets can sign only that selected TEST build in the distribution workflow; the upload step remains disabled for ephemeral signing. The first TEST package version starts at code `1`. Before a signed APK can be uploaded, set repository variable `INORDINE_TEST_VERSION_CODE` to a positive version code, then increment it for each subsequent distributed update. The build fails if persistent signing secrets exist but this variable is missing or invalid.
 
 For an update to install over an existing Android app, the application ID and signing certificate must match; Android also requires an equal or higher `versionCode`. Increment `versionCode` for every future distributed build. The repository currently keeps `versionCode 1` and no APK is being distributed by this task.
 
-The stable-key workflow is prepared but the signing key and GitHub secrets are not configured. Stable signing is not yet verified.
+The stable-key workflow is prepared but no key has been created or saved in a recoverable secure location, and the GitHub signing secrets are not configured. Stable signing is not yet verified; Actions will compile the TEST variant for validation with its temporary CI debug certificate and will not upload an APK. The signing key must be created and its encrypted backups safely retained by the release owner before those secrets or a TEST APK artifact can be enabled. This does not affect the existing PROVA app or the original app.

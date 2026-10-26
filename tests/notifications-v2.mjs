@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { applyReminderToSeries, clearReminderOverrideFromSeries, collectNotificationPlan, effectiveReminder, notificationDefaults, reminderDate, stripDailySummarySettings, syncNotifications, uniqueReminderSeries } from '../v2/notifications.js';
+import { applyReminderToSeries, clearReminderOverrideFromSeries, collectNotificationPlan, effectiveReminder, notificationDefaults, reminderDate, setFinanceReminderGroupEnabled, stripDailySummarySettings, syncNotifications, uniqueReminderSeries } from '../v2/notifications.js';
 import { resolveNotificationRoute } from '../v2/notification-navigation.js';
 
 const now = new Date(2026, 9, 1, 0, 0, 0, 0);
@@ -59,8 +59,36 @@ clearReminderOverrideFromSeries(resetSeries, 'repeat-0');
 assert.ok(resetSeries.every(x => !x.reminder), 'removing one recurring override returns all pending instances to shared defaults');
 assert.equal(effectiveReminder({ id: 'global' }, 'finance', shared).advanceDays, 2);
 assert.deepEqual(notificationDefaults(shared, 'finance').rule, { advanceDays: 2, time: '10:00' });
+
+const mixedFinance = { financeNotifications: { enabled: true, defaultTime: '09:00', rule: { advanceDays: 0, time: '09:00' } }, entries: [
+  { id: 'general-time', kind: 'income', description: 'Orario generale', date: '2026-10-10', datePrecision: 'day' },
+  { id: 'personal-time', kind: 'income', description: 'Orario scelto', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, customized: true, time: '07:30', advanceDays: 1 } },
+  { id: 'legacy-time', kind: 'expense', description: 'Orario precedente ambiguo', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, time: '08:45', advanceDays: 0 } }
+], history: [], todo: {} };
+mixedFinance.financeNotifications.defaultTime = '11:00';
+mixedFinance.financeNotifications.rule.time = '11:00';
+let mixedPlan = collectNotificationPlan(mixedFinance, now);
+assert.deepEqual(mixedPlan.map(x => [x.body, x.schedule.at.getDate(), x.schedule.at.getHours()]), [['Orario generale', 10, 11], ['Orario scelto', 9, 7], ['Orario precedente ambiguo', 10, 8]], 'general reminder follows the changed default while explicit and ambiguous legacy times remain unchanged');
+setFinanceReminderGroupEnabled(mixedFinance, false);
+assert.equal(mixedFinance.entries[0].reminder, undefined, 'bulk disable never creates a personal override for a general-time entry');
+assert.equal(mixedFinance.entries[1].reminder.time, '07:30', 'bulk disable preserves an explicitly selected time');
+assert.equal(mixedFinance.entries[2].reminder.time, '08:45', 'bulk disable conservatively preserves an ambiguous legacy time');
+assert.ok(mixedFinance.entries.slice(1).every(x => x.reminder.enabled === false), 'bulk disable turns off personalized finance reminders');
+setFinanceReminderGroupEnabled(mixedFinance, true);
+mixedPlan = collectNotificationPlan(mixedFinance, now);
+assert.deepEqual(mixedPlan.map(x => [x.body, x.schedule.at.getDate(), x.schedule.at.getHours()]), [['Orario generale', 10, 11], ['Orario scelto', 9, 7], ['Orario precedente ambiguo', 10, 8]], 're-enabling does not pin general entries to an old time or change saved overrides');
 const obsolete = { todo: { notifications: { enabled: true, dailySummary: true, dailySummaryTime: '18:00', sent: {}, rule: { advanceMinutes: 10, timing: 'before' } } } };
 assert.equal(stripDailySummarySettings(obsolete), true);
+const customTodo = { id: 'todo-custom', date: '2026-10-10', datePrecision: 'day', reminder: { enabled: true, customized: true, mode: 'custom', customAt: '2026-10-08T13:45', time: '09:00', advanceDays: 2 } };
+const customTodoAt = reminderDate(customTodo, 'todo', { todo: { notifications: { enabled: true, rule: { advanceDays: 0, time: '11:00' } } } });
+assert.equal(customTodoAt.getDate(), 8, 'custom To-do reminder uses its selected calendar date');
+assert.equal(customTodoAt.getHours(), 13, 'custom To-do reminder uses its selected hour only');
+assert.equal(customTodoAt.getMinutes(), 45, 'custom To-do reminder uses its selected minute only');
+const switchedToDue = { ...customTodo, date: '2026-10-10', reminder: { ...customTodo.reminder, mode: 'due', time: '08:25', advanceDays: 1 } };
+const switchedToDueAt = reminderDate(switchedToDue, 'todo', { todo: { notifications: { enabled: true, rule: { advanceDays: 0, time: '11:00' } } } });
+assert.equal(switchedToDueAt.getDate(), 9, 'explicit due mode ignores a previously stored custom date');
+assert.equal(switchedToDueAt.getHours(), 8);
+assert.equal(switchedToDueAt.getMinutes(), 25, 'explicit due mode uses only its selected time');
 assert.deepEqual(collectNotificationPlan({ todo: { notifications: { enabled: true, dailySummary: true }, tasks: [] } }, now), [], 'daily summary settings never create notifications');
 
 const calls = [];

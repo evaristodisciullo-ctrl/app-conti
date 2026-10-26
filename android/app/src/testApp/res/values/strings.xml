@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">In Ordine TEST</string>
+    <string name="title_activity_main">In Ordine TEST</string>
+    <string name="package_name">it.inordine.app.test</string>
+    <string name="custom_url_scheme">it.inordine.app.test</string>
+</resources>

@@ -25,7 +25,7 @@ jobs:
         run: npm install
       - name: Prepare V2 web bundle
         run: npm run build:v2
-      - name: Create Android project
+      - name: Create isolated In Ordine TEST project
         run: |
           test -f android/app/src/main/java/it/inordine/app/MainActivity.java
           npx cap sync android
@@ -36,16 +36,21 @@ jobs:
           INORDINE_SIGNING_STORE_PASSWORD: ${{ secrets.INORDINE_SIGNING_STORE_PASSWORD }}
           INORDINE_SIGNING_KEY_ALIAS: ${{ secrets.INORDINE_SIGNING_KEY_ALIAS }}
           INORDINE_SIGNING_KEY_PASSWORD: ${{ secrets.INORDINE_SIGNING_KEY_PASSWORD }}
+          INORDINE_TEST_VERSION_CODE: ${{ vars.INORDINE_TEST_VERSION_CODE }}
         run: |
           set -euo pipefail
           if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] && [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] && [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] && [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
             echo "SIGNING_MODE=ephemeral-debug" >> "$GITHUB_ENV"
             echo "signing_mode=ephemeral-debug" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. The APK will be built for validation but will not be uploaded because it cannot safely update the installed trial app."
-            echo "Firma debug CI temporanea: build solo per verifica, senza pubblicare APK. Non installare sopra In Ordine PROVA; la firma non è garantita compatibile." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning title=Ephemeral debug signature::No persistent signing key is configured. The APK will be built for validation but will not be uploaded because future TEST updates could not be guaranteed."
+            echo "Firma debug CI temporanea: build solo per verifica, senza pubblicare APK installabile. La firma non è recuperabile per i futuri aggiornamenti di In Ordine TEST." >> "$GITHUB_STEP_SUMMARY"
           else
             if [ -z "$INORDINE_SIGNING_KEYSTORE_BASE64" ] || [ -z "$INORDINE_SIGNING_STORE_PASSWORD" ] || [ -z "$INORDINE_SIGNING_KEY_ALIAS" ] || [ -z "$INORDINE_SIGNING_KEY_PASSWORD" ]; then
               echo "::error title=Incomplete signing configuration::Configure all four signing secrets or remove them all to use CI debug signing."
+              exit 1
+            fi
+            if ! [[ "$INORDINE_TEST_VERSION_CODE" =~ ^[1-9][0-9]*$ ]]; then
+              echo "::error title=Missing TEST version code::Set repository variable INORDINE_TEST_VERSION_CODE to the next positive version code before enabling persistent APK artifacts."
               exit 1
             fi
             signing_key="$RUNNER_TEMP/in-ordine-signing.jks"
@@ -59,17 +64,18 @@ jobs:
             echo "SIGNING_MODE=persistent" >> "$GITHUB_ENV"
             echo "signing_mode=persistent" >> "$GITHUB_OUTPUT"
           fi
-      - name: Build debug APK
+      - name: Build In Ordine TEST debug APK
         working-directory: android
         env:
           INORDINE_DRIVE_BACKUP_ENABLED: ${{ vars.INORDINE_DRIVE_BACKUP_ENABLED }}
-        run: ./gradlew assembleDebug
+          INORDINE_TEST_VERSION_CODE: ${{ vars.INORDINE_TEST_VERSION_CODE }}
+        run: ./gradlew assembleTestAppDebug
       - name: Verify APK signature
         env:
           SIGNING_MODE: ${{ steps.configure-signing.outputs.signing_mode }}
         run: |
           set -euo pipefail
-          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          apk=$(find android/app/build/outputs/apk/testApp/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
           test -s "$apk"
           apksigner=$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n1)
           "$apksigner" verify --verbose "$apk"
@@ -85,12 +91,14 @@ jobs:
             echo "Firma debug temporanea verificata con apksigner. Certificato CI: $apk_cert. Questa build non viene caricata come artefatto installabile." >> "$GITHUB_STEP_SUMMARY"
           fi
       - name: Verify merged Android notification permissions and reboot receiver
-        run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/debug
+        run: node tests/verify-android-notifications-manifest.mjs android/app/build/intermediates/merged_manifest/testAppDebug
       - name: Verify packaged launcher icon
-        run: node tests/verify-android-icon.mjs
+        run: node tests/verify-android-icon.mjs "$(find android/app/build/outputs/apk/testApp/debug -maxdepth 1 -type f -name '*.apk' -print -quit)" it.inordine.app.test "In Ordine TEST"
+      - name: Verify isolated TEST app configuration
+        run: node tests/android-test-app-contract.mjs
       - uses: actions/upload-artifact@v4
-        if: steps.configure-signing.outputs.signing_mode == 'persistent'
+        if: steps.configure-signing.outputs.signing_mode == 'persistent' && vars.INORDINE_TEST_VERSION_CODE != ''
         with:
-          name: in-ordine-android-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: in-ordine-test-android-debug-apk
+          path: android/app/build/outputs/apk/testApp/debug/*.apk
           if-no-files-found: error
