@@ -61,6 +61,8 @@ try {
   await assertBadge('todo-default', true);
   let saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
   assert.equal(saved.todo.tasks.find(item => item.id === 'todo-default').reminder.enabled, true, 'individual activation is saved');
+  assert.equal(saved.todo.tasks.find(item => item.id === 'todo-default').reminder.enabledCustomized, true, 'individual activation is tracked separately from a custom time');
+  assert.equal(saved.todo.tasks.find(item => item.id === 'todo-default').reminder.customized, false, 'using the default time does not label the reminder as time-personalized');
   await page.reload(); await openActive(); await assertBadge('todo-default', true);
 
   await row('todo-default').locator('.todo-task-name').click();
@@ -69,6 +71,7 @@ try {
   await assertBadge('todo-default', false);
   saved = await page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
   assert.equal(saved.todo.tasks.find(item => item.id === 'todo-default').reminder.enabled, false, 'individual deactivation is saved');
+  assert.equal(saved.todo.tasks.find(item => item.id === 'todo-default').reminder.enabledCustomized, true, 'individual deactivation remains separate from the time override');
   await page.reload(); await openActive(); await assertBadge('todo-default', false);
 
   await page.locator('.todo-list-screen [data-go="todo"]').click();
