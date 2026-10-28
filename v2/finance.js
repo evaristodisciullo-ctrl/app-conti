@@ -94,7 +94,7 @@ function forecastPendingEntries(state,throughMonth){
   const group=seriesGroups.get(series)||[root];
   const rule=financeRecurrenceRule(root,group.length);
   const precision=root.datePrecision||(root.date?.length===7?'month':root.date?.length===10?'day':'none');
-  if(!rule||!['day','month'].includes(precision)||!/^d{4}-d{2}/.test(root.date||''))continue;
+  if(!rule||!['day','month'].includes(precision)||!/^\d{4}-\d{2}/.test(root.date||''))continue;
   const known=knownBySeries.get(series)||new Map();
   if(rule.end==='never'&&['month','year'].includes(rule.unit)){
    let cursor=root.date.slice(0,7);
