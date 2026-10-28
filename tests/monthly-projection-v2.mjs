@@ -56,7 +56,7 @@ test('recurrence projections preserve edited occurrences and do not recount comp
  state.entries=[item('rent','income',100,'2026-10-10',{seriesId:'rent',occurrenceIndex:0,recurrenceRule:rule}),item('rent-nov','income',120,'2026-11-10',{seriesId:'rent',occurrenceIndex:1,recurrenceRule:rule})];
  state.history=[item('rent-dec','income',150,'2026-12-10',{seriesId:'rent',occurrenceIndex:2,recurrenceRule:rule,completedAt:'2026-12-10T10:00:00Z'})];
  const jan=monthlyProjection(state,'2027-01',asOf);
- assert.equal(jan.opening,470);assert.equal(jan.ending,570);assert.equal(jan.receive,0);
+ assert.equal(jan.opening,470);assert.equal(jan.ending,570);assert.equal(jan.receive,100);
  assert.equal(JSON.stringify(state).includes('forecast:rent:3'),false);
 });
 

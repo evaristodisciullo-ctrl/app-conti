@@ -82,12 +82,46 @@ export function generateOccurrenceDates(date, precision = 'day', ruleValue = nul
   return out;
 }
 
+/** Return the matching monthly/yearly occurrence directly, without a finite look-ahead window. */
+export function occurrenceInMonth(date, precision = 'day', ruleValue = null, targetMonth = '') {
+  const rule = normalizeRecurrenceRule(ruleValue);
+  if (!rule || !/^\d{4}-(0[1-9]|1[0-2])$/.test(targetMonth)) return null;
+  if (precision !== 'month' && date?.length === 7) precision = 'month';
+  if (precision === 'day' && !/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null;
+  if (precision === 'month' && !/^\d{4}-(0[1-9]|1[0-2])$/.test(date || '')) return null;
+  if (!['day', 'month'].includes(precision) || !['month', 'year'].includes(rule.unit)) return null;
+
+  const [baseYear, baseMonth] = date.slice(0, 7).split('-').map(Number);
+  const [year, month] = targetMonth.split('-').map(Number);
+  const monthDelta = (year - baseYear) * 12 + month - baseMonth;
+  if (monthDelta < 0) return null;
+  let index;
+  if (rule.unit === 'month') {
+    if (monthDelta % rule.interval !== 0) return null;
+    index = monthDelta / rule.interval;
+  } else {
+    const yearDelta = year - baseYear;
+    if (month !== baseMonth || yearDelta < 0 || yearDelta % rule.interval !== 0) return null;
+    index = yearDelta / rule.interval;
+  }
+  if (rule.end === 'count' && index >= rule.count) return null;
+
+  const occurrenceDate = advance(date, precision, rule.unit, rule.interval * index);
+  if (!occurrenceDate || occurrenceDate.slice(0, 7) !== targetMonth) return null;
+  if (rule.end === 'date' && (!rule.until || dateOrdinal(occurrenceDate, precision) > dateOrdinal(rule.until, precision))) return null;
+  return { date: occurrenceDate, index };
+}
+
+export function recurrenceRuleForItem(item, count = 1) {
+  return normalizeRecurrenceRule(item?.recurrenceRule) || legacyRule(item || {}, count);
+}
+
 function legacyRule(entry, count) {
   const unit = unitFromLegacy(entry.recurrence);
   return unit ? { unit, interval: 1, end: 'count', count: Math.max(count, unit === 'year' ? 3 : 12), until: '' } : null;
 }
 
-function migrateCollection(items) {
+function migrateCollection(items, legacyEnd = 'count') {
   const groups = new Map();
   for (const item of items) {
     const key = item.seriesId || item.recurrenceSource || (item.recurrence && item.recurrence !== 'none' ? item.id : null);
@@ -98,7 +132,7 @@ function migrateCollection(items) {
   for (const [seriesId, group] of groups) {
     group.sort((a, b) => (a.date || '').localeCompare(b.date || '') || String(a.createdAt || '').localeCompare(String(b.createdAt || '')));
     const root = group.find(item => item.id === seriesId) || group[0];
-    const rule = normalizeRecurrenceRule(root.recurrenceRule) || legacyRule(root, group.length);
+    const rule = normalizeRecurrenceRule(root.recurrenceRule) || (() => { const unit = unitFromLegacy(root.recurrence); return unit ? { unit, interval: 1, end: legacyEnd, count: Math.max(group.length, unit === 'year' ? 3 : 12), until: '' } : null; })();
     group.forEach((item, index) => {
       item.seriesId = seriesId;
       if (!Number.isInteger(item.occurrenceIndex)) item.occurrenceIndex = index;
@@ -109,7 +143,7 @@ function migrateCollection(items) {
 }
 
 export function migrateLegacyRecurrences(state) {
-  migrateCollection([...(state.entries || []), ...(state.history || [])]);
+  migrateCollection([...(state.entries || []), ...(state.history || [])], 'never');
   migrateCollection([...(state.todo?.tasks || []), ...(state.todo?.done || [])]);
   return state;
 }

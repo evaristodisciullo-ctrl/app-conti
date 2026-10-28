@@ -1,18 +1,53 @@
 const toCents=value=>Math.round((Number(value)||0)*100);
 const fromCents=cents=>cents/100;
 import {matchesMonth,dateFields} from './date-values.js';
-import {generateOccurrenceDates} from './recurrence.js';
+import {generateOccurrenceDates, occurrenceInMonth, recurrenceRuleForItem} from './recurrence.js';
 const uniqueById=items=>{const seen=new Set();return items.filter(item=>{if(!item?.id||seen.has(item.id))return false;seen.add(item.id);return true})};
 export const realBalance=state=>Number.isFinite(Number(state.balance))?Number(state.balance):0;
 export const signedAmount=item=>item.kind==='income'?Number(item.amount||0):-Number(item.amount||0);
 export function completedEntries(state){return uniqueById(state.history||[])}
+function financeRecurrenceRule(item,count){
+ const rule=recurrenceRuleForItem(item,count);
+ if(!item?.recurrenceRule&&rule&&['monthly','yearly','daily','weekly'].includes(item?.recurrence))return {...rule,end:'never'};
+ return rule;
+}
+function recurrenceSeries(state){
+ const groups=new Map();
+ for(const item of [...(state.entries||[]),...(state.history||[])]){
+  const series=item.seriesId||item.recurrenceSource||((item.recurrenceRule||item.recurrence&&item.recurrence!=='none')?item.id:null);
+  if(!series)continue;
+  const rows=groups.get(series)||[];rows.push(item);groups.set(series,rows);
+ }
+ return groups;
+}
+export function recurringFinanceEntriesForMonth(state,kind,ym){
+ const out=[];
+ for(const [series,rows] of recurrenceSeries(state)){
+  const root=rows.find(item=>item.id===series)||[...rows].sort((a,b)=>(a.occurrenceIndex??0)-(b.occurrenceIndex??0))[0];
+  const rule=financeRecurrenceRule(root,rows.length);
+  if(!rule||rule.end!=='never')continue;
+  const precision=root.datePrecision||(root.date?.length===7?'month':root.date?.length===10?'day':'none');
+  const occurrence=occurrenceInMonth(root.date,precision,rule,ym);
+  if(!occurrence||rows.some(item=>item.occurrenceIndex===occurrence.index))continue;
+  const virtual={...root,id:`forecast:${series}:${occurrence.index}`,date:occurrence.date,datePrecision:precision,seriesId:series,recurrenceSource:series,recurrenceRule:rule,occurrenceIndex:occurrence.index,virtualRecurrence:true};delete virtual.completedAt;delete virtual._done;out.push(virtual);
+ }
+ return out.filter(item=>item.kind===kind);
+}
+export function financeEntriesForMonth(state,kind,ym){
+ const inMonth=item=>item.kind===kind&&matchesMonth(item,ym);
+ return uniqueById([
+  ...pendingEntries(state).filter(inMonth),
+  ...recurringFinanceEntriesForMonth(state,kind,ym)
+ ]);
+}
 export function pendingEntries(state){
  const completedIds=new Set(completedEntries(state).map(item=>item.id));
  return uniqueById(state.entries||[]).filter(item=>!completedIds.has(item.id));
 }
 export function financeTotals(state,kind,ym=null){
  const inMonth=item=>{if(!ym)return true;const fields=dateFields(item);return Boolean(fields.month)&&matchesMonth(item,ym)};
- const pending=toCents(pendingEntries(state).filter(x=>x.kind===kind&&inMonth(x)).reduce((sum,x)=>sum+Number(x.amount||0),0));
+ const pendingItems=ym?financeEntriesForMonth(state,kind,ym):pendingEntries(state).filter(x=>x.kind===kind);
+ const pending=toCents(pendingItems.filter(inMonth).reduce((sum,x)=>sum+Number(x.amount||0),0));
  const done=toCents(completedEntries(state).filter(x=>x.kind===kind&&inMonth(x)).reduce((sum,x)=>sum+Number(x.amount||0),0));
  return {pending:fromCents(pending),done:fromCents(done),total:fromCents(pending+done)};
 }
@@ -49,23 +84,32 @@ function forecastPendingEntries(state,throughMonth){
   if(!knownBySeries.has(series))knownBySeries.set(series,new Map());
   if(Number.isInteger(item.occurrenceIndex))knownBySeries.get(series).set(item.occurrenceIndex,item);
  }
- const extras=[];
- const roots=new Map();
+ const roots=new Map(),seriesGroups=recurrenceSeries({entries:[...pending,...completed],history:[]});
  for(const item of [...pending,...completed]){
   const series=item.seriesId||item.recurrenceSource;
-  const rule=item.recurrenceRule;
-  if(series&&rule?.end==='never'&&(!roots.has(series)||item.id===series))roots.set(series,item);
+  if(series&&(!roots.has(series)||item.id===series))roots.set(series,item);
  }
- const [year,month]=throughMonth.split('-').map(Number);
- const endOfMonth=new Date(Date.UTC(year,month,0,23,59,59));
+ const extras=[];
  for(const [series,root] of roots){
-  const rule=root.recurrenceRule;
-  const precision=root.datePrecision||'day';
-  const dates=generateOccurrenceDates(root.date,precision,rule,{now:endOfMonth,horizonMonths:0,maxOccurrences:2000});
+  const group=seriesGroups.get(series)||[root];
+  const rule=financeRecurrenceRule(root,group.length);
+  const precision=root.datePrecision||(root.date?.length===7?'month':root.date?.length===10?'day':'none');
+  if(!rule||!['day','month'].includes(precision)||!/^d{4}-d{2}/.test(root.date||''))continue;
   const known=knownBySeries.get(series)||new Map();
-  for(const occurrence of dates){
-   if(known.has(occurrence.index))continue;
-   extras.push({...root,id:`forecast:${series}:${occurrence.index}`,date:occurrence.date,seriesId:series,recurrenceSource:series,occurrenceIndex:occurrence.index});
+  if(rule.end==='never'&&['month','year'].includes(rule.unit)){
+   let cursor=root.date.slice(0,7);
+   while(cursor<=throughMonth){
+    const occurrence=occurrenceInMonth(root.date,precision,rule,cursor);
+    if(occurrence&&!known.has(occurrence.index)){const virtual={...root,id:`forecast:${series}:${occurrence.index}`,date:occurrence.date,datePrecision:precision,seriesId:series,recurrenceSource:series,recurrenceRule:rule,occurrenceIndex:occurrence.index};delete virtual.completedAt;delete virtual._done;extras.push(virtual)}
+    const [year,month]=cursor.split('-').map(Number),next=new Date(Date.UTC(year,month,1,12));
+    cursor=`${next.getUTCFullYear()}-${String(next.getUTCMonth()+1).padStart(2,'0')}`;
+   }
+  }else if(rule.end==='never'){
+   const [year,month]=throughMonth.split('-').map(Number),endOfMonth=new Date(Date.UTC(year,month,0,23,59,59));
+   for(const occurrence of generateOccurrenceDates(root.date,precision,rule,{now:endOfMonth,horizonMonths:0,maxOccurrences:2000})){
+    if(known.has(occurrence.index))continue;
+    const virtual={...root,id:`forecast:${series}:${occurrence.index}`,date:occurrence.date,datePrecision:precision,seriesId:series,recurrenceSource:series,recurrenceRule:rule,occurrenceIndex:occurrence.index};delete virtual.completedAt;delete virtual._done;extras.push(virtual);
+   }
   }
  }
  return [...pending,...extras].filter(item=>{
@@ -86,9 +130,9 @@ export function monthlyProjection(state,ym,asOf=new Date()){
   pay:financeTotals(state,'expense',ym).pending
  };
  if(ym<anchorMonth)return {month:ym,anchorMonth,available:false,opening:null,ending:null,...totals};
- // Include never-ending recurrence instances that are beyond the currently
- // materialized horizon. Existing occurrence records take precedence, keeping
- // per-occurrence edits and completions intact without writing to app state.
+ // Resolve missing recurrence rows on demand through the selected month. Existing
+ // records take precedence, preserving per-occurrence edits and completion state.
+ // Forecast rows are virtual and are never written to app storage.
  const allThrough=forecastPendingEntries(state,ym);
  const throughStart=ym===anchorMonth?[]:forecastPendingEntries(state,priorMonth(ym));
  const opening=toCents(realBalance(state))+throughStart.reduce((sum,item)=>sum+toCents(signedAmount(item)),0);
