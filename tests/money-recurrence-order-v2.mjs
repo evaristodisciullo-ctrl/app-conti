@@ -1,111 +1,74 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { createServer } from 'node:http';
-import { extname, resolve, sep } from 'node:path';
-import { chromium } from 'playwright';
-import { generateOccurrenceDates } from '../v2/recurrence.js';
+import {readFile} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import {extname,resolve,sep} from 'node:path';
+import {chromium} from 'playwright';
+import {parseFinanceRecurrenceText} from '../v2/finance-recurrence-text.js';
+import {generateOccurrenceDates,occurrencesInMonth} from '../v2/recurrence.js';
+import {collectNotificationPlan} from '../v2/notifications.js';
 
-const root = resolve('www');
-const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
-const server = createServer(async (req, res) => {
-  try {
-    const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    const file = resolve(root, pathname === '/' ? 'index.html' : `.${pathname}`);
-    if (file !== root && !file.startsWith(root + sep)) return res.writeHead(403).end();
-    res.writeHead(200, { 'content-type': mime[extname(file)] || 'application/octet-stream', 'cache-control': 'no-store' }).end(await readFile(file));
-  } catch { res.writeHead(404).end('Not found'); }
-});
-await new Promise((resolveListen, reject) => { server.once('error', reject); server.listen(4183, '127.0.0.1', resolveListen); });
-const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 390, height: 850 }, locale: 'it-IT' });
-const fixture = {
-  version: 2, balance: 0, profile: { namePromptCompleted: true }, entries: [], history: [], adjustments: [], budgetPlans: [],
-  financeNotifications: { enabled: false, defaultTime: '09:00', rule: { advanceDays: 0, time: '09:00' } },
-  notificationSettings: { enabled: false, rule: { advanceDays: 0, time: '09:00' } },
-  todo: { tasks: [], done: [], notifications: { enabled: false, rule: { advanceDays: 0, time: '09:00' } } },
-  preferences: { categories: [] }
-};
-const state = () => page.evaluate(() => JSON.parse(localStorage.getItem('inOrdineV2State')));
-const today = new Date();
-const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+const day=n=>String(n).padStart(2,'0'),date=new Date(),today=`${date.getFullYear()}-${day(date.getMonth()+1)}-${day(date.getDate())}`;
+const until=(ym,d)=>`${ym}-${day(d)}`;
+const cases=[
+ ['Ogni 4 del mese per 8 mesi','month','count',8,'2026-10-29'],
+ ['Ogni 15 giorni per 6 mesi','day','date',1,'2026-10-29'],
+ ['Ogni 3 mesi per sempre','month','never',1,'2026-10-29'],
+ ['Ogni lunedì per 10 settimane','week','count',10,'2026-10-29'],
+ ['Ogni 2 anni, il 15 marzo','year','never',1,'2026-10-29'],
+ ['Il giorno 10 di ogni mese fino a dicembre 2028','month','date',1,'2026-10-29']
+];
+const parsed=cases.map(([text,unit,end,count,start])=>{const result=parseFinanceRecurrenceText(text,start);assert.equal(result.ok,true,text);assert.equal(result.rule.unit,unit);assert.equal(result.rule.end,end);if(end==='count')assert.equal(result.rule.count,count);return result});
+assert.equal(parsed[0].anchorDate,'2026-11-04','monthly day-of-month starts at the next valid date');
+assert.equal(parsed[1].rule.until,'2027-04-28','day interval has an explicit six-month bound');
+assert.equal(parsed[2].rule.interval,3);
+assert.equal(parsed[3].anchorDate,'2026-11-02','weekly weekday anchor is the next Monday');
+assert.equal(parsed[4].anchorDate,'2028-03-15','annual date selects the next valid two-year occurrence');
+assert.equal(parsed[5].rule.until,'2028-12-31');
+assert.equal(parseFinanceRecurrenceText('ogni tanto','2026-10-29').ok,false,'unsupported text must be rejected');
+assert.equal(parseFinanceRecurrenceText('Ogni 40 del mese per 8 mesi','2026-10-29').ok,false,'invalid month day must be rejected');assert.equal(parseFinanceRecurrenceText('Ogni 3 mesi fino al 2027-02-31','2026-10-29').ok,false,'invalid explicit end dates must be rejected');
+const mondays=generateOccurrenceDates(parsed[3].anchorDate,'day',parsed[3].rule,{now:new Date('2026-12-31T12:00:00Z')});
+assert.equal(mondays.length,10);assert.ok(mondays.every(x=>new Date(`${x.date}T12:00:00Z`).getUTCDay()===1));
+const dayLoop=occurrencesInMonth('2026-10-29','day',{unit:'day',interval:15,end:'never'},'2027-01');
+assert.deepEqual(dayLoop.map(x=>x.date),['2027-01-12','2027-01-27']);
 
-try {
-  await page.addInitScript(value => localStorage.setItem('inOrdineV2State', JSON.stringify(value)), fixture);
-  await page.goto('http://127.0.0.1:4183/');
-
-  const openNew = async (kind, description) => {
-    await page.locator('[data-go="money"]').click();
-    await page.locator(`[data-go="${kind}"]`).click();
-    await page.locator(`[data-add-money="${kind}"]`).click();
-    await page.locator('#moneyDescription').fill(description);
-    await page.locator('#moneyAmount').fill('10');
-    await page.locator('#moneyDate').fill(date);
-    await page.locator('#moneyRecurrenceMonthly').check();
-  };
-  const assertCreateOrder = async () => {
-    const labels = await page.locator('#moneyRecurrenceMonthlyOptions label.money-recurrence-choice').allTextContents();
-    assert.match(labels[0], /Per sempre/, 'Per sempre is the first monthly end choice');
-    assert.match(labels[1], /Numero di mesi/, 'Numero di mesi follows Per sempre');
-    assert.equal(await page.locator('#moneyRecurrenceCount').inputValue(), '12', 'the count default remains 12');
-    assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), true, 'the numeric field is active for Numero di mesi');
-  };
-  const save = async () => { await page.locator('#moneyForm button[type="submit"]').click(); await page.locator('.money-flow-screen').waitFor(); };
-
-  await openNew('income', 'Entrata a mesi');
-  await assertCreateOrder();
-  await save();
-  let saved = await state();
-  let entry = saved.entries.find(item => item.description === 'Entrata a mesi');
-  assert.equal(entry.recurrenceRule.end, 'count', 'income defaults to a finite monthly recurrence');
-  assert.equal(entry.recurrenceRule.count, 12, 'income retains the 12-month default');
-
-  await openNew('income', 'Entrata per sempre');
-  await page.locator('#moneyRecurrenceCount').fill('4');
-  await page.locator('#moneyRecurrenceEndNever').check();
-  assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), false, 'the count field is inactive for Per sempre');
-  await save();
-  saved = await state();
-  entry = saved.entries.find(item => item.description === 'Entrata per sempre' && item.recurrenceRule?.end === 'never');
-  assert.ok(entry, 'Per sempre is saved for income');
-  assert.equal(entry.recurrenceRule.count, 4, 'the saved count remains inert when Per sempre is selected');
-  assert.ok(generateOccurrenceDates(entry.date, 'day', entry.recurrenceRule, { now: new Date(`${date}T00:00:00`), horizonMonths: 18 }).length > entry.recurrenceRule.count, 'Per sempre recurrence generation ignores the hidden numeric count');
-
-  await openNew('expense', 'Pagamento a mesi');
-  await assertCreateOrder();
-  await page.locator('#moneyRecurrenceCount').fill('6');
-  await save();
-  saved = await state();
-  let payment = saved.entries.find(item => item.description === 'Pagamento a mesi');
-  assert.equal(payment.kind, 'expense');
-  assert.equal(payment.recurrenceRule.count, 6, 'the selected month count is saved for payments');
-
-  await openNew('expense', 'Pagamento per sempre');
-  await page.locator('#moneyRecurrenceCount').fill('7');
-  await page.locator('#moneyRecurrenceEndNever').check();
-  assert.equal(await page.locator('#moneyRecurrenceCount').isVisible(), false, 'the count field is inactive for Per sempre on payments');
-  await save();
-  saved = await state();
-  payment = saved.entries.find(item => item.description === 'Pagamento per sempre' && item.recurrenceRule?.end === 'never');
-  assert.ok(payment, 'Per sempre is saved for payments');
-  assert.equal(payment.recurrenceRule.count, 7, 'the saved count remains inert when Per sempre is selected for a payment');
-  assert.ok(generateOccurrenceDates(payment.date, 'day', payment.recurrenceRule, { now: new Date(`${date}T00:00:00`), horizonMonths: 18 }).length > payment.recurrenceRule.count, 'payment Per sempre generation ignores the hidden numeric count');
-
-  for (const [kind, description] of [['income', 'Entrata per sempre'], ['expense', 'Pagamento per sempre']]) {
-    await page.locator('[data-go="money"]').click();
-    await page.locator(`[data-go="${kind}"]`).click();
-    await page.locator('[data-edit-money]').filter({ hasText: description }).first().locator('.money-description').click();
-    const endOptions = await page.locator('#moneyEditRecurrenceEnd option').allTextContents();
-    assert.match(endOptions[0], /Per sempre/, `${kind} edit puts Per sempre first`);
-    assert.match(endOptions[1], /Numero di mesi/, `${kind} edit places Numero di mesi next`);
-    assert.equal(await page.locator('#moneyEditRecurrenceCount').isVisible(), false, `${kind} edit hides the count field when the saved mode is Per sempre`);
-    await page.locator('#moneyEditRecurrenceEnd').selectOption('count');
-    assert.equal(await page.locator('#moneyEditRecurrenceCount').isVisible(), true, `${kind} edit activates the count field only for Numero di mesi`);
-    assert.equal(await page.locator('#moneyEditRecurrenceCount').inputValue(), kind === 'income' ? '4' : '7');
-    await page.locator(`.page-header [data-go="${kind}"]`).click();
-  }
-
-  console.log('PASS monthly recurrence order and behavior: income, payment, finite/default 12, Per sempre ignores the hidden count, and existing finance edit forms preserve the same choice order.');
-} finally {
-  await browser.close();
-  await new Promise(resolveClose => server.close(resolveClose));
-}
+const root=resolve('www'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml'};
+const server=createServer(async(req,res)=>{try{const path=decodeURIComponent(new URL(req.url,'http://localhost').pathname),file=resolve(root,path==='/'?'index.html':`.${path}`);if(file!==root&&!file.startsWith(root+sep))return res.writeHead(403).end();res.writeHead(200,{'content-type':mime[extname(file)]||'application/octet-stream','cache-control':'no-store'}).end(await readFile(file))}catch{res.writeHead(404).end('Not found')}});
+await new Promise((ok,fail)=>{server.once('error',fail);server.listen(4183,'127.0.0.1',ok)});
+const browser=await chromium.launch({headless:true}),page=await browser.newPage({viewport:{width:390,height:850},locale:'it-IT'});
+const fixture={version:2,balance:0,profile:{namePromptCompleted:true},entries:[{id:'legacy-finite',kind:'income',description:'Vecchia ricorrenza finita',amount:33,date:today,datePrecision:'day',seriesId:'legacy-finite',occurrenceIndex:0,recurrenceRule:{unit:'month',interval:1,end:'count',count:3},category:'Casa',supplier:'Fornitore storico'},{id:'legacy-expense',kind:'expense',description:'Vecchio pagamento finito',amount:22,date:today,datePrecision:'day',seriesId:'legacy-expense',occurrenceIndex:0,recurrenceRule:{unit:'year',interval:1,end:'count',count:2},category:'Utenze',supplier:'Enel'}],history:[],adjustments:[],budgetPlans:[],financeNotifications:{enabled:false,defaultTime:'09:00',rule:{advanceDays:0,time:'09:00'}},todo:{tasks:[],done:[],notifications:{enabled:false,rule:{advanceDays:0,time:'09:00'}}},preferences:{categories:['Casa']}};
+const state=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('inOrdineV2State')));
+try{
+ await page.addInitScript(value=>{if(!localStorage.getItem('inOrdineV2State'))localStorage.setItem('inOrdineV2State',JSON.stringify(value))},fixture);await page.goto('http://127.0.0.1:4183/');
+ const openNew=async kind=>{await page.locator('[data-go="money"]').click();await page.locator(`[data-go="${kind}"]`).click();await page.locator(`[data-add-money="${kind}"]`).click()};
+ const optionLabels=['Solo questo mese','Ogni mese','Ogni anno','Personalizza'];
+ for(const kind of ['income','expense']){
+  await openNew(kind);assert.deepEqual(await page.locator('#moneyRecurrenceChoice option').allTextContents(),optionLabels,`${kind} create menu has four ordered choices`);assert.equal(await page.locator('#moneyRecurrenceChoice').inputValue(),'once');
+  assert.equal(await page.locator('[data-finance-custom-recurrence="money"]').isVisible(),false);assert.equal(await page.locator('#moneyForm').getByText('Categoria',{exact:true}).count(),0);assert.equal(await page.locator('#moneyForm').getByText('Fornitore / provenienza',{exact:true}).count(),0);
+  await page.locator('#moneyDescription').fill(`Mensile ${kind}`);await page.locator('#moneyAmount').fill('20');await page.locator('#moneyDate').fill(today);await page.locator('#moneyRecurrenceChoice').selectOption('monthly');await page.locator('#moneyForm button[type=submit]').click();
+  let row=(await state()).entries.find(x=>x.description===`Mensile ${kind}`);assert.equal(row.recurrenceRule.unit,'month');assert.equal(row.recurrenceRule.end,'never');
+  await page.locator(`[data-add-money="${kind}"]`).click();await page.locator('#moneyDescription').fill(`Una volta ${kind}`);await page.locator('#moneyAmount').fill('7');await page.locator('#moneyDate').fill(today);await page.locator('#moneyRecurrenceChoice').selectOption('once');await page.locator('#moneyForm button[type=submit]').click();row=(await state()).entries.find(x=>x.description===`Una volta ${kind}`);assert.equal(row.recurrenceRule,null,`${kind} one-time choice does not recur`);
+ }
+ await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();await page.locator('[data-add-money="income"]').click();
+ assert.deepEqual(await page.locator('#moneyRecurrenceChoice option').allTextContents(),optionLabels);
+ await page.locator('#moneyDescription').fill('Annuale INPS');await page.locator('#moneyAmount').fill('417');await page.locator('#moneyDate').fill('2026-12-01');await page.locator('#moneyRecurrenceChoice').selectOption('yearly');await page.locator('#moneyForm button[type=submit]').click();
+ let annual=(await state()).entries.find(x=>x.description==='Annuale INPS');assert.equal(annual.recurrenceRule.unit,'year');assert.equal(annual.recurrenceRule.end,'never');
+ const makeCustom=async(text,description)=>{await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill(description);await page.locator('#moneyAmount').fill('10');await page.locator('#moneyDate').fill('2026-10-29');await page.locator('#moneyRecurrenceChoice').selectOption('custom');assert.equal(await page.locator('[data-finance-custom-recurrence="money"]').isVisible(),true);await page.locator('#moneyRecurrenceText').fill(text);await page.locator('#moneyForm button[type=submit]').click();return (await state()).entries.find(x=>x.description===description)};
+ const customDay=await makeCustom('Ogni 4 del mese per 8 mesi','Giorno 4');assert.equal(customDay.date,'2026-11-04');assert.equal(customDay.recurrenceRule.count,8);assert.equal((await state()).entries.filter(x=>x.seriesId===customDay.seriesId).length,8);
+ const customInterval=await makeCustom('Ogni 15 giorni per 6 mesi','Ogni 15 giorni');assert.equal(customInterval.recurrenceRule.unit,'day');assert.equal(customInterval.recurrenceRule.until,'2027-04-28');assert.ok((await state()).entries.filter(x=>x.seriesId===customInterval.seriesId).length>1);
+ const customMonths=await makeCustom('Ogni 3 mesi per sempre','Ogni tre mesi');assert.equal(customMonths.recurrenceRule.interval,3);assert.equal(customMonths.recurrenceRule.end,'never');
+ const customWeek=await makeCustom('Ogni lunedì per 10 settimane','Lunedì');assert.equal(customWeek.date,'2026-11-02');assert.equal((await state()).entries.filter(x=>x.seriesId===customWeek.seriesId).length,10);
+ const customYear=await makeCustom('Ogni 2 anni, il 15 marzo','Marzo');assert.equal(customYear.date,'2028-03-15');assert.equal(customYear.recurrenceRule.interval,2);assert.equal(customYear.recurrenceRule.end,'never');
+ const customUntil=await makeCustom('Il giorno 10 di ogni mese fino a dicembre 2028','Fino a dicembre');assert.equal(customUntil.date,'2026-11-10');assert.equal(customUntil.recurrenceRule.until,'2028-12-31');
+ const beforeInvalid=(await state()).entries.length;await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill('Testo non supportato');await page.locator('#moneyAmount').fill('5');await page.locator('#moneyDate').fill(today);await page.locator('#moneyRecurrenceChoice').selectOption('custom');await page.locator('#moneyRecurrenceText').fill('ogni tanto');await page.locator('#moneyForm button[type=submit]').click();assert.equal(await page.locator('#moneyRecurrenceError').isVisible(),true);assert.equal((await state()).entries.length,beforeInvalid,'unsupported instructions are not saved');
+ await page.reload();let afterReload=await state();const persisted=afterReload.entries.find(x=>x.description==='Ogni tre mesi');assert.equal(persisted.recurrenceRule.end,'never');assert.equal(persisted.recurrenceRule.interval,3);assert.equal(persisted.recurrenceText,'Ogni 3 mesi per sempre');
+ // Edit an old finite rule: it remains custom and finite, and old metadata is retained.
+ await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();await page.locator('[data-edit-money="legacy-finite"] .money-description').click();assert.deepEqual(await page.locator('#moneyEditRecurrenceChoice option').allTextContents(),optionLabels);assert.equal(await page.locator('#moneyEditRecurrenceChoice').inputValue(),'custom');assert.equal(await page.locator('#moneyEditRecurrenceText').inputValue(),'Ogni mese per 3 mesi');assert.equal(await page.locator('#moneyEditCategory').count(),0);assert.equal(await page.locator('#moneyEditSupplier').count(),0);await page.locator('#moneyEditForm button[type=submit]').click();await page.locator('[data-series-scope="future"]').click();let saved=await state();const legacy=saved.entries.find(x=>x.id==='legacy-finite');assert.equal(legacy.recurrenceRule.end,'count');assert.equal(legacy.recurrenceRule.count,3);assert.equal(legacy.category,'Casa');assert.equal(legacy.supplier,'Fornitore storico');
+ await page.locator('[data-go="money"]').click();await page.locator('[data-go="expense"]').click();await page.locator('[data-edit-money="legacy-expense"] .money-description').click();assert.deepEqual(await page.locator('#moneyEditRecurrenceChoice option').allTextContents(),optionLabels);assert.equal(await page.locator('#moneyEditRecurrenceChoice').inputValue(),'custom');assert.equal(await page.locator('#moneyEditCategory').count(),0);assert.equal(await page.locator('#moneyEditSupplier').count(),0);await page.locator('#moneyEditForm button[type=submit]').click();await page.locator('[data-series-scope="future"]').click();saved=await state();const legacyExpense=saved.entries.find(x=>x.id==='legacy-expense');assert.equal(legacyExpense.recurrenceRule.end,'count');assert.equal(legacyExpense.recurrenceRule.count,2);assert.equal(legacyExpense.category,'Utenze');assert.equal(legacyExpense.supplier,'Enel');await page.locator('[data-go="money"]').click();await page.locator('[data-go="income"]').click();
+ // The three finance notification modes show only their relevant controls and persist the legacy schedule shape.
+ await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill('Notifica stessa data');await page.locator('#moneyAmount').fill('12');await page.locator('#moneyDate').fill('2026-12-12');await page.locator('#moneyNotify').check();assert.equal(await page.locator('#moneyReminderMode').inputValue(),'sameDay');assert.equal(await page.locator('#moneyReminderTime').isVisible(),true);assert.equal(await page.locator('#moneyAdvanceDays').isVisible(),false);assert.equal(await page.locator('#moneyCustomAt').isVisible(),false);await page.locator('#moneyReminderTime').fill('11:10');await page.locator('#moneyForm button[type=submit]').click();
+ await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill('Notifica anticipo');await page.locator('#moneyAmount').fill('13');await page.locator('#moneyDate').fill('2026-12-12');await page.locator('#moneyNotify').check();await page.locator('#moneyReminderMode').selectOption('advance');assert.equal(await page.locator('#moneyReminderTime').isVisible(),true);assert.equal(await page.locator('#moneyAdvanceDays').isVisible(),true);assert.equal(await page.locator('#moneyCustomAt').isVisible(),false);await page.locator('#moneyAdvanceDays').fill('4');await page.locator('#moneyForm button[type=submit]').click();
+ await page.locator('[data-add-money="income"]').click();await page.locator('#moneyDescription').fill('Notifica esatta');await page.locator('#moneyAmount').fill('14');await page.locator('#moneyDate').fill('2026-12-12');await page.locator('#moneyNotify').check();await page.locator('#moneyReminderMode').selectOption('custom');assert.equal(await page.locator('#moneyReminderTime').isVisible(),false);assert.equal(await page.locator('#moneyAdvanceDays').isVisible(),false);assert.equal(await page.locator('#moneyCustomAt').isVisible(),true);await page.locator('#moneyCustomAt').fill('2026-12-10T09:30');await page.locator('#moneyForm button[type=submit]').click();
+ afterReload=await state();const same=afterReload.entries.find(x=>x.description==='Notifica stessa data'),advance=afterReload.entries.find(x=>x.description==='Notifica anticipo'),exact=afterReload.entries.find(x=>x.description==='Notifica esatta');assert.deepEqual([same.reminder.mode,same.reminder.advanceDays,same.reminder.time],['due',0,'11:10']);assert.deepEqual([advance.reminder.mode,advance.reminder.advanceDays],['due',4]);assert.equal(exact.reminder.mode,'custom');assert.equal(exact.reminder.customAt,'2026-12-10T09:30');
+ const plan=collectNotificationPlan(afterReload,new Date('2026-12-01T00:00:00'));const financePlan=plan.filter(x=>x.extra?.kind==='finance'&&['Notifica stessa data','Notifica anticipo','Notifica esatta'].includes(afterReload.entries.find(i=>i.id===x.extra.itemId)?.description));assert.equal(financePlan.length,3);assert.equal(new Set(financePlan.map(x=>x.id)).size,3);
+ console.log('PASS finance recurrence menu, all supported custom phrases, invalid-input blocking, reload persistence, legacy finite-rule/category/supplier preservation, and the three mutually exclusive finance notification modes.');
+}finally{await browser.close();await new Promise(close=>server.close(close))}

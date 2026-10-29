@@ -82,34 +82,52 @@ export function generateOccurrenceDates(date, precision = 'day', ruleValue = nul
   return out;
 }
 
-/** Return the matching monthly/yearly occurrence directly, without a finite look-ahead window. */
-export function occurrenceInMonth(date, precision = 'day', ruleValue = null, targetMonth = '') {
+/** Resolve every occurrence in a calendar month directly, without a look-ahead cap. */
+export function occurrencesInMonth(date, precision = 'day', ruleValue = null, targetMonth = '') {
   const rule = normalizeRecurrenceRule(ruleValue);
-  if (!rule || !/^\d{4}-(0[1-9]|1[0-2])$/.test(targetMonth)) return null;
+  if (!rule || !/^\d{4}-(0[1-9]|1[0-2])$/.test(targetMonth)) return [];
   if (precision !== 'month' && date?.length === 7) precision = 'month';
-  if (precision === 'day' && !/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null;
-  if (precision === 'month' && !/^\d{4}-(0[1-9]|1[0-2])$/.test(date || '')) return null;
-  if (!['day', 'month'].includes(precision) || !['month', 'year'].includes(rule.unit)) return null;
-
+  if (!['day', 'month'].includes(precision) || !['day', 'week', 'month', 'year'].includes(rule.unit)) return [];
+  if (precision === 'day' && !/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return [];
+  if (precision === 'month' && !/^\d{4}-(0[1-9]|1[0-2])$/.test(date || '')) return [];
   const [baseYear, baseMonth] = date.slice(0, 7).split('-').map(Number);
   const [year, month] = targetMonth.split('-').map(Number);
+  if (rule.unit === 'day' || rule.unit === 'week') {
+    if (precision !== 'day') return [];
+    const baseOrdinal = Date.UTC(baseYear, baseMonth - 1, Number(date.slice(8, 10)), 12);
+    const step = rule.interval * (rule.unit === 'week' ? 7 : 1);
+    const lastDay = new Date(Date.UTC(year, month, 0, 12)).getUTCDate(), out = [];
+    for (let day = 1; day <= lastDay; day += 1) {
+      const current = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const delta = Math.round((Date.UTC(year, month - 1, day, 12) - baseOrdinal) / 86400000);
+      if (delta < 0 || delta % step) continue;
+      const index = delta / step;
+      if (rule.end === 'count' && index >= rule.count) continue;
+      if (rule.end === 'date' && (!rule.until || current > rule.until)) continue;
+      out.push({ date: current, index });
+    }
+    return out;
+  }
   const monthDelta = (year - baseYear) * 12 + month - baseMonth;
-  if (monthDelta < 0) return null;
+  if (monthDelta < 0) return [];
   let index;
   if (rule.unit === 'month') {
-    if (monthDelta % rule.interval !== 0) return null;
+    if (monthDelta % rule.interval !== 0) return [];
     index = monthDelta / rule.interval;
   } else {
     const yearDelta = year - baseYear;
-    if (month !== baseMonth || yearDelta < 0 || yearDelta % rule.interval !== 0) return null;
+    if (month !== baseMonth || yearDelta < 0 || yearDelta % rule.interval !== 0) return [];
     index = yearDelta / rule.interval;
   }
-  if (rule.end === 'count' && index >= rule.count) return null;
-
+  if (rule.end === 'count' && index >= rule.count) return [];
   const occurrenceDate = advance(date, precision, rule.unit, rule.interval * index);
-  if (!occurrenceDate || occurrenceDate.slice(0, 7) !== targetMonth) return null;
-  if (rule.end === 'date' && (!rule.until || dateOrdinal(occurrenceDate, precision) > dateOrdinal(rule.until, precision))) return null;
-  return { date: occurrenceDate, index };
+  if (!occurrenceDate || occurrenceDate.slice(0, 7) !== targetMonth) return [];
+  if (rule.end === 'date' && (!rule.until || dateOrdinal(occurrenceDate, precision) > dateOrdinal(rule.until, precision))) return [];
+  return [{ date: occurrenceDate, index }];
+}
+
+export function occurrenceInMonth(date, precision = 'day', ruleValue = null, targetMonth = '') {
+  return occurrencesInMonth(date, precision, ruleValue, targetMonth)[0] || null;
 }
 
 export function recurrenceRuleForItem(item, count = 1) {
